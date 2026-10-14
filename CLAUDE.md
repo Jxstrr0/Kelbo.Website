@@ -31,5 +31,10 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   renders it. Adding a project should never need an HTML edit.
 - The status labels and ball positions are in `STATUSES` at the top of
   `main.js`.
+- Tools live in `tools/<name>/` with their own `index.html`, CSS, and JS,
+  reusing `../../style.css`. They run in the browser only (localStorage,
+  no server), so their data stays on the visitor's device.
+- Garage to Glory is its own repo (`Jxstrr0/GarageToGlory`) with its own
+  GitHub Pages site. This site just links to it.
 - `README.md` is Colby's plain-English editing guide. Keep it up to date
   when how things work changes.
