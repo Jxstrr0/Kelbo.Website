@@ -72,6 +72,27 @@
   display: none;
 }
 
+/* Each group (Calls, Options trades) gets a small heading */
+.record__label {
+  margin: 1.5rem 0 0;
+  font-size: 1.05rem;
+}
+
+.record__label:first-child {
+  margin-top: 1rem;
+}
+
+.record__label + .record {
+  margin-top: 0.5rem;
+}
+
+/* Groups with only two numbers stay two across */
+@media (min-width: 40rem) {
+  .record--pair {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 /* ---------- Entries ---------- */
 .entries {
   display: grid;
@@ -188,6 +209,27 @@
 .trade__result--open {
   font-size: 0.875rem;
   color: var(--muted);
+}
+
+/* "V2" / "V3" label */
+.trade__tag {
+  padding: 0 0.5rem;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+/* Sold for what it cost */
+.trade__result--flat {
+  color: var(--muted);
+}
+
+.trade__meta {
+  margin: 0.2rem 0 0;
+  font-size: 0.875rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
 }
 
 .trade__note {
@@ -465,5 +507,96 @@
 .sector__why {
   margin-top: 0.2rem !important;
   font-size: 0.9375rem;
+  color: var(--muted);
+}
+
+/* ---------- Options trades ---------- */
+.options__intro {
+  max-width: 44rem;
+  margin: 0.5rem 0 0;
+  color: var(--muted);
+}
+
+.options__filters {
+  margin-top: 1rem;
+}
+
+.options__filters:empty {
+  display: none;
+}
+
+.options__list,
+[data-options-chart],
+[data-options-coach] {
+  max-width: 44rem;
+}
+
+.options__list {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.options__list .trades {
+  margin: 0;
+  box-shadow: var(--shadow);
+}
+
+.options__list .trade {
+  background: var(--card);
+}
+
+/* The older trades sit flush inside the tap-to-open box */
+.options__older {
+  background: var(--card);
+}
+
+.options__older > .trades {
+  margin: 0;
+  border: 0;
+  border-radius: 0 0 10px 10px;
+  box-shadow: none;
+}
+
+.options__coach {
+  margin-top: 1rem;
+}
+
+/* Bar chart: one bar per trade, gains up and losses down */
+.bars {
+  margin: 1rem 0 0;
+  padding: 0.75rem 0.9rem 0.6rem;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--card);
+  box-shadow: var(--shadow);
+}
+
+.bars__svg {
+  display: block;
+  width: 100%;
+  height: 6rem;
+}
+
+.bars__bar--win {
+  fill: var(--win-text);
+}
+
+.bars__bar--loss {
+  fill: var(--loss-text);
+}
+
+.bars__bar--flat {
+  fill: var(--muted);
+}
+
+.bars__zero {
+  stroke: var(--rule);
+  stroke-width: 1;
+}
+
+.bars__caption {
+  margin-top: 0.4rem;
+  font-size: 0.8125rem;
   color: var(--muted);
 }
