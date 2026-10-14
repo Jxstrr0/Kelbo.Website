@@ -6,7 +6,9 @@
      1. loads projects.json
      2. on the home page, shows projects marked "featured": true (max 3)
      3. on the projects page, shows every project with filter buttons
-     4. on the games page, shows every project with "category": "Game"
+     4. on the Games, Trading, and AI pages, shows every project in that
+        "category"
+     5. on the home page tiles, shows how many projects each section has
    ========================================================================== */
 
 // Status labels, in order from "just an idea" to "done".
@@ -43,9 +45,16 @@ function el(tag, className, text) {
   return node;
 }
 
-// True if a project's category is "Game" (any upper/lower case).
+// True if a project's category matches (ignores upper/lower case).
+function inCategory(project, category) {
+  return (
+    String(project.category || "").trim().toLowerCase() ===
+    String(category || "").trim().toLowerCase()
+  );
+}
+
 function isGame(project) {
-  return String(project.category || "").trim().toLowerCase() === "game";
+  return inCategory(project, "Game");
 }
 
 // Build the list item for one project.
@@ -71,8 +80,10 @@ function renderProject(project) {
   const title = project.title || "this project";
   const links = el("p", "project__links");
   if (project.link) {
-    const label = isGame(project) ? "Play it" : "Take a look";
-    const link = el("a", "project__link", label + " →");
+    // Games get a big "Play it" button; everything else a plain link.
+    const link = isGame(project)
+      ? el("a", "project__link project__link--play", "Play it")
+      : el("a", "project__link", "Take a look →");
     link.href = project.link;
     // The arrow is decoration; give screen readers a clear name.
     link.setAttribute("aria-label", (isGame(project) ? "Play " : "Take a look at ") + title);
@@ -131,9 +142,20 @@ function setUpFeatured(listEl, projects) {
   fillList(listEl, featured, "No featured projects yet.");
 }
 
-// Games page: every game, furthest-along first.
-function setUpGames(listEl, projects) {
-  fillList(listEl, sortByProgress(projects.filter(isGame)), "No games yet.");
+// Section pages (Games, Trading, AI): every project in one category,
+// furthest-along first. The category comes from data-category in the HTML.
+function setUpCategory(listEl, projects) {
+  const category = listEl.dataset.category;
+  const inThis = projects.filter((p) => inCategory(p, category));
+  fillList(listEl, sortByProgress(inThis), "Nothing here yet. Check back soon.");
+}
+
+// Home page tiles: "4 projects" under each section name.
+function fillCategoryCounts(projects) {
+  document.querySelectorAll("[data-category-count]").forEach((node) => {
+    const n = projects.filter((p) => inCategory(p, node.dataset.categoryCount)).length;
+    node.textContent = n === 1 ? "1 project" : n + " projects";
+  });
 }
 
 // Projects page: all projects plus filter buttons.
@@ -214,9 +236,10 @@ async function init() {
     return;
   }
 
+  fillCategoryCounts(projects);
   lists.forEach((listEl) => {
     if (listEl.dataset.projects === "featured") setUpFeatured(listEl, projects);
-    else if (listEl.dataset.projects === "games") setUpGames(listEl, projects);
+    else if (listEl.dataset.projects === "category") setUpCategory(listEl, projects);
     else setUpAll(listEl, projects);
   });
 }
