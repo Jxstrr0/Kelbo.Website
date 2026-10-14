@@ -1,0 +1,519 @@
+/* ==========================================================================
+   Colby Joyes — shared styles
+   --------------------------------------------------------------------------
+   The look is "field lines": a calm chalk-white page, with the boldness
+   spent in two places only:
+     1. the big green hero with your name (home page)
+     2. the little football-field bar that shows each project's status
+   All colours live in the variables just below, so you can retheme the
+   whole site by changing a few lines.
+   ========================================================================== */
+
+/* ---------- Colours and fonts (light mode) ---------- */
+:root {
+  --bg: #f3f5f1;          /* chalk: page background */
+  --surface: #e7ece5;     /* slightly darker chalk: filter buttons etc. */
+  --ink: #15221b;         /* main text */
+  --muted: #4b5b52;       /* secondary text */
+  --rule: #c9d3cb;        /* thin divider lines */
+
+  --field: #1f4d3a;       /* field green: hero, status bar */
+  --field-line: rgba(255, 255, 255, 0.55); /* chalk yard lines on green */
+  --hero-line: rgba(255, 255, 255, 0.16);  /* fainter lines behind hero text */
+  --on-field: #f3f5f1;    /* text sitting on green */
+  --on-field-accent: #ff7a33; /* orange text on green (brighter for contrast) */
+
+  --pylon: #e8590c;       /* orange accent for shapes (ball, end zone) */
+  --pylon-text: #a63f08;  /* darker orange, readable as small text */
+  --focus: #e8590c;       /* keyboard focus outline */
+
+  --font-display: "Big Shoulders", "Arial Narrow", "Roboto Condensed", Impact, sans-serif;
+  --font-body: "Barlow", "Helvetica Neue", Arial, system-ui, sans-serif;
+
+  --wrap: 68rem;          /* max content width */
+  --gutter: 1.25rem;      /* side padding on phones */
+
+  color-scheme: light dark;
+}
+
+/* ---------- Dark mode (follows the phone/computer setting) ---------- */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0e1913;
+    --surface: #17261e;
+    --ink: #e6ece7;
+    --muted: #a3b3a9;
+    --rule: #2a3b32;
+
+    --field: #1a4532;
+    --field-line: rgba(255, 255, 255, 0.4);
+    --hero-line: rgba(255, 255, 255, 0.12);
+    --on-field: #f3f5f1;
+
+    --pylon: #ff7a33;
+    --pylon-text: #ff9a63;
+    --focus: #ff9a63;
+  }
+}
+
+/* ---------- Base ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;   /* 17px: comfy on phones */
+  line-height: 1.6;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  margin: 0 0 0.75rem;
+}
+
+h2 {
+  font-size: clamp(2rem, 7vw, 2.75rem);
+}
+
+p {
+  margin: 0 0 1rem;
+}
+
+a {
+  color: inherit;
+  text-decoration-color: var(--pylon);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+a:hover {
+  color: var(--pylon-text);
+}
+
+/* Visible outline for keyboard users only */
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Centres content and adds side padding */
+.wrap {
+  width: 100%;
+  max-width: var(--wrap);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* Hidden on screen but still read by screen readers */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* "Skip to content" link: hidden until it gets keyboard focus */
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  z-index: 10;
+  padding: 0.5rem 1rem;
+  background: var(--ink);
+  color: var(--bg);
+}
+
+.skip-link:focus {
+  top: 1rem;
+}
+
+/* ---------- Header ---------- */
+.site-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-block: 0.875rem;
+}
+
+.wordmark {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1.75rem;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.nav {
+  display: flex;
+  gap: 1.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-weight: 600;
+}
+
+.nav a {
+  text-decoration: none;
+  padding-block: 0.5rem; /* bigger tap target */
+}
+
+.nav a[aria-current="page"] {
+  text-decoration: underline;
+  text-decoration-color: var(--pylon);
+  text-decoration-thickness: 3px;
+  text-underline-offset: 6px;
+}
+
+/* ---------- Hero (home page) ---------- */
+/* The green band is drawn with CSS only: vertical chalk "yard lines"
+   every 10%, plus short hash marks along the bottom edge. */
+.hero {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--field);
+  background-image:
+    repeating-linear-gradient(
+      to right,
+      transparent 0 calc(10% - 2px),
+      var(--hero-line) calc(10% - 2px) 10%
+    );
+  color: var(--on-field);
+  padding-block: clamp(2.5rem, 10vw, 5.5rem) clamp(2.75rem, 9vw, 4.5rem);
+}
+
+.hero::after {
+  /* Hash marks: small ticks every 2% along the bottom */
+  content: "";
+  position: absolute;
+  inset: auto 0 0.75rem 0;
+  height: 0.6rem;
+  background-image: repeating-linear-gradient(
+    to right,
+    transparent 0 calc(2% - 2px),
+    var(--hero-line) calc(2% - 2px) 2%
+  );
+  pointer-events: none;
+}
+
+.hero__name {
+  margin: 0;
+  font-size: clamp(4.5rem, 26vw, 12rem);
+  line-height: 0.82;
+  text-transform: uppercase;
+  letter-spacing: -0.005em;
+}
+
+.hero__name span {
+  display: block;
+}
+
+/* Second line ("Joyes") gets the orange end-zone treatment */
+.hero__name span:last-child {
+  color: var(--on-field-accent);
+}
+
+.hero__line {
+  max-width: 34rem;
+  margin: 1.5rem 0 0;
+  font-size: clamp(1.125rem, 4.2vw, 1.375rem);
+  line-height: 1.45;
+}
+
+/* ---------- Page heading (projects page) ---------- */
+.page-head {
+  border-bottom: 1px solid var(--rule);
+  padding-block: 2rem 1.5rem;
+}
+
+.page-head h1 {
+  font-size: clamp(3.5rem, 16vw, 6rem);
+  margin-bottom: 0.5rem;
+}
+
+.page-head__line {
+  max-width: 36rem;
+  color: var(--muted);
+  margin: 0;
+}
+
+/* ---------- Sections ---------- */
+.section {
+  padding-block: 2.75rem 0.5rem;
+}
+
+.section__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+}
+
+.prose {
+  max-width: 38rem;
+}
+
+.more-link {
+  font-weight: 600;
+}
+
+/* ---------- Project list ---------- */
+/* Projects are rows separated by thin lines, like yard lines,
+   rather than boxed cards. */
+.project-list {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  border-top: 2px solid var(--ink);
+}
+
+.project {
+  display: grid;
+  gap: 0.6rem;
+  padding-block: 1.5rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.project__top {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.project__title {
+  font-size: clamp(1.75rem, 6.5vw, 2.25rem);
+  margin: 0;
+}
+
+.project__meta {
+  display: flex;
+  gap: 0.75rem;
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--muted);
+}
+
+.project__status {
+  font-weight: 600;
+  color: var(--pylon-text);
+}
+
+.project__summary {
+  max-width: 40rem;
+  margin: 0;
+}
+
+.project__link {
+  font-weight: 600;
+  justify-self: start;
+}
+
+.project-list__note {
+  padding-block: 1.5rem;
+  color: var(--muted);
+}
+
+/* On wider screens, put the field bar beside the text */
+@media (min-width: 48rem) {
+  .project {
+    grid-template-columns: minmax(0, 1fr) 16rem;
+    column-gap: 2.5rem;
+    align-items: center;
+  }
+
+  .project > :not(.field) {
+    grid-column: 1;
+  }
+
+  .project .field {
+    grid-column: 2;
+    grid-row: 1 / span 3;
+  }
+}
+
+/* ---------- Status "field" bar ---------- */
+/* A tiny football field. The ball moves toward the end zone (right side)
+   as a project goes from Planned to Shipped. main.js sets --progress. */
+.field {
+  --progress: 0;
+  position: relative;
+  height: 2.25rem;
+  max-width: 22rem;
+  border-radius: 3px;
+  background-color: var(--field);
+  /* Yard lines every 10% */
+  background-image: repeating-linear-gradient(
+    to right,
+    transparent 0 calc(10% - 1px),
+    var(--field-line) calc(10% - 1px) 10%
+  );
+  overflow: hidden;
+}
+
+/* End zone: the last 10%, striped orange */
+.field::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 10%;
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--pylon) 0 4px,
+    transparent 4px 8px
+  );
+  opacity: 0.85;
+}
+
+/* The chalk line showing how far the project has "driven" */
+.field__drive {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  height: 3px;
+  width: calc(var(--progress) * 1%);
+  background: var(--on-field);
+  transform: translateY(-50%);
+  transition: width 700ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* The ball */
+.field__ball {
+  position: absolute;
+  top: 50%;
+  left: calc(var(--progress) * 1%);
+  z-index: 1;
+  width: 1.375rem;
+  height: 0.875rem;
+  border-radius: 50%;
+  background: var(--pylon);
+  box-shadow: 0 0 0 2px var(--field);
+  transform: translate(-50%, -50%) rotate(-12deg);
+  transition: left 700ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* White laces on the ball */
+.field__ball::before {
+  content: "";
+  position: absolute;
+  left: 30%;
+  right: 30%;
+  top: 50%;
+  height: 2px;
+  background: #fff;
+  transform: translateY(-50%);
+}
+
+/* Before main.js "kicks off", the ball sits at the start line */
+.field.is-waiting .field__ball {
+  left: 0;
+}
+
+.field.is-waiting .field__drive {
+  width: 0;
+}
+
+/* ---------- Filter buttons (projects page) ---------- */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.filters button {
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  min-height: 2.75rem;    /* 44px tap target */
+  padding: 0.4rem 0.9rem;
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.filters button:hover {
+  border-color: var(--ink);
+}
+
+.filters button[aria-pressed="true"] {
+  background: var(--field);
+  border-color: var(--field);
+  color: var(--on-field);
+}
+
+.filters__count {
+  margin: 1rem 0 0;
+  font-size: 0.9375rem;
+  color: var(--muted);
+}
+
+/* ---------- Contact ---------- */
+.contact-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.contact-list a {
+  display: inline-block;
+  padding-block: 0.25rem;
+}
+
+.contact-list__handle {
+  font-weight: 400;
+  color: var(--muted);
+}
+
+/* ---------- Footer ---------- */
+.site-footer {
+  margin-top: 4rem;
+  border-top: 1px solid var(--rule);
+  padding-block: 1.5rem 2rem;
+  font-size: 0.9375rem;
+  color: var(--muted);
+}
+
+.site-footer p {
+  margin: 0;
+}
+
+/* ---------- Respect "reduce motion" settings ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}

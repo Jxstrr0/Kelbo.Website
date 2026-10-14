@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Projects · Colby Joyes</title>
+  <meta name="description" content="Games, tools, and AI projects by Colby Joyes, from planned to shipped.">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,600;1,400&family=Big+Shoulders:wght@700;900&display=swap">
+
+  <link rel="stylesheet" href="style.css">
+  <script src="main.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="wrap site-header__inner">
+      <a class="wordmark" href="./" aria-label="Colby Joyes, home">CJ</a>
+      <nav aria-label="Main">
+        <ul class="nav">
+          <li><a href="./">Home</a></li>
+          <li><a href="projects.html" aria-current="page">Projects</a></li>
+          <li><a href="https://github.com/Jxstrr0">GitHub</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="page-head">
+      <div class="wrap">
+        <h1>Projects</h1>
+        <p class="page-head__line">
+          Everything I'm building, from ideas on the sideline to things that
+          made it to the end zone.
+        </p>
+      </div>
+    </section>
+
+    <section class="section wrap" aria-labelledby="all-heading">
+      <h2 id="all-heading" class="visually-hidden">All projects</h2>
+      <!-- main.js adds one filter button per status here -->
+      <div class="filters" data-filters role="group" aria-label="Filter by status"></div>
+      <!-- Screen readers announce this when the filter changes -->
+      <p class="filters__count" data-count aria-live="polite"></p>
+
+      <ul class="project-list" data-projects="all">
+        <li class="project-list__note">Loading projects&hellip;</li>
+      </ul>
+      <noscript>
+        <p>Turn on JavaScript to see the projects, or <a href="projects.json">view the raw project list</a>.</p>
+      </noscript>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>&copy; <span data-year>2026</span> Colby Joyes. Built by hand and hosted on GitHub Pages.</p>
+    </div>
+  </footer>
+</body>
+</html>
