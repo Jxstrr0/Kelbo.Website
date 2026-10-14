@@ -6,6 +6,7 @@
     "summary": "My game project, and the one furthest down the field. The main pieces are in place and I'm working on the finishing touches.",
     "link": "https://jxstrr0.github.io/GarageToGlory/",
     "code": "https://github.com/Jxstrr0/GarageToGlory",
+    "image": "assets/covers/garage-to-glory.jpg",
     "featured": true
   },
   {
@@ -15,7 +16,8 @@
     "summary": "An engine-building game. Put an engine together on the test stand, fire it up and hear it run, then take it to the drag strip or a truck and tractor pull to earn cash and reputation.",
     "link": "https://jxstrr0.github.io/350Chev/",
     "code": "https://github.com/Jxstrr0/350Chev",
-    "featured": false
+    "image": "assets/covers/prairie-engine-works.jpg",
+    "featured": true
   },
   {
     "title": "Red Skies",
@@ -24,7 +26,8 @@
     "summary": "A phone game where you run an air-defence battery. Watch the radar, sort friendly jets from enemies, and hold your fire until you're sure, because shooting down a friendly ends the shift.",
     "link": "https://jxstrr0.github.io/RedSkies/",
     "code": "https://github.com/Jxstrr0/RedSkies",
-    "featured": false
+    "image": "assets/covers/red-skies.jpg",
+    "featured": true
   },
   {
     "title": "Penthouse Baccarat",
@@ -33,7 +36,8 @@
     "summary": "A 3D baccarat table in a penthouse overlooking the Shanghai skyline. Place your chips and an android croupier deals the cards, explains each draw, and pays out the winners.",
     "link": "https://jxstrr0.github.io/BaccaratTable/",
     "code": "https://github.com/Jxstrr0/BaccaratTable",
-    "featured": false
+    "image": "assets/covers/penthouse-baccarat.jpg",
+    "featured": true
   },
   {
     "title": "Trading OS",
@@ -42,7 +46,8 @@
     "summary": "One place for my trading day: a pre-market briefing, a trade journal with an AI coach, and a backtester that explains results in plain English.",
     "link": "",
     "code": "",
-    "featured": true
+    "image": "",
+    "featured": false
   },
   {
     "title": "Agent Fleet",
@@ -51,7 +56,8 @@
     "summary": "A set of small, single-purpose bots I can run from my phone, like news digests, trackers, and weekly scans.",
     "link": "",
     "code": "",
-    "featured": true
+    "image": "",
+    "featured": false
   },
   {
     "title": "Prediction Tracker",
@@ -60,6 +66,7 @@
     "summary": "Log predictions with a confidence level, then see how well-calibrated those calls turn out to be over time.",
     "link": "tools/prediction-tracker/",
     "code": "",
+    "image": "",
     "featured": false
   }
 ]
