@@ -69,6 +69,10 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   entry and an honest "ai" coach note. Never invent trades or results, and
   prefer percentages over dollar amounts. `journal.js` borrows `el()` and
   `reveal()` from `main.js`, so load `main.js` first.
+- Write every "ai" coach note in a general voice, not to Colby: judge the
+  trade or idea ("winners averaged +21.5%", "holding overnight without a
+  planned exit was the mistake"), never "you" or "your". Same honesty, same
+  specifics.
 - Options trades live in `options.json` (fields at the top of `journal.js`),
   copied from Colby's own options ledger. The page works out each return
   from `paid`/`sold` premiums and feeds the record's options group. Leave
