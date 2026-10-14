@@ -22,10 +22,10 @@
       <a class="wordmark" href="./" aria-label="Colby Joyes, home">CJ</a>
       <nav aria-label="Main">
         <ul class="nav">
-          <li><a href="./">Home</a></li>
-          <li><a href="projects.html">Projects</a></li>
           <li><a href="games.html" aria-current="page">Games</a></li>
-          <li><a href="https://github.com/Jxstrr0">GitHub</a></li>
+          <li><a href="trading.html">Trading</a></li>
+          <li><a href="ai.html">AI</a></li>
+          <li><a href="projects.html">Projects</a></li>
         </ul>
       </nav>
     </div>
@@ -45,8 +45,8 @@
     <section class="section wrap" aria-labelledby="games-heading">
       <h2 id="games-heading" class="visually-hidden">All games</h2>
       <!-- main.js fills this with every project in projects.json whose
-           "category" is "Game". To add a game, add it there. -->
-      <ul class="project-list" data-projects="games">
+           "category" matches data-category below. To add one, add it there. -->
+      <ul class="project-list" data-projects="category" data-category="Game">
         <li class="project-list__note">Loading games&hellip;</li>
       </ul>
       <noscript>
@@ -57,7 +57,8 @@
 
   <footer class="site-footer">
     <div class="wrap">
-      <p>&copy; <span data-year>2026</span> Colby Joyes. Built by hand and hosted on GitHub Pages.</p>
+      <p>&copy; <span data-year>2026</span> Colby Joyes. Built by hand and hosted on GitHub Pages.
+        <a href="https://github.com/Jxstrr0">My GitHub</a></p>
     </div>
   </footer>
 </body>

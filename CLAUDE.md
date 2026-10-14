@@ -34,9 +34,13 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
 - Tools live in `tools/<name>/` with their own `index.html`, CSS, and JS,
   reusing `../../style.css`. They run in the browser only (localStorage,
   no server), so their data stays on the visitor's device.
+- Sections: `games.html`, `trading.html`, and `ai.html` each list the
+  projects whose `category` matches the list's `data-category` (Game,
+  Trading, AI). The home page tiles link to them and show counts.
 - Games each live in their own repo with their own GitHub Pages site
   (GarageToGlory, RedSkies, BaccaratTable, 350Chev). This site only links to
-  them: `games.html` lists every project with `"category": "Game"`, using
-  `link` (Play it) and `code` (the repo).
+  them via `link` (the orange Play it button) and `code` (the repo).
+- The nav (Games, Trading, AI, Projects; the CJ wordmark is home) is copied
+  in every page and only just fits at 360px. Test before adding to it.
 - `README.md` is Colby's plain-English editing guide. Keep it up to date
   when how things work changes.

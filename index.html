@@ -23,10 +23,10 @@
       <a class="wordmark" href="./" aria-label="Colby Joyes, home">CJ</a>
       <nav aria-label="Main">
         <ul class="nav">
-          <li><a href="./" aria-current="page">Home</a></li>
-          <li><a href="projects.html">Projects</a></li>
           <li><a href="games.html">Games</a></li>
-          <li><a href="https://github.com/Jxstrr0">GitHub</a></li>
+          <li><a href="trading.html">Trading</a></li>
+          <li><a href="ai.html">AI</a></li>
+          <li><a href="projects.html">Projects</a></li>
         </ul>
       </nav>
     </div>
@@ -47,7 +47,36 @@
       </div>
     </section>
 
-    <!-- 2. About -->
+    <!-- 2. Sections: one tile per part of the site. main.js fills in
+         the counts from projects.json (by "category"). -->
+    <section class="section wrap" aria-labelledby="sections-heading">
+      <h2 id="sections-heading">What I'm building</h2>
+      <ul class="tiles">
+        <li>
+          <a class="tile" href="games.html">
+            <span class="tile__name">Games</span>
+            <span class="tile__line">Browser games you can play on your phone.</span>
+            <span class="tile__count" data-category-count="Game"></span>
+          </a>
+        </li>
+        <li>
+          <a class="tile" href="trading.html">
+            <span class="tile__name">Trading</span>
+            <span class="tile__line">Tools for my trading day.</span>
+            <span class="tile__count" data-category-count="Trading"></span>
+          </a>
+        </li>
+        <li>
+          <a class="tile" href="ai.html">
+            <span class="tile__name">AI</span>
+            <span class="tile__line">AI projects and small bots.</span>
+            <span class="tile__count" data-category-count="AI"></span>
+          </a>
+        </li>
+      </ul>
+    </section>
+
+    <!-- 3. About -->
     <section class="section wrap" aria-labelledby="about-heading">
       <h2 id="about-heading">About</h2>
       <div class="prose">
@@ -67,7 +96,7 @@
       </div>
     </section>
 
-    <!-- 3. Featured projects. main.js fills this list from projects.json
+    <!-- 4. Featured projects. main.js fills this list from projects.json
          (any project with "featured": true, up to three). -->
     <section class="section wrap" aria-labelledby="featured-heading">
       <div class="section__head">
@@ -82,7 +111,7 @@
       </noscript>
     </section>
 
-    <!-- 4. Contact -->
+    <!-- 5. Contact -->
     <section class="section wrap" aria-labelledby="contact-heading">
       <h2 id="contact-heading">Get in touch</h2>
       <p>The best place to find me right now is GitHub.</p>
@@ -100,7 +129,8 @@
 
   <footer class="site-footer">
     <div class="wrap">
-      <p>&copy; <span data-year>2026</span> Colby Joyes. Built by hand and hosted on GitHub Pages.</p>
+      <p>&copy; <span data-year>2026</span> Colby Joyes. Built by hand and hosted on GitHub Pages.
+        <a href="https://github.com/Jxstrr0">My GitHub</a></p>
     </div>
   </footer>
 </body>

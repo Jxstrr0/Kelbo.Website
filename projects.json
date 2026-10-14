@@ -38,7 +38,7 @@
   {
     "title": "Trading OS",
     "status": "Planned",
-    "category": "Tool",
+    "category": "Trading",
     "summary": "One place for my trading day: a pre-market briefing, a trade journal with an AI coach, and a backtester that explains results in plain English.",
     "link": "",
     "code": "",
@@ -56,7 +56,7 @@
   {
     "title": "Prediction Tracker",
     "status": "Shipped",
-    "category": "Tool",
+    "category": "Trading",
     "summary": "Log predictions with a confidence level, then see how well-calibrated those calls turn out to be over time.",
     "link": "tools/prediction-tracker/",
     "code": "",
