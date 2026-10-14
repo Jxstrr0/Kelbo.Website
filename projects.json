@@ -1,0 +1,34 @@
+[
+  {
+    "title": "Garage to Glory",
+    "status": "Mostly done",
+    "category": "Game",
+    "summary": "My game project, and the one furthest down the field. The main pieces are in place and I'm working on the finishing touches.",
+    "link": "",
+    "featured": true
+  },
+  {
+    "title": "Trading OS",
+    "status": "Planned",
+    "category": "Tool",
+    "summary": "One place for my trading day: a pre-market briefing, a trade journal with an AI coach, and a backtester that explains results in plain English.",
+    "link": "",
+    "featured": true
+  },
+  {
+    "title": "Agent Fleet",
+    "status": "Planned",
+    "category": "AI",
+    "summary": "A set of small, single-purpose bots I can run from my phone, like news digests, trackers, and weekly scans.",
+    "link": "",
+    "featured": true
+  },
+  {
+    "title": "Prediction Tracker",
+    "status": "Planned",
+    "category": "Tool",
+    "summary": "Log predictions with a confidence level, then see how well-calibrated those calls turn out to be over time.",
+    "link": "",
+    "featured": false
+  }
+]
