@@ -14,6 +14,9 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   plain language and keep code readable, with comments on anything
   non-obvious. He may edit files in the GitHub web or mobile editor.
 - Only publish personal details Kelbo has approved. The site is public.
+- **The site uses the name Kelbo only.** Never put his real first or last
+  name (or his initials) anywhere on the site, in page text, titles, `og:`
+  tags, alt text, comments, or the link preview image.
 
 ## Hard rules
 
@@ -59,7 +62,7 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   (GarageToGlory, RedSkies, BaccaratTable, 350Chev). This site only links to
   them via `link` (the pink Play it button) and `code` (the repo). The home
   page "Pick a game" cards are the `featured` projects (max 4).
-- The nav (Games, Trading, AI, Projects; the K wordmark is home) is copied
+- The nav (Games, Trading, AI, Projects; the KELBO wordmark is home) is copied
   in every page and only just fits at 360px. Test before adding to it.
 - The AI Trading Journal is `journal.html` + `journal.js` + `journal.css`,
   with entries in `journal.json` (a list, newest first by `date`). The

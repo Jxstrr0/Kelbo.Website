@@ -325,6 +325,6 @@ It runs entirely in the visitor's browser:
   folder with its own `index.html`, then set that project's `link` to the
   folder, like `tools/my-tool/`. Pages in there link back with `../../`.
 - **Custom domain:** add a file named `CNAME` containing just the domain (for
-  example `Kelbo.com`), then point the domain at GitHub Pages in your
+  example `kelbo.ca`), then point the domain at GitHub Pages in your
   domain provider's settings. All links on the site are relative, so they'll
   keep working.
