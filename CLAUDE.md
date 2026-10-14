@@ -7,6 +7,9 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
 
 - **Auto-merge is allowed.** Once a change is pushed, the PR is open, and
   nothing is failing, merge it yourself without asking first.
+- **Every change must end up on `main`**, because that's what goes live.
+  Work on a branch, open a PR, merge it into `main`, then check the live
+  site updated.
 - Colby is a beginner+ coder and mostly on his phone. Explain changes in
   plain language and keep code readable, with comments on anything
   non-obvious. He may edit files in the GitHub web or mobile editor.
@@ -41,7 +44,7 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   (640×480 JPG, captured from each live game).
 - Motion lives at the bottom of `style.css`, all inside
   `prefers-reduced-motion: no-preference`; `main.js` handles scroll reveal
-  and skips it when reduce motion is on. Content must never depend on JS or
+  and smooth filtering (FLIP) and skips both when reduce motion is on. Content must never depend on JS or
   motion to become visible.
 - Tools live in `tools/<name>/` with their own `index.html`, CSS, and JS,
   reusing `../../style.css`. They run in the browser only (localStorage,

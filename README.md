@@ -152,7 +152,9 @@ pixel-style labels), loaded from Google Fonts in each page's `<head>`.
 
 The animations are at the bottom of `style.css` under "Motion": pages fade
 into each other, the hero's grid floor rolls and its glow drifts, cards slide
-up as you scroll, and buttons lift when you tap them. Anyone whose phone is
+up as you scroll, and buttons lift when you tap them. Progress bars fill once
+their card lands, then flash. The "Play it" buttons glow on and off. On the
+Projects page, cards glide into place when you tap a filter. Anyone whose phone is
 set to **Reduce Motion** (iPhone: Settings → Accessibility → Motion) sees
 the same site with nothing moving. Turn that setting on to check it.
 
