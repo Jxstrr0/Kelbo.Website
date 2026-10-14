@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agent Fleet · Colby Joyes</title>
+  <meta name="description" content="Agent Fleet: a planned set of small, single-purpose bots Colby Joyes can run from his phone, like news digests, trackers, and weekly scans.">
+  <!-- Link preview: the card that shows up when this page is shared in a
+       text, Discord, X, etc. These links have to be full web addresses
+       (not relative), because the apps that read them aren't on this site.
+       The picture is assets/social-preview.jpg (1200x630). -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Colby Joyes">
+  <meta property="og:title" content="Agent Fleet · Colby Joyes">
+  <meta property="og:description" content="A planned set of small, single-purpose bots I can run from my phone, like news digests, trackers, and weekly scans.">
+  <meta property="og:url" content="https://jxstrr0.github.io/Kelbo.Website/agent-fleet.html">
+  <meta property="og:image" content="https://jxstrr0.github.io/Kelbo.Website/assets/social-preview.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Colby Joyes in neon letters beside screenshots of four of his games.">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@400;500;700&display=swap">
+
+  <link rel="stylesheet" href="style.css">
+  <script src="main.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="wrap site-header__inner">
+      <a class="wordmark" href="./" aria-label="Colby Joyes, home">CJ</a>
+      <nav aria-label="Main">
+        <ul class="nav">
+          <li><a href="games.html">Games</a></li>
+          <li><a href="trading.html">Trading</a></li>
+          <li><a href="ai.html">AI</a></li>
+          <li><a href="projects.html">Projects</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- This whole page is plain text: edit the words between the tags.
+         Agent Fleet is still "Planned" in projects.json; change it there
+         as it moves along. -->
+    <section class="page-head">
+      <div class="wrap">
+        <h1>Agent Fleet</h1>
+        <p class="page-head__line">
+          A set of small, single-purpose bots I can run from my phone, like
+          news digests, trackers, and weekly scans. It's still in the planning
+          stage, so this page is the plan.
+        </p>
+      </div>
+    </section>
+
+    <!-- 1. The idea -->
+    <section class="section wrap" aria-labelledby="idea-heading">
+      <h2 id="idea-heading">The idea</h2>
+      <div class="prose">
+        <p>
+          Instead of one big AI app that tries to do everything, Agent Fleet is
+          a handful of small bots that each do one job. Each one runs on a
+          schedule or when I tap a button, then sends back a short report I can
+          read on my phone.
+        </p>
+      </div>
+    </section>
+
+    <!-- 2. Why -->
+    <section class="section wrap" aria-labelledby="why-heading" data-reveal>
+      <h2 id="why-heading">Why build it</h2>
+      <ul class="prose">
+        <li>Most of my day is on my phone, so the bots need to work from there.</li>
+        <li>A lot of what I check every day is the same routine: the news,
+          the stocks I'm watching, my own trading record. That's the kind of
+          work worth handing off.</li>
+        <li>Small bots are easier to build, test, and fix one at a time. If
+          one breaks, the rest keep running.</li>
+      </ul>
+    </section>
+
+    <!-- 3. The first bots. To add one, copy a <li class="project"> block. -->
+    <section class="section wrap" aria-labelledby="bots-heading" data-reveal>
+      <h2 id="bots-heading">First bots on the list</h2>
+      <p class="prose">Ideas for now. None of these are built yet.</p>
+      <ul class="project-list">
+        <li class="project">
+          <div class="project__body">
+            <h3 class="project__title">News digest</h3>
+            <p class="project__meta"><span class="project__status">Idea</span></p>
+            <p class="project__summary">A short summary before the open of the
+              news that matters for the stocks I'm watching, so I'm not
+              scrolling five apps to find it.</p>
+          </div>
+        </li>
+        <li class="project">
+          <div class="project__body">
+            <h3 class="project__title">Trade tracker</h3>
+            <p class="project__meta"><span class="project__status">Idea</span></p>
+            <p class="project__summary">Reads my trading journal and options
+              record and points out patterns, like a run of losses or trades
+              taken on wide spreads.</p>
+          </div>
+        </li>
+        <li class="project">
+          <div class="project__body">
+            <h3 class="project__title">Weekly scan</h3>
+            <p class="project__meta"><span class="project__status">Idea</span></p>
+            <p class="project__summary">Every weekend, a look at which stocks
+              moved most and what's coming up next week, like earnings and big
+              economic reports.</p>
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    <!-- 4. How it'll work -->
+    <section class="section wrap" aria-labelledby="how-heading" data-reveal>
+      <h2 id="how-heading">How it'll work</h2>
+      <div class="prose">
+        <p>
+          The bots will need AI and market data services, and those need
+          private keys. This site is public, so the keys can't live here. The
+          bots will run somewhere separate that keeps the keys safe, and this
+          page will show what's live once they're running.
+        </p>
+        <p><a class="more-link" href="ai.html">&larr; Back to AI</a></p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>&copy; <span data-year>2026</span> Colby Joyes. Built by hand and hosted on GitHub Pages.
+        <a href="https://github.com/Jxstrr0">My GitHub</a></p>
+    </div>
+  </footer>
+</body>
+</html>
