@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Colby Joyes</title>
+  <meta name="description" content="Colby Joyes builds games, tools, and AI projects from Saskatoon, Saskatchewan.">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+
+  <!-- Fonts: Big Shoulders for headings, Barlow for body text -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,600;1,400&family=Big+Shoulders:wght@700;900&display=swap">
+
+  <link rel="stylesheet" href="style.css">
+  <script src="main.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="wrap site-header__inner">
+      <a class="wordmark" href="./" aria-label="Colby Joyes, home">CJ</a>
+      <nav aria-label="Main">
+        <ul class="nav">
+          <li><a href="./" aria-current="page">Home</a></li>
+          <li><a href="projects.html">Projects</a></li>
+          <li><a href="https://github.com/Jxstrr0">GitHub</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- 1. Hero: the one bold spot on the page -->
+    <section class="hero" aria-labelledby="hero-name">
+      <div class="wrap">
+        <h1 id="hero-name" class="hero__name">
+          <span>Colby</span>
+          <span>Joyes</span>
+        </h1>
+        <p class="hero__line">
+          Former Team Canada football captain. Part-time day trader.
+          Now I build games, tools, and AI projects.
+        </p>
+      </div>
+    </section>
+
+    <!-- 2. About -->
+    <section class="section wrap" aria-labelledby="about-heading">
+      <h2 id="about-heading">About</h2>
+      <div class="prose">
+        <p>
+          I'm Colby, and I'm based in Saskatoon, Saskatchewan. I played
+          university and national-level football, and I was one of four
+          captains of Team Canada. These days I day trade part-time and spend
+          the rest of my time building things: games, small tools, and AI
+          projects. This site is where I keep track of what I'm working on.
+        </p>
+      </div>
+    </section>
+
+    <!-- 3. Featured projects. main.js fills this list from projects.json
+         (any project with "featured": true, up to three). -->
+    <section class="section wrap" aria-labelledby="featured-heading">
+      <div class="section__head">
+        <h2 id="featured-heading">Featured projects</h2>
+        <a class="more-link" href="projects.html">See all projects <span aria-hidden="true">&rarr;</span></a>
+      </div>
+      <ul class="project-list" data-projects="featured">
+        <li class="project-list__note">Loading projects&hellip;</li>
+      </ul>
+      <noscript>
+        <p>Turn on JavaScript to see the projects, or <a href="projects.json">view the raw project list</a>.</p>
+      </noscript>
+    </section>
+
+    <!-- 4. Contact -->
+    <section class="section wrap" aria-labelledby="contact-heading">
+      <h2 id="contact-heading">Get in touch</h2>
+      <p>The best place to find me right now is GitHub.</p>
+      <ul class="contact-list">
+        <li><a href="https://github.com/Jxstrr0">GitHub <span class="contact-list__handle">@Jxstrr0</span></a></li>
+        <!-- Placeholders. To show one, fill in your details and move the
+             whole line up above this comment (next to the GitHub line).
+        <li><a href="mailto:you@example.com">Email <span class="contact-list__handle">you@example.com</span></a></li>
+        <li><a href="https://www.linkedin.com/in/your-name">LinkedIn</a></li>
+        <li><a href="https://x.com/your-handle">X <span class="contact-list__handle">@your-handle</span></a></li>
+        -->
+      </ul>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>&copy; <span data-year>2026</span> Colby Joyes. Built by hand and hosted on GitHub Pages.</p>
+    </div>
+  </footer>
+</body>
+</html>

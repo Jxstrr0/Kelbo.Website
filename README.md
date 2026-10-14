@@ -1,2 +1,130 @@
 # Kelbo.Website
-My personal page 
+
+My personal site: who I am, plus a list of what I'm building.
+
+It's plain HTML, CSS, and JavaScript. There's no build step and nothing to
+install. GitHub Pages serves these files exactly as they are, so any change
+you save on the `main` branch goes live within a minute or two.
+
+**Live at:** https://jxstrr0.github.io/Kelbo.Website/
+
+## What each file does
+
+| File | What it's for |
+|---|---|
+| `index.html` | Home page: name, about, featured projects, contact links |
+| `projects.html` | The full projects page with status filters |
+| `projects.json` | **The list of projects.** Edit this to add or change one |
+| `style.css` | Colours, fonts, and layout for every page |
+| `main.js` | Reads `projects.json` and puts the projects on the page |
+| `assets/` | Images and the little football icon in the browser tab |
+| `.nojekyll` | Tells GitHub Pages to serve the files as-is. Leave it alone |
+
+## Editing on your phone
+
+1. Open the repo in the GitHub app or at github.com.
+2. Tap the file you want to change, then the pencil icon (✏️).
+3. Make your change and tap **Commit changes**.
+4. Wait a minute or two, then refresh the site.
+
+## Change the text
+
+All the words on the home page are in `index.html`. Look for these
+comments to find each part:
+
+- `<!-- 1. Hero -->`: your name and the one-line description under it
+- `<!-- 2. About -->`: the about paragraph
+- `<!-- 4. Contact -->`: your links
+
+Only change the words between the tags, like this:
+
+```html
+<p>Change only this sentence.</p>
+```
+
+The intro text on the projects page is near the top of `projects.html`.
+
+The about text and project summaries are first drafts. Rewrite them in your
+own words whenever you like.
+
+## Add a project
+
+Open `projects.json` and copy one of the blocks between `{` and `}`.
+Paste it after the last one and change the values:
+
+```json
+  {
+    "title": "My new thing",
+    "status": "Building",
+    "category": "Tool",
+    "summary": "One or two sentences on what it is.",
+    "link": "",
+    "featured": false
+  }
+```
+
+- **status**: use one of `Shipped`, `Mostly done`, `Building`, or `Planned`.
+  This sets where the ball sits on the little football field.
+- **category**: anything you like, for example `Game`, `Tool`, or `AI`.
+- **link**: a web address, or leave it as `""` for no link. A link can
+  also point to a page in this repo later, like `tools/prediction-tracker/`.
+- **featured**: `true` shows it on the home page (the first three only).
+
+**Watch the commas.** Every block needs a comma after its closing `}`,
+except the very last one. If the projects disappear and the page says
+"Projects couldn't load right now", it's almost always a missing or extra
+comma or quote. Pasting the file into https://jsonlint.com will point to the
+exact spot.
+
+## Add or swap images
+
+1. In the GitHub app or website, open the `assets` folder and choose
+   **Add file → Upload files**.
+2. Use short lowercase names with no spaces, like `headshot.jpg`.
+3. Show it in a page with:
+
+   ```html
+   <img src="assets/headshot.jpg" alt="Colby smiling at the camera" width="400" height="400">
+   ```
+
+   Always write `alt` text describing the picture for people who can't see it.
+   Keep photos under about 500 KB so the site stays fast on phones.
+
+To change the browser-tab icon, replace `assets/favicon.svg` (or upload a
+`favicon.png` and change `favicon.svg` to `favicon.png` in both HTML files).
+
+## Change colours or fonts
+
+Open `style.css`. The colours are near the top: light mode first, then dark
+mode under `@media (prefers-color-scheme: dark)`. Change a value like
+`#1f4d3a` and every place that uses it updates.
+
+## Previewing on a computer
+
+Opening `index.html` straight from your files won't load the projects,
+because browsers block reading `projects.json` that way. Either look at the
+live site after committing, or in this folder run:
+
+```
+python3 -m http.server
+```
+
+and open http://localhost:8000.
+
+## Rules for this repo
+
+- **No secrets, ever.** This repo is public. Never put API keys, passwords, or
+  tokens in any file, even "just for a minute". Anyone can read them, and git
+  history keeps them after you delete them. Future AI tools that need a key
+  will need a different setup, so plan that first.
+- **Keep it static.** No servers or anything that has to keep running.
+
+## Later
+
+- **Pages for single projects or tools:** make a folder like
+  `tools/prediction-tracker/` with its own `index.html`, then set that
+  project's `link` to `tools/prediction-tracker/`.
+- **Custom domain:** add a file named `CNAME` containing just the domain (for
+  example `colbyjoyes.com`), then point the domain at GitHub Pages in your
+  domain provider's settings. All links on the site are relative, so they'll
+  keep working.
