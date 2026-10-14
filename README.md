@@ -14,6 +14,7 @@ you save on the `main` branch goes live within a minute or two.
 |---|---|
 | `index.html` | Home page: name, about, featured projects, contact links |
 | `projects.html` | The full projects page with status filters |
+| `games.html` | The games page: every project with `"category": "Game"` |
 | `projects.json` | **The list of projects.** Edit this to add or change one |
 | `style.css` | Colours, fonts, and layout for every page |
 | `main.js` | Reads `projects.json` and puts the projects on the page |
@@ -60,6 +61,7 @@ Paste it after the last one and change the values:
     "category": "Tool",
     "summary": "One or two sentences on what it is.",
     "link": "",
+    "code": "",
     "featured": false
   }
 ```
@@ -69,7 +71,13 @@ Paste it after the last one and change the values:
 - **category**: anything you like, for example `Game`, `Tool`, or `AI`.
 - **link**: a web address, or leave it as `""` for no link. A link can
   also point to a page in this repo later, like `tools/prediction-tracker/`.
+- **code**: the GitHub repo address, or `""`. Shows a "See the code" link.
 - **featured**: `true` shows it on the home page (the first three only).
+
+**Adding a game:** use `"category": "Game"` and it shows up on the Games
+page automatically, with its link labelled "Play it". Each game lives in its
+own repo with GitHub Pages turned on, so `link` is that game's Pages address
+(like `https://jxstrr0.github.io/RedSkies/`) and `code` is the repo address.
 
 **Watch the commas.** Every block needs a comma after its closing `}`,
 except the very last one. If the projects disappear and the page says
