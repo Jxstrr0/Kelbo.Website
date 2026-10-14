@@ -29,8 +29,16 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
 
 - `projects.json` is the single source of truth for projects. `main.js`
   renders it. Adding a project should never need an HTML edit.
-- The status labels and ball positions are in `STATUSES` at the top of
-  `main.js`.
+- The status labels and progress-bar fill amounts are in `STATUSES` at the
+  top of `main.js`.
+- The look is "neon arcade" (dark synthwave hero, pink/cyan glow, project
+  cards with cover images). Fonts: Space Grotesk + Press Start 2P (pixel
+  accents only, always uppercase). Game covers live in `assets/covers/`
+  (640×480 JPG, captured from each live game).
+- Motion lives at the bottom of `style.css`, all inside
+  `prefers-reduced-motion: no-preference`; `main.js` handles scroll reveal
+  and skips it when reduce motion is on. Content must never depend on JS or
+  motion to become visible.
 - Tools live in `tools/<name>/` with their own `index.html`, CSS, and JS,
   reusing `../../style.css`. They run in the browser only (localStorage,
   no server), so their data stays on the visitor's device.
@@ -39,7 +47,8 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   Trading, AI). The home page tiles link to them and show counts.
 - Games each live in their own repo with their own GitHub Pages site
   (GarageToGlory, RedSkies, BaccaratTable, 350Chev). This site only links to
-  them via `link` (the orange Play it button) and `code` (the repo).
+  them via `link` (the pink Play it button) and `code` (the repo). The home
+  page "Pick a game" cards are the `featured` projects (max 4).
 - The nav (Games, Trading, AI, Projects; the CJ wordmark is home) is copied
   in every page and only just fits at 360px. Test before adding to it.
 - `README.md` is Colby's plain-English editing guide. Keep it up to date

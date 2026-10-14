@@ -1,7 +1,7 @@
 /* ==========================================================================
    Prediction Tracker styles.
-   The shared look (colours, fonts, header, footer, the little football
-   field) comes from ../../style.css. This file only adds what's new here.
+   The shared look (colours, fonts, header, footer, the glowing
+   progress bar) comes from ../../style.css. This file only adds what's new here.
    ========================================================================== */
 
 :root {
@@ -22,6 +22,7 @@
   margin: 1.5rem 0 0;
   padding: 0.75rem 1rem;
   border-left: 4px solid var(--pylon);
+  border-radius: 0 8px 8px 0;
   background: var(--surface);
   font-size: 0.9375rem;
 }
@@ -79,7 +80,7 @@
   color: var(--ink);
   background: var(--bg);
   border: 1px solid var(--muted);
-  border-radius: 2px;
+  border-radius: 8px;
 }
 
 .call-form textarea {
@@ -124,14 +125,14 @@
 /* ---------- Buttons ---------- */
 .btn {
   min-height: 2.75rem;     /* 44px tap target */
-  padding: 0.4rem 1rem;
+  padding: 0.4rem 1.1rem;
   font: inherit;
   font-size: 0.9375rem;
   font-weight: 600;
   color: var(--ink);
   background: var(--surface);
   border: 1px solid var(--rule);
-  border-radius: 2px;
+  border-radius: 999px;
   cursor: pointer;
 }
 
@@ -142,14 +143,24 @@
 .btn--primary {
   justify-self: start;
   padding-inline: 1.75rem;
+  border-radius: 999px;
   font-size: 1.0625rem;
-  color: var(--on-field);
-  background: var(--field);
-  border-color: var(--field);
+  color: #ffffff;
+  background: var(--pylon-text);
+  border-color: var(--pylon-text);
 }
 
 .btn--primary:hover {
+  background: var(--pylon);
   border-color: var(--pylon);
+  box-shadow: 0 0 22px var(--glow-pink);
+}
+
+@media (prefers-color-scheme: dark) {
+  .btn--primary,
+  .btn--primary:hover {
+    color: var(--night);
+  }
 }
 
 .btn--right {
@@ -279,7 +290,7 @@
   }
 }
 
-/* Little swatches used in the "yellow line / ball" explanation */
+/* Little swatches used in the "yellow line / dot" explanation */
 .legend {
   display: inline-block;
   vertical-align: middle;
@@ -294,12 +305,12 @@
 }
 
 .legend--ball {
-  width: 1.1rem;
-  height: 0.7rem;
+  width: 0.8rem;
+  height: 0.8rem;
   margin-left: 0.3rem;
   border-radius: 50%;
-  background: var(--pylon);
-  transform: rotate(-12deg);
+  background: #ffffff;
+  box-shadow: 0 0 0 3px var(--pylon);
 }
 
 .calibration {
@@ -342,8 +353,8 @@
 
 .field__line {
   position: absolute;
-  top: 0;
-  bottom: 0;
+  top: -0.3rem;
+  bottom: -0.3rem;
   left: calc(var(--line) * 1%);
   width: 4px;
   background: var(--first-down);

@@ -7,10 +7,10 @@
   <meta name="description" content="Colby Joyes builds games, tools, and AI projects from Saskatoon, Saskatchewan.">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 
-  <!-- Fonts: Big Shoulders for headings, Barlow for body text -->
+  <!-- Fonts: Space Grotesk for text, Press Start 2P for small pixel accents -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,600;1,400&family=Big+Shoulders:wght@700;900&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@400;500;700&display=swap">
 
   <link rel="stylesheet" href="style.css">
   <script src="main.js" defer></script>
@@ -33,24 +33,41 @@
   </header>
 
   <main id="main">
-    <!-- 1. Hero: the one bold spot on the page -->
+    <!-- 1. Hero: the dark neon band at the top -->
     <section class="hero" aria-labelledby="hero-name">
       <div class="wrap">
-        <h1 id="hero-name" class="hero__name">
-          <span>Colby</span>
-          <span>Joyes</span>
-        </h1>
+        <p class="eyebrow">Player 1 &middot; Saskatoon, SK</p>
+        <h1 id="hero-name" class="hero__name">Colby Joyes</h1>
         <p class="hero__line">
           Former Team Canada football captain. Part-time day trader.
           Now I build games, tools, and AI projects.
         </p>
+        <div class="hero__actions">
+          <a class="button button--play" href="#games-heading">Play a game</a>
+          <a class="button button--ghost" href="projects.html">See everything</a>
+        </div>
       </div>
     </section>
 
-    <!-- 2. Sections: one tile per part of the site. main.js fills in
+    <!-- 2. Games: big cards for every project with "featured": true in
+         projects.json (up to four). main.js fills this list. -->
+    <section class="section wrap" aria-labelledby="games-heading">
+      <div class="section__head">
+        <h2 id="games-heading">Pick a game</h2>
+        <a class="more-link" href="games.html">All games <span aria-hidden="true">&rarr;</span></a>
+      </div>
+      <ul class="project-list" data-projects="featured">
+        <li class="project-list__note">Loading games&hellip;</li>
+      </ul>
+      <noscript>
+        <p>Turn on JavaScript to see the games, or <a href="games.html">open the games page</a>.</p>
+      </noscript>
+    </section>
+
+    <!-- 3. Modes: one tile per part of the site. main.js fills in
          the counts from projects.json (by "category"). -->
     <section class="section wrap" aria-labelledby="sections-heading">
-      <h2 id="sections-heading">What I'm building</h2>
+      <h2 id="sections-heading">Choose a mode</h2>
       <ul class="tiles">
         <li>
           <a class="tile" href="games.html">
@@ -60,14 +77,14 @@
           </a>
         </li>
         <li>
-          <a class="tile" href="trading.html">
+          <a class="tile tile--trading" href="trading.html">
             <span class="tile__name">Trading</span>
             <span class="tile__line">Tools for my trading day.</span>
             <span class="tile__count" data-category-count="Trading"></span>
           </a>
         </li>
         <li>
-          <a class="tile" href="ai.html">
+          <a class="tile tile--ai" href="ai.html">
             <span class="tile__name">AI</span>
             <span class="tile__line">AI projects and small bots.</span>
             <span class="tile__count" data-category-count="AI"></span>
@@ -76,8 +93,8 @@
       </ul>
     </section>
 
-    <!-- 3. About -->
-    <section class="section wrap" aria-labelledby="about-heading">
+    <!-- 4. About -->
+    <section class="section wrap" aria-labelledby="about-heading" data-reveal>
       <h2 id="about-heading">About</h2>
       <div class="prose">
         <p>I'm Colby, and I'm based in Saskatoon, Saskatchewan.</p>
@@ -96,23 +113,8 @@
       </div>
     </section>
 
-    <!-- 4. Featured projects. main.js fills this list from projects.json
-         (any project with "featured": true, up to three). -->
-    <section class="section wrap" aria-labelledby="featured-heading">
-      <div class="section__head">
-        <h2 id="featured-heading">Featured projects</h2>
-        <a class="more-link" href="projects.html">See all projects <span aria-hidden="true">&rarr;</span></a>
-      </div>
-      <ul class="project-list" data-projects="featured">
-        <li class="project-list__note">Loading projects&hellip;</li>
-      </ul>
-      <noscript>
-        <p>Turn on JavaScript to see the projects, or <a href="projects.json">view the raw project list</a>.</p>
-      </noscript>
-    </section>
-
     <!-- 5. Contact -->
-    <section class="section wrap" aria-labelledby="contact-heading">
+    <section class="section wrap" aria-labelledby="contact-heading" data-reveal>
       <h2 id="contact-heading">Get in touch</h2>
       <p>The best place to find me right now is GitHub.</p>
       <ul class="contact-list">

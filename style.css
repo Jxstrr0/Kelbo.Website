@@ -1,37 +1,51 @@
 /* ==========================================================================
    Colby Joyes — shared styles
    --------------------------------------------------------------------------
-   The look is "field lines": a calm chalk-white page, with the boldness
-   spent in two places only:
-     1. the big green hero with your name (home page)
-     2. the little football-field bar that shows each project's status
-   All colours live in the variables just below, so you can retheme the
-   whole site by changing a few lines.
+   The look is "neon arcade": a dark synthwave hero with a moving grid
+   floor, glowing pink and cyan accents, and every project shown as a
+   game-style card with a progress bar.
+
+   All colours live in the variables just below (light mode first, then
+   dark mode), so you can retheme the whole site by changing a few lines.
+
+   Motion is at the bottom of this file. Anyone whose phone or computer
+   is set to "reduce motion" gets a still version of everything.
    ========================================================================== */
 
 /* ---------- Colours and fonts (light mode) ---------- */
 :root {
-  --bg: #f3f5f1;          /* chalk: page background */
-  --surface: #e7ece5;     /* slightly darker chalk: filter buttons etc. */
-  --ink: #15221b;         /* main text */
-  --muted: #4b5b52;       /* secondary text */
-  --rule: #c9d3cb;        /* thin divider lines */
+  --bg: #f7f4ff;          /* page background (pale lavender) */
+  --surface: #ece6fb;     /* slightly darker: pills, filter buttons */
+  --card: #ffffff;        /* project cards */
+  --ink: #1b1238;         /* main text */
+  --muted: #574e7a;       /* secondary text */
+  --rule: #dcd3f2;        /* thin divider lines and card borders */
 
-  --field: #1f4d3a;       /* field green: hero, status bar */
-  --field-line: rgba(255, 255, 255, 0.55); /* chalk yard lines on green */
-  --hero-line: rgba(255, 255, 255, 0.16);  /* fainter lines behind hero text */
-  --on-field: #f3f5f1;    /* text sitting on green */
-  --on-field-accent: #ff7a33; /* orange text on green (brighter for contrast) */
+  --night: #120d24;       /* the dark hero and page headers (both modes) */
+  --field: #2a1b5c;       /* deep purple: progress bar track */
+  --field-line: rgba(255, 255, 255, 0.16); /* segment lines in the bar */
+  --on-field: #ffffff;    /* text on dark purple */
+  --on-field-accent: #5cf0ff; /* cyan text on dark purple */
 
-  --pylon: #e8590c;       /* orange accent for shapes (ball, end zone) */
-  --pylon-text: #a63f08;  /* darker orange, readable as small text */
-  --focus: #e8590c;       /* keyboard focus outline */
+  --pylon: #ff3d9a;       /* neon pink for shapes and glows */
+  --pylon-text: #c2186b;  /* darker pink, readable as small text */
+  --cyan: #00e5ff;        /* neon cyan for shapes and glows */
+  --yellow: #ffd23f;      /* arcade yellow (on dark backgrounds only) */
+  --focus: #c2186b;       /* keyboard focus outline */
 
-  --font-display: "Big Shoulders", "Arial Narrow", "Roboto Condensed", Impact, sans-serif;
-  --font-body: "Barlow", "Helvetica Neue", Arial, system-ui, sans-serif;
+  --glow-pink: rgba(255, 61, 154, 0.45);
+  --glow-cyan: rgba(0, 229, 255, 0.4);
+  --shadow: 0 6px 22px rgba(40, 20, 90, 0.12);
+  --shadow-lift: 0 14px 34px rgba(194, 24, 107, 0.22);
 
-  --wrap: 68rem;          /* max content width */
+  --font-display: "Space Grotesk", "Helvetica Neue", Arial, system-ui, sans-serif;
+  --font-body: "Space Grotesk", "Helvetica Neue", Arial, system-ui, sans-serif;
+  --font-pixel: "Press Start 2P", "Courier New", monospace;
+
+  --wrap: 72rem;          /* max content width */
   --gutter: 1.25rem;      /* side padding on phones */
+  --radius: 14px;
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1); /* smooth "settle" curve */
 
   color-scheme: light dark;
 }
@@ -39,20 +53,21 @@
 /* ---------- Dark mode (follows the phone/computer setting) ---------- */
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #0e1913;
-    --surface: #17261e;
-    --ink: #e6ece7;
-    --muted: #a3b3a9;
-    --rule: #2a3b32;
+    --bg: #120d24;
+    --surface: #221a42;
+    --card: #1a1333;
+    --ink: #f4f0ff;
+    --muted: #b7aedb;
+    --rule: #30265a;
 
-    --field: #1a4532;
-    --field-line: rgba(255, 255, 255, 0.4);
-    --hero-line: rgba(255, 255, 255, 0.12);
-    --on-field: #f3f5f1;
+    --night: #0d0920;
+    --field: #2a1b5c;
 
-    --pylon: #ff7a33;
-    --pylon-text: #ff9a63;
-    --focus: #ff9a63;
+    --pylon-text: #ff7ab8;
+    --focus: #5cf0ff;
+
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+    --shadow-lift: 0 16px 40px rgba(255, 61, 154, 0.25);
   }
 }
 
@@ -80,14 +95,25 @@ h1,
 h2,
 h3 {
   font-family: var(--font-display);
-  font-weight: 900;
-  line-height: 1;
-  letter-spacing: 0.01em;
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
   margin: 0 0 0.75rem;
 }
 
 h2 {
-  font-size: clamp(2rem, 7vw, 2.75rem);
+  font-size: clamp(1.875rem, 6.5vw, 2.5rem);
+}
+
+/* Short pink-to-cyan bar under section headings */
+.section h2:not(.visually-hidden)::after {
+  content: "";
+  display: block;
+  width: 3rem;
+  height: 4px;
+  margin-top: 0.6rem;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--pylon), var(--cyan));
 }
 
 p {
@@ -105,11 +131,17 @@ a:hover {
   color: var(--pylon-text);
 }
 
+/* Leave room for the sticky header when jumping to a heading */
+h2,
+:target {
+  scroll-margin-top: 5rem;
+}
+
 /* Visible outline for keyboard users only */
 :focus-visible {
   outline: 3px solid var(--focus);
   outline-offset: 3px;
-  border-radius: 2px;
+  border-radius: 4px;
 }
 
 img {
@@ -140,7 +172,7 @@ img {
   position: absolute;
   left: 1rem;
   top: -4rem;
-  z-index: 10;
+  z-index: 20;
   padding: 0.5rem 1rem;
   background: var(--ink);
   color: var(--bg);
@@ -151,6 +183,18 @@ img {
 }
 
 /* ---------- Header ---------- */
+/* Stays at the top while you scroll, with a frosted-glass background */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: rgba(18, 13, 36, 0.86);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  color: #f4f0ff;
+}
+
 .site-header__inner {
   display: flex;
   align-items: center;
@@ -160,109 +204,209 @@ img {
 }
 
 .wordmark {
-  font-family: var(--font-display);
-  font-weight: 900;
-  font-size: 1.75rem;
+  font-family: var(--font-pixel);
+  font-size: 1.125rem;
   line-height: 1;
+  color: var(--cyan);
   text-decoration: none;
+  text-shadow: 0 0 12px var(--glow-cyan);
+}
+
+.wordmark:hover {
+  color: var(--cyan);
 }
 
 .nav {
   display: flex;
-  gap: 1.25rem;
+  gap: 1.125rem;
   margin: 0;
   padding: 0;
   list-style: none;
-  font-weight: 600;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
 }
 
 .nav a {
-  text-decoration: none;
+  display: inline-block;
   padding-block: 0.5rem; /* bigger tap target */
+  text-decoration: none;
+  color: #d9d2f5;
+}
+
+.nav a:hover {
+  color: #ffffff;
 }
 
 .nav a[aria-current="page"] {
+  color: #ffffff;
   text-decoration: underline;
   text-decoration-color: var(--pylon);
   text-decoration-thickness: 3px;
-  text-underline-offset: 6px;
+  text-underline-offset: 8px;
 }
 
-/* ---------- Hero (home page) ---------- */
-/* The green band is drawn with CSS only: vertical chalk "yard lines"
-   every 10%, plus short hash marks along the bottom edge. */
-.hero {
+/* ---------- Dark "night" bands: home hero and page headers ---------- */
+/* Glowing colour blobs behind, a synthwave grid floor along the bottom.
+   Both are drawn with CSS only (no images). */
+.hero,
+.page-head {
   position: relative;
   overflow: hidden;
-  background-color: var(--field);
-  background-image:
-    repeating-linear-gradient(
-      to right,
-      transparent 0 calc(10% - 2px),
-      var(--hero-line) calc(10% - 2px) 10%
-    );
-  color: var(--on-field);
-  padding-block: clamp(2.5rem, 10vw, 5.5rem) clamp(2.75rem, 9vw, 4.5rem);
+  isolation: isolate;
+  background: var(--night);
+  color: #f4f0ff;
 }
 
-.hero::after {
-  /* Hash marks: small ticks every 2% along the bottom */
+.hero::before,
+.page-head::before {
+  /* Pink, cyan, and violet glows */
   content: "";
   position: absolute;
-  inset: auto 0 0.75rem 0;
-  height: 0.6rem;
-  background-image: repeating-linear-gradient(
-    to right,
-    transparent 0 calc(2% - 2px),
-    var(--hero-line) calc(2% - 2px) 2%
-  );
-  pointer-events: none;
+  inset: -25%;
+  z-index: -2;
+  background:
+    radial-gradient(38% 45% at 82% 18%, rgba(255, 61, 154, 0.42), transparent 70%),
+    radial-gradient(34% 42% at 8% 88%, rgba(0, 229, 255, 0.28), transparent 70%),
+    radial-gradient(30% 38% at 50% 55%, rgba(124, 58, 237, 0.3), transparent 70%);
+}
+
+.hero::after,
+.page-head::after {
+  /* The grid floor, tilted back in 3D and fading out toward the top */
+  content: "";
+  position: absolute;
+  left: -50%;
+  right: -50%;
+  bottom: 0;
+  height: 7rem;
+  z-index: -1;
+  background-image:
+    linear-gradient(rgba(255, 61, 154, 0.6) 2px, transparent 2px),
+    linear-gradient(90deg, rgba(255, 61, 154, 0.6) 2px, transparent 2px);
+  background-size: 56px 56px;
+  transform: perspective(260px) rotateX(58deg);
+  transform-origin: bottom;
+  -webkit-mask-image: linear-gradient(to top, #000 15%, transparent 95%);
+  mask-image: linear-gradient(to top, #000 15%, transparent 95%);
+}
+
+.hero {
+  padding-block: clamp(3rem, 11vw, 6rem) clamp(6.5rem, 14vw, 8.5rem);
+}
+
+/* Small pixel-font line above the name */
+.eyebrow {
+  margin: 0 0 1rem;
+  font-family: var(--font-pixel);
+  font-size: 0.6875rem;
+  line-height: 1.6;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--yellow);
 }
 
 .hero__name {
   margin: 0;
-  font-size: clamp(4.5rem, 26vw, 12rem);
-  line-height: 0.82;
-  text-transform: uppercase;
-  letter-spacing: -0.005em;
-}
-
-.hero__name span {
-  display: block;
-}
-
-/* Second line ("Joyes") gets the orange end-zone treatment */
-.hero__name span:last-child {
-  color: var(--on-field-accent);
+  font-size: clamp(3.5rem, 16vw, 8rem);
+  line-height: 0.92;
+  letter-spacing: -0.035em;
+  text-shadow: 4px 4px 0 var(--pylon), 0 0 34px rgba(255, 61, 154, 0.35);
 }
 
 .hero__line {
-  max-width: 34rem;
+  max-width: 36rem;
   margin: 1.5rem 0 0;
   font-size: clamp(1.125rem, 4.2vw, 1.375rem);
   line-height: 1.45;
+  color: #e4defa;
 }
 
-/* ---------- Page heading (projects page) ---------- */
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+  margin-top: 2rem;
+}
+
 .page-head {
-  border-bottom: 1px solid var(--rule);
-  padding-block: 2rem 1.5rem;
+  padding-block: 2.5rem 5.5rem;
 }
 
 .page-head h1 {
-  font-size: clamp(3.5rem, 16vw, 6rem);
-  margin-bottom: 0.5rem;
+  font-size: clamp(3rem, 14vw, 5.5rem);
+  margin-bottom: 0.75rem;
+  text-shadow: 3px 3px 0 var(--pylon), 0 0 28px rgba(255, 61, 154, 0.3);
 }
 
 .page-head__line {
   max-width: 36rem;
-  color: var(--muted);
   margin: 0;
+  color: #d9d2f5;
+}
+
+/* ---------- Buttons ---------- */
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 2.75rem;      /* 44px tap target */
+  padding: 0.55rem 1.25rem;
+  border: 2px solid transparent;
+  border-radius: 999px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Solid neon pink. Used for "Play it" and the main hero button. */
+.button--play {
+  background: var(--pylon-text);
+  color: #ffffff;
+}
+
+.button--play:hover {
+  color: #ffffff;
+  background: var(--pylon);
+  box-shadow: 0 0 24px var(--glow-pink);
+}
+
+/* The play triangle, drawn with CSS so phones don't turn it into an emoji */
+.button--play::before {
+  content: "";
+  width: 0.7em;
+  height: 0.8em;
+  background: currentColor;
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+}
+
+/* Outline button for the dark hero */
+.button--ghost {
+  border-color: rgba(92, 240, 255, 0.7);
+  color: #e9fdff;
+}
+
+.button--ghost:hover {
+  color: #ffffff;
+  border-color: var(--cyan);
+  box-shadow: 0 0 20px var(--glow-cyan);
+}
+
+@media (prefers-color-scheme: dark) {
+  .button--play,
+  .button--play:hover {
+    color: var(--night);
+  }
 }
 
 /* ---------- Sections ---------- */
 .section {
-  padding-block: 2.75rem 0.5rem;
+  padding-block: 3rem 0.5rem;
 }
 
 .section__head {
@@ -278,16 +422,14 @@ img {
 }
 
 .more-link {
-  font-weight: 600;
+  font-weight: 700;
 }
 
-/* ---------- Section tiles (home page) ---------- */
-/* Big green tiles, one per section. Stacked on phones, side by side
-   on wider screens. */
+/* ---------- Mode tiles (home page: Games / Trading / AI) ---------- */
 .tiles {
   display: grid;
-  gap: 0.75rem;
-  margin: 0.5rem 0 0;
+  gap: 1rem;
+  margin: 0.75rem 0 0;
   padding: 0;
   list-style: none;
 }
@@ -299,42 +441,57 @@ img {
 }
 
 .tile {
+  position: relative;
   display: grid;
   align-content: end;
-  gap: 0.3rem;
+  gap: 0.35rem;
   height: 100%;
-  min-height: 8.5rem;
+  min-height: 9rem;
   padding: 1.25rem;
-  border-radius: 3px;
-  background-color: var(--field);
-  /* Faint chalk yard lines, like the hero */
-  background-image: repeating-linear-gradient(
-    to right,
-    transparent 0 calc(20% - 2px),
-    var(--hero-line) calc(20% - 2px) 20%
-  );
-  color: var(--on-field);
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: linear-gradient(140deg, #ff3d9a, #ff8a00);
+  color: #ffffff;
   text-decoration: none;
+  box-shadow: var(--shadow);
+}
+
+.tile--trading {
+  background: linear-gradient(140deg, #00b8d9, #0f9d6b);
+}
+
+.tile--ai {
+  background: linear-gradient(140deg, #7c3aed, #2563eb);
+}
+
+/* Dark wash at the bottom so the white text always reads clearly */
+.tile::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(13, 9, 32, 0.65), rgba(13, 9, 32, 0.1) 80%);
+}
+
+.tile > * {
+  position: relative;
 }
 
 .tile:hover {
-  color: var(--on-field);
-  box-shadow: inset 0 -6px 0 var(--pylon); /* orange bar along the bottom */
+  color: #ffffff;
 }
 
 .tile__name {
   font-family: var(--font-display);
-  font-weight: 900;
-  font-size: 2.75rem;
-  line-height: 0.95;
-  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 2.5rem;
+  line-height: 1;
+  letter-spacing: -0.02em;
 }
 
-/* Orange arrow after the name (decoration, so screen readers skip it) */
+/* Arrow after the name (decoration, so screen readers skip it) */
 .tile__name::after {
   content: " →";
   content: " →" / "";
-  color: var(--on-field-accent);
 }
 
 .tile__line {
@@ -342,202 +499,186 @@ img {
 }
 
 .tile__count {
-  font-size: 0.875rem;
-  font-weight: 600;
+  margin-top: 0.25rem;
+  font-family: var(--font-pixel);
+  font-size: 0.625rem;
+  line-height: 1.6;
   letter-spacing: 0.04em;
   text-transform: uppercase;
+  color: var(--yellow);
 }
 
-/* ---------- Project list ---------- */
-/* Projects are rows separated by thin lines, like yard lines,
-   rather than boxed cards. */
+/* ---------- Project cards ---------- */
+/* Every project is a card like a game in a console library: a cover
+   (screenshot or coloured tile), then the details and buttons. */
 .project-list {
-  list-style: none;
-  margin: 0.5rem 0 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
+  gap: 1.25rem;
+  margin: 1rem 0 0;
   padding: 0;
-  border-top: 2px solid var(--ink);
+  list-style: none;
 }
 
 .project {
-  display: grid;
-  gap: 0.6rem;
-  padding-block: 1.5rem;
-  border-bottom: 1px solid var(--rule);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--card);
+  box-shadow: var(--shadow);
 }
 
-.project__top {
+.project:hover,
+.project:focus-within {
+  border-color: var(--pylon);
+  box-shadow: var(--shadow-lift);
+}
+
+/* Cover image, 4:3 */
+.project__cover {
+  position: relative;
   display: grid;
-  gap: 0.35rem;
+  place-items: center;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: linear-gradient(140deg, #ff3d9a, #ff8a00);
+  text-decoration: none;
+}
+
+.project__cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Coloured covers for projects without a screenshot, by category */
+.project__cover[data-cat="trading"] {
+  background: linear-gradient(140deg, #00b8d9, #0f9d6b);
+}
+
+.project__cover[data-cat="ai"] {
+  background: linear-gradient(140deg, #7c3aed, #2563eb);
+}
+
+/* Big pixel initials on the coloured covers, like a game cartridge */
+.project__initials {
+  font-family: var(--font-pixel);
+  font-size: 2.75rem;
+  color: #ffffff;
+  text-shadow: 4px 4px 0 rgba(13, 9, 32, 0.45);
+}
+
+.project__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.1rem 1.15rem 1.25rem;
 }
 
 .project__title {
-  font-size: clamp(1.75rem, 6.5vw, 2.25rem);
   margin: 0;
+  font-size: 1.5rem;
 }
 
 .project__meta {
   display: flex;
-  gap: 0.75rem;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.75rem;
   margin: 0;
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
   color: var(--muted);
 }
 
+/* Status pill */
 .project__status {
-  font-weight: 600;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  background: var(--surface);
   color: var(--pylon-text);
+  font-weight: 700;
+  font-size: 0.8125rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .project__summary {
-  max-width: 40rem;
   margin: 0;
+  font-size: 1rem;
 }
 
+/* Buttons sit at the bottom of every card, so rows line up */
 .project__links {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.75rem 1.5rem;
-  margin: 0.25rem 0 0;
+  gap: 0.75rem 1.25rem;
+  margin: auto 0 0;
+  padding-top: 0.35rem;
 }
 
 .project__link {
   display: inline-block;
   padding-block: 0.25rem;   /* bigger tap target */
-  font-weight: 600;
-}
-
-/* "Play it" on games: a solid orange button so it's easy to spot */
-.project__link--play {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  min-height: 2.75rem;      /* 44px tap target */
-  padding: 0.5rem 1.4rem 0.5rem 1.15rem;
-  border-radius: 3px;
-  background: var(--pylon-text);
-  color: var(--bg);
-  font-family: var(--font-display);
-  font-weight: 900;
-  font-size: 1.375rem;
-  line-height: 1;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  text-decoration: none;
-}
-
-/* The play triangle, drawn with CSS so phones don't turn it into an emoji */
-.project__link--play::before {
-  content: "";
-  width: 0.7em;
-  height: 0.8em;
-  background: currentColor;
-  clip-path: polygon(0 0, 100% 50%, 0 100%);
-}
-
-.project__link--play:hover {
-  background: var(--ink);
-  color: var(--bg);
+  font-weight: 700;
 }
 
 .project-list__note {
+  grid-column: 1 / -1;
   padding-block: 1.5rem;
   color: var(--muted);
 }
 
-/* On wider screens, put the field bar beside the text */
-@media (min-width: 48rem) {
-  .project {
-    grid-template-columns: minmax(0, 1fr) 16rem;
-    column-gap: 2.5rem;
-    align-items: center;
-  }
-
-  .project > :not(.field) {
-    grid-column: 1;
-  }
-
-  .project .field {
-    grid-column: 2;
-    grid-row: 1 / span 3;
-  }
-}
-
-/* ---------- Status "field" bar ---------- */
-/* A tiny football field. The ball moves toward the end zone (right side)
-   as a project goes from Planned to Shipped. main.js sets --progress. */
+/* ---------- Progress bar ---------- */
+/* A glowing "XP bar". The fill grows from Planned to Shipped; main.js
+   sets --progress (0 to 100) from STATUSES. Decoration only: the
+   status is also written as text. */
 .field {
   --progress: 0;
   position: relative;
-  height: 2.25rem;
+  height: 0.7rem;
   max-width: 22rem;
-  border-radius: 3px;
+  border-radius: 999px;
   background-color: var(--field);
-  /* Yard lines every 10% */
+  /* Segments every 10%, like an old health bar */
   background-image: repeating-linear-gradient(
     to right,
-    transparent 0 calc(10% - 1px),
-    var(--field-line) calc(10% - 1px) 10%
+    transparent 0 calc(10% - 2px),
+    var(--field-line) calc(10% - 2px) 10%
   );
-  overflow: hidden;
 }
 
-/* End zone: the last 10%, striped orange */
-.field::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: 10%;
-  background: repeating-linear-gradient(
-    -45deg,
-    var(--pylon) 0 4px,
-    transparent 4px 8px
-  );
-  opacity: 0.85;
-}
-
-/* The chalk line showing how far the project has "driven" */
 .field__drive {
   position: absolute;
   left: 0;
-  top: 50%;
-  height: 3px;
+  top: 0;
+  bottom: 0;
   width: calc(var(--progress) * 1%);
-  background: var(--on-field);
-  transform: translateY(-50%);
-  transition: width 700ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--pylon), var(--cyan));
+  box-shadow: 0 0 12px var(--glow-pink);
+  transition: width 900ms var(--ease);
 }
 
-/* The ball */
+/* Bright dot at the end of the fill */
 .field__ball {
   position: absolute;
   top: 50%;
   left: calc(var(--progress) * 1%);
   z-index: 1;
-  width: 1.375rem;
-  height: 0.875rem;
+  width: 1rem;
+  height: 1rem;
   border-radius: 50%;
-  background: var(--pylon);
-  box-shadow: 0 0 0 2px var(--field);
-  transform: translate(-50%, -50%) rotate(-12deg);
-  transition: left 700ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  background: #ffffff;
+  box-shadow: 0 0 0 3px var(--pylon), 0 0 14px var(--pylon);
+  transform: translate(-50%, -50%);
+  transition: left 900ms var(--ease);
 }
 
-/* White laces on the ball */
-.field__ball::before {
-  content: "";
-  position: absolute;
-  left: 30%;
-  right: 30%;
-  top: 50%;
-  height: 2px;
-  background: #fff;
-  transform: translateY(-50%);
-}
-
-/* Before main.js "kicks off", the ball sits at the start line */
+/* Before main.js "starts" the bar, the fill sits at zero */
 .field.is-waiting .field__ball {
   left: 0;
 }
@@ -556,24 +697,30 @@ img {
 .filters button {
   font: inherit;
   font-size: 0.9375rem;
-  font-weight: 600;
+  font-weight: 700;
   min-height: 2.75rem;    /* 44px tap target */
-  padding: 0.4rem 0.9rem;
+  padding: 0.4rem 1rem;
   border: 1px solid var(--rule);
-  border-radius: 2px;
+  border-radius: 999px;
   background: var(--surface);
   color: var(--ink);
   cursor: pointer;
 }
 
 .filters button:hover {
-  border-color: var(--ink);
+  border-color: var(--pylon);
 }
 
 .filters button[aria-pressed="true"] {
-  background: var(--field);
-  border-color: var(--field);
-  color: var(--on-field);
+  background: var(--pylon-text);
+  border-color: var(--pylon-text);
+  color: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  .filters button[aria-pressed="true"] {
+    color: var(--night);
+  }
 }
 
 .filters__count {
@@ -591,7 +738,7 @@ img {
   flex-wrap: wrap;
   gap: 0.75rem 1.5rem;
   font-size: 1.25rem;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .contact-list a {
@@ -606,7 +753,7 @@ img {
 
 /* ---------- Footer ---------- */
 .site-footer {
-  margin-top: 4rem;
+  margin-top: 4.5rem;
   border-top: 1px solid var(--rule);
   padding-block: 1.5rem 2rem;
   font-size: 0.9375rem;
@@ -617,12 +764,159 @@ img {
   margin: 0;
 }
 
-/* ---------- Respect "reduce motion" settings ---------- */
+/* ==========================================================================
+   Motion
+   --------------------------------------------------------------------------
+   Everything here only runs for people who haven't asked their device to
+   reduce motion. Without it, the site looks the same, just still.
+   ========================================================================== */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Smooth fade between pages instead of a flash. Works in current
+     Chrome, Edge, and Safari; other browsers just change page. */
+  @view-transition {
+    navigation: auto;
+  }
+
+  ::view-transition-old(root) {
+    animation: page-out 180ms ease-in both;
+  }
+
+  ::view-transition-new(root) {
+    animation: page-in 380ms var(--ease) both;
+  }
+
+  /* The header stays put while the page under it changes */
+  .site-header {
+    view-transition-name: site-header;
+  }
+
+  @keyframes page-out {
+    to { opacity: 0; }
+  }
+
+  @keyframes page-in {
+    from { opacity: 0; transform: translateY(14px); }
+  }
+
+  /* Glows drift slowly; the grid floor rolls toward you */
+  .hero::before,
+  .page-head::before {
+    animation: glow-drift 16s ease-in-out infinite alternate;
+  }
+
+  .hero::after,
+  .page-head::after {
+    animation: floor-roll 2.4s linear infinite;
+  }
+
+  @keyframes glow-drift {
+    from { transform: translate3d(-3%, -2%, 0) scale(1); }
+    to { transform: translate3d(3%, 3%, 0) scale(1.08); }
+  }
+
+  @keyframes floor-roll {
+    to { background-position: 0 56px; }
+  }
+
+  /* Hero text rises in, one line after another */
+  .hero .eyebrow,
+  .hero__name,
+  .hero__line,
+  .hero__actions,
+  .page-head h1,
+  .page-head__line {
+    animation: rise 800ms var(--ease) both;
+  }
+
+  .hero__name,
+  .page-head__line {
+    animation-delay: 90ms;
+  }
+
+  .hero__line {
+    animation-delay: 180ms;
+  }
+
+  .hero__actions {
+    animation-delay: 270ms;
+  }
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(22px); }
+  }
+
+  /* Cards, tiles, and buttons lift and glow when hovered or tapped */
+  .project,
+  .tile,
+  .button,
+  .filters button {
+    transition:
+      transform 260ms var(--ease),
+      box-shadow 260ms var(--ease),
+      border-color 260ms var(--ease),
+      background-color 260ms var(--ease),
+      color 260ms var(--ease);
+  }
+
+  .project:hover,
+  .tile:hover {
+    transform: translateY(-5px);
+  }
+
+  .tile:hover {
+    box-shadow: var(--shadow-lift);
+  }
+
+  .button:hover {
+    transform: translateY(-2px);
+  }
+
+  .button:active,
+  .filters button:active,
+  .tile:active {
+    transform: scale(0.97);
+    transition-duration: 90ms;
+  }
+
+  /* Screenshots zoom in a touch on hover */
+  .project__cover img {
+    transition: transform 600ms var(--ease);
+  }
+
+  .project:hover .project__cover img {
+    transform: scale(1.05);
+  }
+
+  /* Scroll reveal: main.js adds "reveal" to cards and sections, then
+     "is-in" once each one scrolls into view. --i staggers a row. */
+  .reveal {
+    opacity: 0;
+    translate: 0 26px;
+    transition:
+      opacity 700ms var(--ease) calc(var(--i, 0) * 80ms),
+      translate 700ms var(--ease) calc(var(--i, 0) * 80ms),
+      transform 260ms var(--ease),
+      box-shadow 260ms var(--ease),
+      border-color 260ms var(--ease);
+  }
+
+  .reveal.is-in {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+/* Belt and braces: if "reduce motion" is on, nothing moves at all */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
     transition: none !important;
     animation: none !important;
+    scroll-behavior: auto !important;
   }
 }
