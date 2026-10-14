@@ -6,6 +6,7 @@
      1. loads projects.json
      2. on the home page, shows projects marked "featured": true (max 3)
      3. on the projects page, shows every project with filter buttons
+     4. on the games page, shows every project with "category": "Game"
    ========================================================================== */
 
 // Status labels, in order from "just an idea" to "done".
@@ -42,6 +43,11 @@ function el(tag, className, text) {
   return node;
 }
 
+// True if a project's category is "Game" (any upper/lower case).
+function isGame(project) {
+  return String(project.category || "").trim().toLowerCase() === "game";
+}
+
 // Build the list item for one project.
 function renderProject(project) {
   const status = findStatus(project.status);
@@ -60,13 +66,25 @@ function renderProject(project) {
     item.append(el("p", "project__summary", project.summary));
   }
 
+  // Links: "link" is where to try the project ("Play it" for games),
+  // "code" is where its code lives on GitHub. Both are optional.
+  const title = project.title || "this project";
+  const links = el("p", "project__links");
   if (project.link) {
-    const link = el("a", "project__link", "Take a look →");
+    const label = isGame(project) ? "Play it" : "Take a look";
+    const link = el("a", "project__link", label + " →");
     link.href = project.link;
     // The arrow is decoration; give screen readers a clear name.
-    link.setAttribute("aria-label", "Take a look at " + (project.title || "this project"));
-    item.append(link);
+    link.setAttribute("aria-label", (isGame(project) ? "Play " : "Take a look at ") + title);
+    links.append(link);
   }
+  if (project.code) {
+    const code = el("a", "project__link", "See the code →");
+    code.href = project.code;
+    code.setAttribute("aria-label", "See the code for " + title);
+    links.append(code);
+  }
+  if (links.children.length) item.append(links);
 
   // The status field. It's decoration only (the status is already
   // written in text above), so screen readers skip it.
@@ -111,6 +129,11 @@ function sortByProgress(projects) {
 function setUpFeatured(listEl, projects) {
   const featured = projects.filter((p) => p.featured === true).slice(0, MAX_FEATURED);
   fillList(listEl, featured, "No featured projects yet.");
+}
+
+// Games page: every game, furthest-along first.
+function setUpGames(listEl, projects) {
+  fillList(listEl, sortByProgress(projects.filter(isGame)), "No games yet.");
 }
 
 // Projects page: all projects plus filter buttons.
@@ -193,6 +216,7 @@ async function init() {
 
   lists.forEach((listEl) => {
     if (listEl.dataset.projects === "featured") setUpFeatured(listEl, projects);
+    else if (listEl.dataset.projects === "games") setUpGames(listEl, projects);
     else setUpAll(listEl, projects);
   });
 }
