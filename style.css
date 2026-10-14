@@ -833,6 +833,7 @@ img {
 
   /* Hero text rises in, one line after another */
   .hero .eyebrow,
+  .page-head .eyebrow,
   .hero__name,
   .hero__line,
   .hero__actions,

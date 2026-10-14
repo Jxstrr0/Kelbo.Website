@@ -27,6 +27,7 @@ you save on the `main` branch goes live within a minute or two.
 | `options.json` | **Your options trades.** Edit this to log a trade |
 | `journal.js`, `journal.css` | Show the journal entries and options trades, and work out the record |
 | `tools/prediction-tracker/` | The Prediction Tracker tool, parked for now (not linked from the site) |
+| `404.html` | The "page not found" screen GitHub shows for any address that doesn't exist |
 | `.nojekyll` | Tells GitHub Pages to serve the files as-is. Leave it alone |
 
 ## Editing on your phone

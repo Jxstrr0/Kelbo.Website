@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- GitHub Pages shows this page for any address that doesn't exist.
+       That can be a deep one like /Kelbo.Website/a/b/c, where normal
+       relative links would point into the wrong folder. This little script
+       runs first and points every link on this page at the site's top
+       folder instead. On a custom domain later, that's just "/". -->
+  <script>
+    (function () {
+      var first = location.pathname.split("/")[1];
+      var onGitHub = location.hostname.endsWith(".github.io");
+      var base = document.createElement("base");
+      base.href = onGitHub && first ? "/" + first + "/" : "/";
+      document.head.appendChild(base);
+    })();
+  </script>
+  <title>Page not found · Colby Joyes</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@400;500;700&display=swap">
+
+  <link rel="stylesheet" href="style.css">
+  <script src="main.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="wrap site-header__inner">
+      <a class="wordmark" href="./" aria-label="Colby Joyes, home">CJ</a>
+      <nav aria-label="Main">
+        <ul class="nav">
+          <li><a href="games.html">Games</a></li>
+          <li><a href="trading.html">Trading</a></li>
+          <li><a href="ai.html">AI</a></li>
+          <li><a href="projects.html">Projects</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- The whole page is the dark neon band, like the top of the home page -->
+    <section class="hero" aria-labelledby="lost-heading">
+      <div class="wrap">
+        <p class="eyebrow">Game over &middot; 404</p>
+        <h1 id="lost-heading" class="hero__name">Lost?</h1>
+        <p class="hero__line">
+          This page doesn't exist, or it's moved. Head back to the start and
+          pick up from there.
+        </p>
+        <div class="hero__actions">
+          <a class="button button--play button--start" href="./" aria-label="Press start: go to the home page"><span class="blink">Press start</span></a>
+          <a class="button button--ghost" href="games.html">See the games</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>&copy; <span data-year>2026</span> Colby Joyes. Built by hand and hosted on GitHub Pages.
+        <a href="https://github.com/Jxstrr0">My GitHub</a></p>
+    </div>
+  </footer>
+</body>
+</html>
