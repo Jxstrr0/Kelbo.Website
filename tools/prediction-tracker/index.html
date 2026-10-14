@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prediction Tracker · Colby Joyes</title>
+  <meta name="description" content="Log predictions with how sure you are, grade them later, and see how well-calibrated your calls really are. Everything stays on your own device.">
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,600;1,400&family=Big+Shoulders:wght@700;900&display=swap">
+
+  <!-- Shared site styles first, then the styles for this tool only -->
+  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="tracker.css">
+  <script src="tracker.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="wrap site-header__inner">
+      <a class="wordmark" href="../../" aria-label="Colby Joyes, home">CJ</a>
+      <nav aria-label="Main">
+        <ul class="nav">
+          <li><a href="../../">Home</a></li>
+          <li><a href="../../projects.html">Projects</a></li>
+          <li><a href="https://github.com/Jxstrr0">GitHub</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="page-head">
+      <div class="wrap">
+        <h1>Prediction Tracker</h1>
+        <p class="page-head__line">
+          Make a call, say how sure you are, and come back once you know how it
+          turned out. Over time, this shows whether your 80% calls actually
+          come true 80% of the time.
+        </p>
+      </div>
+    </section>
+
+    <div class="wrap">
+      <p class="tracker-note">
+        Your calls are saved in this browser on this device only. Nothing gets
+        sent anywhere, so nobody else can see them (including me). Use
+        <a href="#backup-heading">Backup</a> at the bottom to save a copy or
+        move them to another device.
+      </p>
+      <!-- Only shown if the browser won't let the page save (tracker.js) -->
+      <p class="tracker-note tracker-note--warning" data-storage-warning hidden>
+        This browser isn't letting the page save, so your calls will be gone
+        when you close the tab. Export a backup before you leave.
+      </p>
+      <!-- Screen readers announce messages put here, like "Call logged." -->
+      <p class="visually-hidden" data-status aria-live="polite"></p>
+    </div>
+
+    <!-- 1. Make a new call -->
+    <section class="section wrap" aria-labelledby="new-heading">
+      <h2 id="new-heading">Make a call</h2>
+      <form class="call-form" data-form>
+        <div class="form-row">
+          <label for="call-text">What do you think will happen?</label>
+          <textarea id="call-text" name="text" maxlength="280" required
+            placeholder="Example: The Riders make the playoffs this year"></textarea>
+        </div>
+
+        <div class="form-row">
+          <label for="call-confidence">How sure are you?</label>
+          <div class="confidence">
+            <input type="range" id="call-confidence" name="confidence"
+              min="50" max="99" step="1" value="70" aria-describedby="confidence-hint">
+            <output for="call-confidence" data-confidence-output>70%</output>
+          </div>
+          <p class="hint" id="confidence-hint">
+            50% is a coin flip and 99% is close to certain. If you're under
+            50%, flip the call around and predict the opposite.
+          </p>
+        </div>
+
+        <div class="form-pair">
+          <div class="form-row">
+            <label for="call-due">Find out by <span class="hint-inline">(optional)</span></label>
+            <input type="date" id="call-due" name="dueDate">
+          </div>
+          <div class="form-row">
+            <label for="call-category">Category <span class="hint-inline">(optional)</span></label>
+            <select id="call-category" name="category">
+              <option value="">None</option>
+              <option>Markets</option>
+              <option>Sports</option>
+              <option>Tech</option>
+              <option>Life</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn--primary">Log it</button>
+      </form>
+    </section>
+
+    <!-- 2. Calls that haven't been graded yet. tracker.js fills the list. -->
+    <section class="section wrap" aria-labelledby="open-heading">
+      <h2 id="open-heading" tabindex="-1">Waiting on <span class="count" data-open-count></span></h2>
+      <ul class="call-list" data-open-list></ul>
+    </section>
+
+    <!-- 3. Scorecard: totals plus how well-calibrated the calls are -->
+    <section class="section wrap" aria-labelledby="score-heading">
+      <h2 id="score-heading">Scorecard</h2>
+      <dl class="stats" data-stats></dl>
+      <p class="hint" data-brier-hint hidden>
+        Brier score measures how good your confidence levels are. 0 is
+        perfect. Saying 50% on everything scores 0.25, so anything under that
+        means your confidence is telling you something.
+      </p>
+
+      <h3 class="subhead">Calibration</h3>
+      <p class="hint">
+        <span class="legend legend--line" aria-hidden="true"></span>
+        The yellow line is how sure you said you were.
+        <span class="legend legend--ball" aria-hidden="true"></span>
+        The ball is how often you were right. Ball on the line means you're
+        well calibrated.
+      </p>
+      <ul class="calibration" data-calibration></ul>
+    </section>
+
+    <!-- 4. Graded calls -->
+    <section class="section wrap" aria-labelledby="done-heading">
+      <h2 id="done-heading" tabindex="-1">Graded <span class="count" data-done-count></span></h2>
+      <ul class="call-list" data-done-list></ul>
+    </section>
+
+    <!-- 5. Backup: download or load a .json file of all calls -->
+    <section class="section wrap" aria-labelledby="backup-heading">
+      <h2 id="backup-heading">Backup</h2>
+      <p>
+        Export saves all your calls to a file. Import loads a file you saved
+        before and adds any calls that aren't already here.
+      </p>
+      <div class="button-row">
+        <button type="button" class="btn" data-export>Export backup</button>
+        <button type="button" class="btn" data-import>Import backup</button>
+        <input type="file" accept=".json,application/json" data-import-file hidden>
+      </div>
+    </section>
+
+    <noscript>
+      <p class="wrap">The Prediction Tracker needs JavaScript turned on to work.</p>
+    </noscript>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>&copy; <span data-year>2026</span> Colby Joyes. Built by hand and hosted on GitHub Pages.</p>
+    </div>
+  </footer>
+</body>
+</html>

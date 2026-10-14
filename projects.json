@@ -4,7 +4,7 @@
     "status": "Mostly done",
     "category": "Game",
     "summary": "My game project, and the one furthest down the field. The main pieces are in place and I'm working on the finishing touches.",
-    "link": "",
+    "link": "https://jxstrr0.github.io/GarageToGlory/",
     "featured": true
   },
   {
@@ -25,10 +25,10 @@
   },
   {
     "title": "Prediction Tracker",
-    "status": "Planned",
+    "status": "Shipped",
     "category": "Tool",
     "summary": "Log predictions with a confidence level, then see how well-calibrated those calls turn out to be over time.",
-    "link": "",
+    "link": "tools/prediction-tracker/",
     "featured": false
   }
 ]

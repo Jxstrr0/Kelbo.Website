@@ -18,6 +18,7 @@ you save on the `main` branch goes live within a minute or two.
 | `style.css` | Colours, fonts, and layout for every page |
 | `main.js` | Reads `projects.json` and puts the projects on the page |
 | `assets/` | Images and the little football icon in the browser tab |
+| `tools/prediction-tracker/` | The Prediction Tracker tool (its own page, styles, and script) |
 | `.nojekyll` | Tells GitHub Pages to serve the files as-is. Leave it alone |
 
 ## Editing on your phone
@@ -119,11 +120,24 @@ and open http://localhost:8000.
   will need a different setup, so plan that first.
 - **Keep it static.** No servers or anything that has to keep running.
 
+## The Prediction Tracker
+
+Lives at `tools/prediction-tracker/`, and the project's `link` in
+`projects.json` points there. It runs entirely in the visitor's browser:
+
+- Calls are saved with the browser's own storage (localStorage), on that
+  device only. Nothing is sent anywhere, so there's no server and no key.
+- Clearing browser data or switching phones loses them, which is what the
+  **Export backup** button is for. **Import backup** adds them back.
+- The words on the page are in `tools/prediction-tracker/index.html`.
+  The scorecard settings (confidence groups, how many calls before it
+  judges, what counts as "on target") are at the top of `tracker.js`.
+
 ## Later
 
-- **Pages for single projects or tools:** make a folder like
-  `tools/prediction-tracker/` with its own `index.html`, then set that
-  project's `link` to `tools/prediction-tracker/`.
+- **More tools:** copy the `tools/prediction-tracker/` folder setup: a new
+  folder with its own `index.html`, then set that project's `link` to the
+  folder, like `tools/my-tool/`. Pages in there link back with `../../`.
 - **Custom domain:** add a file named `CNAME` containing just the domain (for
   example `colbyjoyes.com`), then point the domain at GitHub Pages in your
   domain provider's settings. All links on the site are relative, so they'll
