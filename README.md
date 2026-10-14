@@ -204,6 +204,17 @@ easiest, but the page sorts by date anyway):
   },
 ```
 
+Bigger forecast entries can also have calls, scenarios, levels, a sector
+board, a schedule, and trading rules. The first entry in `journal.json` uses
+all of them, so copy from there when you want the full version. Every part
+is optional except `date`.
+
+- **calls**: each one has `call`, `wrongIf` (what would prove it wrong), and
+  `grade`. Leave `grade` as `null` until it's settled, then set it to
+  `"hit"`, `"partial"`, or `"miss"`. The record's call score counts a hit as
+  1 and a partial as half.
+- **gradeBy**: the date the calls get graded, shown above them.
+- **recap**: what actually happened, written when you grade.
 - **bias**: `Bullish`, `Bearish`, `Neutral`, or `""` for none.
 - **result**: the gain or loss in percent. `1.2` means +1.2%, `-0.8` means
   -0.8%. Leave it out while a trade is still open. Fill it in later and the
