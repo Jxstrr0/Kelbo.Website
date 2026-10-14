@@ -352,8 +352,47 @@ function setUpAll(listEl, projects) {
   show("All");
 }
 
+// Contact form on the home page. Sends the message to Web3Forms in the
+// background so the visitor stays on the page, then says whether it worked.
+// Without JavaScript the form still posts normally.
+function setUpContactForm() {
+  const form = document.querySelector("[data-contact-form]");
+  if (!form) return;
+  const status = form.querySelector("[data-contact-status]");
+  const button = form.querySelector('button[type="submit"]');
+
+  function say(text, kind) {
+    status.textContent = text;
+    status.className = "contact-form__status" + (kind ? " is-" + kind : "");
+  }
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    button.disabled = true;
+    say("Sending…");
+    try {
+      const response = await fetch(form.action, {
+        method: "POST",
+        headers: { Accept: "application/json" },
+        body: new FormData(form),
+      });
+      const result = await response.json();
+      if (!response.ok || !result.success) throw new Error(result.message || "HTTP " + response.status);
+      form.reset();
+      say("Sent. Thanks for reaching out!", "sent");
+    } catch (err) {
+      console.error("Contact form didn't send:", err);
+      say("That didn't send. Please try again in a minute.", "error");
+    } finally {
+      button.disabled = false;
+    }
+  });
+}
+
 // Start here once the page has loaded.
 async function init() {
+  setUpContactForm();
+
   // Keep the footer year current.
   document.querySelectorAll("[data-year]").forEach((n) => {
     n.textContent = new Date().getFullYear();
