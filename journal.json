@@ -1,1 +1,60 @@
-[]
+[
+  {
+    "date": "2026-10-14",
+    "title": "Forecast for Thursday and Friday",
+    "bias": "Neutral",
+    "gradeBy": "2026-10-16",
+    "summary": "I think the S&P chops and pins around 7,700 into Friday opex. Semis will probably try to bounce off TSMC, but I don't trust it to do that until MU gets back over $955 and NVDA holds $229. If the S&P loses 7,663 I'm taking up a bear stance.",
+    "view": "Writing this Wednesday night after the hot CPI print. The market is leaning defensive and semis are taking the worst of it, so this entry is my plan and my calls for Thursday and Friday.\n\nThe S&P dropped about 1.2% today to around 7,710, which puts it right on the SMA50 (about 7,707). Nasdaq was down about 2%, the Russell about 2.1%, and the Dow barely moved.\n\nCPI came in at 3.7% vs 3.6% expected, and core was +0.3% m/m vs +0.2%. Odds of a hike at the Oct 27-28 meeting jumped to somewhere between 44% and 54% depending on the time of day. The 10 year is above 5.2%.\n\nThe SOX is down about 10% in six sessions. MU is down about 10% in three days (around $926) on the CXMT news, and NVDA is around $220 to $223. VIX is about 17, so people are hedging but nobody is panicking.",
+    "note": "Today's numbers are late-session reads, not official closes. Levels are pulled from recent closes and ranges, not a published level map.",
+    "sectors": [
+      { "sector": "Energy", "etf": "XLE", "direction": "Leading", "trend": "up", "why": "Middle East, Brent over $105. Overbought, so buy dips, don't chase" },
+      { "sector": "Staples", "etf": "XLP", "direction": "Leading", "trend": "up", "why": "Defensive money on hike risk" },
+      { "sector": "Health Care", "etf": "XLV", "direction": "Leading", "trend": "up", "why": "Defensive, bounced back after JNJ" },
+      { "sector": "Utilities", "etf": "XLU", "direction": "Firm", "trend": "up", "why": "Defensive, but yields over 5.2% cap it" },
+      { "sector": "Financials", "etf": "XLF", "direction": "Weak", "trend": "down", "why": "BAC miss, regional banks report Friday" },
+      { "sector": "Industrials", "etf": "XLI", "direction": "Weak", "trend": "down", "why": "AI power names hit (GE Vernova about -8%)" },
+      { "sector": "Discretionary", "etf": "XLY", "direction": "Weak", "trend": "down", "why": "Inflation and yields on the consumer" },
+      { "sector": "Tech / Semis", "etf": "XLK, SMH", "direction": "Weakest", "trend": "down", "why": "Hot CPI, CXMT, AI capex funding fears" }
+    ],
+    "calls": [
+      { "call": "TSMC gives semis a bounce Thursday morning, and it fades by the afternoon", "wrongIf": "SOX closes green Thursday and holds above about 12,200 (Tuesday's close).", "grade": null },
+      { "call": "PPI lands around +0.5% and doesn't make things worse", "wrongIf": "PPI or core PPI comes in hot and hike odds go over 60%.", "grade": null },
+      { "call": "S&P stays above 7,663 and pins 7,700 to 7,725 into Friday's close", "wrongIf": "It closes under 7,663 (the gamma flip) on either day.", "grade": null },
+      { "call": "MU tests $950-955, gets rejected, and holds above $900", "wrongIf": "It closes over $955 with SOX green, or loses $900.", "grade": null },
+      { "call": "NVDA outperforms MU over the two days", "wrongIf": "MU's two-day % move beats NVDA's.", "grade": null },
+      { "call": "Staples and Health Care beat Tech over Thursday and Friday", "wrongIf": "XLK beats both XLP and XLV over the two days.", "grade": null },
+      { "call": "VIX stays under 20", "wrongIf": "VIX closes over 20 on either day.", "grade": null }
+    ],
+    "scenarios": [
+      { "odds": 50, "name": "Base: choppy and pinned", "text": "TSMC is solid but nothing special and PPI is in line. Semis try to bounce Thursday and fade into MU $950s and NVDA $228-230. S&P bounces between 7,663 and 7,750 and pins near 7,700 Friday. Defensives and energy stay firm." },
+      { "odds": 25, "name": "Bull: semis relief rally", "text": "TSMC raises Q4 guide or capex with strong AI comments, PPI is soft, and the 10 year drops under 5.2%. Short covering in the most beaten up names. I'd want to see SOX back over 12,200, S&P over 7,750 and VIX back toward 15. NVDA is the cleaner long here." },
+      { "odds": 25, "name": "Bear: rates break it", "text": "Hot PPI plus strong retail sales, hike odds over 60%, 10 year over 5.32%, or TSMC misses on margins. S&P closes under 7,663 and the SMA50, VIX goes over 19-20. MU heads for $900." }
+    ],
+    "levels": [
+      { "symbol": "MU", "resistance": "$950-955, $989, $1,000", "support": "$926, $900", "tell": "Hold over $955 with SOX green = bull" },
+      { "symbol": "NVDA", "resistance": "$228.5-229.4, $234, $237-239", "support": "$223, $220-221, $214-216", "tell": "Reclaim $229 = neutral to bullish. Close under $220 = mid $210s" },
+      { "symbol": "SPX", "resistance": "7,725 (call wall), 7,750", "support": "7,700 (put wall), 7,663 (flip)", "tell": "Under 7,663 moves can speed up" }
+    ],
+    "schedule": [
+      { "when": "Thu ~12:00 a.m.", "what": "TSMC Q3 call. Revenue is already known, so it's all about the Q4 guide, margins and capex" },
+      { "when": "Thu 6:30 a.m.", "what": "PPI (est. +0.5%), retail sales (est. +0.3%), jobless claims, Philly Fed" },
+      { "when": "Thu 2:00 p.m.", "what": "Last trading day for AM-settled October SPX options" },
+      { "when": "Thu evening", "what": "Warsh speaking. Hits futures and Friday's open, not Thursday's session" },
+      { "when": "Fri pre-market", "what": "Regional banks (MTB, TFC, RF, CFG) and TRV" },
+      { "when": "Fri 2:00 p.m.", "what": "Monthly opex at the close. Watch round strikes for pinning" }
+    ],
+    "plan": [
+      "Not shorting the open if TSMC beats. Oversold names gap and squeeze.",
+      "Only fading MU into $950-955 if SOX and NVDA are failing too.",
+      "If semis bounce, NVDA is the cleaner long over MU.",
+      "Sizing down. 3 to 5% days on MU have been normal this week.",
+      "Defined-risk spreads over naked premium for anything I hold into Friday, because weekly premium decays fast into opex.",
+      "If the S&P closes under 7,663, I stop looking for longs."
+    ],
+    "trades": [],
+    "recap": "",
+    "ai": "What's good: every call says exactly what would prove it wrong, so Friday's grading can't be fudged. There's one clear line in the sand (7,663) and a rule for what you'll do if it breaks.\n\nWhat to watch: calls 3, 6 and 7 are mostly the same bet, a calm, range-bound, defensive market. If the bear case shows up they'll probably all miss together, so seven calls is really closer to four or five separate tests. Calls 1 and 4 both hang on the TSMC reaction too.\n\nThe two biggest catalysts, TSMC at midnight and PPI at 6:30 a.m., both land before the open, so the first move could be a gap rather than a test. Decide tonight what you'll do if MU or NVDA opens straight through a level instead of trading up into it.",
+    "lesson": ""
+  }
+]
