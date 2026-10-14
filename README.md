@@ -21,7 +21,10 @@ you save on the `main` branch goes live within a minute or two.
 | `style.css` | Colours, fonts, and layout for every page |
 | `main.js` | Reads `projects.json` and puts the projects on the page |
 | `assets/` | Images, game cover screenshots (`assets/covers/`), the link preview picture, and the browser-tab icon |
-| `tools/prediction-tracker/` | The Prediction Tracker tool (its own page, styles, and script) |
+| `journal.html` | The AI Trading Journal page |
+| `journal.json` | **Your journal entries.** Edit this to add an update |
+| `journal.js`, `journal.css` | Show the journal entries and work out the record |
+| `tools/prediction-tracker/` | The Prediction Tracker tool, parked for now (not linked from the site) |
 | `.nojekyll` | Tells GitHub Pages to serve the files as-is. Leave it alone |
 
 ## Editing on your phone
@@ -154,7 +157,8 @@ The animations are at the bottom of `style.css` under "Motion": pages fade
 into each other, the hero's grid floor rolls and its glow drifts, cards slide
 up as you scroll, and buttons lift when you tap them. Progress bars fill once
 their card lands, then flash. The "Play it" buttons glow on and off. On the
-Projects page, cards glide into place when you tap a filter. Anyone whose phone is
+Projects page, cards glide into place when you tap a filter. The home page's
+"Press start" button blinks four times when the page opens, then stays on. Anyone whose phone is
 set to **Reduce Motion** (iPhone: Settings → Accessibility → Motion) sees
 the same site with nothing moving. Turn that setting on to check it.
 
@@ -178,10 +182,63 @@ and open http://localhost:8000.
   will need a different setup, so plan that first.
 - **Keep it static.** No servers or anything that has to keep running.
 
-## The Prediction Tracker
+## The trading journal
 
-Lives at `tools/prediction-tracker/`, and the project's `link` in
-`projects.json` points there. It runs entirely in the visitor's browser:
+`journal.html` shows your market views, trades, and record. All of it comes
+from `journal.json`, so that's the only file you edit. To add an update,
+paste a block like this right after the `[` at the top (newest first is
+easiest, but the page sorts by date anyway):
+
+```json
+  {
+    "date": "2026-10-14",
+    "title": "Short headline",
+    "bias": "Bullish",
+    "view": "What I think the market is doing and why.\n\nA blank line like that starts a new paragraph.",
+    "trades": [
+      { "symbol": "SPY", "side": "Long", "result": 1.2, "note": "Why I took it" },
+      { "symbol": "TSLA", "side": "Short", "note": "Still open" }
+    ],
+    "ai": "What the AI coach said about this entry.",
+    "lesson": "One thing to keep doing or fix."
+  },
+```
+
+- **bias**: `Bullish`, `Bearish`, `Neutral`, or `""` for none.
+- **result**: the gain or loss in percent. `1.2` means +1.2%, `-0.8` means
+  -0.8%. Leave it out while a trade is still open. Fill it in later and the
+  record updates itself.
+- **The record** at the top (closed trades, win rate, average per trade,
+  wins and losses) is worked out from every trade. You never type it.
+- **ai**: the AI coach's notes. Easiest way: send Claude your views and
+  trades, and ask it to write the entry with a coach note. Or paste in
+  feedback from any AI chat. Use `""` to leave it out, same for `lesson`.
+- Same comma rule as `projects.json`: a comma after every `}` except the
+  last one, and an empty journal is just `[]`.
+
+Only post what you're happy for anyone to read. The site is public, so
+percentages are safer than dollar amounts or account sizes.
+
+## The Prediction Tracker (parked)
+
+It's taken off the site for now, but its files are still in
+`tools/prediction-tracker/`. To bring it back, add this block to
+`projects.json`:
+
+```json
+  {
+    "title": "Prediction Tracker",
+    "status": "Shipped",
+    "category": "Trading",
+    "summary": "Log predictions with a confidence level, then see how well-calibrated those calls turn out to be over time.",
+    "link": "tools/prediction-tracker/",
+    "code": "",
+    "image": "",
+    "featured": false
+  }
+```
+
+It runs entirely in the visitor's browser:
 
 - Calls are saved with the browser's own storage (localStorage), on that
   device only. Nothing is sent anywhere, so there's no server and no key.
