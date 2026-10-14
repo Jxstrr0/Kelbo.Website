@@ -155,7 +155,41 @@
     <!-- 5. Contact -->
     <section class="section wrap" aria-labelledby="contact-heading" data-reveal>
       <h2 id="contact-heading">Get in touch</h2>
-      <p>The best place to find me right now is GitHub.</p>
+      <p>Send me a message here and it'll come straight to my inbox. Leave your email if you'd like a reply.</p>
+      <!-- Contact form. Messages go through Web3Forms (a free form service),
+           which emails them to Colby. His email address is never on this
+           site: it lives in his Web3Forms settings, linked to the access key
+           below. The key is meant to be public and can only send him a
+           message, so it's safe here. main.js sends the form without leaving
+           the page; without JavaScript it still works and shows Web3Forms'
+           own "sent" page. -->
+      <form class="contact-form" action="https://api.web3forms.com/submit" method="POST" data-contact-form>
+        <input type="hidden" name="access_key" value="df76bed4-391f-431d-aed3-dfa7aacac89a">
+        <input type="hidden" name="subject" value="New message from Kelbo.Website">
+        <input type="hidden" name="from_name" value="Kelbo.Website">
+        <!-- Spam trap: hidden from people, but bots fill it in, and
+             Web3Forms throws those messages away. -->
+        <input type="checkbox" name="botcheck" class="visually-hidden" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+        <div class="form-row">
+          <label for="contact-name">Name</label>
+          <input id="contact-name" name="name" type="text" autocomplete="name" required maxlength="100">
+        </div>
+        <div class="form-row">
+          <label for="contact-email">Your email <span class="form-row__hint">(optional, for a reply)</span></label>
+          <input id="contact-email" name="email" type="email" autocomplete="email" maxlength="200">
+        </div>
+        <div class="form-row">
+          <label for="contact-message">Message</label>
+          <textarea id="contact-message" name="message" rows="5" required maxlength="5000"></textarea>
+        </div>
+        <div class="contact-form__actions">
+          <button class="button button--send" type="submit">Send</button>
+          <p class="contact-form__status" role="status" aria-live="polite" data-contact-status></p>
+        </div>
+      </form>
+
+      <p class="contact-form__also">You can also find me on GitHub.</p>
       <ul class="contact-list">
         <li><a href="https://github.com/Jxstrr0">GitHub <span class="contact-list__handle">@Jxstrr0</span></a></li>
         <!-- Placeholders. To show one, fill in your details and move the

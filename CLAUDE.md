@@ -84,5 +84,9 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
 - The Prediction Tracker in `tools/prediction-tracker/` is parked: still in
   the repo but removed from `projects.json` (README has the block to
   restore it).
+- The home page contact form posts to Web3Forms, which emails Colby. Its
+  `access_key` in `index.html` is public by design (it can only send him a
+  message); never put his email address in the site. Web3Forms rejects
+  server-side posts, so test it from a real browser on the live site.
 - `README.md` is Colby's plain-English editing guide. Keep it up to date
   when how things work changes.

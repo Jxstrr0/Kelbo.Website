@@ -760,6 +760,101 @@ img {
   color: var(--muted);
 }
 
+/* Contact form (home page). Messages go through Web3Forms; see index.html. */
+.contact-form {
+  display: grid;
+  gap: 1.25rem;
+  max-width: 36rem;
+  margin-bottom: 2rem;
+}
+
+.form-row {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.form-row label {
+  font-weight: 700;
+}
+
+.form-row__hint {
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.contact-form input[type="text"],
+.contact-form input[type="email"],
+.contact-form textarea {
+  width: 100%;
+  min-height: 2.75rem;     /* 44px tap target */
+  padding: 0.6rem 0.75rem;
+  font: inherit;
+  font-size: 1rem;         /* 16px+ stops iPhones zooming in on tap */
+  color: var(--ink);
+  background: var(--card);
+  border: 1px solid var(--muted);
+  border-radius: 8px;
+}
+
+.contact-form textarea {
+  min-height: 8rem;
+  resize: vertical;
+}
+
+.contact-form input:focus-visible,
+.contact-form textarea:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+  border-color: var(--focus);
+}
+
+.contact-form__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1rem;
+}
+
+/* Same solid pink as "Play it", without the play triangle */
+.button--send {
+  background: var(--pylon-text);
+  color: #ffffff;
+}
+
+.button--send:hover {
+  background: var(--pylon);
+  box-shadow: 0 0 24px var(--glow-pink);
+}
+
+.button--send:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+@media (prefers-color-scheme: dark) {
+  .button--send,
+  .button--send:hover {
+    color: var(--night);
+  }
+}
+
+.contact-form__status {
+  margin: 0;
+  font-weight: 700;
+}
+
+.contact-form__status.is-sent {
+  color: var(--ink);
+}
+
+.contact-form__status.is-error {
+  color: var(--pylon-text);
+}
+
+.contact-form__also {
+  margin-bottom: 0.75rem;
+}
+
 /* ---------- Footer ---------- */
 .site-footer {
   margin-top: 4.5rem;
