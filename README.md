@@ -21,6 +21,7 @@ you save on the `main` branch goes live within a minute or two.
 | `style.css` | Colours, fonts, and layout for every page |
 | `main.js` | Reads `projects.json` and puts the projects on the page |
 | `assets/` | Images, game cover screenshots (`assets/covers/`), the link preview picture, and the browser-tab icon |
+| `agent-fleet.html` | The Agent Fleet plan page. All plain text, so edit the words directly |
 | `journal.html` | The AI Trading Journal page |
 | `journal.json` | **Your journal entries.** Edit this to add an update |
 | `options.json` | **Your options trades.** Edit this to log a trade |
