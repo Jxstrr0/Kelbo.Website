@@ -20,7 +20,7 @@ you save on the `main` branch goes live within a minute or two.
 | `projects.json` | **The list of projects.** Edit this to add or change one |
 | `style.css` | Colours, fonts, and layout for every page |
 | `main.js` | Reads `projects.json` and puts the projects on the page |
-| `assets/` | Images, game cover screenshots (`assets/covers/`), and the browser-tab icon |
+| `assets/` | Images, game cover screenshots (`assets/covers/`), the link preview picture, and the browser-tab icon |
 | `tools/prediction-tracker/` | The Prediction Tracker tool (its own page, styles, and script) |
 | `.nojekyll` | Tells GitHub Pages to serve the files as-is. Leave it alone |
 
@@ -112,7 +112,20 @@ exact spot.
    Keep photos under about 500 KB so the site stays fast on phones.
 
 To change the browser-tab icon, replace `assets/favicon.svg` (or upload a
-`favicon.png` and change `favicon.svg` to `favicon.png` in both HTML files).
+`favicon.png` and change `favicon.svg` to `favicon.png` in every page).
+
+### The link preview
+
+When someone shares a link to the site in a text, Discord, or X, the app
+shows a preview card. That card is `assets/social-preview.jpg` (1200×630).
+To change it, upload a new picture with the same name and size. Apps
+remember old previews for a while, so a change can take a day or so to show
+up when you share the link.
+
+The preview's title and description come from the `og:` lines near the top
+of each page. Those are the one place on the site that uses full web
+addresses (`https://jxstrr0.github.io/...`), because the apps reading them
+aren't on this site. If the site ever moves to its own domain, update them.
 
 ## Add a new section
 
