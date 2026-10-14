@@ -23,7 +23,11 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   (semantic HTML, visible focus, good contrast, alt text,
   `prefers-reduced-motion`).
 - Use relative links only, because the site lives under `/Kelbo.Website/`
-  and may move to a custom domain later.
+  and may move to a custom domain later. The one exception is the `og:`
+  link-preview tags in each page's `<head>`, which must be absolute; update
+  them if the domain changes.
+- The link preview image is `assets/social-preview.jpg` (1200×630, the neon
+  look plus the four game covers). Regenerate it if the covers change a lot.
 
 ## Where things live
 
