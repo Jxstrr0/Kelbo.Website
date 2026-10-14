@@ -40,11 +40,11 @@
     "featured": true
   },
   {
-    "title": "Trading OS",
-    "status": "Planned",
+    "title": "AI Trading Journal",
+    "status": "Building",
     "category": "Trading",
-    "summary": "One place for my trading day: a pre-market briefing, a trade journal with an AI coach, and a backtester that explains results in plain English.",
-    "link": "",
+    "summary": "My market views, the trades I take, and my running record, with notes from an AI coach on what to keep doing and what to fix.",
+    "link": "journal.html",
     "code": "",
     "image": "",
     "featured": false
@@ -55,16 +55,6 @@
     "category": "AI",
     "summary": "A set of small, single-purpose bots I can run from my phone, like news digests, trackers, and weekly scans.",
     "link": "",
-    "code": "",
-    "image": "",
-    "featured": false
-  },
-  {
-    "title": "Prediction Tracker",
-    "status": "Shipped",
-    "category": "Trading",
-    "summary": "Log predictions with a confidence level, then see how well-calibrated those calls turn out to be over time.",
-    "link": "tools/prediction-tracker/",
     "code": "",
     "image": "",
     "featured": false
