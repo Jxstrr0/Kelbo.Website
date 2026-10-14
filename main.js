@@ -11,6 +11,7 @@
         "category"
      5. on the home page tiles, shows how many projects each section has
      6. fades things in smoothly as you scroll (see "Scroll reveal")
+     7. slides cards around smoothly when you filter (see "Smooth filtering")
    ========================================================================== */
 
 // Status labels, in order from "just an idea" to "done".
@@ -77,6 +78,7 @@ function renderProject(project) {
   const status = findStatus(project.status);
   const title = project.title || "Untitled";
   const item = el("li", "project");
+  item.dataset.key = title; // lets smooth filtering spot the same card again
 
   // Cover: the "image" screenshot if there is one, otherwise a coloured
   // tile with the project's initials. Tapping the cover opens the link
@@ -149,7 +151,9 @@ function renderProject(project) {
 }
 
 // Put a list of projects into a <ul>, replacing what was there.
-function fillList(listEl, projects, emptyMessage) {
+// Cards fade in as they scroll into view, unless "animateCard" is
+// given, in which case that does the animating instead.
+function fillList(listEl, projects, emptyMessage, animateCard) {
   listEl.replaceChildren();
   if (projects.length === 0) {
     listEl.append(el("li", "project-list__note", emptyMessage));
@@ -159,7 +163,8 @@ function fillList(listEl, projects, emptyMessage) {
     const card = renderProject(p);
     card.style.setProperty("--i", i % 4); // stagger each row of cards
     listEl.append(card);
-    reveal(card);
+    if (animateCard) animateCard(card);
+    else reveal(card);
   });
 }
 
@@ -200,6 +205,60 @@ function reveal(node) {
   }
   node.classList.add("reveal");
   revealObserver.observe(node);
+}
+
+/* ---------- Smooth filtering ----------
+   When a filter button is tapped, cards that are leaving fade out, cards
+   that stay glide to their new spots, and new cards rise in. This is the
+   "FLIP" trick: note where each card was, rebuild the list, then animate
+   each card from its old spot to its new one. */
+const EASE = "cubic-bezier(0.2, 0.8, 0.2, 1)"; // same curve as --ease in style.css
+
+async function refilter(listEl, projects, emptyMessage, isStillCurrent) {
+  const staying = new Set(projects.map((p) => p.title || "Untitled"));
+  const oldCards = [...listEl.querySelectorAll(".project")];
+  const oldSpots = new Map(oldCards.map((c) => [c.dataset.key, c.getBoundingClientRect()]));
+
+  // 1. Fade out the cards that are leaving, and wait for them.
+  const leaving = oldCards.filter((c) => !staying.has(c.dataset.key));
+  await Promise.all(
+    leaving.map(
+      (c) =>
+        c.animate(
+          [{ opacity: 1 }, { opacity: 0, transform: "scale(0.94)" }],
+          { duration: 180, easing: "ease-in", fill: "forwards" }
+        ).finished
+    )
+  ).catch(() => {});
+
+  // A quicker second tap already took over, so stop here.
+  if (!isStillCurrent()) return;
+
+  // 2. Rebuild the list. 3. Move every card from where it was.
+  let newcomers = 0;
+  fillList(listEl, projects, emptyMessage, (card) => {
+    const oldSpot = oldSpots.get(card.dataset.key);
+    if (!oldSpot) {
+      // New card: rise in, one after another, then fill its bar.
+      card.animate(
+        [{ opacity: 0, transform: "translateY(24px)" }, { opacity: 1, transform: "none" }],
+        { duration: 500, delay: newcomers++ * 70, easing: EASE, fill: "backwards" }
+      );
+      showNow(card);
+      return;
+    }
+    // Same card as before: its bar is already full, so skip the fill.
+    card.querySelectorAll(".field").forEach((f) => f.classList.remove("is-waiting"));
+    const newSpot = card.getBoundingClientRect();
+    const dx = oldSpot.left - newSpot.left;
+    const dy = oldSpot.top - newSpot.top;
+    if (dx || dy) {
+      card.animate(
+        [{ transform: `translate(${dx}px, ${dy}px)` }, { transform: "none" }],
+        { duration: 450, easing: EASE }
+      );
+    }
+  });
 }
 
 // Sort projects so the furthest-along come first. Projects with the
@@ -248,10 +307,19 @@ function setUpAll(listEl, projects) {
   });
   const options = ["All"].concat(labels);
 
-  function show(choice) {
+  // Counts taps, so a quick second tap can cancel the first one's animation.
+  let taps = 0;
+
+  // "smooth" is true when a button was tapped (not on first load).
+  function show(choice, smooth) {
     const shown =
       choice === "All" ? sorted : sorted.filter((p) => findStatus(p.status).label === choice);
-    fillList(listEl, shown, "Nothing here yet.");
+    const tap = ++taps;
+    if (smooth && !REDUCE_MOTION && "animate" in Element.prototype) {
+      refilter(listEl, shown, "Nothing here yet.", () => tap === taps);
+    } else {
+      fillList(listEl, shown, "Nothing here yet.");
+    }
 
     if (filtersEl) {
       filtersEl.querySelectorAll("button").forEach((btn) => {
@@ -276,7 +344,7 @@ function setUpAll(listEl, projects) {
       const btn = el("button", null, `${choice} (${count})`);
       btn.type = "button";
       btn.dataset.status = choice;
-      btn.addEventListener("click", () => show(choice));
+      btn.addEventListener("click", () => show(choice, true));
       filtersEl.append(btn);
     });
   }
