@@ -294,7 +294,7 @@ function renderScorecard() {
       `${n} ${noun}, ${rightCount} right (${Math.round(hitRate)}%). You said ${Math.round(avgSure)}% on average.`
     );
 
-    // The little field: yellow line at how sure, ball at how often right.
+    // The progress bar: yellow line at how sure, dot at how often right.
     // Decoration only, since the sentence above says the same thing.
     const field = el("div", "field field--score");
     field.setAttribute("aria-hidden", "true");

@@ -12,7 +12,7 @@ you save on the `main` branch goes live within a minute or two.
 
 | File | What it's for |
 |---|---|
-| `index.html` | Home page: name, about, featured projects, contact links |
+| `index.html` | Home page: name, game cards, Games / Trading / AI tiles, about, contact |
 | `projects.html` | The full projects page with status filters |
 | `games.html` | The Games section: every project with `"category": "Game"` |
 | `trading.html` | The Trading section: every project with `"category": "Trading"` |
@@ -20,7 +20,7 @@ you save on the `main` branch goes live within a minute or two.
 | `projects.json` | **The list of projects.** Edit this to add or change one |
 | `style.css` | Colours, fonts, and layout for every page |
 | `main.js` | Reads `projects.json` and puts the projects on the page |
-| `assets/` | Images and the little football icon in the browser tab |
+| `assets/` | Images, game cover screenshots (`assets/covers/`), and the browser-tab icon |
 | `tools/prediction-tracker/` | The Prediction Tracker tool (its own page, styles, and script) |
 | `.nojekyll` | Tells GitHub Pages to serve the files as-is. Leave it alone |
 
@@ -36,9 +36,11 @@ you save on the `main` branch goes live within a minute or two.
 All the words on the home page are in `index.html`. Look for these
 comments to find each part:
 
-- `<!-- 1. Hero -->`: your name and the one-line description under it
-- `<!-- 2. Sections -->`: the Games / Trading / AI tiles
-- `<!-- 3. About -->`: the about paragraph
+- `<!-- 1. Hero -->`: your name, the pixel "Player 1" line, the description,
+  and the two buttons
+- `<!-- 2. Games -->`: the "Pick a game" cards (filled in from `projects.json`)
+- `<!-- 3. Modes -->`: the Games / Trading / AI tiles
+- `<!-- 4. About -->`: the about paragraph
 - `<!-- 5. Contact -->`: your links
 
 Only change the words between the tags, like this:
@@ -66,21 +68,26 @@ Paste it after the last one and change the values:
     "summary": "One or two sentences on what it is.",
     "link": "",
     "code": "",
+    "image": "",
     "featured": false
   }
 ```
 
 - **status**: use one of `Shipped`, `Mostly done`, `Building`, or `Planned`.
-  This sets where the ball sits on the little football field.
+  This sets how full the glowing progress bar is.
 - **category**: which section it shows up in: `Game`, `Trading`, or `AI`.
   Anything else still shows on the Projects page, just not in a section.
 - **link**: a web address, or leave it as `""` for no link. A link can
   also point to a page in this repo later, like `tools/prediction-tracker/`.
 - **code**: the GitHub repo address, or `""`. Shows a "See the code" link.
-- **featured**: `true` shows it on the home page (the first three only).
+- **image**: a cover picture, like `assets/covers/my-game.jpg`, or `""`.
+  Without one, the card gets a coloured cover with the project's initials.
+  Covers are shown 4:3 (640 × 480 is perfect) and should stay under 100 KB.
+- **featured**: `true` shows it as a big card under "Pick a game" on the home
+  page (the first four only).
 
 **Adding a game:** use `"category": "Game"` and it shows up on the Games
-page automatically, with a big orange "Play it" button. Each game lives in its
+page automatically, with a big pink "Play it" button. Each game lives in its
 own repo with GitHub Pages turned on, so `link` is that game's Pages address
 (like `https://jxstrr0.github.io/RedSkies/`) and `code` is the repo address.
 
@@ -114,7 +121,7 @@ Say you want a "Tools" section next to Games, Trading, and AI:
 1. Copy `ai.html` to `tools.html`. Change the `<title>`, the description,
    the `<h1>` and intro line, and `data-category="AI"` to
    `data-category="Tool"`.
-2. In `index.html`, copy one of the tiles under `<!-- 2. Sections -->` and
+2. In `index.html`, copy one of the tiles under `<!-- 3. Modes -->` and
    change its link, name, line, and `data-category-count="Tool"`.
 3. Optionally add it to the menu (`<ul class="nav">`) in every page. Keep the
    menu short so it fits on one line on a phone.
@@ -123,7 +130,18 @@ Say you want a "Tools" section next to Games, Trading, and AI:
 
 Open `style.css`. The colours are near the top: light mode first, then dark
 mode under `@media (prefers-color-scheme: dark)`. Change a value like
-`#1f4d3a` and every place that uses it updates.
+`#ff3d9a` (the neon pink) and every place that uses it updates.
+
+The fonts are Space Grotesk (all the text) and Press Start 2P (the small
+pixel-style labels), loaded from Google Fonts in each page's `<head>`.
+
+## Motion
+
+The animations are at the bottom of `style.css` under "Motion": pages fade
+into each other, the hero's grid floor rolls and its glow drifts, cards slide
+up as you scroll, and buttons lift when you tap them. Anyone whose phone is
+set to **Reduce Motion** (iPhone: Settings → Accessibility → Motion) sees
+the same site with nothing moving. Turn that setting on to check it.
 
 ## Previewing on a computer
 
