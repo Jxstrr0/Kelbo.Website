@@ -326,9 +326,17 @@ img {
   margin: 0;
 }
 
+.project__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.5rem;
+  margin: 0;
+}
+
 .project__link {
+  display: inline-block;
+  padding-block: 0.25rem;   /* bigger tap target */
   font-weight: 600;
-  justify-self: start;
 }
 
 .project-list__note {
