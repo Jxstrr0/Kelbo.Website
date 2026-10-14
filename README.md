@@ -23,7 +23,8 @@ you save on the `main` branch goes live within a minute or two.
 | `assets/` | Images, game cover screenshots (`assets/covers/`), the link preview picture, and the browser-tab icon |
 | `journal.html` | The AI Trading Journal page |
 | `journal.json` | **Your journal entries.** Edit this to add an update |
-| `journal.js`, `journal.css` | Show the journal entries and work out the record |
+| `options.json` | **Your options trades.** Edit this to log a trade |
+| `journal.js`, `journal.css` | Show the journal entries and options trades, and work out the record |
 | `tools/prediction-tracker/` | The Prediction Tracker tool, parked for now (not linked from the site) |
 | `.nojekyll` | Tells GitHub Pages to serve the files as-is. Leave it alone |
 
@@ -219,8 +220,9 @@ is optional except `date`.
 - **result**: the gain or loss in percent. `1.2` means +1.2%, `-0.8` means
   -0.8%. Leave it out while a trade is still open. Fill it in later and the
   record updates itself.
-- **The record** at the top (closed trades, win rate, average per trade,
-  wins and losses) is worked out from every trade. You never type it.
+- **The record** at the top is worked out for you: the call score from
+  your graded calls, and the options numbers from `options.json` (see
+  below). You never type it.
 - **ai**: the AI coach's notes. Easiest way: send Claude your views and
   trades, and ask it to write the entry with a coach note. Or paste in
   feedback from any AI chat. Use `""` to leave it out, same for `lesson`.
@@ -229,6 +231,47 @@ is optional except `date`.
 
 Only post what you're happy for anyone to read. The site is public, so
 percentages are safer than dollar amounts or account sizes.
+
+### Options trades
+
+Your options trades live in `options.json`, not in the entries. The page
+shows them newest first, with a bar for each trade's return, V2/V3 filter
+buttons, and the options numbers in the record (win rate, average return,
+and wins–losses–scratches).
+
+To log a trade, paste a block like this inside the `"trades": [ ... ]` list
+(oldest first, so new ones go at the bottom), and change `"updated"` at the
+top to today's date:
+
+```json
+    {
+      "opened": "2026-10-14",
+      "closed": "2026-10-14",
+      "symbol": "MARA",
+      "strike": 8.5,
+      "type": "put",
+      "expiry": "2026-10-23",
+      "paid": 0.425,
+      "sold": 0.54,
+      "system": "V3",
+      "note": "Short note about the trade."
+    },
+```
+
+- **paid** and **sold** are the option's price per share, like your broker
+  shows. The page works out the return: `(sold − paid) ÷ paid`. A trade
+  sold for what it cost counts as a scratch.
+- **Still open?** Leave out `"closed"` and `"sold"`. It shows as Open and
+  isn't counted until you add them.
+- **type** is `"call"` or `"put"`. **system** is `"V2"` or `"V3"`; the
+  `"systems"` list at the top explains each one, and a new system there gets
+  its own filter button.
+- **ai** at the top is the AI coach's note on the whole options record.
+  Claude refreshes it when you send new trades.
+- Number of contracts and dollar profit are left out on purpose, so the
+  public page only shows percentages. Keep those in your own ledger.
+- Easiest way: send Claude the new lines from your ledger and it'll add
+  them.
 
 ## The Prediction Tracker (parked)
 

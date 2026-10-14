@@ -60,13 +60,29 @@
       </div>
     </section>
 
-    <!-- The record: worked out from every trade in journal.json -->
+    <!-- The record: worked out from journal.json and options.json -->
     <section class="section wrap" aria-labelledby="record-heading">
       <h2 id="record-heading">The record</h2>
-      <dl class="record" data-record>
-        <div><dt>Calls graded</dt><dd>–</dd></div>
-      </dl>
-      <p class="record__note" data-open-trades></p>
+      <div data-record>
+        <p class="project-list__note">Working out the record&hellip;</p>
+      </div>
+    </section>
+
+    <!-- Options trades: every trade in options.json, newest first -->
+    <section class="section wrap" aria-labelledby="options-heading">
+      <h2 id="options-heading">Options trades</h2>
+      <p class="options__intro" data-options-intro></p>
+      <div class="filters options__filters" data-options-filters role="group" aria-label="Filter by system"></div>
+      <!-- Screen readers announce this when the filter changes -->
+      <p class="filters__count" data-options-count aria-live="polite"></p>
+      <div data-options-chart></div>
+      <div class="options__list" data-options-list>
+        <p class="project-list__note">Loading trades&hellip;</p>
+      </div>
+      <div data-options-coach></div>
+      <noscript>
+        <p>Turn on JavaScript to see the trades, or <a href="options.json">view the raw trade list</a>.</p>
+      </noscript>
     </section>
 
     <!-- Entries: one per update in journal.json, newest first -->
