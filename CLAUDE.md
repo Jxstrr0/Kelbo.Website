@@ -58,5 +58,15 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   page "Pick a game" cards are the `featured` projects (max 4).
 - The nav (Games, Trading, AI, Projects; the CJ wordmark is home) is copied
   in every page and only just fits at 360px. Test before adding to it.
+- The AI Trading Journal is `journal.html` + `journal.js` + `journal.css`,
+  with entries in `journal.json` (a list, newest first by `date`). The
+  record is calculated from each trade's `result` (percent; missing = open).
+  Colby updates it periodically; when he sends views or trades, write the
+  entry and an honest "ai" coach note. Never invent trades or results, and
+  prefer percentages over dollar amounts. `journal.js` borrows `el()` and
+  `reveal()` from `main.js`, so load `main.js` first.
+- The Prediction Tracker in `tools/prediction-tracker/` is parked: still in
+  the repo but removed from `projects.json` (README has the block to
+  restore it).
 - `README.md` is Colby's plain-English editing guide. Keep it up to date
   when how things work changes.
