@@ -1,0 +1,351 @@
+/* ==========================================================================
+   Prediction Tracker styles.
+   The shared look (colours, fonts, header, footer, the little football
+   field) comes from ../../style.css. This file only adds what's new here.
+   ========================================================================== */
+
+:root {
+  --first-down: #f5c400;   /* the yellow "first down" line on the scorecard */
+  --right-text: #1d6b45;   /* "Right" label */
+  --wrong-text: var(--pylon-text); /* "Wrong" label */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --right-text: #6fcf97;
+  }
+}
+
+/* ---------- Notes at the top ---------- */
+.tracker-note {
+  max-width: 40rem;
+  margin: 1.5rem 0 0;
+  padding: 0.75rem 1rem;
+  border-left: 4px solid var(--pylon);
+  background: var(--surface);
+  font-size: 0.9375rem;
+}
+
+.tracker-note--warning {
+  font-weight: 600;
+}
+
+.hint,
+.hint-inline {
+  color: var(--muted);
+  font-size: 0.9375rem;
+  font-weight: 400;
+}
+
+.hint {
+  max-width: 40rem;
+  margin: 0;
+}
+
+.count {
+  color: var(--muted);
+  font-size: 0.6em;
+  vertical-align: middle;
+}
+
+.subhead {
+  font-size: 1.75rem;
+  margin-top: 2rem;
+}
+
+/* ---------- The form ---------- */
+.call-form {
+  display: grid;
+  gap: 1.25rem;
+  max-width: 36rem;
+}
+
+.form-row {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.form-row label {
+  font-weight: 600;
+}
+
+.call-form textarea,
+.call-form input[type="date"],
+.call-form select {
+  width: 100%;
+  min-height: 2.75rem;     /* 44px tap target */
+  padding: 0.6rem 0.75rem;
+  font: inherit;
+  color: var(--ink);
+  background: var(--bg);
+  border: 1px solid var(--muted);
+  border-radius: 2px;
+}
+
+.call-form textarea {
+  min-height: 5.5rem;
+  resize: vertical;
+}
+
+/* Slider plus the big number beside it */
+.confidence {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.confidence input[type="range"] {
+  flex: 1;
+  min-height: 2.75rem;
+  accent-color: var(--pylon);
+}
+
+.confidence output {
+  min-width: 3.5ch;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 2.25rem;
+  line-height: 1;
+  text-align: right;
+}
+
+/* Date and category side by side on wider phones */
+.form-pair {
+  display: grid;
+  gap: 1.25rem;
+}
+
+@media (min-width: 30rem) {
+  .form-pair {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+  min-height: 2.75rem;     /* 44px tap target */
+  padding: 0.4rem 1rem;
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  border-color: var(--ink);
+}
+
+.btn--primary {
+  justify-self: start;
+  padding-inline: 1.75rem;
+  font-size: 1.0625rem;
+  color: var(--on-field);
+  background: var(--field);
+  border-color: var(--field);
+}
+
+.btn--primary:hover {
+  border-color: var(--pylon);
+}
+
+.btn--right {
+  color: var(--right-text);
+  border-color: currentColor;
+}
+
+.btn--wrong {
+  color: var(--wrong-text);
+  border-color: currentColor;
+}
+
+/* Delete sits off to the right and stays low-key */
+.btn--quiet {
+  margin-left: auto;
+  color: var(--muted);
+  background: transparent;
+  border-color: transparent;
+}
+
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* ---------- Lists of calls ---------- */
+.call-list {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  border-top: 2px solid var(--ink);
+}
+
+.call {
+  display: grid;
+  gap: 0.4rem;
+  padding-block: 1.25rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.call__text {
+  max-width: 40rem;
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.call__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.9rem;
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--muted);
+}
+
+.call__conf {
+  font-weight: 600;
+  color: var(--pylon-text);
+}
+
+.call__due {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.call__result {
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.call__result--right {
+  color: var(--right-text);
+}
+
+.call__result--wrong {
+  color: var(--wrong-text);
+}
+
+.call__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.35rem;
+}
+
+.call-list__note {
+  padding-block: 1.25rem;
+  color: var(--muted);
+}
+
+/* ---------- Scorecard ---------- */
+/* Four number tiles: two across on phones, four on wider screens */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  margin: 0.5rem 0 1rem;
+  background: var(--rule);  /* shows through the gaps as divider lines */
+  border: 1px solid var(--rule);
+}
+
+.stats > div {
+  padding: 0.9rem 1rem;
+  background: var(--bg);
+}
+
+.stats dt {
+  font-size: 0.9375rem;
+  color: var(--muted);
+}
+
+.stats dd {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 2.5rem;
+  line-height: 1.1;
+}
+
+@media (min-width: 40rem) {
+  .stats {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* Little swatches used in the "yellow line / ball" explanation */
+.legend {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 0.2rem;
+}
+
+.legend--line {
+  width: 4px;
+  height: 1.1em;
+  background: var(--first-down);
+  outline: 1px solid var(--field);
+}
+
+.legend--ball {
+  width: 1.1rem;
+  height: 0.7rem;
+  margin-left: 0.3rem;
+  border-radius: 50%;
+  background: var(--pylon);
+  transform: rotate(-12deg);
+}
+
+.calibration {
+  display: grid;
+  gap: 1.5rem;
+  margin: 1.25rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.calibration > li {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.calibration__head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+  max-width: 32rem;
+  margin: 0;
+  font-weight: 600;
+}
+
+.calibration__verdict {
+  color: var(--pylon-text);
+}
+
+.calibration__detail {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--muted);
+}
+
+/* Reuses the .field bar from style.css, a bit wider, plus the yellow line */
+.field--score {
+  max-width: 32rem;
+}
+
+.field__line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--line) * 1%);
+  width: 4px;
+  background: var(--first-down);
+  transform: translateX(-50%);
+}
