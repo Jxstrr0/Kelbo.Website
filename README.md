@@ -14,7 +14,9 @@ you save on the `main` branch goes live within a minute or two.
 |---|---|
 | `index.html` | Home page: name, about, featured projects, contact links |
 | `projects.html` | The full projects page with status filters |
-| `games.html` | The games page: every project with `"category": "Game"` |
+| `games.html` | The Games section: every project with `"category": "Game"` |
+| `trading.html` | The Trading section: every project with `"category": "Trading"` |
+| `ai.html` | The AI section: every project with `"category": "AI"` |
 | `projects.json` | **The list of projects.** Edit this to add or change one |
 | `style.css` | Colours, fonts, and layout for every page |
 | `main.js` | Reads `projects.json` and puts the projects on the page |
@@ -35,8 +37,9 @@ All the words on the home page are in `index.html`. Look for these
 comments to find each part:
 
 - `<!-- 1. Hero -->`: your name and the one-line description under it
-- `<!-- 2. About -->`: the about paragraph
-- `<!-- 4. Contact -->`: your links
+- `<!-- 2. Sections -->`: the Games / Trading / AI tiles
+- `<!-- 3. About -->`: the about paragraph
+- `<!-- 5. Contact -->`: your links
 
 Only change the words between the tags, like this:
 
@@ -44,7 +47,8 @@ Only change the words between the tags, like this:
 <p>Change only this sentence.</p>
 ```
 
-The intro text on the projects page is near the top of `projects.html`.
+The intro text on the Projects, Games, Trading, and AI pages is near the top
+of each page's `.html` file.
 
 The about text and project summaries are first drafts. Rewrite them in your
 own words whenever you like.
@@ -68,14 +72,15 @@ Paste it after the last one and change the values:
 
 - **status**: use one of `Shipped`, `Mostly done`, `Building`, or `Planned`.
   This sets where the ball sits on the little football field.
-- **category**: anything you like, for example `Game`, `Tool`, or `AI`.
+- **category**: which section it shows up in: `Game`, `Trading`, or `AI`.
+  Anything else still shows on the Projects page, just not in a section.
 - **link**: a web address, or leave it as `""` for no link. A link can
   also point to a page in this repo later, like `tools/prediction-tracker/`.
 - **code**: the GitHub repo address, or `""`. Shows a "See the code" link.
 - **featured**: `true` shows it on the home page (the first three only).
 
 **Adding a game:** use `"category": "Game"` and it shows up on the Games
-page automatically, with its link labelled "Play it". Each game lives in its
+page automatically, with a big orange "Play it" button. Each game lives in its
 own repo with GitHub Pages turned on, so `link` is that game's Pages address
 (like `https://jxstrr0.github.io/RedSkies/`) and `code` is the repo address.
 
@@ -101,6 +106,18 @@ exact spot.
 
 To change the browser-tab icon, replace `assets/favicon.svg` (or upload a
 `favicon.png` and change `favicon.svg` to `favicon.png` in both HTML files).
+
+## Add a new section
+
+Say you want a "Tools" section next to Games, Trading, and AI:
+
+1. Copy `ai.html` to `tools.html`. Change the `<title>`, the description,
+   the `<h1>` and intro line, and `data-category="AI"` to
+   `data-category="Tool"`.
+2. In `index.html`, copy one of the tiles under `<!-- 2. Sections -->` and
+   change its link, name, line, and `data-category-count="Tool"`.
+3. Optionally add it to the menu (`<ul class="nav">`) in every page. Keep the
+   menu short so it fits on one line on a phone.
 
 ## Change colours or fonts
 

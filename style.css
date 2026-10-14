@@ -281,6 +281,73 @@ img {
   font-weight: 600;
 }
 
+/* ---------- Section tiles (home page) ---------- */
+/* Big green tiles, one per section. Stacked on phones, side by side
+   on wider screens. */
+.tiles {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 40rem) {
+  .tiles {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.tile {
+  display: grid;
+  align-content: end;
+  gap: 0.3rem;
+  height: 100%;
+  min-height: 8.5rem;
+  padding: 1.25rem;
+  border-radius: 3px;
+  background-color: var(--field);
+  /* Faint chalk yard lines, like the hero */
+  background-image: repeating-linear-gradient(
+    to right,
+    transparent 0 calc(20% - 2px),
+    var(--hero-line) calc(20% - 2px) 20%
+  );
+  color: var(--on-field);
+  text-decoration: none;
+}
+
+.tile:hover {
+  color: var(--on-field);
+  box-shadow: inset 0 -6px 0 var(--pylon); /* orange bar along the bottom */
+}
+
+.tile__name {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 2.75rem;
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+/* Orange arrow after the name (decoration, so screen readers skip it) */
+.tile__name::after {
+  content: " →";
+  content: " →" / "";
+  color: var(--on-field-accent);
+}
+
+.tile__line {
+  font-size: 1rem;
+}
+
+.tile__count {
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
 /* ---------- Project list ---------- */
 /* Projects are rows separated by thin lines, like yard lines,
    rather than boxed cards. */
@@ -329,14 +396,48 @@ img {
 .project__links {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.25rem 1.5rem;
-  margin: 0;
+  align-items: center;
+  gap: 0.75rem 1.5rem;
+  margin: 0.25rem 0 0;
 }
 
 .project__link {
   display: inline-block;
   padding-block: 0.25rem;   /* bigger tap target */
   font-weight: 600;
+}
+
+/* "Play it" on games: a solid orange button so it's easy to spot */
+.project__link--play {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 2.75rem;      /* 44px tap target */
+  padding: 0.5rem 1.4rem 0.5rem 1.15rem;
+  border-radius: 3px;
+  background: var(--pylon-text);
+  color: var(--bg);
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1.375rem;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+/* The play triangle, drawn with CSS so phones don't turn it into an emoji */
+.project__link--play::before {
+  content: "";
+  width: 0.7em;
+  height: 0.8em;
+  background: currentColor;
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+}
+
+.project__link--play:hover {
+  background: var(--ink);
+  color: var(--bg);
 }
 
 .project-list__note {
