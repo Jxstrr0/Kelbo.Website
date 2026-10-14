@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Colby Joyes — shared styles
+   Kelbo — shared styles
    --------------------------------------------------------------------------
    The look is "neon arcade": a dark synthwave hero with a moving grid
    floor, glowing pink and cyan accents, and every project shown as a
@@ -205,11 +205,18 @@ img {
 
 .wordmark {
   font-family: var(--font-pixel);
-  font-size: 1.125rem;
+  /* Smaller on phones so KELBO fits beside the nav at 360px wide */
+  font-size: 0.75rem;
   line-height: 1;
   color: var(--cyan);
   text-decoration: none;
   text-shadow: 0 0 12px var(--glow-cyan);
+}
+
+@media (min-width: 40rem) {
+  .wordmark {
+    font-size: 1.125rem;
+  }
 }
 
 .wordmark:hover {

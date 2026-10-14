@@ -1,6 +1,6 @@
 # Notes for Claude
 
-Colby's personal site, hosted on GitHub Pages from the `main` branch root.
+Kelbo's personal site, hosted on GitHub Pages from the `main` branch root.
 Live at https://jxstrr0.github.io/Kelbo.Website/
 
 ## Working on this repo
@@ -10,17 +10,20 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
 - **Every change must end up on `main`**, because that's what goes live.
   Work on a branch, open a PR, merge it into `main`, then check the live
   site updated.
-- Colby is a beginner+ coder and mostly on his phone. Explain changes in
+- Kelbo is a beginner+ coder and mostly on his phone. Explain changes in
   plain language and keep code readable, with comments on anything
   non-obvious. He may edit files in the GitHub web or mobile editor.
-- Only publish personal details Colby has approved. The site is public.
+- Only publish personal details Kelbo has approved. The site is public.
+- **The site uses the name Kelbo only.** Never put his real first or last
+  name (or his initials) anywhere on the site, in page text, titles, `og:`
+  tags, alt text, comments, or the link preview image.
 
 ## Hard rules
 
 - **Static only:** plain HTML, CSS, and vanilla JS. No frameworks, npm,
   bundlers, or build step.
 - **No secrets.** The repo is public. Never commit API keys, tokens, or
-  passwords. If a tool needs a key, talk through options with Colby first.
+  passwords. If a tool needs a key, talk through options with Kelbo first.
 - Mobile first (works down to 360px wide), light and dark mode via
   `prefers-color-scheme` with every colour in CSS variables, accessible
   (semantic HTML, visible focus, good contrast, alt text,
@@ -59,7 +62,7 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   (GarageToGlory, RedSkies, BaccaratTable, 350Chev). This site only links to
   them via `link` (the pink Play it button) and `code` (the repo). The home
   page "Pick a game" cards are the `featured` projects (max 4).
-- The nav (Games, Trading, AI, Projects; the CJ wordmark is home) is copied
+- The nav (Games, Trading, AI, Projects; the KELBO wordmark is home) is copied
   in every page and only just fits at 360px. Test before adding to it.
 - The AI Trading Journal is `journal.html` + `journal.js` + `journal.css`,
   with entries in `journal.json` (a list, newest first by `date`). The
@@ -67,26 +70,26 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   not graded) and each trade's `result` (percent; missing = open). The
   field list is at the top of `journal.js`. Entries can be long forecasts
   (calls, scenarios, levels, sectors, schedule, plan); copy their content
-  faithfully and only fill in grades and the recap when Colby reports them.
-  Colby updates it periodically; when he sends views or trades, write the
+  faithfully and only fill in grades and the recap when Kelbo reports them.
+  Kelbo updates it periodically; when he sends views or trades, write the
   entry and an honest "ai" coach note. Never invent trades or results, and
   prefer percentages over dollar amounts. `journal.js` borrows `el()` and
   `reveal()` from `main.js`, so load `main.js` first.
-- Write every "ai" coach note in a general voice, not to Colby: judge the
+- Write every "ai" coach note in a general voice, not to Kelbo: judge the
   trade or idea ("winners averaged +21.5%", "holding overnight without a
   planned exit was the mistake"), never "you" or "your". Same honesty, same
   specifics.
 - Options trades live in `options.json` (fields at the top of `journal.js`),
-  copied from Colby's own options ledger. The page works out each return
+  copied from Kelbo's own options ledger. The page works out each return
   from `paid`/`sold` premiums and feeds the record's options group. Leave
   out contract counts and dollar P&L. When he sends new trades, add them
   oldest first, bump `updated`, and refresh the `ai` coach note honestly.
 - The Prediction Tracker in `tools/prediction-tracker/` is parked: still in
   the repo but removed from `projects.json` (README has the block to
   restore it).
-- The home page contact form posts to Web3Forms, which emails Colby. Its
+- The home page contact form posts to Web3Forms, which emails Kelbo. Its
   `access_key` in `index.html` is public by design (it can only send him a
   message); never put his email address in the site. Web3Forms rejects
   server-side posts, so test it from a real browser on the live site.
-- `README.md` is Colby's plain-English editing guide. Keep it up to date
+- `README.md` is Kelbo's plain-English editing guide. Keep it up to date
   when how things work changes.

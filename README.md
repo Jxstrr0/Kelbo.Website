@@ -111,7 +111,7 @@ exact spot.
 3. Show it in a page with:
 
    ```html
-   <img src="assets/headshot.jpg" alt="Colby smiling at the camera" width="400" height="400">
+   <img src="assets/headshot.jpg" alt="Kelbo smiling at the camera" width="400" height="400">
    ```
 
    Always write `alt` text describing the picture for people who can't see it.
@@ -325,6 +325,6 @@ It runs entirely in the visitor's browser:
   folder with its own `index.html`, then set that project's `link` to the
   folder, like `tools/my-tool/`. Pages in there link back with `../../`.
 - **Custom domain:** add a file named `CNAME` containing just the domain (for
-  example `colbyjoyes.com`), then point the domain at GitHub Pages in your
+  example `kelbo.ca`), then point the domain at GitHub Pages in your
   domain provider's settings. All links on the site are relative, so they'll
   keep working.
