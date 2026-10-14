@@ -1,10 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <!-- A football: orange body with white laces -->
-  <ellipse cx="32" cy="32" rx="28" ry="17" transform="rotate(-35 32 32)" fill="#E8590C"/>
-  <g stroke="#fff" stroke-width="3" stroke-linecap="round" transform="rotate(-35 32 32)">
-    <line x1="22" y1="32" x2="42" y2="32"/>
-    <line x1="26" y1="28" x2="26" y2="36"/>
-    <line x1="32" y1="28" x2="32" y2="36"/>
-    <line x1="38" y1="28" x2="38" y2="36"/>
-  </g>
+  <!-- Neon play button: dark tile, cyan echo, pink triangle -->
+  <rect width="64" height="64" rx="14" fill="#120d24"/>
+  <path d="M22 17v30l24-15z" fill="none" stroke="#00e5ff" stroke-width="3" stroke-linejoin="round" transform="translate(-3 -2)"/>
+  <path d="M24 18v28l22-14z" fill="#ff3d9a"/>
 </svg>

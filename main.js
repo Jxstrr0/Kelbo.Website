@@ -4,27 +4,32 @@
    You shouldn't need to edit this file to add or change a project.
    Just edit projects.json. This script:
      1. loads projects.json
-     2. on the home page, shows projects marked "featured": true (max 3)
+     2. on the home page, shows projects marked "featured": true (max 4)
+        as big cards
      3. on the projects page, shows every project with filter buttons
      4. on the Games, Trading, and AI pages, shows every project in that
         "category"
      5. on the home page tiles, shows how many projects each section has
+     6. fades things in smoothly as you scroll (see "Scroll reveal")
    ========================================================================== */
 
 // Status labels, in order from "just an idea" to "done".
-// "spot" is where the ball sits on the little field, from 0 (start)
-// to 100 (end zone). To add a new status, add a line here.
+// "spot" is how full the progress bar is, from 0 to 100.
+// To add a new status, add a line here.
 const STATUSES = [
-  { label: "Shipped", spot: 95 },
-  { label: "Mostly done", spot: 72 },
-  { label: "Building", spot: 45 },
-  { label: "Planned", spot: 15 },
+  { label: "Shipped", spot: 100 },
+  { label: "Mostly done", spot: 78 },
+  { label: "Building", spot: 50 },
+  { label: "Planned", spot: 18 },
 ];
 
-const MAX_FEATURED = 3;
+const MAX_FEATURED = 4;
+
+// True if the visitor's device is set to "reduce motion".
+const REDUCE_MOTION = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 // Find the status entry for a project (ignores upper/lower case).
-// Unknown statuses still show, with the ball at the start line.
+// Unknown statuses still show, with an empty progress bar.
 function findStatus(statusText) {
   const wanted = String(statusText || "").trim().toLowerCase();
   return (
@@ -57,32 +62,74 @@ function isGame(project) {
   return inCategory(project, "Game");
 }
 
-// Build the list item for one project.
+// "Trading OS" -> "TO". Shown on covers that don't have a screenshot.
+function initials(title) {
+  return title
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((word) => word[0].toUpperCase())
+    .join("");
+}
+
+// Build the card for one project.
 function renderProject(project) {
   const status = findStatus(project.status);
+  const title = project.title || "Untitled";
   const item = el("li", "project");
 
-  // Title + status/category line
-  const top = el("div", "project__top");
-  top.append(el("h3", "project__title", project.title || "Untitled"));
+  // Cover: the "image" screenshot if there is one, otherwise a coloured
+  // tile with the project's initials. Tapping the cover opens the link
+  // too, but it's hidden from keyboards and screen readers because the
+  // button below already does the same thing.
+  const cover = el(project.link ? "a" : "div", "project__cover");
+  cover.dataset.cat = String(project.category || "").trim().toLowerCase();
+  if (project.link) {
+    cover.href = project.link;
+    cover.tabIndex = -1;
+    cover.setAttribute("aria-hidden", "true");
+  }
+  if (project.image) {
+    const img = el("img");
+    img.src = project.image;
+    img.alt = ""; // decoration: the title is right below
+    img.width = 640;
+    img.height = 480;
+    img.loading = "lazy";
+    cover.append(img);
+  } else {
+    cover.append(el("span", "project__initials", initials(title)));
+  }
+  item.append(cover);
+
+  const body = el("div", "project__body");
+  body.append(el("h3", "project__title", title));
+
+  // Status pill + category
   const meta = el("p", "project__meta");
   meta.append(el("span", "project__status", status.label));
   if (project.category) meta.append(el("span", "project__category", project.category));
-  top.append(meta);
-  item.append(top);
+  body.append(meta);
 
   if (project.summary) {
-    item.append(el("p", "project__summary", project.summary));
+    body.append(el("p", "project__summary", project.summary));
   }
+
+  // The progress bar. It's decoration only (the status is already
+  // written in text above), so screen readers skip it.
+  const field = el("div", "field is-waiting");
+  field.setAttribute("aria-hidden", "true");
+  field.style.setProperty("--progress", status.spot);
+  field.append(el("span", "field__drive"), el("span", "field__ball"));
+  body.append(field);
 
   // Links: "link" is where to try the project ("Play it" for games),
   // "code" is where its code lives on GitHub. Both are optional.
-  const title = project.title || "this project";
   const links = el("p", "project__links");
   if (project.link) {
-    // Games get a big "Play it" button; everything else a plain link.
+    // Games get a big pink "Play it" button; everything else a plain link.
     const link = isGame(project)
-      ? el("a", "project__link project__link--play", "Play it")
+      ? el("a", "button button--play", "Play it")
       : el("a", "project__link", "Take a look →");
     link.href = project.link;
     // The arrow is decoration; give screen readers a clear name.
@@ -95,16 +142,9 @@ function renderProject(project) {
     code.setAttribute("aria-label", "See the code for " + title);
     links.append(code);
   }
-  if (links.children.length) item.append(links);
+  if (links.children.length) body.append(links);
 
-  // The status field. It's decoration only (the status is already
-  // written in text above), so screen readers skip it.
-  const field = el("div", "field is-waiting");
-  field.setAttribute("aria-hidden", "true");
-  field.style.setProperty("--progress", status.spot);
-  field.append(el("span", "field__drive"), el("span", "field__ball"));
-  item.append(field);
-
+  item.append(body);
   return item;
 }
 
@@ -115,16 +155,51 @@ function fillList(listEl, projects, emptyMessage) {
     listEl.append(el("li", "project-list__note", emptyMessage));
     return;
   }
-  projects.forEach((p) => listEl.append(renderProject(p)));
+  projects.forEach((p, i) => {
+    const card = renderProject(p);
+    card.style.setProperty("--i", i % 4); // stagger each row of cards
+    listEl.append(card);
+    reveal(card);
+  });
+}
 
-  // Let the browser draw the ball at the start line first, then
-  // remove "is-waiting" so it slides to its spot (skipped if the
-  // visitor prefers reduced motion; see style.css).
+/* ---------- Scroll reveal ----------
+   Cards and sections start slightly faded and low, then slide up into
+   place as they scroll into view. A card's progress bar fills at the
+   same moment. Skipped entirely if "reduce motion" is on, or in old
+   browsers, so content is never hidden by accident. */
+const revealObserver =
+  !REDUCE_MOTION && "IntersectionObserver" in window
+    ? new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            showNow(entry.target);
+            revealObserver.unobserve(entry.target);
+          });
+        },
+        { rootMargin: "0px 0px -8% 0px" }
+      )
+    : null;
+
+function showNow(node) {
+  node.classList.add("is-in");
+  // Start the progress bar filling. Wait two frames so the browser
+  // draws it empty first, then animates to the right spot.
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
-      listEl.querySelectorAll(".field.is-waiting").forEach((f) => f.classList.remove("is-waiting"));
+      node.querySelectorAll(".field.is-waiting").forEach((f) => f.classList.remove("is-waiting"));
     });
   });
+}
+
+function reveal(node) {
+  if (!revealObserver) {
+    showNow(node);
+    return;
+  }
+  node.classList.add("reveal");
+  revealObserver.observe(node);
 }
 
 // Sort projects so the furthest-along come first. Projects with the
@@ -215,6 +290,13 @@ async function init() {
   document.querySelectorAll("[data-year]").forEach((n) => {
     n.textContent = new Date().getFullYear();
   });
+
+  // Fade in the mode tiles and the sections below the hero.
+  document.querySelectorAll(".tiles > li").forEach((tile, i) => {
+    tile.style.setProperty("--i", i);
+    reveal(tile);
+  });
+  document.querySelectorAll("[data-reveal]").forEach((node) => reveal(node));
 
   const lists = document.querySelectorAll("[data-projects]");
   if (lists.length === 0) return;
