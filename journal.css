@@ -1,0 +1,226 @@
+/* ==========================================================================
+   journal.css — extra styles for the AI Trading Journal (journal.html).
+   Everything else (header, fonts, colours, page head) comes from style.css.
+   ========================================================================== */
+
+:root {
+  --win-text: #1d6b45;    /* green: winning trades, "Bullish" */
+  --loss-text: var(--pylon-text); /* pink: losing trades, "Bearish" */
+  --coach-border: #7c3aed; /* violet edge on the AI coach box */
+  --coach-bg: #f1eaff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --win-text: #6fcf97;
+    --coach-border: #a78bfa;
+    --coach-bg: #1f1640;
+  }
+}
+
+/* ---------- The record ---------- */
+/* Four big numbers in a grid, split by thin lines */
+.record {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  max-width: 44rem;
+  margin: 1rem 0 0;
+  overflow: hidden;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--rule); /* shows through the gaps as divider lines */
+  box-shadow: var(--shadow);
+}
+
+.record > div {
+  padding: 0.9rem 1rem;
+  background: var(--card);
+}
+
+.record dt {
+  font-family: var(--font-pixel);
+  font-size: 0.5625rem;
+  line-height: 1.6;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.record dd {
+  margin: 0.35rem 0 0;
+  font-weight: 700;
+  font-size: 2rem;
+  line-height: 1.1;
+}
+
+@media (min-width: 40rem) {
+  .record {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.record__note {
+  margin: 0.6rem 0 0;
+  font-size: 0.9375rem;
+  color: var(--muted);
+}
+
+.record__note:empty {
+  display: none;
+}
+
+/* ---------- Entries ---------- */
+.entries {
+  display: grid;
+  gap: 1.25rem;
+  max-width: 44rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.entry {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1.15rem 1.15rem 1.25rem;
+  border: 1px solid var(--rule);
+  border-left: 4px solid var(--pylon);
+  border-radius: var(--radius);
+  background: var(--card);
+  box-shadow: var(--shadow);
+}
+
+.entry > * {
+  margin: 0;
+}
+
+.entry__top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.75rem;
+}
+
+.entry__date {
+  font-family: var(--font-pixel);
+  font-size: 0.625rem;
+  line-height: 1.6;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--pylon-text);
+}
+
+/* Market lean pill */
+.entry__bias {
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--muted);
+  font-weight: 700;
+  font-size: 0.8125rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.entry__bias--bullish {
+  color: var(--win-text);
+}
+
+.entry__bias--bearish {
+  color: var(--loss-text);
+}
+
+.entry__title {
+  font-size: 1.5rem;
+}
+
+/* ---------- Trades ---------- */
+.trades {
+  display: grid;
+  gap: 1px;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  background: var(--rule);
+  list-style: none;
+}
+
+.trade {
+  padding: 0.6rem 0.8rem;
+  background: var(--bg);
+}
+
+.trade__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.75rem;
+  margin: 0;
+}
+
+.trade__symbol {
+  font-weight: 700;
+}
+
+.trade__side {
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+/* The result sits on the right */
+.trade__result {
+  margin-left: auto;
+  font-weight: 700;
+}
+
+.trade__result--win {
+  color: var(--win-text);
+}
+
+.trade__result--loss {
+  color: var(--loss-text);
+}
+
+.trade__result--open {
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+.trade__note {
+  margin: 0.25rem 0 0;
+  font-size: 0.9375rem;
+  color: var(--muted);
+}
+
+/* ---------- AI coach box ---------- */
+.coach {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0.85rem 1rem;
+  border-left: 3px solid var(--coach-border);
+  border-radius: 0 10px 10px 0;
+  background: var(--coach-bg);
+}
+
+.coach > * {
+  margin: 0;
+}
+
+.coach__label {
+  font-family: var(--font-pixel);
+  font-size: 0.5625rem;
+  line-height: 1.6;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--coach-border);
+}
+
+.coach__text {
+  font-size: 1rem;
+}
+
+.entry__lesson {
+  font-size: 1rem;
+}
