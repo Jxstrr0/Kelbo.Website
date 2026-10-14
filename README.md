@@ -185,6 +185,21 @@ and open http://localhost:8000.
   will need a different setup, so plan that first.
 - **Keep it static.** No servers or anything that has to keep running.
 
+## The contact form
+
+The form under "Get in touch" on the home page sends messages through
+Web3Forms (web3forms.com), a free service that emails them to you. Your
+email address isn't anywhere on the site. Web3Forms knows it from when you
+made the access key, and the key in `index.html` (`name="access_key"`) is
+all the page needs. The key is meant to be public: all anyone can do with
+it is send you a message.
+
+- Messages arrive with the subject "New message from Kelbo.Website", so a
+  Gmail filter on that subject can put them in their own folder.
+- To send them to a different email, make a new key at web3forms.com with
+  that address and swap it into `index.html`.
+- A hidden checkbox catches spam bots. Real visitors never see it.
+
 ## The trading journal
 
 `journal.html` shows your market views, trades, and record. All of it comes
