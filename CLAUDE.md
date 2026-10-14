@@ -60,7 +60,11 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   in every page and only just fits at 360px. Test before adding to it.
 - The AI Trading Journal is `journal.html` + `journal.js` + `journal.css`,
   with entries in `journal.json` (a list, newest first by `date`). The
-  record is calculated from each trade's `result` (percent; missing = open).
+  record is calculated from each call's `grade` (hit/partial/miss, null =
+  not graded) and each trade's `result` (percent; missing = open). The
+  field list is at the top of `journal.js`. Entries can be long forecasts
+  (calls, scenarios, levels, sectors, schedule, plan); copy their content
+  faithfully and only fill in grades and the recap when Colby reports them.
   Colby updates it periodically; when he sends views or trades, write the
   entry and an honest "ai" coach note. Never invent trades or results, and
   prefer percentages over dollar amounts. `journal.js` borrows `el()` and
