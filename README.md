@@ -268,11 +268,13 @@ date and time, so there's no internet service or key involved.
   Saskatoon, worked out from the date like the sun. It shows its real
   phase (crescent, half, gibbous, full, or just a faint disc at new moon)
   and follows its real path: it rises on the left, climbs as high as the
-  real moon does, and sets on the right on its own schedule. It only
-  shows at night: it fades in as the sun gets low (from 6 degrees up)
-  and fades out the same way at dawn, so the sun and moon share the sky
-  for a little while around sunset and sunrise. On nights when the real
-  moon isn't up, there's no moon. At night the line under the horizon says which
+  real moon does, and sets on the right on its own schedule. At night
+  it's the full clay moon with its glow. By day, when the real moon is
+  up, it's a faint, pale ghost with no glow, like the real daytime moon
+  (a thin crescent near the sun almost vanishes). It changes over as
+  the sun gets low (from 6 degrees up to 2 degrees under), so around
+  sunset and sunrise the sun and the moon share the sky for a little
+  while. On nights when the real moon isn't up, there's no moon. At night the line under the horizon says which
   moon it is and where: "Waxing crescent moon over Saskatoon", or
   "Waxing crescent moon rises 2:31 PM" when it's down. It floats up and
   down a little and its glow breathes. Its look is `.horizon__moon` in

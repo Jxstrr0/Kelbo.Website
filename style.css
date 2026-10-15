@@ -665,8 +665,12 @@ img {
   top: calc((1 - var(--moon-alt)) * (var(--sky-height) - var(--moon-size) / 2));
   width: var(--moon-size);
   height: var(--moon-size);
-  filter: drop-shadow(0 0 6px rgba(217, 119, 87, 0.85)) drop-shadow(0 0 18px rgba(217, 119, 87, 0.5));
-  opacity: var(--moon-show, 0); /* main.js: 0 by day, 1 at night, fading around sunset and sunrise */
+  /* The glow fades out by day (--moon-day: 0 at night, 1 by day) */
+  filter: drop-shadow(0 0 6px rgba(217, 119, 87, calc(0.85 * (1 - var(--moon-day, 0)))))
+    drop-shadow(0 0 18px rgba(217, 119, 87, calc(0.5 * (1 - var(--moon-day, 0)))));
+  /* main.js: 1 at night, faint by day (only while the real moon is up),
+     changing over around sunset and sunrise */
+  opacity: var(--moon-show, 0);
   transition: top 1200ms var(--ease), left 1200ms var(--ease), opacity 1200ms var(--ease);
 }
 
@@ -686,6 +690,8 @@ img {
 
 .moon__lit {
   fill: var(--ll-clay);
+  /* By day it turns pale, mixing toward ivory like the real daytime moon */
+  fill: color-mix(in srgb, var(--ll-clay), var(--ll-ivory) calc(var(--moon-day, 0) * 70%));
 }
 
 /* Light on the ground: a soft clay shimmer on the ground strip under

@@ -993,22 +993,29 @@ function drawMoon(scene, phase) {
 // it is compared with its highest point this time round. Below the
 // horizon it drifts back under the ground, ready to rise again.
 function placeMoon(scene, t) {
-  drawMoon(scene, moonPhase(t));
+  const phase = moonPhase(t);
+  drawMoon(scene, phase);
   const span = moonSpanAt(t);
   const alt = moonAltitude(t);
   const f = Math.min(1, Math.max(0, (t - span.prev) / (span.next - span.prev)));
   const x = span.up ? 0.06 + 0.64 * f : 0.70 - 0.64 * f;
   let y = 0.92 * (alt / Math.max(10, span.peak));
   if (alt < 0) y = Math.max(-1, alt / 10);
-  // The moon belongs to the night: it fades in as the sun gets low
-  // (from 6 degrees up) and is fully out once the sun is 2 degrees
-  // under, then fades out the same way at dawn. So the two share the
-  // sky for a little while around sunset and sunrise, like real life.
-  const show = Math.max(0, Math.min(1, (6 - sunAltitude(t)) / 8));
+  // "night" runs 0 by day to 1 at night: the moon comes into its own as
+  // the sun gets low (from 6 degrees up) and is fully out once the sun
+  // is 2 degrees under, then the same in reverse at dawn. So the two
+  // share the sky for a little while around sunset and sunrise.
+  const night = Math.max(0, Math.min(1, (6 - sunAltitude(t)) / 8));
+  // By day the moon is still there when it's up, like the real one, just
+  // pale and faint against the bright sky. A thin crescent near the sun
+  // all but disappears; from about half lit it's as clear as it gets.
+  const day = 0.32 * Math.max(0, Math.min(1, (moonLit(phase) - 0.04) / 0.3));
+  const show = day + (1 - day) * night;
   scene.style.setProperty("--moon-x", x.toFixed(3));
   scene.style.setProperty("--moon-alt", Math.min(1, y).toFixed(3));
   scene.style.setProperty("--moon-show", show.toFixed(3));
-  scene.style.setProperty("--glint-moon", (glint(y) * 0.6 * show).toFixed(3));
+  scene.style.setProperty("--moon-day", (1 - night).toFixed(3)); // style.css: paler, no glow
+  scene.style.setProperty("--glint-moon", (glint(y) * 0.6 * night).toFixed(3));
 }
 
 // How strong the light on the ground is for a sun or moon at height y:
