@@ -130,7 +130,7 @@ week. It comes from `now.json`:
 {
   "updated": "2026-10-15",
   "items": [
-    { "text": "Finishing touches on Garage to Glory", "link": "https://jxstrr0.github.io/GarageToGlory/" },
+    { "text": "Finishing touches on Prairie Engine Works", "link": "https://jxstrr0.github.io/350Chev/" },
     { "text": "Something with no link" }
   ]
 }
