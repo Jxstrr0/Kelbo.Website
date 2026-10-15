@@ -509,6 +509,12 @@ img {
   position: relative;
   height: calc(var(--sky-height) + var(--ground-height));
   margin-top: 1rem;
+  /* Sideways finger swipes wind the sky through time (main.js); up and
+     down still scroll the page, and pinch still zooms. */
+  touch-action: pan-y pinch-zoom;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
 }
 
 /* Lilac stars that only come out after dark. main.js swaps the few
@@ -723,8 +729,8 @@ img {
   opacity: var(--glint-moon, 0);
 }
 
-/* While the opening spin plays (main.js), the sun is moved every frame,
-   so the slow easing above would only make it lag behind. */
+/* While the opening spin or a swipe plays (main.js), the sun is moved
+   every frame, so the slow easing above would only make it lag behind. */
 .horizon--spin .horizon__sun,
 .horizon--spin .horizon__moon,
 .horizon--spin .horizon__glint,
