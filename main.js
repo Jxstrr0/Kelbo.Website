@@ -18,6 +18,9 @@
      9. remembers the last game you opened and offers "Continue?"
     10. lights up "Market open" on the Trading tile during NYSE hours
     11. warms the sky toward clay in the 20 minutes before sunset
+    12. fills the "Now building" strip on the home page from now.json
+    13. stretches the hero's ray with the season, and shows a badge on the
+        longest and shortest days of the year
 
    To preview a time of day, add ?at= to the address, e.g.
    index.html?at=noon, ?at=sunset, ?at=night, or ?at=2026-06-21T22:30
@@ -124,6 +127,18 @@ function renderProject(project) {
 
   if (project.summary) {
     body.append(el("p", "project__summary", project.summary));
+  }
+
+  // Version note: "v1.4 · Added night mode". Both parts are optional
+  // ("version" and "latest" in projects.json); leave them "" to show nothing.
+  const version = String(project.version || "").trim().replace(/^v/i, "");
+  const latest = String(project.latest || "").trim();
+  if (version || latest) {
+    const note = el("p", "project__version");
+    if (version) note.append(el("strong", null, "v" + version));
+    if (version && latest) note.append(" · ");
+    if (latest) note.append(latest);
+    body.append(note);
   }
 
   // The progress bar. It's decoration only (the status is already
@@ -418,8 +433,10 @@ const TWILIGHT_MS = 20 * 60000; // the sky starts warming 20 minutes before suns
 const D2R = Math.PI / 180;
 const R2D = 180 / Math.PI;
 
-// Altitude of the sun above the horizon, in degrees, at a moment in time.
-function sunAltitude(date) {
+// Where the sun is in the sky at a moment in time: its declination (how far
+// north of the equator it sits, which sets the season) and its hour angle
+// (how far past noon it is), both in radians.
+function sunPosition(date) {
   const n = date.getTime() / 86400000 - 10957.5; // days since 1 Jan 2000, noon UTC
   const g = (357.529 + 0.98560028 * n) * D2R; // mean anomaly
   const q = 280.459 + 0.98564736 * n; // mean longitude (deg)
@@ -429,9 +446,44 @@ function sunAltitude(date) {
   const dec = Math.asin(Math.sin(e) * Math.sin(L)); // declination
   const gmst = 18.697374558 + 24.06570982441908 * n; // sidereal time, hours
   const lst = (gmst * 15 + YXE.lon) * D2R; // local sidereal time
-  const ha = lst - ra; // hour angle
+  return { dec, ha: lst - ra };
+}
+
+// Altitude of the sun above the horizon, in degrees, at a moment in time.
+function sunAltitude(date) {
+  const { dec, ha } = sunPosition(date);
   const lat = YXE.lat * D2R;
   return Math.asin(Math.sin(lat) * Math.sin(dec) + Math.cos(lat) * Math.cos(dec) * Math.cos(ha)) * R2D;
+}
+
+/* ---------- Seasons ----------
+   Saskatoon's days run from about 7h 40m of light in December to 16h 45m
+   in June. "season" is where today sits between those: 0 on the shortest
+   day, 1 on the longest. The hero's ray reaches further in summer. */
+const SHORTEST_DAY_MS = 7.65 * 3600000;
+const LONGEST_DAY_MS = 16.75 * 3600000;
+
+function seasonOf(day) {
+  if (!day.rise || !day.set) return 0.5;
+  const share = (day.set - day.rise - SHORTEST_DAY_MS) / (LONGEST_DAY_MS - SHORTEST_DAY_MS);
+  return Math.max(0, Math.min(1, share));
+}
+
+// "longest" on the longest day of the year (the June solstice), "shortest"
+// on the shortest (December), otherwise "". The solstice is the day the
+// sun sits furthest north (June) or south (December) at local noon, so we
+// check the days around it and see if today wins.
+function solsticeToday(date) {
+  const p = localParts(date);
+  if (p.m !== 6 && p.m !== 12) return "";
+  const sign = p.m === 6 ? 1 : -1; // June wants the biggest, December the smallest
+  let winner = null, best = -Infinity;
+  for (let d = 17; d <= 25; d++) {
+    const dec = sign * sunPosition(new Date(Date.UTC(p.y, p.m - 1, d, 19))).dec; // 19:00 UTC = 1 PM Saskatoon
+    if (dec > best) { best = dec; winner = d; }
+  }
+  if (winner !== p.d) return "";
+  return p.m === 6 ? "longest" : "shortest";
 }
 
 // Parts of a moment in Saskatoon time: { y, m, d, h, min, weekday }.
@@ -571,13 +623,32 @@ function setUpThemeToggle(refresh) {
 function setUpHorizon() {
   const scene = document.querySelector("[data-horizon]");
   const readout = document.querySelector("[data-horizon-readout]");
+  const badge = document.querySelector("[data-horizon-badge]");
 
   function tick() {
     const t = now();
     const alt = sunAltitude(t);
     const day = sunDay(t);
     const isDay = alt >= SUNRISE_ALT;
+    const season = seasonOf(day);
     applyTheme(isDay);
+    document.documentElement.style.setProperty("--season", season.toFixed(3));
+
+    // The badge for the longest and shortest days of the year.
+    if (badge) {
+      const which = solsticeToday(t);
+      if (which && day.rise && day.set) {
+        // The daylight part is a separate span so phones can hide it
+        // (see .horizon__badge-extra in style.css).
+        badge.replaceChildren(
+          `${which === "longest" ? "Longest" : "Shortest"} day of the year`,
+          el("span", "horizon__badge-extra", ` · ${hoursMins(day.set - day.rise)} of light`)
+        );
+        badge.hidden = false;
+      } else {
+        badge.hidden = true;
+      }
+    }
 
     // Twilight warming: over the last 20 minutes before sunset, --warm
     // climbs from 0 to 1 and style.css blends the sky toward clay.
@@ -603,7 +674,10 @@ function setUpHorizon() {
       if (alt < 0) y = Math.max(-1, alt / 10);
       scene.style.setProperty("--sun-x", x.toFixed(3));
       scene.style.setProperty("--sun-alt", Math.min(1, y).toFixed(3));
-      scene.style.setProperty("--ray", Math.max(0, Math.min(1, y)).toFixed(3));
+      // The ray follows the sun's height, and reaches further in summer:
+      // full length on the longest day, a bit under half on the shortest.
+      const reach = 0.45 + 0.55 * season;
+      scene.style.setProperty("--ray", (Math.max(0, Math.min(1, y)) * reach).toFixed(3));
     }
 
     if (readout) {
@@ -723,6 +797,58 @@ function setUpContinue() {
   box.classList.add("is-on");
 }
 
+/* ---------- "Now building" strip ----------
+   What's on the bench this week, from now.json: a short list of items
+   (each can have a "link") and an "updated" date. The strip stays hidden
+   if the file is missing or has no items. */
+function daysAgoText(ms) {
+  const days = Math.round(ms / 86400000);
+  if (days <= 0) return "today";
+  if (days === 1) return "yesterday";
+  if (days < 14) return `${days} days ago`;
+  if (days < 60) return `${Math.round(days / 7)} weeks ago`;
+  return "a while ago";
+}
+
+async function setUpNow() {
+  const box = document.querySelector("[data-now]");
+  if (!box) return;
+  let data;
+  try {
+    const response = await fetch("now.json", { cache: "no-cache" });
+    if (!response.ok) throw new Error("HTTP " + response.status);
+    data = await response.json();
+  } catch (err) {
+    // Most likely a typo in now.json. The strip just stays hidden.
+    console.error("Couldn't load now.json:", err);
+    return;
+  }
+  const items = Array.isArray(data.items) ? data.items.filter((it) => it && it.text) : [];
+  if (items.length === 0) return;
+
+  const list = box.querySelector("[data-now-list]");
+  items.forEach((it) => {
+    const item = el("li", "now__item");
+    if (it.link) {
+      const link = el("a", null, it.text);
+      link.href = it.link;
+      item.append(link);
+    } else {
+      item.textContent = it.text;
+    }
+    list.append(item);
+  });
+
+  // "Updated 3 days ago". The date in now.json is a plain "2026-10-15",
+  // read as midday in Saskatoon so it never lands on the wrong day.
+  const updated = box.querySelector("[data-now-updated]");
+  const when = Date.parse(String(data.updated || "") + "T12:00:00-06:00");
+  if (updated && !Number.isNaN(when)) updated.textContent = "Updated " + daysAgoText(Date.now() - when);
+
+  box.hidden = false;
+  reveal(box);
+}
+
 /* ---------- Market light on the Trading tile ----------
    NYSE hours: 9:30 to 4:00 New York time, Monday to Friday. (Holidays
    aren't checked, so a few days a year it'll say "open" when it isn't.) */
@@ -748,6 +874,7 @@ async function init() {
   setUpContinue();
   setUpMarketLight();
   setUpContactForm();
+  setUpNow();
 
   // Keep the footer year current.
   document.querySelectorAll("[data-year]").forEach((n) => {

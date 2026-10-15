@@ -39,20 +39,31 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   (semantic HTML, visible focus, good contrast, alt text,
   `prefers-reduced-motion`).
 - Use relative links only, because the site lives under `/Kelbo.Website/`
-  and may move to a custom domain later. The one exception is the `og:`
-  link-preview tags in each page's `<head>`, which must be absolute; update
-  them if the domain changes. `404.html` is the other exception: GitHub
+  and may move to a custom domain later. The exceptions are the `og:`
+  link-preview tags and the `canonical` tag in each page's `<head>`, plus
+  `robots.txt` and `sitemap.xml`, which must be absolute; update them all
+  if the domain changes. Add new pages to `sitemap.xml`. `404.html` is the other exception: GitHub
   serves it at any missing address, however deep, so a small script in its
   `<head>` adds a `<base>` pointing at the site's top folder before any
   links load. Keep that script first in the `<head>`.
 - The link preview image is `assets/social-preview.jpg` (1200×630, the
   Longlight sky, sun and horizon, "Longlight Interactive", plus the four
-  game covers). Regenerate it if the covers change a lot.
+  game covers). Regenerate it if the covers change a lot. The home-screen
+  icon is `assets/icon.svg` with PNGs at 180/192/512 (rendered from the
+  SVG; edge to edge, sun inside the middle 80%) and `site.webmanifest`;
+  every page's `<head>` links the apple-touch-icon and manifest.
+- Footers read "© year Kelbo / Longlight Interactive" because the studio
+  name isn't a registered business yet.
 
 ## Where things live
 
 - `projects.json` is the single source of truth for projects. `main.js`
-  renders it. Adding a project should never need an HTML edit.
+  renders it. Adding a project should never need an HTML edit. Each project
+  can carry a `version` ("1.4", no "v") and `latest` (what changed), shown
+  as "v1.4 · Added night mode" under the summary; either may be "".
+- `now.json` feeds the "Now building" strip under the home hero (`updated`
+  date plus `items`, each `text` with an optional `link`). Empty items hide
+  the strip. Refresh it when Kelbo says what he's working on.
 - The status labels and progress-bar fill amounts are in `STATUSES` at the
   top of `main.js`.
 - The look is the Longlight Interactive "Horizon" brand: a half-set clay
@@ -69,7 +80,10 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   `main.js`, no network), switches to the dark theme at real sunset, and
   warms the sky toward clay over the last 20 minutes before it (`--warm`).
   Preview any time with `?at=noon|sunrise|sunset|dusk|night` or
-  `?at=2026-06-21T21:30`. The ☀/☾ button cycles auto → light → dark and is
+  `?at=2026-06-21T21:30`. The ray's reach scales with the season
+  (`seasonOf`, from day length; `--season` on `<html>`), and
+  `solsticeToday` shows the `[data-horizon-badge]` pill on the home hero on
+  the longest and shortest days. The ☀/☾ button cycles auto → light → dark and is
   saved in `localStorage["kelbo.theme"]`; a tiny inline script in every
   page's `<head>` applies it before paint. The home page also has the
   "Continue?" memory card (`kelbo.lastPlayed`, `kelbo.visits`, set when any

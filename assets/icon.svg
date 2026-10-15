@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Longlight home-screen icon. Edge to edge ivory, because phones round
+       the corners themselves. The sun and horizon stay inside the middle
+       80% so nothing gets cut off. The PNG copies (icon-180.png,
+       icon-192.png, icon-512.png) are made from this file. -->
+  <rect width="512" height="512" fill="#FAF9F5"/>
+  <path d="M136 300 A120 120 0 0 1 376 300 Z" fill="#D97757"/>
+  <rect x="64" y="300" width="384" height="30" fill="#7B3FC4"/>
+</svg>
