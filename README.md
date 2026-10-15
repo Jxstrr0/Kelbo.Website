@@ -25,7 +25,9 @@ you save on the `main` branch goes live within a minute or two.
 | `assets/` | Images, game cover screenshots (`assets/covers/`), the link preview picture, the browser-tab icon, and the home-screen icon |
 | `site.webmanifest` | The site's name, colours and icon for phones that add it to the home screen |
 | `robots.txt`, `sitemap.xml` | Tell search engines they're welcome and which pages exist. Add a line to the sitemap when you add a page |
-| `agent-fleet.html` | The Agent Fleet plan page. All plain text, so edit the words directly |
+| `agent-fleet.html` | The Agent Fleet page. All plain text except the weekly scan, so edit the words directly |
+| `scan.json` | **The weekly scan.** Rewritten every Saturday by a Claude routine |
+| `scan.js` | Shows the weekly scan on the Agent Fleet page |
 | `journal.html` | The AI Trading Journal page |
 | `journal.json` | **Your journal entries.** Edit this to add an update |
 | `options.json` | **Your options trades.** Edit this to log a trade |
@@ -366,6 +368,26 @@ top to today's date:
   public page only shows percentages. Keep those in your own ledger.
 - Easiest way: send Claude the new lines from your ledger and it'll add
   them.
+
+## The weekly scan
+
+The Agent Fleet page shows a weekly market scan: how the big indexes did,
+the week's biggest gainers and losers, and next week's earnings and
+economic reports. It lives in `scan.json` and `scan.js` puts it on the page.
+
+- **Who writes it:** a scheduled Claude routine called "Longlight weekly
+  scan" runs every Saturday at 8:55 am Saskatoon time on your own Claude
+  plan. It searches the market news, rewrites `scan.json`, and merges it
+  into `main` like any other change. No API key, nothing secret in the repo.
+- **Pause, change or run it now:** open Routines in the Claude app
+  (claude.ai/code). You can turn it off, change the day or time, or tap Run
+  to get a fresh scan right away.
+- **Editing by hand:** the fields are listed at the top of `scan.js`. Each
+  mover's `change` is the week's move in percent (`12.3` means +12.3%).
+  Set `"week"` to `""` to hide the scan and show "first scan lands
+  Saturday" instead.
+- The numbers come from news searches, so the page says to double-check
+  them, and lists its sources.
 
 ## The Prediction Tracker (parked)
 

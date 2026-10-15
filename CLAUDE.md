@@ -129,6 +129,13 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   from `paid`/`sold` premiums and feeds the record's options group. Leave
   out contract counts and dollar P&L. When he sends new trades, add them
   oldest first, bump `updated`, and refresh the `ai` coach note honestly.
+- The weekly scan on `agent-fleet.html` is `scan.json` (fields at the top
+  of `scan.js`). A Claude Code routine on Kelbo's own Claude plan ("Longlight
+  weekly scan", Saturdays 8:55 am America/Regina) rewrites it from web
+  searches and merges it, so no API key exists for it. When running as that
+  routine: only touch `scan.json`, use real figures from sources found that
+  run (list them in `sources`), never guess a number, and leave out anything
+  that can't be confirmed.
 - The Prediction Tracker in `tools/prediction-tracker/` is parked: still in
   the repo but removed from `projects.json` (README has the block to
   restore it).
