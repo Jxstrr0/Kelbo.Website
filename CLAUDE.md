@@ -48,10 +48,13 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   links load. Keep that script first in the `<head>`.
 - The link preview image is `assets/social-preview.jpg` (1200×630, the
   Longlight sky, sun and horizon, "Longlight Interactive", plus the four
-  game covers). Regenerate it if the covers change a lot. The home-screen
-  icon is `assets/icon.svg` with PNGs at 180/192/512 (rendered from the
-  SVG; edge to edge, sun inside the middle 80%) and `site.webmanifest`;
-  every page's `<head>` links the apple-touch-icon and manifest.
+  game covers; it still shows the old sun + ray). Regenerate it if the
+  covers change a lot. The favicon and home-screen icons are the sun on an
+  ivory line on a purple tile (the favicon turns slate in dark mode):
+  `assets/icon.svg` (square source), `icon-180.png` (square), `icon-192/512`
+  (rounded tile), `icon-maskable-512.png` (art inside the middle 80%) and
+  `site.webmanifest`. Every page's `<head>` links the favicon and
+  apple-touch-icon with `?v=2`; bump it on every page when they change.
 - Footers read "© year Kelbo / Longlight Interactive" because the studio
   name isn't a registered business yet.
 
@@ -103,11 +106,18 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   them via `link` (the pink Play it button) and `code` (the repo). The home
   page "Pick a game" cards are the `featured` projects (max 4); on phones
   all but the first are shortened (16:9 picture, two-line summary).
-- The header (Longlight mark + LONGLIGHT / INTERACTIVE wordmark as home, the
-  nav Games, Trading, AI, Projects, plus About from 64rem, and the ☀/☾
-  button) is copied in every page and only just fits at 360px, where the
-  wordmark text hides and only the mark shows (drawn big with its ray
-  cropped). Test before adding to it. The parked tracker doesn't load
+- The logo is the horizon lockup: the sun on a line running under
+  LONGLIGHT, INTERACTIVE justified to the same width below. It's inline SVG
+  with the letters outlined to paths (don't swap them back to live text),
+  coloured by `.logo__sun/line/word/sub` and `--logo-line` (ivory light,
+  lilac dark). The ray is retired from the logo and only lives in the
+  hero's live horizon. Below 40rem the header shows `.logo--compact` (sun +
+  short line), from 40rem `.logo--full`; the footer always shows the full
+  lockup.
+- The header (the logo as home, the nav Games, Trading, AI, Projects, plus
+  About from 64rem, and the ☀/☾ button) is copied in every page and only
+  just fits at 360px, where only the compact mark shows. Test before adding
+  to it. The parked tracker doesn't load
   `main.js` (its names clash), so it has no ☀/☾ button or live sun.
 - The AI Trading Journal is `journal.html` + `journal.js` + `journal.css`,
   with entries in `journal.json` (a list, newest first by `date`). The
