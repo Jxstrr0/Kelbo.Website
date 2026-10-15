@@ -224,7 +224,7 @@ The sun in the top band of every page is the real sun over Saskatoon. It
 rises on the left, crosses as the day goes on, and sinks behind the
 horizon line at sunset. In the last 20 minutes before sunset the purple sky
 warms up, and when the sun goes down the whole site switches to its dark
-theme with a few stars. It's all worked out on the visitor's phone from the
+theme and the real stars come out. It's all worked out on the visitor's phone from the
 date and time, so there's no internet service or key involved.
 
 - **The ☀/☾ button** in the header lets a visitor pick light or dark
@@ -243,6 +243,14 @@ date and time, so there's no internet service or key involved.
   twinkling are all switched off for anyone with "reduce motion" on.
   The look is in the "live horizon" part of `style.css`, and the
   animations are near the bottom of it.
+- **The stars:** the night sky shows the real stars over Saskatoon right
+  now: the brightest named stars (Sirius, Vega, Orion's belt and so on),
+  each where it really is. The sky strip faces south, so east is on the
+  left edge, south in the middle and west on the right, and higher stars
+  sit higher. They turn slowly across the sky through the night and race
+  round during the opening spin. The bigger, glowing dots are the
+  brightest stars. The small skies at the top of other pages only show
+  the brightest ones. The star list is `STARS` in `main.js`.
 - **The moon:** the clay moon with its soft glow is the real moon over
   Saskatoon, worked out from the date like the sun. It shows its real
   phase (crescent, half, gibbous, full, or just a faint disc at new moon)
