@@ -20,7 +20,8 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
 - **The site is branded Longlight Interactive** (his studio). Page titles,
   `og:` tags, the header lockup (LONGLIGHT / INTERACTIVE), the home hero and
   the footer all say Longlight Interactive. Everything personal about Kelbo
-  lives on `about.html`, linked from the hero line, every footer, and the nav
+  lives on `about.html`, linked from "by Kelbo" under the hero name (the one
+  place the site says "by Kelbo"), every footer, and the nav
   on wide screens (`nav__wide`, 64rem+). Studio pages (home, Games, AI,
   Projects) speak as Longlight; Trading, the journal and Agent Fleet stay in
   his own first-person voice.
@@ -86,7 +87,8 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
 - Games each live in their own repo with their own GitHub Pages site
   (GarageToGlory, RedSkies, BaccaratTable, 350Chev). This site only links to
   them via `link` (the pink Play it button) and `code` (the repo). The home
-  page "Pick a game" cards are the `featured` projects (max 4).
+  page "Pick a game" cards are the `featured` projects (max 4); on phones
+  all but the first are shortened (16:9 picture, two-line summary).
 - The header (Longlight mark + LONGLIGHT / INTERACTIVE wordmark as home, the
   nav Games, Trading, AI, Projects, plus About from 64rem, and the ☀/☾
   button) is copied in every page and only just fits at 360px, where the
