@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>About · Longlight Interactive</title>
+  <meta name="description" content="About Kelbo, the person behind Longlight Interactive, based in Saskatoon, Saskatchewan.">
+  <!-- Link preview: the card that shows up when this page is shared in a
+       text, Discord, X, etc. These links have to be full web addresses
+       (not relative), because the apps that read them aren't on this site.
+       The picture is assets/social-preview.jpg (1200x630). -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Longlight Interactive">
+  <meta property="og:title" content="About · Longlight Interactive">
+  <meta property="og:description" content="About Kelbo, the person behind Longlight Interactive, based in Saskatoon, Saskatchewan.">
+  <meta property="og:url" content="https://jxstrr0.github.io/Kelbo.Website/about.html">
+  <meta property="og:image" content="https://jxstrr0.github.io/Kelbo.Website/assets/social-preview.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="The Longlight Interactive sun over a purple horizon, beside screenshots of four of its games.">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <meta name="theme-color" content="#7B3FC4">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap">
+
+  <link rel="stylesheet" href="style.css">
+  <!-- If the visitor has chosen a theme with the ☀/☾ button, apply it
+       before anything draws so the page doesn't flash. -->
+  <script>
+    try {
+      var t = localStorage.getItem("kelbo.theme");
+      if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
+    } catch (e) {}
+  </script>
+  <script src="main.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="wrap site-header__inner">
+      <a class="wordmark" href="./" aria-label="Longlight Interactive, home">
+        <!-- The Longlight mark: sun, ray, horizon. The horizon line changes
+             colour with the theme (ivory by day, purple by night). -->
+        <svg class="mark" viewBox="0 0 160 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M16 60 A24 24 0 0 1 64 60 Z" fill="#D97757"/>
+          <polygon points="66,47 160,49.5 160,52.5 66,52" fill="#D97757" opacity="0.6"/>
+          <rect x="0" y="60" width="160" height="3.5" fill="var(--horizon, #FAF9F5)"/>
+        </svg>
+        <span>LONGLIGHT<small>INTERACTIVE</small></span>
+      </a>
+      <nav aria-label="Main">
+        <ul class="nav">
+          <li><a href="games.html">Games</a></li>
+          <li><a href="trading.html">Trading</a></li>
+          <li><a href="ai.html">AI</a></li>
+          <li><a href="projects.html">Projects</a></li>
+          <li class="nav__wide"><a href="about.html" aria-current="page">About</a></li>
+        </ul>
+      </nav>
+      <!-- main.js fills this in: auto (follows the sun) → light → dark -->
+      <button class="theme-toggle" type="button" data-theme-toggle aria-label="Theme: follows the sun" title="Theme: follows the sun">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="4"/>
+          <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="page-head">
+      <div class="wrap">
+        <p class="eyebrow">About</p>
+        <h1>Kelbo</h1>
+        <p class="page-head__line">
+          The person behind Longlight Interactive.
+        </p>
+        <!-- The live horizon: main.js puts the sun where the real sun is
+             over Saskatoon right now. -->
+        <div class="horizon" data-horizon aria-hidden="true">
+          <div class="horizon__stars">
+            <i style="left:8%;top:18%"></i><i style="left:30%;top:52%"></i><i style="left:47%;top:14%"></i>
+            <i style="left:63%;top:44%"></i><i style="left:79%;top:16%"></i><i style="left:92%;top:48%"></i>
+          </div>
+          <div class="horizon__ray"></div>
+          <div class="horizon__sun"></div>
+          <div class="horizon__line"></div>
+          <div class="horizon__ground"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- About: the prose on the left, the player card on the right.
+         This used to be on the home page. -->
+    <section class="section wrap" aria-labelledby="about-heading" data-reveal>
+      <h2 id="about-heading" class="visually-hidden">About Kelbo</h2>
+      <div class="about-grid">
+        <div class="prose">
+          <p>
+            I'm Kelbo, and I'm based in Saskatoon, Saskatchewan. I played
+            university football on a scholarship.
+          </p>
+          <p>
+            I got into making games through my brother's interest in coding and
+            my own interest in engineering of all kinds. It gives my overactive
+            mind somewhere to go, and I get to build games that play the way I
+            want them to. I make them under the name Longlight Interactive,
+            mostly for fun, for myself and for anyone who enjoys the same style
+            of game.
+          </p>
+          <p>
+            I'm also in my first year of day trading part-time. I like
+            high-pressure situations, and I enjoy digging into the data and
+            building a thesis before I take a trade. I post my calls and trades
+            in my <a href="journal.html">trading journal</a>, wins and losses
+            both.
+          </p>
+          <p>
+            Outside of games and trading, I'm building small tools and AI
+            projects. This site is a collection of my active projects and
+            passions. Some of it is mostly done and some of it is still just a
+            plan, so if you check back every once in a while, you should see
+            things move down the field.
+          </p>
+          <p>
+            When I'm not building or trading, I'm usually watching F1 or
+            football. I used to race stock cars too, which is where
+            <a href="https://jxstrr0.github.io/350Chev/">Prairie Engine Works</a>
+            comes from. I'm also a big Survivor and Big Brother fan.
+          </p>
+          <p>
+            Play a game or two, and have a look at my trading theses. If
+            anything here catches your eye, feel free to
+            <a href="./#contact-heading">reach out</a>.
+          </p>
+        </div>
+        <!-- Player card -->
+        <ul class="facts" aria-label="Quick facts">
+          <li><span class="facts__k">Studio</span><span class="facts__v">Longlight Interactive</span></li>
+          <li><span class="facts__k">Side quest</span><span class="facts__v">Day trading, year one</span></li>
+          <li><span class="facts__k">Football</span><span class="facts__v">University, on scholarship</span></li>
+          <li><span class="facts__k">Base</span><span class="facts__v">Saskatoon, SK</span></li>
+          <li><span class="facts__k">Watching</span><span class="facts__v">F1, football, Survivor</span></li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <!-- The stacked Longlight lockup -->
+      <a class="lockup" href="games.html" aria-label="Longlight Interactive games">
+        <svg class="mark" viewBox="0 0 160 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M16 60 A24 24 0 0 1 64 60 Z" fill="#D97757"/>
+          <polygon points="66,47 160,49.5 160,52.5 66,52" fill="#D97757" opacity="0.6"/>
+          <rect x="0" y="60" width="160" height="3.5" fill="var(--horizon, #FAF9F5)"/>
+        </svg>
+        <strong>LONGLIGHT</strong>
+        <small>INTERACTIVE</small>
+      </a>
+      <p>&copy; <span data-year>2026</span> Longlight Interactive. Built by hand and hosted on GitHub Pages.
+        <a href="about.html">About Kelbo</a> &middot; <a href="https://github.com/Jxstrr0">GitHub</a></p>
+    </div>
+  </footer>
+</body>
+</html>
