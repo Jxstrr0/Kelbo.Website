@@ -1,6 +1,6 @@
 /* ==========================================================================
    Prediction Tracker styles.
-   The shared look (colours, fonts, header, footer, the glowing
+   The shared look (colours, fonts, header, footer, the horizon
    progress bar) comes from ../../style.css. This file only adds what's new here.
    ========================================================================== */
 
@@ -10,8 +10,14 @@
   --wrong-text: var(--pylon-text); /* "Wrong" label */
 }
 
+/* Dark theme: a saved ☀/☾ choice, or else the phone's own setting
+   (this page doesn't load main.js, so it doesn't follow the sun). */
+:root[data-theme="dark"] {
+  --right-text: #6fcf97;
+}
+
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme]) {
     --right-text: #6fcf97;
   }
 }
@@ -156,9 +162,14 @@
   box-shadow: 0 0 22px var(--glow-pink);
 }
 
+:root[data-theme="dark"] .btn--primary,
+:root[data-theme="dark"] .btn--primary:hover {
+  color: var(--night);
+}
+
 @media (prefers-color-scheme: dark) {
-  .btn--primary,
-  .btn--primary:hover {
+  :root:not([data-theme]) .btn--primary,
+  :root:not([data-theme]) .btn--primary:hover {
     color: var(--night);
   }
 }
