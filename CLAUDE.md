@@ -24,8 +24,10 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   bundlers, or build step.
 - **No secrets.** The repo is public. Never commit API keys, tokens, or
   passwords. If a tool needs a key, talk through options with Kelbo first.
-- Mobile first (works down to 360px wide), light and dark mode via
-  `prefers-color-scheme` with every colour in CSS variables, accessible
+- Mobile first (works down to 360px wide), light and dark themes with
+  every colour in CSS variables (`data-theme` on `<html>`, set by `main.js`
+  from the real sun; `prefers-color-scheme` is only the fallback before JS
+  runs, so page CSS must handle both), accessible
   (semantic HTML, visible focus, good contrast, alt text,
   `prefers-reduced-motion`).
 - Use relative links only, because the site lives under `/Kelbo.Website/`
@@ -35,8 +37,9 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   serves it at any missing address, however deep, so a small script in its
   `<head>` adds a `<base>` pointing at the site's top folder before any
   links load. Keep that script first in the `<head>`.
-- The link preview image is `assets/social-preview.jpg` (1200×630, the neon
-  look plus the four game covers). Regenerate it if the covers change a lot.
+- The link preview image is `assets/social-preview.jpg` (1200×630, the
+  Longlight sky, sun and horizon plus the four game covers). Regenerate it if
+  the covers change a lot.
 
 ## Where things live
 
@@ -44,10 +47,24 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   renders it. Adding a project should never need an HTML edit.
 - The status labels and progress-bar fill amounts are in `STATUSES` at the
   top of `main.js`.
-- The look is "neon arcade" (dark synthwave hero, pink/cyan glow, project
-  cards with cover images). Fonts: Space Grotesk + Press Start 2P (pixel
-  accents only, always uppercase). Game covers live in `assets/covers/`
+- The look is the Longlight Interactive "Horizon" brand: a half-set clay
+  sun on a long horizon line. Five colours only (Clay #D97757, Purple
+  #7B3FC4, Slate #141413, Ivory #FAF9F5, Lilac #B48CE8) as `--ll-*` tokens at
+  the top of `style.css`; one font, Space Grotesk 500/700. Light theme =
+  purple sky (hero, page heads, header, footer) with ivory body; dark theme
+  = slate. Clay text on the purple sky is too faint, so keep clay for the
+  sun, buttons and underlines there. Game covers live in `assets/covers/`
   (640×480 JPG, captured from each live game).
+- The live horizon (`[data-horizon]` in the home hero, every page head and
+  the 404) puts the sun where the real sun is over Saskatoon (`YXE` in
+  `main.js`, no network), switches to the dark theme at real sunset, and
+  warms the sky toward clay over the last 20 minutes before it (`--warm`).
+  Preview any time with `?at=noon|sunrise|sunset|dusk|night` or
+  `?at=2026-06-21T21:30`. The ☀/☾ button cycles auto → light → dark and is
+  saved in `localStorage["kelbo.theme"]`; a tiny inline script in every
+  page's `<head>` applies it before paint. The home page also has the
+  "Continue?" memory card (`kelbo.lastPlayed`, `kelbo.visits`, set when any
+  Play button is tapped) and the NYSE market light on the Trading tile.
 - Motion lives at the bottom of `style.css`, all inside
   `prefers-reduced-motion: no-preference`; `main.js` handles scroll reveal
   and smooth filtering (FLIP) and skips both when reduce motion is on. Content must never depend on JS or
@@ -62,8 +79,11 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   (GarageToGlory, RedSkies, BaccaratTable, 350Chev). This site only links to
   them via `link` (the pink Play it button) and `code` (the repo). The home
   page "Pick a game" cards are the `featured` projects (max 4).
-- The nav (Games, Trading, AI, Projects; the KELBO wordmark is home) is copied
-  in every page and only just fits at 360px. Test before adding to it.
+- The header (Longlight mark + KELBO wordmark as home, the nav Games,
+  Trading, AI, Projects, and the ☀/☾ button) is copied in every page and
+  only just fits at 360px, where the KELBO text hides and only the mark
+  shows. Test before adding to it. The parked tracker doesn't load
+  `main.js` (its names clash), so it has no ☀/☾ button or live sun.
 - The AI Trading Journal is `journal.html` + `journal.js` + `journal.css`,
   with entries in `journal.json` (a list, newest first by `date`). The
   record is calculated from each call's `grade` (hit/partial/miss, null =
