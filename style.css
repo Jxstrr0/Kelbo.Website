@@ -559,6 +559,13 @@ img {
   transition: top 1200ms var(--ease), left 1200ms var(--ease), transform 1200ms var(--ease), opacity 600ms;
 }
 
+/* While the opening spin plays (main.js), the sun is moved every frame,
+   so the slow easing above would only make it lag behind. */
+.horizon--spin .horizon__sun,
+.horizon--spin .horizon__ray {
+  transition: none;
+}
+
 .horizon__line {
   position: absolute;
   left: 50%;
