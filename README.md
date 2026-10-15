@@ -93,7 +93,7 @@ Paste it after the last one and change the values:
   }
 ```
 
-- **status**: use one of `Shipped`, `Mostly done`, `Building`, or `Planned`.
+- **status**: use one of `Shipped`, `Mostly done`, `Building`, `Early stages`, or `Planned`.
   This sets how far along the progress bar the little sun sits.
 - **category**: which section it shows up in: `Game`, `Trading`, or `AI`.
   Anything else still shows on the Projects page, just not in a section.
