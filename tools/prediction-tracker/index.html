@@ -17,17 +17,26 @@
   <meta property="og:image" content="https://jxstrr0.github.io/Kelbo.Website/assets/social-preview.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Kelbo in neon letters beside screenshots of four of his games.">
+  <meta property="og:image:alt" content="Kelbo and the Longlight sun over a purple horizon, beside screenshots of four of his games.">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <meta name="theme-color" content="#7B3FC4">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap">
 
   <!-- Shared site styles first, then the styles for this tool only -->
   <link rel="stylesheet" href="../../style.css">
   <link rel="stylesheet" href="tracker.css">
+  <!-- If the visitor has chosen a theme with the ☀/☾ button, apply it
+       before anything draws so the page doesn't flash. -->
+  <script>
+    try {
+      var t = localStorage.getItem("kelbo.theme");
+      if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
+    } catch (e) {}
+  </script>
   <script src="tracker.js" defer></script>
 </head>
 <body>
@@ -35,7 +44,16 @@
 
   <header class="site-header">
     <div class="wrap site-header__inner">
-      <a class="wordmark" href="../../" aria-label="Kelbo, home">KELBO</a>
+      <a class="wordmark" href="../../" aria-label="Kelbo, home">
+        <!-- The Longlight mark: sun, ray, horizon. The horizon line changes
+             colour with the theme (ivory by day, purple by night). -->
+        <svg class="mark" viewBox="0 0 160 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M16 60 A24 24 0 0 1 64 60 Z" fill="#D97757"/>
+          <polygon points="66,47 160,49.5 160,52.5 66,52" fill="#D97757" opacity="0.6"/>
+          <rect x="0" y="60" width="160" height="3.5" fill="var(--horizon, #FAF9F5)"/>
+        </svg>
+        <span>KELBO<small>LONGLIGHT</small></span>
+      </a>
       <nav aria-label="Main">
         <ul class="nav">
           <li><a href="../../games.html">Games</a></li>
@@ -174,6 +192,16 @@
 
   <footer class="site-footer">
     <div class="wrap">
+      <!-- The stacked Longlight lockup -->
+      <a class="lockup" href="../../games.html" aria-label="Longlight Interactive games">
+        <svg class="mark" viewBox="0 0 160 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M16 60 A24 24 0 0 1 64 60 Z" fill="#D97757"/>
+          <polygon points="66,47 160,49.5 160,52.5 66,52" fill="#D97757" opacity="0.6"/>
+          <rect x="0" y="60" width="160" height="3.5" fill="var(--horizon, #FAF9F5)"/>
+        </svg>
+        <strong>LONGLIGHT</strong>
+        <small>INTERACTIVE</small>
+      </a>
       <p>&copy; <span data-year>2026</span> Kelbo. Built by hand and hosted on GitHub Pages.
         <a href="https://github.com/Jxstrr0">My GitHub</a></p>
     </div>

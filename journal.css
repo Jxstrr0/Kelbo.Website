@@ -5,17 +5,22 @@
 
 :root {
   --win-text: #1d6b45;    /* green: winning trades, "Bullish" */
-  --loss-text: var(--pylon-text); /* pink: losing trades, "Bearish" */
-  --coach-border: #7c3aed; /* violet edge on the AI coach box */
-  --coach-bg: #f1eaff;
+  --loss-text: var(--pylon-text); /* clay: losing trades, "Bearish" */
+  --coach-border: var(--secondary); /* purple edge on the AI coach box */
+  --coach-bg: var(--secondary-soft);
   --partial-text: #8a5a00; /* amber: calls that were half right */
 }
 
+/* Dark theme: set by main.js after sunset or by the ☀/☾ button. Before
+   main.js runs, the phone's own setting is used. */
+:root[data-theme="dark"] {
+  --win-text: #6fcf97;
+  --partial-text: #e0a64a;
+}
+
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme]) {
     --win-text: #6fcf97;
-    --coach-border: #a78bfa;
-    --coach-bg: #1f1640;
     --partial-text: #e0a64a;
   }
 }
