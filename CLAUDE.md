@@ -93,7 +93,11 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   refresh, `spinSun` plays the last 24 hours in `SPIN_MS` (4.5 s) so the
   sun does a full day before landing on now (`sessionStorage["kelbo.sunSpun"]`,
   `.horizon--spin` turns off the CSS easing; skipped with reduce motion).
-  `placeSun` is the one place the sun gets positioned. The ☀/☾ button cycles auto → light → dark and is
+  `placeSun` is the one place the sun gets positioned; it also calls
+  `placeMoon`, which puts the clay crescent moon (`.horizon__moon`, glow
+  via drop-shadow, crescent via mask) in the sky from sunset to sunrise:
+  rising left at sunset, highest mid-night, setting right at sunrise. It's
+  stylized, not the real moon, and sits below the ground by day. The ☀/☾ button cycles auto → light → dark and is
   saved in `localStorage["kelbo.theme"]`; a tiny inline script in every
   page's `<head>` applies it before paint. The home page also has the
   "Continue?" memory card (`kelbo.lastPlayed`, `kelbo.visits`, set when any
