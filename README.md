@@ -172,6 +172,13 @@ sun on its line) and wider screens show the full lockup. The colours come
 from the theme: the line is ivory in light mode and lilac in dark mode
 (`--logo-line` in `style.css`).
 
+The sun has a soft clay glow and a thin halo ring around it. When a page
+opens, the sun rises up out of its line, then the halo and glow come in,
+and it lifts a little when you hover over the logo. Anyone with "reduce
+motion" on just sees the finished logo. The glow's blur is set once per
+page, inside the footer logo (`<filter id="logo-glow">`), and the header
+borrows it, so leave that `<defs>` block in the footer.
+
 ### The link preview
 
 When someone shares a link to the site in a text, Discord, or X, the app
