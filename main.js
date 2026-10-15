@@ -648,6 +648,15 @@ function placeSun(scene, t) {
   // full length on the longest day, a bit under half on the shortest.
   const reach = 0.45 + 0.55 * season;
   scene.style.setProperty("--ray", (Math.max(0, Math.min(1, y)) * reach).toFixed(3));
+  // --sun-low: 0 when the sun is high, 1 near the horizon. style.css
+  // makes the glow bigger and warmer as it climbs to 1.
+  const low = 1 - Math.min(1, Math.max(0, y) / 0.6);
+  scene.style.setProperty("--sun-low", low.toFixed(3));
+  // --sun-show fades the glow and halo out as the sun sinks out of sight.
+  scene.style.setProperty("--sun-show", Math.max(0, Math.min(1, (y + 0.6) * 3)).toFixed(3));
+  // The light on the ground fades in as the sun clears the horizon,
+  // strongest when the sun is low.
+  scene.style.setProperty("--glint-sun", (glint(y) * (0.55 + 0.45 * low)).toFixed(3));
   placeMoon(scene, t, day);
 }
 
@@ -671,6 +680,13 @@ function placeMoon(scene, t, day) {
   }
   scene.style.setProperty("--moon-x", x.toFixed(3));
   scene.style.setProperty("--moon-alt", y.toFixed(3));
+  scene.style.setProperty("--glint-moon", (glint(y) * 0.6).toFixed(3));
+}
+
+// How strong the light on the ground is for a sun or moon at height y:
+// 0 once it has sunk below the horizon, full just above it.
+function glint(y) {
+  return Math.max(0, Math.min(1, (y + 0.15) * 6));
 }
 
 /* ---------- The opening spin ----------

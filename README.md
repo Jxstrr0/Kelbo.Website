@@ -235,10 +235,19 @@ date and time, so there's no internet service or key involved.
   or an exact Saskatoon time like `?at=2026-06-21T21:30`. Only you see it.
 - **To move it somewhere else**, change `YXE` near the "LIVE HORIZON"
   heading in `main.js` (latitude, longitude, and time zone).
+- **The sun's look:** the sun has the same soft glow and thin halo ring
+  as the logo, and the glow slowly breathes. Near sunrise and sunset the
+  glow grows bigger and stronger, like a real low sun. Under the sun (and
+  the moon at night) a clay shimmer ripples on the ground strip, like
+  light on water. At night the stars twinkle. The breathing, rippling and
+  twinkling are all switched off for anyone with "reduce motion" on.
+  The look is in the "live horizon" part of `style.css`, and the
+  animations are near the bottom of it.
 - **The moon:** at night a clay crescent moon with a soft glow comes
   out. It rises on the left as the sun sets, arcs across the night sky
   (highest around midnight) and sets on the right at sunrise. It's a
-  stand-in moon, not the real one, so it's out every night. Its look is
+  stand-in moon, not the real one, so it's out every night. It floats up
+  and down a little and its glow breathes. Its look is
   `.horizon__moon` in `style.css` and its path is `placeMoon` in `main.js`.
   Try it with `?at=night`.
 - **The opening spin:** when someone opens the site or refreshes, the sun
