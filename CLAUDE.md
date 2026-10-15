@@ -114,7 +114,13 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   LONGLIGHT, INTERACTIVE justified to the same width below. It's inline SVG
   with the letters outlined to paths (don't swap them back to live text),
   coloured by `.logo__sun/line/word/sub` and `--logo-line` (ivory light,
-  lilac dark). The ray is retired from the logo and only lives in the
+  lilac dark), plus `.logo__glow` (a blurred sun copy using the
+  `#logo-glow` filter, defined once per page in the footer lockup's
+  `<defs>` because the footer is never hidden) and `.logo__halo` (a thin
+  clay ring). On load the sun, halo and glow rise out of the line
+  (`logo-rise`/`logo-fade`, in the reduced-motion-safe block); hover lifts
+  the sun. Sizes: compact 3.4rem, header lockup 13.8rem, footer
+  min(19rem, 80vw). The ray is retired from the logo and only lives in the
   hero's live horizon. Below 40rem the header shows `.logo--compact` (sun +
   short line), from 40rem `.logo--full`; the footer always shows the full
   lockup.
