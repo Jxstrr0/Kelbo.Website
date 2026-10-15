@@ -159,6 +159,18 @@ week. It comes from `now.json`:
 
 To change the browser-tab icon, replace `assets/favicon.svg` (or upload a
 `favicon.png` and change `favicon.svg` to `favicon.png` in every page).
+Browsers hold on to old icons, so every page links them with `?v=2` on the
+end. Bump that number (to `?v=3`) in every page when the icon changes.
+
+### The logo
+
+The logo is the Longlight "horizon lockup": the sun sitting on a line that
+runs under LONGLIGHT, with INTERACTIVE spaced out below it. It's drawn in
+each page's header and footer as an SVG (the letters are shapes, not text,
+so they never wait on the font). Phones show the short version (just the
+sun on its line) and wider screens show the full lockup. The colours come
+from the theme: the line is ivory in light mode and lilac in dark mode
+(`--logo-line` in `style.css`).
 
 ### The link preview
 
@@ -429,6 +441,7 @@ It runs entirely in the visitor's browser:
   keep working. The only full addresses to update are the `og:` and
   `canonical` tags in each page's `<head>`, `robots.txt` and `sitemap.xml`.
 - **Home screen icon:** on a phone, "Add to Home Screen" in the browser
-  menu puts the Longlight sun on the home screen. The icon is
-  `assets/icon.svg` (with PNG copies at 180, 192 and 512 pixels) and the
-  name and colours are in `site.webmanifest`.
+  menu puts the Longlight sun on a purple tile on the home screen. The icon
+  is `assets/icon.svg` (with PNG copies at 180, 192 and 512 pixels, plus
+  `icon-maskable-512.png` for Android) and the name and colours are in
+  `site.webmanifest`.
