@@ -163,8 +163,8 @@ function renderRecord(entries, options) {
   if (optionTrades.length) {
     const t = tally(optionTrades);
     const notes = [
-      `${t.wins} wins, ${t.losses} losses, ${t.scratches} ${t.scratches === 1 ? "scratch" : "scratches"} (sold for what it cost).`,
-      `Without scratches the win rate is ${t.winRateNoScratch}.`,
+      `${t.closed} closed: ${t.wins} wins, ${t.losses} losses, ${t.scratches} ${t.scratches === 1 ? "scratch" : "scratches"} (sold for what it cost).`,
+      "One win rate counts scratches as not a win, the other leaves them out.",
       "Returns are on the premium paid.",
     ];
     if (t.open) notes.push(`${t.open} open ${t.open === 1 ? "trade" : "trades"} not counted yet.`);
@@ -172,8 +172,8 @@ function renderRecord(entries, options) {
       box,
       "Options trades",
       [
-        ["Closed trades", String(t.closed)],
-        ["Win rate", t.winRate],
+        ["Win rate (with scratches)", t.winRate],
+        ["Win rate (no scratches)", t.winRateNoScratch],
         ["Avg return", t.closed ? signedPercent(t.average) : "–"],
         ["W–L–S", `${t.wins}–${t.losses}–${t.scratches}`],
       ],

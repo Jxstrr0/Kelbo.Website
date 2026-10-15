@@ -406,8 +406,9 @@ percentages are safer than dollar amounts or account sizes.
 
 Your options trades live in `options.json`, not in the entries. The page
 shows them newest first, with a bar for each trade's return, V2/V3 filter
-buttons, and the options numbers in the record (win rate, average return,
-and wins–losses–scratches).
+buttons, and the options numbers in the record (two win rates, one counting scratches
+as not a win and one leaving them out, plus average return and
+wins–losses–scratches).
 
 To log a trade, paste a block like this inside the `"trades": [ ... ]` list
 (oldest first, so new ones go at the bottom), and change `"updated"` at the
