@@ -549,7 +549,24 @@ img {
   height: var(--sun-size);
   border-radius: 50%;
   background: var(--accent);
+  /* The halo: a thin clay ring around the sun, like the logo's */
+  outline: 2px solid rgba(217, 119, 87, calc((0.45 + 0.3 * var(--sun-low, 0)) * var(--sun-show, 1)));
+  outline-offset: calc(var(--sun-size) * 0.13);
   transition: top 1200ms var(--ease), left 1200ms var(--ease);
+}
+
+/* The sun's soft glow. --sun-low (set by main.js) is 0 when the sun is
+   high and 1 when it's near the horizon, so the glow grows bigger and
+   stronger at sunrise and sunset. The part below the horizon is hidden
+   by the ground, and --sun-show fades the glow and halo out once the sun
+   has set, so they don't peek over the line at night. */
+.horizon__sun::before {
+  content: "";
+  position: absolute;
+  inset: calc(var(--sun-size) * (-0.4 - 0.4 * var(--sun-low, 0)));
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(217, 119, 87, calc((0.5 + 0.3 * var(--sun-low, 0)) * var(--sun-show, 1))), rgba(217, 119, 87, 0));
+  pointer-events: none;
 }
 
 /* The ray leaves the right edge of the sun and tapers toward the right
@@ -594,10 +611,40 @@ img {
   mask: radial-gradient(circle at 72% 30%, transparent calc(var(--moon-size) * 0.4), #000 calc(var(--moon-size) * 0.4 + 1px));
 }
 
+/* Light on the ground: a soft clay shimmer on the ground strip under
+   the sun (and a fainter one under the moon), like light on water. It
+   follows them across the sky; main.js fades it in with --glint-sun and
+   --glint-moon while they're up. */
+.horizon__glint {
+  position: absolute;
+  z-index: 1; /* same layer as the ground, but later, so it sits on top */
+  top: calc(var(--sky-height) + 3.5px);
+  height: calc(var(--ground-height) * 0.85);
+  background: repeating-linear-gradient(to bottom, rgba(217, 119, 87, 0.75) 0 2px, rgba(217, 119, 87, 0) 2px 5px);
+  /* Fade the stripes out toward the sides and the bottom */
+  -webkit-mask: radial-gradient(farthest-side at 50% 0, #000, transparent);
+  mask: radial-gradient(farthest-side at 50% 0, #000, transparent);
+  pointer-events: none;
+  transition: left 1200ms var(--ease), opacity 600ms var(--ease);
+}
+
+.horizon__glint--sun {
+  width: calc(var(--sun-size) * 1.8);
+  left: calc(var(--sun-x) * (100% - var(--sun-size)) - var(--sun-size) * 0.4);
+  opacity: var(--glint-sun, 0);
+}
+
+.horizon__glint--moon {
+  width: calc(var(--moon-size) * 1.8);
+  left: calc(var(--moon-x) * (100% - var(--moon-size)) - var(--moon-size) * 0.4);
+  opacity: var(--glint-moon, 0);
+}
+
 /* While the opening spin plays (main.js), the sun is moved every frame,
    so the slow easing above would only make it lag behind. */
 .horizon--spin .horizon__sun,
 .horizon--spin .horizon__moon,
+.horizon--spin .horizon__glint,
 .horizon--spin .horizon__ray {
   transition: none;
 }
@@ -1650,9 +1697,52 @@ img {
     50% { box-shadow: 0 0 0 5px rgba(217, 119, 87, 0); }
   }
 
-  /* The moon's glow breathes slowly */
+  /* The moon's glow breathes slowly, and the moon floats up and down a
+     little */
   .horizon__moon {
-    animation: moon-glow 5s ease-in-out infinite;
+    animation: moon-glow 5s ease-in-out infinite, moon-float 7s ease-in-out infinite alternate;
+  }
+
+  @keyframes moon-float {
+    to { transform: translateY(calc(var(--moon-size) * -0.1)); }
+  }
+
+  /* The sun's glow breathes too, a little slower */
+  .horizon__sun::before {
+    animation: sun-breathe 6s ease-in-out infinite;
+  }
+
+  @keyframes sun-breathe {
+    0%, 100% { transform: scale(1); opacity: 0.85; }
+    50% { transform: scale(1.08); opacity: 1; }
+  }
+
+  /* The light on the ground ripples and sways */
+  .horizon__glint {
+    animation: glint-flow 2.4s linear infinite, glint-sway 4.5s ease-in-out infinite alternate;
+  }
+
+  @keyframes glint-flow {
+    to { background-position: 0 5px; }
+  }
+
+  @keyframes glint-sway {
+    from { transform: scaleX(0.88); }
+    to { transform: scaleX(1.12); }
+  }
+
+  /* Stars twinkle, each at its own pace */
+  .horizon__stars i {
+    animation: twinkle 3.2s ease-in-out infinite;
+  }
+  .horizon__stars i:nth-child(2n) { animation-duration: 4.3s; animation-delay: -1.4s; }
+  .horizon__stars i:nth-child(3n) { animation-duration: 2.6s; animation-delay: -0.7s; }
+  .horizon__stars i:nth-child(4n) { animation-duration: 5.1s; animation-delay: -2.2s; }
+  .horizon__stars i:nth-child(5n) { animation-duration: 3.7s; animation-delay: -2.9s; }
+
+  @keyframes twinkle {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.25; transform: scale(0.6); }
   }
 
   @keyframes moon-glow {
