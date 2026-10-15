@@ -415,21 +415,6 @@ img {
   margin-bottom: 1rem;
 }
 
-/* "AI project." gets a clay underline like a horizon. Clay text on the
-   purple sky is too faint to read easily, so the words only turn clay
-   in the dark theme, where they stand out against slate. */
-.hero__name em {
-  font-style: normal;
-  text-decoration: underline;
-  text-decoration-color: var(--accent);
-  text-decoration-thickness: 0.08em;
-  text-underline-offset: 0.12em;
-}
-
-:root[data-theme="dark"] .hero__name em {
-  color: var(--accent);
-}
-
 .hero__line {
   max-width: 34rem;
   font-size: 1.1rem;
