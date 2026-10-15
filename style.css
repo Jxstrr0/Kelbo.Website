@@ -341,6 +341,12 @@ img {
   list-style: none;
 }
 
+/* About is in the nav on wide screens only; on phones there's no room, so
+   it's in the footer of every page instead */
+.nav__wide {
+  display: none;
+}
+
 .nav a {
   display: inline-block;
   padding: 0.4rem 0.35rem;
@@ -428,6 +434,22 @@ img {
   font-size: 1.1rem;
   color: var(--sky-muted);
   margin-bottom: 1.5rem;
+}
+
+/* Links on the sky (like "Kelbo" in the home hero): ivory text with a clay
+   underline, since clay text on purple is too faint to read */
+.hero__line a,
+.page-head__line a {
+  color: var(--sky-ink);
+  text-decoration-color: var(--ll-clay);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
+}
+
+.hero__line a:hover,
+.page-head__line a:hover {
+  color: var(--sky-ink);
+  text-decoration-color: currentColor;
 }
 
 .hero__actions {
@@ -1342,6 +1364,10 @@ img {
 @media (min-width: 64rem) {
   .project-list {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .nav__wide {
+    display: list-item;
   }
 }
 
