@@ -1,0 +1,5 @@
+# Search engines are welcome everywhere. The sitemap lists every page.
+User-agent: *
+Allow: /
+
+Sitemap: https://jxstrr0.github.io/Kelbo.Website/sitemap.xml

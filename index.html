@@ -20,6 +20,13 @@
   <meta property="og:image:alt" content="The Longlight Interactive sun over a purple horizon, beside screenshots of four of its games.">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <!-- Home-screen icon and app details, for when someone adds the site
+       to their phone's home screen. -->
+  <link rel="apple-touch-icon" href="assets/icon-180.png">
+  <link rel="manifest" href="site.webmanifest">
+  <!-- The one true address of this page, for search engines. Full web
+       address on purpose, like the og: tags above. -->
+  <link rel="canonical" href="https://jxstrr0.github.io/Kelbo.Website/">
   <meta name="theme-color" content="#7B3FC4">
 
   <!-- Font: Space Grotesk, the Longlight brand face -->
@@ -101,11 +108,21 @@
           <p class="horizon__readout" data-horizon-readout>
             <span>Live from Saskatoon</span><span>52.13&deg; N</span>
           </p>
+          <!-- Shown by main.js on the longest and shortest days of the year -->
+          <p class="horizon__badge" data-horizon-badge hidden></p>
         </div>
       </div>
     </section>
 
-    <!-- 2. Games: big cards for every project with "featured": true in
+    <!-- 2. Now building: what's on the bench this week. main.js fills
+         this from now.json, and leaves it hidden if that file is empty. -->
+    <section class="now wrap" aria-labelledby="now-heading" data-now hidden>
+      <h2 id="now-heading" class="now__label">Now building</h2>
+      <ul class="now__list" data-now-list></ul>
+      <p class="now__updated" data-now-updated></p>
+    </section>
+
+    <!-- 3. Games: big cards for every project with "featured": true in
          projects.json (up to four). main.js fills this list. -->
     <section class="section wrap" aria-labelledby="games-heading">
       <div class="section__head">
@@ -138,7 +155,7 @@
       </noscript>
     </section>
 
-    <!-- 3. Modes: one tile per part of the site. main.js fills in the
+    <!-- 4. Modes: one tile per part of the site. main.js fills in the
          counts from projects.json, and the market light on Trading. -->
     <section class="section wrap" aria-labelledby="sections-heading">
       <h2 id="sections-heading">Choose a mode</h2>
@@ -167,7 +184,7 @@
       </ul>
     </section>
 
-    <!-- 4. Contact. (The About section moved to about.html.) -->
+    <!-- 5. Contact. (The About section moved to about.html.) -->
     <section class="section wrap" aria-labelledby="contact-heading" data-reveal>
       <h2 id="contact-heading">Get in touch</h2>
       <!-- The form on the left; the other ways to reach Kelbo sit beside it
@@ -237,7 +254,7 @@
         <strong>LONGLIGHT</strong>
         <small>INTERACTIVE</small>
       </a>
-      <p>&copy; <span data-year>2026</span> Longlight Interactive. Built by hand and hosted on GitHub Pages.
+      <p>&copy; <span data-year>2026</span> Kelbo / Longlight Interactive. Built by hand and hosted on GitHub Pages.
         <a href="about.html">About Kelbo</a> &middot; <a href="https://github.com/Jxstrr0">GitHub</a></p>
     </div>
   </footer>
