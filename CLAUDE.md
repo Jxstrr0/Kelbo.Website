@@ -17,6 +17,13 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
 - **The site uses the name Kelbo only.** Never put his real first or last
   name (or his initials) anywhere on the site, in page text, titles, `og:`
   tags, alt text, comments, or the link preview image.
+- **The site is branded Longlight Interactive** (his studio). Page titles,
+  `og:` tags, the header lockup (LONGLIGHT / INTERACTIVE), the home hero and
+  the footer all say Longlight Interactive. Everything personal about Kelbo
+  lives on `about.html`, linked from the hero line, every footer, and the nav
+  on wide screens (`nav__wide`, 64rem+). Studio pages (home, Games, AI,
+  Projects) speak as Longlight; Trading, the journal and Agent Fleet stay in
+  his own first-person voice.
 
 ## Hard rules
 
@@ -38,8 +45,8 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   `<head>` adds a `<base>` pointing at the site's top folder before any
   links load. Keep that script first in the `<head>`.
 - The link preview image is `assets/social-preview.jpg` (1200×630, the
-  Longlight sky, sun and horizon plus the four game covers). Regenerate it if
-  the covers change a lot.
+  Longlight sky, sun and horizon, "Longlight Interactive", plus the four
+  game covers). Regenerate it if the covers change a lot.
 
 ## Where things live
 
@@ -54,7 +61,8 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   purple sky (hero, page heads, header, footer) with ivory body; dark theme
   = slate. Clay text on the purple sky is too faint, so keep clay for the
   sun, buttons and underlines there. Game covers live in `assets/covers/`
-  (640×480 JPG, captured from each live game).
+  (640×480 JPG, captured from each live game; Red Skies is portrait-only, so
+  it's shot at 600px wide mid-shift with a jet on the TV camera, cropped 4:3).
 - The live horizon (`[data-horizon]` in the home hero, every page head and
   the 404) puts the sun where the real sun is over Saskatoon (`YXE` in
   `main.js`, no network), switches to the dark theme at real sunset, and
@@ -79,10 +87,11 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   (GarageToGlory, RedSkies, BaccaratTable, 350Chev). This site only links to
   them via `link` (the pink Play it button) and `code` (the repo). The home
   page "Pick a game" cards are the `featured` projects (max 4).
-- The header (Longlight mark + KELBO wordmark as home, the nav Games,
-  Trading, AI, Projects, and the ☀/☾ button) is copied in every page and
-  only just fits at 360px, where the KELBO text hides and only the mark
-  shows (drawn big with its ray cropped). Test before adding to it. The parked tracker doesn't load
+- The header (Longlight mark + LONGLIGHT / INTERACTIVE wordmark as home, the
+  nav Games, Trading, AI, Projects, plus About from 64rem, and the ☀/☾
+  button) is copied in every page and only just fits at 360px, where the
+  wordmark text hides and only the mark shows (drawn big with its ray
+  cropped). Test before adding to it. The parked tracker doesn't load
   `main.js` (its names clash), so it has no ☀/☾ button or live sun.
 - The AI Trading Journal is `journal.html` + `journal.js` + `journal.css`,
   with entries in `journal.json` (a list, newest first by `date`). The

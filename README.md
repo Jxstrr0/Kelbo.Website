@@ -12,7 +12,8 @@ you save on the `main` branch goes live within a minute or two.
 
 | File | What it's for |
 |---|---|
-| `index.html` | Home page: name, game cards, Games / Trading / AI tiles, about, contact |
+| `index.html` | Home page: the Longlight Interactive name, game cards, Games / Trading / AI tiles, contact |
+| `about.html` | The About page: your bio and the "player card" facts |
 | `projects.html` | The full projects page with status filters |
 | `games.html` | The Games section: every project with `"category": "Game"` |
 | `trading.html` | The Trading section: every project with `"category": "Trading"` |
@@ -42,13 +43,17 @@ you save on the `main` branch goes live within a minute or two.
 All the words on the home page are in `index.html`. Look for these
 comments to find each part:
 
-- `<!-- 1. Hero -->`: your name, the small "Saskatoon, SK" line above it, the
-  description, the two buttons, and the live sun
+- `<!-- 1. Hero -->`: the studio name, the small "Saskatoon, SK" line above
+  it, the description (with the link to your About page), the two buttons,
+  and the live sun
 - `<!-- 2. Games -->`: the "Pick a game" cards (filled in from `projects.json`)
 - `<!-- 3. Modes -->`: the Games / Trading / AI tiles
-- `<!-- 4. About -->`: the about paragraphs, then the "player card" facts
-  (each `<li>` is one box: a label, then the value)
-- `<!-- 5. Contact -->`: your links
+- `<!-- 4. Contact -->`: the contact form and your links
+
+Everything about you is on its own page, `about.html`: the about paragraphs,
+then the "player card" facts (each `<li>` is one box: a label, then the
+value). The rest of the site speaks as Longlight Interactive, except
+Trading and the journal, which are in your own voice.
 
 Only change the words between the tags, like this:
 
@@ -144,7 +149,8 @@ Say you want a "Tools" section next to Games, Trading, and AI:
 2. In `index.html`, copy one of the tiles under `<!-- 3. Modes -->` and
    change its link, name, line, and `data-category-count="Tool"`.
 3. Optionally add it to the menu (`<ul class="nav">`) in every page. Keep the
-   menu short so it fits on one line on a phone.
+   menu short so it fits on one line on a phone. (A menu item with
+   `class="nav__wide"`, like About, only shows on wide screens.)
 
 ## Change colours or fonts
 
