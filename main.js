@@ -620,6 +620,77 @@ function setUpThemeToggle(refresh) {
 }
 
 /* ---------- Moving the sun ---------- */
+
+// Puts the sun (and its ray) where the real sun is at moment "t".
+function placeSun(scene, t) {
+  const alt = sunAltitude(t);
+  const day = sunDay(t);
+  const season = seasonOf(day);
+  // Where the sun is in its day, left to right. Between sunrise and
+  // sunset it crosses from 6% to 70% of the width; through the night
+  // it drifts back under the ground, ready to rise again.
+  let x;
+  if (day.rise && day.set && t >= day.rise && t <= day.set) {
+    x = 0.06 + 0.64 * ((t - day.rise) / (day.set - day.rise));
+  } else if (day.set && t > day.set) {
+    const nightLen = day.end + 7 * 3600000 - day.set; // roughly until tomorrow's sunrise
+    x = 0.70 - 0.64 * Math.min(1, (t - day.set) / nightLen);
+  } else {
+    x = 0.06;
+  }
+  // Height, as a share of today's highest point. Negative = set.
+  let y = 0.92 * (alt / Math.max(10, day.peakAlt)); // 0.92 keeps the noon sun off the top edge
+  if (alt < 0) y = Math.max(-1, alt / 10);
+  scene.style.setProperty("--sun-x", x.toFixed(3));
+  scene.style.setProperty("--sun-alt", Math.min(1, y).toFixed(3));
+  // The ray follows the sun's height, and reaches further in summer:
+  // full length on the longest day, a bit under half on the shortest.
+  const reach = 0.45 + 0.55 * season;
+  scene.style.setProperty("--ray", (Math.max(0, Math.min(1, y)) * reach).toFixed(3));
+}
+
+/* ---------- The opening spin ----------
+   When someone opens the site or refreshes, the sun runs through a whole
+   day in a few seconds (rise, cross the sky, set, slip back under the
+   ground) and lands where the real sun is right now. It plays on the
+   first page of a visit and on every refresh, not on every link tapped.
+   Skipped when "reduce motion" is on. */
+const SPIN_MS = 4500; // how long the whole day takes to play
+const SPIN_KEY = "kelbo.sunSpun"; // set once the spin has played this visit
+let spinning = false;
+
+function shouldSpin() {
+  if (REDUCE_MOTION) return false;
+  try {
+    const nav = performance.getEntriesByType("navigation")[0];
+    const refreshed = nav && nav.type === "reload";
+    const seen = sessionStorage.getItem(SPIN_KEY);
+    sessionStorage.setItem(SPIN_KEY, "1");
+    return refreshed || !seen;
+  } catch (e) {
+    return true; // storage blocked: just play it
+  }
+}
+
+function spinSun(scene) {
+  spinning = true;
+  scene.classList.add("horizon--spin"); // turns off the slow CSS easing while it plays
+  const start = performance.now();
+  function frame(ms) {
+    const p = Math.min(1, (ms - start) / SPIN_MS);
+    const eased = p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2; // gentle start and finish
+    // Play back the last 24 hours, so it starts and ends at "now".
+    placeSun(scene, new Date(now().getTime() - 86400000 * (1 - eased)));
+    if (p < 1) {
+      requestAnimationFrame(frame);
+    } else {
+      spinning = false;
+      scene.classList.remove("horizon--spin");
+    }
+  }
+  requestAnimationFrame(frame);
+}
+
 function setUpHorizon() {
   const scene = document.querySelector("[data-horizon]");
   const readout = document.querySelector("[data-horizon-readout]");
@@ -656,29 +727,8 @@ function setUpHorizon() {
     const warm = isDay && toSet > 0 && toSet < TWILIGHT_MS ? 1 - toSet / TWILIGHT_MS : 0;
     document.documentElement.style.setProperty("--warm", warm.toFixed(3));
 
-    if (scene) {
-      // Where the sun is in its day, left to right. Between sunrise and
-      // sunset it crosses from 6% to 70% of the width; through the night
-      // it drifts back under the ground, ready to rise again.
-      let x;
-      if (day.rise && day.set && t >= day.rise && t <= day.set) {
-        x = 0.06 + 0.64 * ((t - day.rise) / (day.set - day.rise));
-      } else if (day.set && t > day.set) {
-        const nightLen = day.end + 7 * 3600000 - day.set; // roughly until tomorrow's sunrise
-        x = 0.70 - 0.64 * Math.min(1, (t - day.set) / nightLen);
-      } else {
-        x = 0.06;
-      }
-      // Height, as a share of today's highest point. Negative = set.
-      let y = 0.92 * (alt / Math.max(10, day.peakAlt)); // 0.92 keeps the noon sun off the top edge
-      if (alt < 0) y = Math.max(-1, alt / 10);
-      scene.style.setProperty("--sun-x", x.toFixed(3));
-      scene.style.setProperty("--sun-alt", Math.min(1, y).toFixed(3));
-      // The ray follows the sun's height, and reaches further in summer:
-      // full length on the longest day, a bit under half on the shortest.
-      const reach = 0.45 + 0.55 * season;
-      scene.style.setProperty("--ray", (Math.max(0, Math.min(1, y)) * reach).toFixed(3));
-    }
+    // While the opening spin is playing, it moves the sun instead.
+    if (scene && !spinning) placeSun(scene, t);
 
     if (readout) {
       const left = readout.children[0];
@@ -698,6 +748,7 @@ function setUpHorizon() {
     }
   }
 
+  if (scene && shouldSpin()) spinSun(scene);
   tick();
   setUpThemeToggle(tick);
   setInterval(tick, 60000);
