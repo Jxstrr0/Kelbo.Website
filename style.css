@@ -535,6 +535,25 @@ img {
   display: none;
 }
 
+/* Faint constellation lines behind the stars (home page sky only).
+   The SVG is stretched over the sky, so the stroke is kept at a steady
+   1px with non-scaling-stroke. */
+.horizon__lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.horizon__lines line {
+  stroke: var(--ll-lilac);
+  stroke-width: 1;
+  stroke-opacity: 0.35;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
 /* The brightest stars (Sirius, Vega, Rigel...) get a soft halo */
 .horizon__stars .star--bright {
   box-shadow: 0 0 8px 2px rgba(180, 140, 232, 0.75);

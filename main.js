@@ -707,9 +707,35 @@ const STARS = [
 ];
 const STAR_TOP_ALT = 80; // a star this high (degrees) touches the top of the strip
 
+// Faint lines joining the stars of well-known constellations, as pairs of
+// names from STARS. A line only shows while both its stars are up in the
+// southern sky. Only the big home-page sky gets them.
+const CONSTELLATION_LINES = [
+  // Orion: shoulders, belt, knees
+  ["Betelgeuse", "Bellatrix"], ["Betelgeuse", "Alnitak"], ["Bellatrix", "Mintaka"],
+  ["Mintaka", "Alnilam"], ["Alnilam", "Alnitak"], ["Alnitak", "Saiph"], ["Mintaka", "Rigel"],
+  // Canis Major, the big dog with Sirius
+  ["Mirzam", "Sirius"], ["Sirius", "Wezen"], ["Wezen", "Adhara"],
+  // Gemini, the twins
+  ["Castor", "Pollux"], ["Pollux", "Alhena"],
+  // Taurus, the bull's horn
+  ["Aldebaran", "Elnath"],
+  // Leo, the lion
+  ["Regulus", "Algieba"], ["Algieba", "Denebola"], ["Denebola", "Regulus"],
+  // The Summer Triangle
+  ["Vega", "Deneb"], ["Deneb", "Altair"], ["Altair", "Vega"],
+  // Cygnus, the swan's neck
+  ["Deneb", "Sadr"], ["Sadr", "Albireo"],
+  // Aquila, the eagle
+  ["Tarazed", "Altair"], ["Altair", "Alshain"],
+  // The Great Square of Pegasus, and Andromeda off its corner
+  ["Alpheratz", "Scheat"], ["Scheat", "Markab"], ["Markab", "Algenib"], ["Algenib", "Alpheratz"],
+  ["Alpheratz", "Mirach"], ["Mirach", "Almach"],
+];
+
 // The star dots, sized by brightness. The short page-head skies only get
-// the brighter ones so they don't look crowded.
-function makeStars(box, limit) {
+// the brighter ones so they don't look crowded, and no constellation lines.
+function makeStars(box, limit, withLines) {
   box.stars = STARS.filter((s) => s[2] <= limit).map((s) => {
     const dot = document.createElement("i");
     const mag = s[2];
@@ -717,30 +743,61 @@ function makeStars(box, limit) {
     if (mag < 1.5) dot.className = "star--bright";
     return { star: s, dot };
   });
-  box.replaceChildren(...box.stars.map((s) => s.dot));
+  box.lines = [];
+  const parts = box.stars.map((s) => s.dot);
+  if (withLines) {
+    // One SVG behind the dots, stretched over the sky so its 0..100
+    // units match the dots' left/top percentages.
+    const svgNS = "http://www.w3.org/2000/svg";
+    const svg = document.createElementNS(svgNS, "svg");
+    svg.setAttribute("class", "horizon__lines");
+    svg.setAttribute("viewBox", "0 0 100 100");
+    svg.setAttribute("preserveAspectRatio", "none");
+    const byName = new Map(box.stars.map((s) => [s.star[3], s]));
+    for (const [a, b] of CONSTELLATION_LINES) {
+      const line = document.createElementNS(svgNS, "line");
+      svg.append(line);
+      box.lines.push({ a: byName.get(a), b: byName.get(b), line });
+    }
+    parts.unshift(svg);
+  }
+  box.replaceChildren(...parts);
 }
 
 // Puts every star where it really is at moment "t".
 function placeStars(scene, t) {
   const box = scene.querySelector(".horizon__stars");
   if (!box) return;
-  if (!box.stars) makeStars(box, scene.closest(".page-head") ? 2 : 4.5);
+  if (!box.stars) {
+    const small = scene.closest(".page-head");
+    makeStars(box, small ? 2 : 4.5, !small);
+  }
   const n = t.getTime() / 86400000 - 10957.5;
   const lst = ((18.697374558 + 24.06570982441908 * n) * 15 + YXE.lon) * D2R; // which way the sky faces now
   const la = YXE.lat * D2R;
-  for (const { star, dot } of box.stars) {
+  for (const entry of box.stars) {
+    const { star, dot } = entry;
     const ra = star[0] * D2R, dec = star[1] * D2R, ha = lst - ra;
     const alt = Math.asin(Math.sin(la) * Math.sin(dec) + Math.cos(la) * Math.cos(dec) * Math.cos(ha)) * R2D;
     // Compass direction: 90 = east, 180 = south, 270 = west
     let az = Math.atan2(-Math.sin(ha) * Math.cos(dec), Math.cos(la) * Math.sin(dec) - Math.sin(la) * Math.cos(dec) * Math.cos(ha)) * R2D;
     az = (az + 360) % 360;
-    if (alt < 2 || az < 90 || az > 270) {
-      dot.hidden = true; // below the horizon, or behind us in the north
-      continue;
-    }
-    dot.hidden = false;
-    dot.style.left = `${(((az - 90) / 180) * 100).toFixed(2)}%`;
-    dot.style.top = `${((1 - Math.min(alt, STAR_TOP_ALT) / STAR_TOP_ALT) * 100).toFixed(2)}%`;
+    entry.up = !(alt < 2 || az < 90 || az > 270);
+    dot.hidden = !entry.up; // below the horizon, or behind us in the north
+    if (!entry.up) continue;
+    entry.x = ((az - 90) / 180) * 100;
+    entry.y = (1 - Math.min(alt, STAR_TOP_ALT) / STAR_TOP_ALT) * 100;
+    dot.style.left = `${entry.x.toFixed(2)}%`;
+    dot.style.top = `${entry.y.toFixed(2)}%`;
+  }
+  for (const { a, b, line } of box.lines) {
+    const show = a && b && a.up && b.up;
+    line.style.display = show ? "" : "none";
+    if (!show) continue;
+    line.setAttribute("x1", a.x.toFixed(2));
+    line.setAttribute("y1", a.y.toFixed(2));
+    line.setAttribute("x2", b.x.toFixed(2));
+    line.setAttribute("y2", b.y.toFixed(2));
   }
 }
 

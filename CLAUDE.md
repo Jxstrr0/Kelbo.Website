@@ -113,7 +113,11 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   shown facing south (az 90..270 → left..right, alt/`STAR_TOP_ALT` →
   height, hidden below 2° or in the north). `makeStars` swaps the HTML's
   placeholder dots for sized ones (`--s`, `.star--bright` halo); page
-  heads only get magnitude ≤ 2.
+  heads only get magnitude ≤ 2. The home sky also gets
+  `CONSTELLATION_LINES` (pairs of `STARS` names) drawn in
+  `.horizon__lines`, an SVG stretched over the sky (viewBox 0..100 =
+  the dots' percentages, non-scaling stroke); a line hides unless both
+  stars are up.
   `placeSun` also sets `--sun-low` (0 high, 1 near the horizon: bigger,
   stronger glow), `--sun-show` (fades the glow/halo out once set, so they
   don't peek over the short page-head sky) and `--glint-sun`/`--glint-moon`
