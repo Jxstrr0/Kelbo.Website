@@ -302,8 +302,14 @@ img {
   display: block;
   height: auto;
   flex-shrink: 0;
+  overflow: visible; /* lets the sun's glow spill past the edge */
 }
 .logo__sun  { fill: var(--ll-clay); }
+/* The glow (a blurred copy of the sun, blur set in the footer's <defs>)
+   and the thin halo ring around it. */
+.logo__glow { fill: var(--ll-clay); opacity: 0.85; }
+.logo__halo { fill: none; stroke: var(--ll-clay); stroke-width: 1.6; opacity: 0.6; }
+.logo--compact .logo__halo { stroke-width: 1.4; }
 .logo__line { fill: var(--logo-line); }
 .logo__word { fill: var(--sky-ink); }
 .logo__sub  { fill: var(--sky-muted); }
@@ -316,12 +322,12 @@ img {
   text-decoration: none;
   color: inherit;
 }
-.wordmark .logo--compact { width: 3rem; }
+.wordmark .logo--compact { width: 3.4rem; }
 .wordmark .logo--full    { display: none; }
 
 @media (min-width: 40rem) {
   .wordmark .logo--compact { display: none; }
-  .wordmark .logo--full    { display: block; width: 12rem; }
+  .wordmark .logo--full    { display: block; width: 13.8rem; }
 }
 
 /* Footer */
@@ -332,7 +338,7 @@ img {
   text-decoration: none;
   color: inherit;
 }
-.site-footer .lockup .logo--full { width: min(17rem, 78vw); }
+.site-footer .lockup .logo--full { width: min(19rem, 80vw); }
 
 .nav {
   display: flex;
@@ -1612,6 +1618,55 @@ img {
   @keyframes now-glow {
     0%, 100% { box-shadow: 0 0 0 0 rgba(217, 119, 87, 0.45); }
     50% { box-shadow: 0 0 0 5px rgba(217, 119, 87, 0); }
+  }
+
+  /* The logo's sun rises up out of its line when a page opens: the sun
+     first, then the halo, then the glow. Each one grows from the line
+     (its bottom edge). "backwards" only holds the start pose during the
+     delay, so the hover lift below still works once it's done. */
+  .logo__sun,
+  .logo__halo,
+  .logo__glow {
+    transform-box: fill-box;
+    transform-origin: 50% 100%;
+    transition: transform 300ms var(--ease), opacity 300ms var(--ease);
+  }
+
+  .logo__sun {
+    animation: logo-rise 900ms cubic-bezier(0.34, 1.4, 0.64, 1) 150ms backwards;
+  }
+
+  .logo__halo {
+    animation: logo-rise 900ms cubic-bezier(0.34, 1.4, 0.64, 1) 400ms backwards;
+  }
+
+  .logo__glow {
+    animation: logo-fade 900ms var(--ease) 700ms backwards;
+  }
+
+  @keyframes logo-rise {
+    from { transform: scale(0.6, 0); }
+  }
+
+  @keyframes logo-fade {
+    from { opacity: 0; }
+  }
+
+  /* Hover or keyboard focus on the logo: the sun lifts a touch and the
+     halo brightens. */
+  .wordmark:hover .logo__sun,
+  .wordmark:focus-visible .logo__sun,
+  .lockup:hover .logo__sun,
+  .lockup:focus-visible .logo__sun {
+    transform: scale(1.08);
+  }
+
+  .wordmark:hover .logo__halo,
+  .wordmark:focus-visible .logo__halo,
+  .lockup:hover .logo__halo,
+  .lockup:focus-visible .logo__halo {
+    transform: scale(1.06);
+    opacity: 0.95;
   }
 }
 
