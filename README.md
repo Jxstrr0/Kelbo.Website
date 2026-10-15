@@ -225,6 +225,12 @@ date and time, so there's no internet service or key involved.
   or an exact Saskatoon time like `?at=2026-06-21T21:30`. Only you see it.
 - **To move it somewhere else**, change `YXE` near the "LIVE HORIZON"
   heading in `main.js` (latitude, longitude, and time zone).
+- **The opening spin:** when someone opens the site or refreshes, the sun
+  plays through a whole day in about 4.5 seconds (rises, crosses, sets,
+  comes back up) and lands where the real sun is. It doesn't replay on
+  every link tapped, and it's skipped for anyone with "reduce motion" on.
+  To change the speed, edit `SPIN_MS` near the top of the sun code in
+  `main.js` (4500 = 4.5 seconds).
 - **Seasons:** the ray coming off the sun reaches further in summer than in
   winter (full length on the longest day, a bit under half on the
   shortest). On the longest and shortest days of the year a badge appears
