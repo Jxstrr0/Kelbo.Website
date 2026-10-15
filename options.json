@@ -1,11 +1,11 @@
 {
-  "updated": "2026-10-14",
+  "updated": "2026-10-15",
   "since": "2026-09-15",
   "systems": {
     "V2": "my earlier hold-or-flip rules",
     "V3": "same-day flips on the stocks moving most that day (started Oct 14, 2026)"
   },
-  "ai": "What worked: 12 wins, 6 losses and 3 scratches, up 7.6% per trade on average. Winners averaged +21.5% and losers −16.4%, so the wins were bigger than the losses, which is the right shape. Losers were cut instead of held in hope, like the RGTI put closed to free up buying power and the SOFI call closed when the fade kept going.\n\nWhat didn't: the first 10 trades (through Oct 8) went 9–1 and averaged +21%. The 9 after that (Oct 9 to 13) went 2–4 with 3 scratches and averaged −7%. Those were also the busier days, and the notes show why: a wide spread at entry, paying over the ask, thin volume, a market order by mistake. On options that cost under $1, a few cents of spread is 5–10% of the trade before the stock even moves. Limit orders near the middle of the bid and ask, and skipping contracts with wide spreads or little volume, would have saved most of that.\n\nThe biggest loss was the IREN 40 call (−32%), held overnight on a stock that had gapped and then faded. Holding overnight without a planned exit was the mistake there. V3 is 1–1 after its first day, which is too early to judge. About 20 trades should show whether it beats V2.",
+  "ai": "What worked: 13 wins, 6 losses and 3 scratches, up 8.2% per trade on average. Winners averaged +21.4% and losers −16.4%, so the wins were bigger than the losses, which is the right shape. Losers were cut instead of held in hope, like the RGTI put closed to free up buying power and the SOFI call closed when the fade kept going.\n\nWhat didn't: the first 10 trades (through Oct 8) went 9–1 and averaged +21%. The 9 after that (Oct 9 to 13) went 2–4 with 3 scratches and averaged −7%. Those were also the busier days, and the notes show why: a wide spread at entry, paying over the ask, thin volume, a market order by mistake. On options that cost under $1, a few cents of spread is 5–10% of the trade before the stock even moves. Limit orders near the middle of the bid and ask, and skipping contracts with wide spreads or little volume, would have saved most of that.\n\nThe biggest loss was the IREN 40 call (−32%), held overnight on a stock that had gapped and then faded. Holding overnight without a planned exit was the mistake there. V3 is 2–1 after two days (+27%, −17%, +20%), which is too early to judge. The SOFI 14.50 call shows the cut working as intended: closing it on Oct 14 kept the loss to 17%, and the same contract made +20% when bought again the next day. About 20 trades should show whether V3 beats V2.",
   "trades": [
     {
       "opened": "2026-09-15",
@@ -258,6 +258,18 @@
       "sold": 0.25,
       "system": "V3",
       "note": "Counter-trend call; cut when the fade kept going."
+    },
+    {
+      "opened": "2026-10-15",
+      "closed": "2026-10-15",
+      "symbol": "SOFI",
+      "strike": 14.5,
+      "type": "call",
+      "expiry": "2026-10-23",
+      "paid": 0.45,
+      "sold": 0.54,
+      "system": "V3",
+      "note": "Same contract cut on Oct 14; back in a day later and out green."
     }
   ]
 }
