@@ -658,6 +658,90 @@ function placeSun(scene, t) {
   // strongest when the sun is low.
   scene.style.setProperty("--glint-sun", (glint(y) * (0.55 + 0.45 * low)).toFixed(3));
   placeMoon(scene, t);
+  placeStars(scene, t);
+}
+
+/* ---------- The stars ----------
+   The real night sky over Saskatoon: the brightest named stars, each
+   placed where it really is right now. The horizon faces south, so east
+   is on the left edge, south in the middle and west on the right edge,
+   and the higher a star is, the higher it sits in the sky strip. They
+   turn slowly across the sky through the night (and race round during
+   the opening spin). Each row is [right ascension, declination,
+   brightness, name]: where the star sits on the sky's own map (degrees)
+   and how bright it is (smaller = brighter, under 1 is very bright).
+   Stars that never rise over Saskatoon are left out. */
+const STARS = [
+  [101.29, -16.72, -1.4, "Sirius"], [213.92, 19.18, -0.1, "Arcturus"], [279.23, 38.78, 0.0, "Vega"],
+  [79.17, 46.0, 0.1, "Capella"], [78.63, -8.2, 0.2, "Rigel"], [114.83, 5.22, 0.4, "Procyon"],
+  [88.79, 7.41, 0.5, "Betelgeuse"], [297.7, 8.87, 0.8, "Altair"], [68.98, 16.51, 0.9, "Aldebaran"],
+  [201.3, -11.16, 1.0, "Spica"], [247.35, -26.43, 1.1, "Antares"], [310.36, 45.28, 1.2, "Deneb"],
+  [344.41, -29.62, 1.2, "Fomalhaut"], [344.41, -29.62, 1.2, "Formalhaut"], [116.33, 28.03, 1.2, "Pollux"],
+  [152.09, 11.97, 1.4, "Regulus"], [104.66, -28.97, 1.5, "Adara"], [104.66, -28.97, 1.5, "Adhara"],
+  [81.28, 6.35, 1.6, "Bellatrix"], [113.65, 31.89, 1.6, "Castor"], [81.57, 28.61, 1.6, "Elnath"],
+  [263.4, -37.1, 1.6, "Shaula"], [84.05, -1.2, 1.7, "Alnilam"], [85.19, -1.94, 1.7, "Alnitak"],
+  [193.51, 55.96, 1.8, "Alioth"], [165.93, 61.75, 1.8, "Dubhe"], [276.04, -34.38, 1.8, "Kaus Australis"],
+  [51.08, 49.86, 1.8, "Mirfak"], [107.1, -26.39, 1.8, "Wezen"], [206.89, 49.31, 1.9, "Alcaid"],
+  [99.43, 16.4, 1.9, "Alhena"], [206.89, 49.31, 1.9, "Alkaid"], [89.88, 44.95, 1.9, "Menkalinan"],
+  [154.99, 19.84, 2.0, "Algieba"], [141.9, -8.66, 2.0, "Alphard"], [10.9, -17.99, 2.0, "Diphda"],
+  [31.79, 23.46, 2.0, "Hamal"], [95.67, -17.96, 2.0, "Mirzam"], [283.82, -26.3, 2.0, "Nunki"],
+  [37.95, 89.26, 2.0, "Polaris"], [47.04, 40.96, 2.1, "Algol"], [30.97, 42.33, 2.1, "Almach"],
+  [2.1, 29.09, 2.1, "Alpheratz"], [177.26, 14.57, 2.1, "Denebola"], [222.68, 74.16, 2.1, "Kochab"],
+  [211.67, -36.37, 2.1, "Menkent"], [17.43, 35.62, 2.1, "Mirach"], [263.73, 12.56, 2.1, "Rasalhague"],
+  [86.94, -9.67, 2.1, "Saiph"], [2.1, 29.09, 2.1, "Sirrah"], [233.67, 26.71, 2.2, "Alphecca"],
+  [269.15, 51.49, 2.2, "Eltanin"], [269.15, 51.49, 2.2, "Etamin"], [83.0, -0.3, 2.2, "Mintaka"],
+  [200.98, 54.93, 2.2, "Mizar"], [305.56, 40.26, 2.2, "Sadr"], [10.13, 56.54, 2.2, "Schedar"],
+  [2.29, 59.15, 2.3, "Caph"], [165.46, 56.38, 2.3, "Merak"], [326.05, 9.88, 2.4, "Enif"],
+  [221.25, 27.07, 2.4, "Izar"], [178.46, 53.69, 2.4, "Phecda"], [257.59, -15.72, 2.4, "Sabik"],
+  [345.94, 28.08, 2.4, "Scheat"], [319.64, 62.59, 2.5, "Alderamin"], [346.19, 15.21, 2.5, "Markab"],
+  [45.57, 4.09, 2.5, "Menkar"], [83.18, -17.82, 2.6, "Arneb"], [183.95, -17.54, 2.6, "Gienah Corvi"],
+  [183.95, -17.54, 2.6, "Gienah"], [236.07, 6.43, 2.6, "Unukalhai"], [296.56, 10.61, 2.7, "Tarazed"],
+  [3.31, 15.18, 2.8, "Algenib"], [265.87, 4.57, 2.8, "Cebalrai"], [82.06, -20.76, 2.8, "Nihal"],
+  [258.66, 14.39, 2.8, "Rasalgethi"], [222.72, -16.04, 2.8, "Zubenelgenubi"], [56.87, 24.11, 2.9, "Alcyone"],
+  [195.54, 10.96, 2.9, "Vindemiatrix"], [292.68, 27.96, 3.0, "Albereo"], [292.68, 27.96, 3.0, "Albireo"],
+  [182.53, -22.62, 3.0, "Minkar"], [331.45, -0.32, 3.0, "Sadalmelik"], [59.51, -13.51, 3.0, "Zaurak"],
+  [322.16, 70.56, 3.2, "Alfirk"], [284.74, 32.69, 3.2, "Sulafat"], [183.86, 57.03, 3.3, "Megrez"],
+  [282.52, 33.36, 3.5, "Sheliak"], [57.29, 24.05, 3.6, "Atlas"], [298.83, 6.41, 3.7, "Alshain"],
+  [56.22, 24.11, 3.7, "Electra"], [211.1, 64.38, 3.7, "Thuban"], [56.46, 24.37, 3.9, "Maia"],
+  [201.31, 54.99, 4.0, "Alcor"], [56.58, 23.95, 4.1, "Merope"], [56.3, 24.47, 4.3, "Taygeta"],
+];
+const STAR_TOP_ALT = 80; // a star this high (degrees) touches the top of the strip
+
+// The star dots, sized by brightness. The short page-head skies only get
+// the brighter ones so they don't look crowded.
+function makeStars(box, limit) {
+  box.stars = STARS.filter((s) => s[2] <= limit).map((s) => {
+    const dot = document.createElement("i");
+    const mag = s[2];
+    dot.style.setProperty("--s", mag < 0.5 ? "6px" : mag < 1.5 ? "4.5px" : mag < 2.5 ? "3.4px" : "2.4px");
+    if (mag < 1.5) dot.className = "star--bright";
+    return { star: s, dot };
+  });
+  box.replaceChildren(...box.stars.map((s) => s.dot));
+}
+
+// Puts every star where it really is at moment "t".
+function placeStars(scene, t) {
+  const box = scene.querySelector(".horizon__stars");
+  if (!box) return;
+  if (!box.stars) makeStars(box, scene.closest(".page-head") ? 2 : 4.5);
+  const n = t.getTime() / 86400000 - 10957.5;
+  const lst = ((18.697374558 + 24.06570982441908 * n) * 15 + YXE.lon) * D2R; // which way the sky faces now
+  const la = YXE.lat * D2R;
+  for (const { star, dot } of box.stars) {
+    const ra = star[0] * D2R, dec = star[1] * D2R, ha = lst - ra;
+    const alt = Math.asin(Math.sin(la) * Math.sin(dec) + Math.cos(la) * Math.cos(dec) * Math.cos(ha)) * R2D;
+    // Compass direction: 90 = east, 180 = south, 270 = west
+    let az = Math.atan2(-Math.sin(ha) * Math.cos(dec), Math.cos(la) * Math.sin(dec) - Math.sin(la) * Math.cos(dec) * Math.cos(ha)) * R2D;
+    az = (az + 360) % 360;
+    if (alt < 2 || az < 90 || az > 270) {
+      dot.hidden = true; // below the horizon, or behind us in the north
+      continue;
+    }
+    dot.hidden = false;
+    dot.style.left = `${(((az - 90) / 180) * 100).toFixed(2)}%`;
+    dot.style.top = `${((1 - Math.min(alt, STAR_TOP_ALT) / STAR_TOP_ALT) * 100).toFixed(2)}%`;
+  }
 }
 
 /* ---------- The moon ----------
