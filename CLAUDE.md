@@ -100,10 +100,11 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   minute) and `moonSpanAt` (cached current stretch above/below the
   horizon: prev/next crossing, peak) map it like the sun, left to right
   across its time up, height as a share of this pass's peak, drifting back
-  under the ground while down. It's night-only: `--moon-show` (opacity)
-  fades it in as the sun drops from +6° to -2° and out the same at dawn,
-  so they overlap briefly at dusk and dawn; missing on nights the real
-  moon is down. Its shape is the real phase: `moonPhase` (moon-sun elongation, good to a few hours) feeds
+  under the ground while down. `--moon-show` (opacity) is 1 at night and
+  faint by day (up to 0.32, less for thin crescents), changing over as
+  the sun drops from +6° to -2° (and back at dawn); `--moon-day` turns
+  the lit part pale (color-mix toward ivory) and drops the glow and
+  ground glint by day. Missing on nights the real moon is down. Its shape is the real phase: `moonPhase` (moon-sun elongation, good to a few hours) feeds
   `moonPath`, an SVG drawn into the moon by `drawMoon` (faint
   `.moon__dark` disc + `.moon__lit`; waxing lit on the right). At night
   the readout's left side is `moonLine` ("Waxing crescent moon over
