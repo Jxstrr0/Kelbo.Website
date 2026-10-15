@@ -1,5 +1,6 @@
 /* ==========================================================================
-   main.js — shows projects from projects.json on the page.
+   main.js — shows projects from projects.json on the page, and runs the
+   live horizon (the sun in the hero follows the real sun over Saskatoon).
    --------------------------------------------------------------------------
    You shouldn't need to edit this file to add or change a project.
    Just edit projects.json. This script:
@@ -12,6 +13,14 @@
      5. on the home page tiles, shows how many projects each section has
      6. fades things in smoothly as you scroll (see "Scroll reveal")
      7. slides cards around smoothly when you filter (see "Smooth filtering")
+     8. runs the live horizon: the sun in the hero sits where the real sun
+        is over Saskatoon, and the site goes dark at real sunset
+     9. remembers the last game you opened and offers "Continue?"
+    10. lights up "Market open" on the Trading tile during NYSE hours
+    11. warms the sky toward clay in the 20 minutes before sunset
+
+   To preview a time of day, add ?at= to the address, e.g.
+   index.html?at=noon, ?at=sunset, ?at=night, or ?at=2026-06-21T22:30
    ========================================================================== */
 
 // Status labels, in order from "just an idea" to "done".
@@ -129,7 +138,7 @@ function renderProject(project) {
   // "code" is where its code lives on GitHub. Both are optional.
   const links = el("p", "project__links");
   if (project.link) {
-    // Games get a big pink "Play it" button; everything else a plain link.
+    // Games get a big clay "Play it" button; everything else a plain link.
     const link = isGame(project)
       ? el("a", "button button--play", "Play it")
       : el("a", "project__link", "Take a look →");
@@ -389,8 +398,355 @@ function setUpContactForm() {
   });
 }
 
+
+/* ======================================================================
+   LIVE HORIZON
+   ----------------------------------------------------------------------
+   The sun in the hero is the real sun over Saskatoon. Every minute we
+   work out how high it is (its "altitude", in degrees above the horizon)
+   and where it is in its day, then move the sun and its ray to match.
+   When the real sun sets, the whole site switches to the dark theme.
+
+   The maths is the standard low-precision solar position (good to about
+   a quarter of a degree, which is more than enough for a logo). No
+   internet service is involved, so it works offline and never breaks.
+   ====================================================================== */
+
+const YXE = { lat: 52.1332, lon: -106.67, tz: "America/Regina" }; // Saskatoon. SK has no DST.
+const SUNRISE_ALT = -0.833; // the sun's top edge touches the horizon (with refraction)
+const TWILIGHT_MS = 20 * 60000; // the sky starts warming 20 minutes before sunset
+const D2R = Math.PI / 180;
+const R2D = 180 / Math.PI;
+
+// Altitude of the sun above the horizon, in degrees, at a moment in time.
+function sunAltitude(date) {
+  const n = date.getTime() / 86400000 - 10957.5; // days since 1 Jan 2000, noon UTC
+  const g = (357.529 + 0.98560028 * n) * D2R; // mean anomaly
+  const q = 280.459 + 0.98564736 * n; // mean longitude (deg)
+  const L = (q + 1.915 * Math.sin(g) + 0.02 * Math.sin(2 * g)) * D2R; // ecliptic longitude
+  const e = (23.439 - 0.00000036 * n) * D2R; // tilt of the Earth
+  const ra = Math.atan2(Math.cos(e) * Math.sin(L), Math.cos(L)); // right ascension
+  const dec = Math.asin(Math.sin(e) * Math.sin(L)); // declination
+  const gmst = 18.697374558 + 24.06570982441908 * n; // sidereal time, hours
+  const lst = (gmst * 15 + YXE.lon) * D2R; // local sidereal time
+  const ha = lst - ra; // hour angle
+  const lat = YXE.lat * D2R;
+  return Math.asin(Math.sin(lat) * Math.sin(dec) + Math.cos(lat) * Math.cos(dec) * Math.cos(ha)) * R2D;
+}
+
+// Parts of a moment in Saskatoon time: { y, m, d, h, min, weekday }.
+function localParts(date, tz) {
+  const parts = {};
+  new Intl.DateTimeFormat("en-CA", {
+    timeZone: tz || YXE.tz,
+    hourCycle: "h23",
+    year: "numeric", month: "numeric", day: "numeric",
+    hour: "numeric", minute: "numeric", weekday: "short",
+  })
+    .formatToParts(date)
+    .forEach((p) => { parts[p.type] = p.value; });
+  return {
+    y: +parts.year, m: +parts.month, d: +parts.day,
+    h: +parts.hour % 24, min: +parts.minute, weekday: parts.weekday,
+  };
+}
+
+// "6:41 PM" in Saskatoon time.
+function clock(date) {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: YXE.tz, hour: "numeric", minute: "2-digit" })
+    .format(date)
+    .replace(/\s?([ap])\.m\./i, " $1m")
+    .toUpperCase()
+    .replace(/\s+/g, " ");
+}
+
+// "5h 38m"
+function hoursMins(ms) {
+  const mins = Math.max(0, Math.round(ms / 60000));
+  const h = Math.floor(mins / 60);
+  const m = mins % 60;
+  return h ? `${h}h ${m}m` : `${m}m`;
+}
+
+// Sunrise, sunset and the highest point for the Saskatoon day that
+// contains "date". Scans the day a minute at a time (1440 cheap sums),
+// which is simpler and sturdier than the closed-form version.
+const dayCache = {};
+function sunDay(date) {
+  const p = localParts(date);
+  const key = `${p.y}-${p.m}-${p.d}`;
+  if (dayCache[key]) return dayCache[key];
+
+  const start = Date.UTC(p.y, p.m - 1, p.d, 6, 0, 0); // local midnight = 06:00 UTC (UTC-6)
+  let rise = null, set = null, peakAlt = -90, peakAt = start, prev = sunAltitude(new Date(start));
+  for (let i = 1; i <= 1440; i++) {
+    const t = start + i * 60000;
+    const alt = sunAltitude(new Date(t));
+    if (prev < SUNRISE_ALT && alt >= SUNRISE_ALT && rise === null) rise = t;
+    if (prev >= SUNRISE_ALT && alt < SUNRISE_ALT && rise !== null && set === null) set = t;
+    if (alt > peakAlt) { peakAlt = alt; peakAt = t; }
+    prev = alt;
+  }
+  const info = { start, end: start + 86400000, rise, set, peakAlt, peakAt };
+  dayCache[key] = info;
+  return info;
+}
+
+// Lets you preview a time of day: ?at=noon, ?at=sunset, ?at=night,
+// ?at=sunrise, or ?at=2026-06-21T22:30 (Saskatoon time).
+function previewClock() {
+  const at = new URLSearchParams(location.search).get("at");
+  if (!at) return () => new Date();
+  const today = sunDay(new Date());
+  let fixed;
+  if (at === "noon") fixed = today.peakAt;
+  else if (at === "sunset") fixed = (today.set || today.start) - 4 * 60000;
+  else if (at === "sunrise") fixed = (today.rise || today.start) + 4 * 60000;
+  else if (at === "night") fixed = today.start + 23 * 3600000;
+  else if (at === "dusk") fixed = (today.set || today.start) + 25 * 60000;
+  else {
+    const parsed = Date.parse(/[zZ]|[+-]\d\d:\d\d$/.test(at) ? at : at + "-06:00");
+    fixed = Number.isNaN(parsed) ? Date.now() : parsed;
+  }
+  const offset = fixed - Date.now();
+  return () => new Date(Date.now() + offset);
+}
+
+const now = previewClock();
+
+/* ---------- Theme ----------
+   "auto" follows the sun. The ☀/☾ button cycles auto → light → dark and
+   remembers the choice on this phone. */
+const THEME_KEY = "kelbo.theme";
+
+function themeChoice() {
+  try {
+    const t = localStorage.getItem(THEME_KEY);
+    return t === "light" || t === "dark" ? t : "auto";
+  } catch (e) {
+    return "auto";
+  }
+}
+
+function applyTheme(isDay) {
+  const choice = themeChoice();
+  const theme = choice === "auto" ? (isDay ? "light" : "dark") : choice;
+  if (document.documentElement.dataset.theme !== theme) {
+    document.documentElement.dataset.theme = theme;
+  }
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.content = theme === "dark" ? "#141413" : "#7B3FC4";
+  return theme;
+}
+
+const THEME_ICONS = {
+  auto: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 14a6 6 0 0 1 12 0"/><path d="M3 14h18"/><path d="M12 3v2M5.6 6.6l1.4 1.4M18.4 6.6 17 8"/></svg>',
+  light: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>',
+  dark: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>',
+};
+const THEME_LABELS = { auto: "Theme: follows the sun", light: "Theme: light", dark: "Theme: dark" };
+
+function setUpThemeToggle(refresh) {
+  const btn = document.querySelector("[data-theme-toggle]");
+  if (!btn) return;
+  const paint = () => {
+    const c = themeChoice();
+    btn.innerHTML = THEME_ICONS[c];
+    btn.setAttribute("aria-label", THEME_LABELS[c]);
+    btn.title = THEME_LABELS[c];
+  };
+  btn.addEventListener("click", () => {
+    const next = { auto: "light", light: "dark", dark: "auto" }[themeChoice()];
+    try {
+      if (next === "auto") localStorage.removeItem(THEME_KEY);
+      else localStorage.setItem(THEME_KEY, next);
+    } catch (e) {}
+    paint();
+    refresh();
+  });
+  paint();
+}
+
+/* ---------- Moving the sun ---------- */
+function setUpHorizon() {
+  const scene = document.querySelector("[data-horizon]");
+  const readout = document.querySelector("[data-horizon-readout]");
+
+  function tick() {
+    const t = now();
+    const alt = sunAltitude(t);
+    const day = sunDay(t);
+    const isDay = alt >= SUNRISE_ALT;
+    applyTheme(isDay);
+
+    // Twilight warming: over the last 20 minutes before sunset, --warm
+    // climbs from 0 to 1 and style.css blends the sky toward clay.
+    const toSet = day.set ? day.set - t : Infinity;
+    const warm = isDay && toSet > 0 && toSet < TWILIGHT_MS ? 1 - toSet / TWILIGHT_MS : 0;
+    document.documentElement.style.setProperty("--warm", warm.toFixed(3));
+
+    if (scene) {
+      // Where the sun is in its day, left to right. Between sunrise and
+      // sunset it crosses from 6% to 70% of the width; through the night
+      // it drifts back under the ground, ready to rise again.
+      let x;
+      if (day.rise && day.set && t >= day.rise && t <= day.set) {
+        x = 0.06 + 0.64 * ((t - day.rise) / (day.set - day.rise));
+      } else if (day.set && t > day.set) {
+        const nightLen = day.end + 7 * 3600000 - day.set; // roughly until tomorrow's sunrise
+        x = 0.70 - 0.64 * Math.min(1, (t - day.set) / nightLen);
+      } else {
+        x = 0.06;
+      }
+      // Height, as a share of today's highest point. Negative = set.
+      let y = 0.92 * (alt / Math.max(10, day.peakAlt)); // 0.92 keeps the noon sun off the top edge
+      if (alt < 0) y = Math.max(-1, alt / 10);
+      scene.style.setProperty("--sun-x", x.toFixed(3));
+      scene.style.setProperty("--sun-alt", Math.min(1, y).toFixed(3));
+      scene.style.setProperty("--ray", Math.max(0, Math.min(1, y)).toFixed(3));
+    }
+
+    if (readout) {
+      const left = readout.children[0];
+      const right = readout.children[1];
+      if (isDay && day.set) {
+        left.textContent = "Sun's up over Saskatoon";
+        right.textContent = `Sets ${clock(new Date(day.set))} · ${hoursMins(day.set - t)} of light left`;
+      } else if (!isDay && day.rise && t < day.rise) {
+        left.textContent = "Sun's down in Saskatoon";
+        right.textContent = `Up at ${clock(new Date(day.rise))}`;
+      } else {
+        // After sunset: tomorrow's sunrise
+        const tomorrow = sunDay(new Date(day.end + 60000));
+        left.textContent = "Sun's down in Saskatoon";
+        right.textContent = tomorrow.rise ? `Back at ${clock(new Date(tomorrow.rise))}` : "Back tomorrow";
+      }
+    }
+  }
+
+  tick();
+  setUpThemeToggle(tick);
+  setInterval(tick, 60000);
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) tick();
+  });
+}
+
+/* ======================================================================
+   MEMORY CARD ("Continue?")
+   ----------------------------------------------------------------------
+   When you tap Play on a game, the phone remembers which one. Next time
+   you open the home page it offers to pick up where you left off.
+   Everything stays in the browser; nothing is sent anywhere.
+   ====================================================================== */
+const LAST_KEY = "kelbo.lastPlayed";
+const VISITS_KEY = "kelbo.visits";
+
+function readJSON(key) {
+  try {
+    return JSON.parse(localStorage.getItem(key) || "null");
+  } catch (e) {
+    return null;
+  }
+}
+
+function writeJSON(key, value) {
+  try {
+    if (value === null) localStorage.removeItem(key);
+    else localStorage.setItem(key, JSON.stringify(value));
+  } catch (e) {}
+}
+
+function agoText(ms) {
+  const mins = Math.round(ms / 60000);
+  if (mins < 2) return "just now";
+  if (mins < 60) return `${mins} min ago`;
+  const hours = Math.round(mins / 60);
+  if (hours < 24) return `${hours} hour${hours === 1 ? "" : "s"} ago`;
+  const days = Math.round(hours / 24);
+  if (days === 1) return "yesterday";
+  if (days < 30) return `${days} days ago`;
+  return "a while ago";
+}
+
+function rememberPlays() {
+  document.addEventListener("click", (event) => {
+    const link = event.target.closest("a.button--play");
+    if (!link) return;
+    const card = link.closest(".project");
+    const titleEl = card && card.querySelector(".project__title");
+    const img = card && card.querySelector(".project__cover img");
+    const previous = readJSON(LAST_KEY);
+    writeJSON(LAST_KEY, {
+      title: titleEl ? titleEl.textContent : (link.dataset.title || (previous && previous.title) || "a game"),
+      link: link.href,
+      image: img ? img.getAttribute("src") : (link.dataset.image || (previous && previous.image) || ""),
+      at: Date.now(),
+    });
+  });
+}
+
+function setUpContinue() {
+  const box = document.querySelector("[data-continue]");
+  if (!box) return;
+
+  // Count visits (once per browser session, so reloads don't count).
+  let visits = Number(readJSON(VISITS_KEY)) || 0;
+  try {
+    if (!sessionStorage.getItem("kelbo.counted")) {
+      visits += 1;
+      writeJSON(VISITS_KEY, visits);
+      sessionStorage.setItem("kelbo.counted", "1");
+    }
+  } catch (e) {}
+
+  const last = readJSON(LAST_KEY);
+  if (!last || !last.link) return;
+
+  box.querySelector("[data-continue-title]").textContent = last.title;
+  box.querySelector("[data-continue-when]").textContent = `Last played ${agoText(Date.now() - last.at)}`;
+  box.querySelector("[data-continue-visit]").textContent = visits > 1 ? `· visit #${visits}` : "";
+  const cover = box.querySelector("[data-continue-cover]");
+  if (last.image) cover.src = last.image;
+  else cover.remove();
+  const link = box.querySelector("[data-continue-link]");
+  link.href = last.link;
+  link.dataset.title = last.title;
+  link.dataset.image = last.image || "";
+  link.setAttribute("aria-label", "Continue " + last.title);
+  box.querySelector("[data-continue-clear]").addEventListener("click", () => {
+    writeJSON(LAST_KEY, null);
+    box.hidden = true;
+    box.classList.remove("is-on");
+  });
+  box.hidden = false;
+  box.classList.add("is-on");
+}
+
+/* ---------- Market light on the Trading tile ----------
+   NYSE hours: 9:30 to 4:00 New York time, Monday to Friday. (Holidays
+   aren't checked, so a few days a year it'll say "open" when it isn't.) */
+function setUpMarketLight() {
+  const node = document.querySelector("[data-market]");
+  if (!node) return;
+  function tick() {
+    const p = localParts(now(), "America/New_York");
+    const mins = p.h * 60 + p.min;
+    const weekday = !["Sat", "Sun"].includes(p.weekday);
+    const open = weekday && mins >= 9 * 60 + 30 && mins < 16 * 60;
+    node.textContent = open ? "Market open" : "Market closed";
+    node.classList.toggle("is-open", open);
+  }
+  tick();
+  setInterval(tick, 60000);
+}
+
 // Start here once the page has loaded.
 async function init() {
+  setUpHorizon();
+  rememberPlays();
+  setUpContinue();
+  setUpMarketLight();
   setUpContactForm();
 
   // Keep the footer year current.

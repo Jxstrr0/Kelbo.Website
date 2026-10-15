@@ -19,7 +19,7 @@ you save on the `main` branch goes live within a minute or two.
 | `ai.html` | The AI section: every project with `"category": "AI"` |
 | `projects.json` | **The list of projects.** Edit this to add or change one |
 | `style.css` | Colours, fonts, and layout for every page |
-| `main.js` | Reads `projects.json` and puts the projects on the page |
+| `main.js` | Reads `projects.json` and puts the projects on the page, and runs the live sun, the ☀/☾ button, and the "Continue?" card |
 | `assets/` | Images, game cover screenshots (`assets/covers/`), the link preview picture, and the browser-tab icon |
 | `agent-fleet.html` | The Agent Fleet plan page. All plain text, so edit the words directly |
 | `journal.html` | The AI Trading Journal page |
@@ -42,11 +42,12 @@ you save on the `main` branch goes live within a minute or two.
 All the words on the home page are in `index.html`. Look for these
 comments to find each part:
 
-- `<!-- 1. Hero -->`: your name, the pixel "Player 1" line, the description,
-  and the two buttons
+- `<!-- 1. Hero -->`: the small line above the heading, the big heading, the
+  description, the two buttons, and the live sun
 - `<!-- 2. Games -->`: the "Pick a game" cards (filled in from `projects.json`)
 - `<!-- 3. Modes -->`: the Games / Trading / AI tiles
-- `<!-- 4. About -->`: the about paragraph
+- `<!-- 4. About -->`: the about paragraphs, then the "player card" facts
+  (each `<li>` is one box: a label, then the value)
 - `<!-- 5. Contact -->`: your links
 
 Only change the words between the tags, like this:
@@ -80,7 +81,7 @@ Paste it after the last one and change the values:
 ```
 
 - **status**: use one of `Shipped`, `Mostly done`, `Building`, or `Planned`.
-  This sets how full the glowing progress bar is.
+  This sets how far along the progress bar the little sun sits.
 - **category**: which section it shows up in: `Game`, `Trading`, or `AI`.
   Anything else still shows on the Projects page, just not in a section.
 - **link**: a web address, or leave it as `""` for no link. A link can
@@ -93,7 +94,7 @@ Paste it after the last one and change the values:
   page (the first four only).
 
 **Adding a game:** use `"category": "Game"` and it shows up on the Games
-page automatically, with a big pink "Play it" button. Each game lives in its
+page automatically, with a big clay "Play it" button. Each game lives in its
 own repo with GitHub Pages turned on, so `link` is that game's Pages address
 (like `https://jxstrr0.github.io/RedSkies/`) and `code` is the repo address.
 
@@ -147,23 +148,50 @@ Say you want a "Tools" section next to Games, Trading, and AI:
 
 ## Change colours or fonts
 
-Open `style.css`. The colours are near the top: light mode first, then dark
-mode under `@media (prefers-color-scheme: dark)`. Change a value like
-`#ff3d9a` (the neon pink) and every place that uses it updates.
+The site uses the Longlight Interactive brand: five colours (Clay, Purple,
+Slate, Ivory, Lilac) and one font, Space Grotesk. Open `style.css`. The
+brand colours are the `--ll-` lines at the very top. Under them are the
+light theme (daytime), then the dark theme (after sunset). Change a value
+like `#7B3FC4` (the purple) and every place that uses it updates.
 
-The fonts are Space Grotesk (all the text) and Press Start 2P (the small
-pixel-style labels), loaded from Google Fonts in each page's `<head>`.
+The font is loaded from Google Fonts in each page's `<head>`.
+
+## The live sun
+
+The sun in the top band of every page is the real sun over Saskatoon. It
+rises on the left, crosses as the day goes on, and sinks behind the
+horizon line at sunset. In the last 20 minutes before sunset the purple sky
+warms up, and when the sun goes down the whole site switches to its dark
+theme with a few stars. It's all worked out on the visitor's phone from the
+date and time, so there's no internet service or key involved.
+
+- **The ☀/☾ button** in the header lets a visitor pick light or dark
+  instead. Tap it to go light → dark → back to following the sun. Their
+  phone remembers the choice.
+- **To see a time of day** without waiting for it, add `?at=` to the
+  address: `?at=noon`, `?at=sunrise`, `?at=sunset`, `?at=dusk`, `?at=night`,
+  or an exact Saskatoon time like `?at=2026-06-21T21:30`. Only you see it.
+- **To move it somewhere else**, change `YXE` near the "LIVE HORIZON"
+  heading in `main.js` (latitude, longitude, and time zone).
+
+Two small extras ride along on the home page:
+
+- **Continue?** When someone taps Play on a game, their phone remembers it,
+  and next time the home page offers that game again under "Pick a game".
+  **Pick another** clears it. Nothing is sent anywhere.
+- **Market light** on the Trading tile says "Market open" during New York
+  Stock Exchange hours (9:30 to 4:00 Eastern, Monday to Friday). It doesn't
+  know about holidays.
 
 ## Motion
 
 The animations are at the bottom of `style.css` under "Motion": pages fade
-into each other, the hero's grid floor rolls and its glow drifts, cards slide
-up as you scroll, and buttons lift when you tap them. Progress bars fill once
-their card lands, then flash. The "Play it" buttons glow on and off. On the
-Projects page, cards glide into place when you tap a filter. The home page's
-"Press start" button blinks four times when the page opens, then stays on. Anyone whose phone is
-set to **Reduce Motion** (iPhone: Settings → Accessibility → Motion) sees
-the same site with nothing moving. Turn that setting on to check it.
+into each other, sections and cards slide up as you scroll, the sun glides
+to its new spot, and buttons and cards lift when you tap them. On the
+Projects page, cards glide into place when you tap a filter. Anyone whose
+phone is set to **Reduce Motion** (iPhone: Settings → Accessibility →
+Motion) sees the same site with nothing moving. Turn that setting on to
+check it.
 
 ## Previewing on a computer
 
