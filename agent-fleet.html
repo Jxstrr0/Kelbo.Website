@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Agent Fleet · Longlight Interactive</title>
-  <meta name="description" content="Agent Fleet: a planned set of small, single-purpose bots Kelbo can run from his phone, like news digests, trackers, and weekly scans.">
+  <meta name="description" content="Agent Fleet: a growing set of small, single-purpose bots Kelbo can run from his phone, like news digests, trackers, and weekly scans.">
   <!-- Link preview: the card that shows up when this page is shared in a
        text, Discord, X, etc. These links have to be full web addresses
        (not relative), because the apps that read them aren't on this site.
@@ -12,7 +12,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Longlight Interactive">
   <meta property="og:title" content="Agent Fleet · Longlight Interactive">
-  <meta property="og:description" content="A planned set of small, single-purpose bots I can run from my phone, like news digests, trackers, and weekly scans.">
+  <meta property="og:description" content="A growing set of small, single-purpose bots I can run from my phone, like news digests, trackers, and weekly scans.">
   <meta property="og:url" content="https://jxstrr0.github.io/Kelbo.Website/agent-fleet.html">
   <meta property="og:image" content="https://jxstrr0.github.io/Kelbo.Website/assets/social-preview.jpg">
   <meta property="og:image:width" content="1200">
@@ -34,6 +34,8 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap">
 
   <link rel="stylesheet" href="style.css">
+  <!-- The weekly scan borrows the journal's card styles -->
+  <link rel="stylesheet" href="journal.css">
   <!-- If the visitor has chosen a theme with the ☀/☾ button, apply it
        before anything draws so the page doesn't flash. -->
   <script>
@@ -42,7 +44,9 @@
       if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
     } catch (e) {}
   </script>
+  <!-- main.js first: scan.js borrows a couple of its helpers -->
   <script src="main.js" defer></script>
+  <script src="scan.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -80,15 +84,15 @@
 
   <main id="main">
     <!-- This whole page is plain text: edit the words between the tags.
-         Agent Fleet is still "Planned" in projects.json; change it there
+         Agent Fleet is "Building" in projects.json; change it there
          as it moves along. -->
     <section class="page-head">
       <div class="wrap">
         <h1>Agent Fleet</h1>
         <p class="page-head__line">
           A set of small, single-purpose bots I can run from my phone, like
-          news digests, trackers, and weekly scans. It's still in the planning
-          stage, so this page is the plan.
+          news digests, trackers, and weekly scans. The weekly scan is the
+          first one running. The rest are still the plan.
         </p>
         <!-- The live horizon: main.js puts the sun where the real sun is
              over Saskatoon right now. -->
@@ -131,10 +135,19 @@
       </ul>
     </section>
 
-    <!-- 3. The first bots. To add one, copy a <li class="project"> block. -->
+    <!-- 3. The weekly scan. scan.js fills this in from scan.json, which a
+         Claude routine rewrites every Saturday morning. -->
+    <section class="section wrap" aria-labelledby="scan-heading" data-reveal>
+      <h2 id="scan-heading">This week's scan</h2>
+      <div class="entry scan" data-scan>
+        <p>Turn on JavaScript to see the scan, or <a href="scan.json">view the raw scan</a>.</p>
+      </div>
+    </section>
+
+    <!-- 4. The first bots. To add one, copy a <li class="project"> block. -->
     <section class="section wrap" aria-labelledby="bots-heading" data-reveal>
       <h2 id="bots-heading">First bots on the list</h2>
-      <p class="prose">Ideas for now. None of these are built yet.</p>
+      <p class="prose">The weekly scan is live. The other two are still ideas.</p>
       <ul class="project-list">
         <li class="project">
           <div class="project__body">
@@ -157,24 +170,28 @@
         <li class="project">
           <div class="project__body">
             <h3 class="project__title">Weekly scan</h3>
-            <p class="project__meta"><span class="project__status">Idea</span></p>
-            <p class="project__summary">Every weekend, a look at which stocks
-              moved most and what's coming up next week, like earnings and big
-              economic reports.</p>
+            <p class="project__meta"><span class="project__status">Live</span></p>
+            <p class="project__summary">Every Saturday morning, a look at which
+              stocks moved most and what's coming up next week, like earnings
+              and big economic reports. <a href="#scan-heading">See the latest</a>.</p>
           </div>
         </li>
       </ul>
     </section>
 
-    <!-- 4. How it'll work -->
+    <!-- 5. How it'll work -->
     <section class="section wrap" aria-labelledby="how-heading" data-reveal>
       <h2 id="how-heading">How it'll work</h2>
       <div class="prose">
         <p>
-          The bots will need AI and market data services, and those need
-          private keys. This site is public, so the keys can't live here. The
-          bots will run somewhere separate that keeps the keys safe, and this
-          page will show what's live once they're running.
+          The weekly scan runs as a scheduled task on my own Claude plan. Once
+          a week it reads the market news, writes the scan into this site and
+          publishes it, so there are no API keys involved.
+        </p>
+        <p>
+          Bots that need to run more often, or pull from paid market data,
+          will need private keys. This site is public, so those keys can't
+          live here. They'll run somewhere separate that keeps the keys safe.
         </p>
         <p><a class="more-link" href="ai.html">&larr; Back to AI</a></p>
       </div>
