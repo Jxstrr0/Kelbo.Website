@@ -621,7 +621,8 @@ function setUpThemeToggle(refresh) {
 
 /* ---------- Moving the sun ---------- */
 
-// Puts the sun (and its ray) where the real sun is at moment "t".
+// Puts the sun (and its ray) where the real sun is at moment "t", and
+// the moon in the night sky.
 function placeSun(scene, t) {
   const alt = sunAltitude(t);
   const day = sunDay(t);
@@ -647,6 +648,29 @@ function placeSun(scene, t) {
   // full length on the longest day, a bit under half on the shortest.
   const reach = 0.45 + 0.55 * season;
   scene.style.setProperty("--ray", (Math.max(0, Math.min(1, y)) * reach).toFixed(3));
+  placeMoon(scene, t, day);
+}
+
+// Puts the clay moon in the night sky. It isn't the real moon: it rises
+// on the left at sunset, arcs across the night, and sets on the right at
+// sunrise. In daytime it waits below the ground.
+function placeMoon(scene, t, day) {
+  let nightStart = null, nightEnd = null;
+  if (day.set && t > day.set) {
+    nightStart = day.set; // evening: tonight runs until tomorrow's sunrise
+    nightEnd = sunDay(new Date(day.end + 60000)).rise;
+  } else if (day.rise && t < day.rise) {
+    nightStart = sunDay(new Date(day.start - 60000)).set; // small hours: since last night's sunset
+    nightEnd = day.rise;
+  }
+  let x = 0.06, y = -1;
+  if (nightStart && nightEnd) {
+    const f = (t - nightStart) / (nightEnd - nightStart); // 0 at sunset, 1 at sunrise
+    x = 0.06 + 0.64 * f;
+    y = 0.8 * Math.sin(Math.PI * f); // up and over, highest around midnight
+  }
+  scene.style.setProperty("--moon-x", x.toFixed(3));
+  scene.style.setProperty("--moon-alt", y.toFixed(3));
 }
 
 /* ---------- The opening spin ----------
