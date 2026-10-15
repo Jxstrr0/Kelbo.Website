@@ -606,6 +606,50 @@ img {
   color: var(--sky-muted);
 }
 
+/* "Longest day of the year · 16h 45m of light": a pill just above the
+   horizon line, shown by main.js on the two solstices only */
+.horizon__badge {
+  position: absolute;
+  right: 0;
+  bottom: calc(var(--ground-height) + 0.75rem);
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  background: var(--sky-ink);
+  color: var(--sky);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.horizon__badge::before {
+  content: "";
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.horizon__badge[hidden] {
+  display: none;
+}
+
+/* The "· 16h 46m of light" part only fits from tablet size up */
+.horizon__badge-extra {
+  display: none;
+}
+
+@media (min-width: 40rem) {
+  .horizon__badge-extra {
+    display: inline;
+  }
+}
+
 /* ---------- Buttons ---------- */
 .button {
   display: inline-flex;
@@ -694,6 +738,83 @@ img {
 
 .more-link:hover {
   color: var(--accent-ink);
+}
+
+/* ---------- "Now building" strip ----------
+   A row of pills with what's on the bench this week, from now.json.
+   main.js shows it once the file loads; it stays hidden otherwise. */
+.now {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem 1.25rem;
+  margin-top: 1.5rem;
+  padding: 0.9rem 1.1rem;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--card);
+  box-shadow: var(--shadow);
+}
+
+.now[hidden] {
+  display: none;
+}
+
+.now__label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  line-height: 1.4;
+  text-transform: uppercase;
+  color: var(--secondary);
+}
+
+/* A little clay sun that glows (see the motion section at the bottom) */
+.now__label::before {
+  content: "";
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.now__list {
+  flex: 1 1 18rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.now__item {
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  background: var(--secondary-soft);
+  color: var(--secondary);
+  font-size: 0.85rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.now__item a {
+  color: inherit;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.15em;
+}
+
+.now__updated {
+  margin: 0;
+  margin-left: auto;
+  font-size: 0.78rem;
+  color: var(--muted);
+  white-space: nowrap;
 }
 
 /* ---------- Memory card ("Continue?") ----------
@@ -864,6 +985,17 @@ img {
   margin: 0;
   color: var(--muted);
   font-size: 0.95rem;
+}
+
+/* "v1.4 · Added night mode", from "version" and "latest" in projects.json */
+.project__version {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.project__version strong {
+  color: var(--accent-ink);
 }
 
 /* Progress bar, drawn as a little horizon: the fill is the ground, the
@@ -1507,6 +1639,16 @@ img {
   .reveal.is-in {
     opacity: 1;
     translate: 0 0;
+  }
+
+  /* The clay dot on "Now building" breathes slowly */
+  .now__label::before {
+    animation: now-glow 2.6s ease-in-out infinite;
+  }
+
+  @keyframes now-glow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(217, 119, 87, 0.45); }
+    50% { box-shadow: 0 0 0 5px rgba(217, 119, 87, 0); }
   }
 }
 

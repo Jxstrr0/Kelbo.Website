@@ -19,9 +19,12 @@ you save on the `main` branch goes live within a minute or two.
 | `trading.html` | The Trading section: every project with `"category": "Trading"` |
 | `ai.html` | The AI section: every project with `"category": "AI"` |
 | `projects.json` | **The list of projects.** Edit this to add or change one |
+| `now.json` | **The "Now building" strip** on the home page. Edit this to say what you're working on |
 | `style.css` | Colours, fonts, and layout for every page |
 | `main.js` | Reads `projects.json` and puts the projects on the page, and runs the live sun, the ☀/☾ button, and the "Continue?" card |
-| `assets/` | Images, game cover screenshots (`assets/covers/`), the link preview picture, and the browser-tab icon |
+| `assets/` | Images, game cover screenshots (`assets/covers/`), the link preview picture, the browser-tab icon, and the home-screen icon |
+| `site.webmanifest` | The site's name, colours and icon for phones that add it to the home screen |
+| `robots.txt`, `sitemap.xml` | Tell search engines they're welcome and which pages exist. Add a line to the sitemap when you add a page |
 | `agent-fleet.html` | The Agent Fleet plan page. All plain text, so edit the words directly |
 | `journal.html` | The AI Trading Journal page |
 | `journal.json` | **Your journal entries.** Edit this to add an update |
@@ -79,6 +82,8 @@ Paste it after the last one and change the values:
     "status": "Building",
     "category": "Tool",
     "summary": "One or two sentences on what it is.",
+    "version": "",
+    "latest": "",
     "link": "",
     "code": "",
     "image": "",
@@ -90,6 +95,12 @@ Paste it after the last one and change the values:
   This sets how far along the progress bar the little sun sits.
 - **category**: which section it shows up in: `Game`, `Trading`, or `AI`.
   Anything else still shows on the Projects page, just not in a section.
+- **version** and **latest**: the version note under the summary, like
+  "v1.4 · Added night mode". `version` is just the number (`"1.4"`), and
+  `latest` is a few words on what changed. Either can stay `""`, and the
+  line disappears if both are empty. Red Skies and Prairie Engine Works
+  show the version number their game pages report; fill in `latest` when
+  you ship something.
 - **link**: a web address, or leave it as `""` for no link. A link can
   also point to a page in this repo later, like `tools/prediction-tracker/`.
 - **code**: the GitHub repo address, or `""`. Shows a "See the code" link.
@@ -109,6 +120,26 @@ except the very last one. If the projects disappear and the page says
 "Projects couldn't load right now", it's almost always a missing or extra
 comma or quote. Pasting the file into https://jsonlint.com will point to the
 exact spot.
+
+## The "Now building" strip
+
+Under the home page hero there's a strip of what you're working on this
+week. It comes from `now.json`:
+
+```json
+{
+  "updated": "2026-10-15",
+  "items": [
+    { "text": "Finishing touches on Garage to Glory", "link": "https://jxstrr0.github.io/GarageToGlory/" },
+    { "text": "Something with no link" }
+  ]
+}
+```
+
+- Change `updated` to today's date whenever you edit it. The strip shows
+  "Updated today", "Updated 3 days ago", and so on.
+- Each item is a pill. `link` is optional.
+- To hide the strip, leave `items` as `[]`.
 
 ## Add or swap images
 
@@ -180,6 +211,11 @@ date and time, so there's no internet service or key involved.
   or an exact Saskatoon time like `?at=2026-06-21T21:30`. Only you see it.
 - **To move it somewhere else**, change `YXE` near the "LIVE HORIZON"
   heading in `main.js` (latitude, longitude, and time zone).
+- **Seasons:** the ray coming off the sun reaches further in summer than in
+  winter (full length on the longest day, a bit under half on the
+  shortest). On the longest and shortest days of the year a badge appears
+  on the home page sky, like "Longest day of the year · 16h 46m of light".
+  Preview it with `?at=2026-06-21T13:00` or `?at=2026-12-21T13:00`.
 
 Two small extras ride along on the home page:
 
@@ -219,6 +255,10 @@ and open http://localhost:8000.
   history keeps them after you delete them. Future AI tools that need a key
   will need a different setup, so plan that first.
 - **Keep it static.** No servers or anything that has to keep running.
+- **The copyright line** in every footer says "Kelbo / Longlight
+  Interactive". You own the copyright on everything here automatically.
+  If you ever register Longlight Interactive as a business name, the line
+  can drop "Kelbo /".
 
 ## The contact form
 
@@ -234,6 +274,8 @@ it is send you a message.
 - To send them to a different email, make a new key at web3forms.com with
   that address and swap it into `index.html`.
 - A hidden checkbox catches spam bots. Real visitors never see it.
+- Web3Forms only accepts messages sent from a real browser, so test it on
+  the live site, not from a script.
 
 ## The trading journal
 
@@ -362,4 +404,9 @@ It runs entirely in the visitor's browser:
 - **Custom domain:** add a file named `CNAME` containing just the domain (for
   example `kelbo.ca`), then point the domain at GitHub Pages in your
   domain provider's settings. All links on the site are relative, so they'll
-  keep working.
+  keep working. The only full addresses to update are the `og:` and
+  `canonical` tags in each page's `<head>`, `robots.txt` and `sitemap.xml`.
+- **Home screen icon:** on a phone, "Add to Home Screen" in the browser
+  menu puts the Longlight sun on the home screen. The icon is
+  `assets/icon.svg` (with PNG copies at 180, 192 and 512 pixels) and the
+  name and colours are in `site.webmanifest`.
