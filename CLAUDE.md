@@ -97,7 +97,14 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   `placeMoon`, which puts the clay crescent moon (`.horizon__moon`, glow
   via drop-shadow, crescent via mask) in the sky from sunset to sunrise:
   rising left at sunset, highest mid-night, setting right at sunrise. It's
-  stylized, not the real moon, and sits below the ground by day. The ☀/☾ button cycles auto → light → dark and is
+  stylized, not the real moon, and sits below the ground by day.
+  `placeSun` also sets `--sun-low` (0 high, 1 near the horizon: bigger,
+  stronger glow), `--sun-show` (fades the glow/halo out once set, so they
+  don't peek over the short page-head sky) and `--glint-sun`/`--glint-moon`
+  (the `.horizon__glint` shimmer on the ground under each). The sun's halo
+  is an `outline` with `outline-offset`, its glow is `::before`. Motion
+  (sun-breathe, moon-float, glint-flow/sway, twinkle) is in the
+  reduced-motion-safe block. The ☀/☾ button cycles auto → light → dark and is
   saved in `localStorage["kelbo.theme"]`; a tiny inline script in every
   page's `<head>` applies it before paint. The home page also has the
   "Continue?" memory card (`kelbo.lastPlayed`, `kelbo.visits`, set when any
