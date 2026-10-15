@@ -33,6 +33,7 @@ const STATUSES = [
   { label: "Shipped", spot: 100 },
   { label: "Mostly done", spot: 78 },
   { label: "Building", spot: 50 },
+  { label: "Early stages", spot: 32 },
   { label: "Planned", spot: 18 },
 ];
 
