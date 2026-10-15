@@ -3,7 +3,9 @@
    --------------------------------------------------------------------------
    The look follows the Longlight Interactive brand: a half-set sun on a
    long horizon line. Five colours only (Clay, Purple, Slate, Ivory, Lilac),
-   one typeface (Space Grotesk), no gradients on the mark.
+   one typeface (Space Grotesk), no gradients on the mark. The logo is the
+   horizon lockup (sun + line under the name); the sun's ray now lives only
+   in the hero's live horizon.
 
    THEMES. The site has a light and a dark theme, and main.js picks one
    from the real position of the sun over Saskatoon ("live horizon"):
@@ -61,6 +63,7 @@
   --sky-ink: var(--ll-ivory);
   --sky-muted: #E6D8F7;
   --horizon: var(--ll-ivory);
+  --logo-line: var(--ll-ivory);  /* the logo's horizon line */
   --ground: #6A33AD;
 
   --shadow: 0 6px 22px rgba(20, 20, 19, 0.08);
@@ -102,6 +105,7 @@
   --sky-ink: var(--ll-ivory);
   --sky-muted: var(--ll-lilac);
   --horizon: var(--ll-purple);
+  --logo-line: var(--ll-lilac);
   --ground: #0E0E0D;
 
   --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
@@ -148,6 +152,7 @@
     --sky: var(--ll-slate);
     --sky-muted: var(--ll-lilac);
     --horizon: var(--ll-purple);
+    --logo-line: var(--ll-lilac);
     --ground: #0E0E0D;
     --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
     --shadow-lift: 0 16px 40px rgba(0, 0, 0, 0.55);
@@ -288,50 +293,46 @@ img {
   min-height: 3.5rem;
 }
 
-/* Small horizontal lockup: mark + KELBO */
+/* ---------- Logo: the horizon lockup ----------
+   Sun + horizon line running under LONGLIGHT, INTERACTIVE spaced to the
+   same width below it. The words are outlined paths, so the logo never
+   waits on the web font. Colours come from the theme tokens below.
+   Phones show the compact mark (sun + line); 40rem and up show the full lockup. */
+.logo {
+  display: block;
+  height: auto;
+  flex-shrink: 0;
+}
+.logo__sun  { fill: var(--ll-clay); }
+.logo__line { fill: var(--logo-line); }
+.logo__word { fill: var(--sky-ink); }
+.logo__sub  { fill: var(--sky-muted); }
+
+/* Header */
 .wordmark {
   display: inline-flex;
   align-items: center;
-  gap: 0.7rem;
-  font-weight: 700;
-  font-size: 1.05rem;
-  letter-spacing: -0.03em;
+  padding-block: 0.5rem;
   text-decoration: none;
   color: inherit;
 }
+.wordmark .logo--compact { width: 3rem; }
+.wordmark .logo--full    { display: none; }
 
-.wordmark:hover {
+@media (min-width: 40rem) {
+  .wordmark .logo--compact { display: none; }
+  .wordmark .logo--full    { display: block; width: 12rem; }
+}
+
+/* Footer */
+.site-footer .lockup {
+  display: inline-block;
+  margin: 0 auto 1.25rem;
+  padding: 1.5rem; /* clear space ~ one sun height */
+  text-decoration: none;
   color: inherit;
 }
-
-.wordmark .mark {
-  width: 4.75rem;
-  height: auto;
-  display: block;
-  flex-shrink: 0;
-}
-
-/* On phones only the mark shows, drawn big with the end of its ray cropped
-   off so the sun stands out in the tight header. The name and the full mark
-   come back at 40rem. */
-.wordmark {
-  max-width: 2.9rem;
-  overflow: hidden;
-}
-
-.wordmark > span {
-  display: none;
-}
-
-.wordmark small {
-  display: block;
-  font-size: 0.42em;
-  font-weight: 500;
-  letter-spacing: 0.42em;
-  line-height: 1;
-  margin-top: 0.15rem;
-  color: var(--sky-muted);
-}
+.site-footer .lockup .logo--full { width: min(17rem, 78vw); }
 
 .nav {
   display: flex;
@@ -1377,7 +1378,7 @@ img {
   font-weight: 500;
 }
 
-/* ---------- Footer: the stacked Longlight lockup ---------- */
+/* ---------- Footer (its logo rules are in the Logo section) ---------- */
 .site-footer {
   margin-top: 2rem;
   padding: 2.5rem 0 2rem;
@@ -1385,37 +1386,6 @@ img {
   color: var(--sky-ink);
   text-align: center;
   transition: background-color 600ms var(--ease);
-}
-
-.site-footer .lockup {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.35rem;
-  margin: 0 auto 1.25rem;
-  padding: 1.5rem; /* clear space ≈ one sun height around the lockup */
-  text-decoration: none;
-  color: inherit;
-}
-
-.site-footer .lockup .mark {
-  width: 6.5rem;
-  height: auto;
-}
-
-.site-footer .lockup strong {
-  font-size: 1.75rem;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1;
-}
-
-.site-footer .lockup small {
-  font-size: 0.53rem;
-  font-weight: 500;
-  letter-spacing: 0.42em;
-  color: var(--sky-muted);
-  padding-left: 0.42em; /* balance the trailing letter-space */
 }
 
 .site-footer p {
@@ -1488,23 +1458,9 @@ img {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  /* Bigger logo once there's room: larger mark, wordmark text, taller bar */
+  /* Taller header bar once there's room for the full logo */
   .site-header__inner {
     min-height: 4.25rem;
-  }
-
-  .wordmark {
-    max-width: none;
-    overflow: visible;
-    font-size: 1.4rem;
-  }
-
-  .wordmark .mark {
-    width: 5.5rem;
-  }
-
-  .wordmark > span {
-    display: block;
   }
 
   .nav {
