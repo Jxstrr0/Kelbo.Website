@@ -1,21 +1,9 @@
 [
   {
-    "title": "Garage to Glory",
-    "status": "Mostly done",
-    "category": "Game",
-    "summary": "The Longlight game furthest down the field. The main pieces are in place, and the finishing touches are under way.",
-    "version": "",
-    "latest": "",
-    "link": "https://jxstrr0.github.io/GarageToGlory/",
-    "code": "https://github.com/Jxstrr0/GarageToGlory",
-    "image": "assets/covers/garage-to-glory.jpg",
-    "featured": true
-  },
-  {
     "title": "Prairie Engine Works",
     "status": "Mostly done",
     "category": "Game",
-    "summary": "An engine-building game. Put an engine together on the test stand, fire it up and hear it run, then take it to the drag strip or a truck and tractor pull to earn cash and reputation.",
+    "summary": "Longlight's biggest game so far, and the closest to done. Put an engine together on the test stand, fire it up and hear it run, then take it to the drag strip or a truck and tractor pull to earn cash and reputation.",
     "version": "1.65.1",
     "latest": "",
     "link": "https://jxstrr0.github.io/350Chev/",
@@ -45,6 +33,18 @@
     "link": "https://jxstrr0.github.io/BaccaratTable/",
     "code": "https://github.com/Jxstrr0/BaccaratTable",
     "image": "assets/covers/penthouse-baccarat.jpg",
+    "featured": true
+  },
+  {
+    "title": "Garage to Glory",
+    "status": "Building",
+    "category": "Game",
+    "summary": "Playable now and still being built. The main pieces are coming together, with more to add before it's done.",
+    "version": "",
+    "latest": "",
+    "link": "https://jxstrr0.github.io/GarageToGlory/",
+    "code": "https://github.com/Jxstrr0/GarageToGlory",
+    "image": "assets/covers/garage-to-glory.jpg",
     "featured": true
   },
   {
