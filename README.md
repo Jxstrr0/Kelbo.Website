@@ -44,11 +44,12 @@ All the words on the home page are in `index.html`. Look for these
 comments to find each part:
 
 - `<!-- 1. Hero -->`: the studio name, the small "Saskatoon, SK" line above
-  it, the description (with the link to your About page), the two buttons,
-  and the live sun
+  it, "by Kelbo" under it (linked to your About page), the description, the
+  two buttons, and the live sun
 - `<!-- 2. Games -->`: the "Pick a game" cards (filled in from `projects.json`)
 - `<!-- 3. Modes -->`: the Games / Trading / AI tiles
-- `<!-- 4. Contact -->`: the contact form and your links
+- `<!-- 4. Contact -->`: the contact form, and your links in the card
+  beside it
 
 Everything about you is on its own page, `about.html`: the about paragraphs,
 then the "player card" facts (each `<li>` is one box: a label, then the
