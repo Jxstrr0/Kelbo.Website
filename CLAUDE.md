@@ -100,8 +100,10 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   minute) and `moonSpanAt` (cached current stretch above/below the
   horizon: prev/next crossing, peak) map it like the sun, left to right
   across its time up, height as a share of this pass's peak, drifting back
-  under the ground while down. So it can be up by day and missing at
-  night. Its shape is the real phase: `moonPhase` (moon-sun elongation, good to a few hours) feeds
+  under the ground while down. It's night-only: `--moon-show` (opacity)
+  fades it in as the sun drops from +6° to -2° and out the same at dawn,
+  so they overlap briefly at dusk and dawn; missing on nights the real
+  moon is down. Its shape is the real phase: `moonPhase` (moon-sun elongation, good to a few hours) feeds
   `moonPath`, an SVG drawn into the moon by `drawMoon` (faint
   `.moon__dark` disc + `.moon__lit`; waxing lit on the right). At night
   the readout's left side is `moonLine` ("Waxing crescent moon over
@@ -117,7 +119,10 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   `CONSTELLATION_LINES` (pairs of `STARS` names) drawn in
   `.horizon__lines`, an SVG stretched over the sky (viewBox 0..100 =
   the dots' percentages, non-scaling stroke); a line hides unless both
-  stars are up.
+  stars are up. `PLANETS` (JPL approximate Keplerian elements +
+  `EARTH_ORBIT`; `orbitXYZ`, `planetRaDec`, within ~0.1°) are placed the
+  same way as `b.planet` dots (steady, ivory, Mars clay; name `span`
+  on the home sky only, flipped left near the right edge).
   `placeSun` also sets `--sun-low` (0 high, 1 near the horizon: bigger,
   stronger glow), `--sun-show` (fades the glow/halo out once set, so they
   don't peek over the short page-head sky) and `--glint-sun`/`--glint-moon`
