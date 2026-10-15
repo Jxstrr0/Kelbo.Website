@@ -42,7 +42,7 @@ you save on the `main` branch goes live within a minute or two.
 All the words on the home page are in `index.html`. Look for these
 comments to find each part:
 
-- `<!-- 1. Hero -->`: your name, the small "Player 1" line above it, the
+- `<!-- 1. Hero -->`: your name, the small "Saskatoon, SK" line above it, the
   description, the two buttons, and the live sun
 - `<!-- 2. Games -->`: the "Pick a game" cards (filled in from `projects.json`)
 - `<!-- 3. Modes -->`: the Games / Trading / AI tiles
