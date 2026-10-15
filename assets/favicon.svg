@@ -1,6 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <!-- Longlight app icon: ivory tile, clay sun, purple horizon (no ray at small sizes) -->
-  <rect width="64" height="64" rx="16" fill="#FAF9F5"/>
-  <path d="M18 38 A14 14 0 0 1 46 38 Z" fill="#D97757"/>
-  <rect x="8" y="38" width="48" height="4" fill="#7B3FC4"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><style>@media (prefers-color-scheme: dark){.t{fill:#141413}.l{fill:#7B3FC4}}</style><rect class="t" width="64" height="64" rx="16" fill="#7B3FC4"/><g><path d="M17 38A15 15 0 0 1 47 38Z" fill="#D97757"/><rect class="l" x="8" y="38" width="48" height="4" fill="#FAF9F5"/></g></svg>
