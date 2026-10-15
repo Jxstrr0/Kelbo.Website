@@ -733,6 +733,56 @@ const CONSTELLATION_LINES = [
   ["Alpheratz", "Mirach"], ["Mirach", "Almach"],
 ];
 
+/* ---------- The planets ----------
+   Mercury, Venus, Mars, Jupiter and Saturn, worked out from their orbits
+   (NASA JPL's simple orbit numbers, good to about a tenth of a degree
+   between 1800 and 2050). Each planet's spot on the sky's map changes
+   night to night as it and the Earth go round the sun, then it's placed
+   just like a star. Planets shine steadily, so they don't twinkle.
+   Each "orbit" is [a, e, tilt, L, perihelion, node], each as a pair
+   (value in 2000, change per century): size, stretch and tilt of the
+   orbit, where the planet is along it, and which way it points. */
+const PLANETS = [
+  { name: "Mercury", size: "4px", orbit: [0.38709927, 0.00000037, 0.20563593, 0.00001906, 7.00497902, -0.00594749, 252.2503235, 149472.67411175, 77.45779628, 0.16047689, 48.33076593, -0.12534081] },
+  { name: "Venus", size: "7px", orbit: [0.72333566, 0.0000039, 0.00677672, -0.00004107, 3.39467605, -0.0007889, 181.9790995, 58517.81538729, 131.60246718, 0.00268329, 76.67984255, -0.27769418] },
+  { name: "Mars", size: "5px", orbit: [1.52371034, 0.00001847, 0.0933941, 0.00007882, 1.84969142, -0.00813131, -4.55343205, 19140.30268499, -23.94362959, 0.44441088, 49.55953891, -0.29257343] },
+  { name: "Jupiter", size: "6.5px", orbit: [5.202887, -0.00011607, 0.04838624, -0.00013253, 1.30439695, -0.00183714, 34.39644051, 3034.74612775, 14.72847983, 0.21252668, 100.47390909, 0.20469106] },
+  { name: "Saturn", size: "5px", orbit: [9.53667594, -0.0012506, 0.05386179, -0.00050991, 2.48599187, 0.00193609, 49.95424423, 1222.49362201, 92.59887831, -0.41897216, 113.66242448, -0.28867794] },
+];
+const EARTH_ORBIT = [1.00000261, 0.00000562, 0.01671123, -0.00004392, -0.00001531, -0.01294668, 100.46457166, 35999.37244981, 102.93768193, 0.32327364, 0, 0];
+
+// Where a planet is around the sun at T (centuries since 2000), as x/y/z
+// in AU (x/y = the plane of the Earth's orbit).
+function orbitXYZ(orbit, T) {
+  const [a0, a1, e0, e1, i0, i1, L0, L1, p0, p1, o0, o1] = orbit;
+  const a = a0 + a1 * T, e = e0 + e1 * T, tilt = (i0 + i1 * T) * D2R;
+  const L = L0 + L1 * T, peri = p0 + p1 * T, node = (o0 + o1 * T) * D2R;
+  const w = peri * D2R - node;
+  const M = (((((L - peri) % 360) + 540) % 360) - 180) * D2R; // how far round since its closest point
+  // Kepler's equation, solved by a few rounds of guessing better
+  let E = M + e * Math.sin(M);
+  for (let k = 0; k < 5; k++) E -= (E - e * Math.sin(E) - M) / (1 - e * Math.cos(E));
+  const xp = a * (Math.cos(E) - e), yp = a * Math.sqrt(1 - e * e) * Math.sin(E);
+  const cw = Math.cos(w), sw = Math.sin(w), cn = Math.cos(node), sn = Math.sin(node);
+  const ct = Math.cos(tilt), st = Math.sin(tilt);
+  return [
+    (cw * cn - sw * sn * ct) * xp + (-sw * cn - cw * sn * ct) * yp,
+    (cw * sn + sw * cn * ct) * xp + (-sw * sn + cw * cn * ct) * yp,
+    sw * st * xp + cw * st * yp,
+  ];
+}
+
+// A planet's spot on the sky's map (right ascension, declination, in
+// degrees) as seen from Earth at a moment in time.
+function planetRaDec(orbit, date) {
+  const T = (date.getTime() / 86400000 - 10957.5) / 36525;
+  const p = orbitXYZ(orbit, T), earth = orbitXYZ(EARTH_ORBIT, T);
+  const x = p[0] - earth[0], y = p[1] - earth[1], z = p[2] - earth[2];
+  const tilt = 23.43928 * D2R; // the Earth's tilt
+  const ye = y * Math.cos(tilt) - z * Math.sin(tilt), ze = y * Math.sin(tilt) + z * Math.cos(tilt);
+  return [Math.atan2(ye, x) * R2D, Math.atan2(ze, Math.hypot(x, ye)) * R2D];
+}
+
 // The star dots, sized by brightness. The short page-head skies only get
 // the brighter ones so they don't look crowded, and no constellation lines.
 function makeStars(box, limit, withLines) {
@@ -743,8 +793,21 @@ function makeStars(box, limit, withLines) {
     if (mag < 1.5) dot.className = "star--bright";
     return { star: s, dot };
   });
+  // Planets go on top of the stars, steady and a bit bigger, with their
+  // name beside them on the big home sky.
+  box.planets = PLANETS.map((planet) => {
+    const dot = document.createElement("b");
+    dot.className = `planet planet--${planet.name.toLowerCase()}`;
+    dot.style.setProperty("--s", planet.size);
+    if (withLines) {
+      const label = document.createElement("span");
+      label.textContent = planet.name;
+      dot.append(label);
+    }
+    return { planet, dot };
+  });
   box.lines = [];
-  const parts = box.stars.map((s) => s.dot);
+  const parts = [...box.stars.map((s) => s.dot), ...box.planets.map((p) => p.dot)];
   if (withLines) {
     // One SVG behind the dots, stretched over the sky so its 0..100
     // units match the dots' left/top percentages.
@@ -775,20 +838,25 @@ function placeStars(scene, t) {
   const n = t.getTime() / 86400000 - 10957.5;
   const lst = ((18.697374558 + 24.06570982441908 * n) * 15 + YXE.lon) * D2R; // which way the sky faces now
   const la = YXE.lat * D2R;
-  for (const entry of box.stars) {
-    const { star, dot } = entry;
-    const ra = star[0] * D2R, dec = star[1] * D2R, ha = lst - ra;
+  // Puts one dot at the spot ra/dec (degrees) on the sky's map, or hides it.
+  const place = (entry, raDeg, decDeg) => {
+    const ra = raDeg * D2R, dec = decDeg * D2R, ha = lst - ra;
     const alt = Math.asin(Math.sin(la) * Math.sin(dec) + Math.cos(la) * Math.cos(dec) * Math.cos(ha)) * R2D;
     // Compass direction: 90 = east, 180 = south, 270 = west
     let az = Math.atan2(-Math.sin(ha) * Math.cos(dec), Math.cos(la) * Math.sin(dec) - Math.sin(la) * Math.cos(dec) * Math.cos(ha)) * R2D;
     az = (az + 360) % 360;
     entry.up = !(alt < 2 || az < 90 || az > 270);
-    dot.hidden = !entry.up; // below the horizon, or behind us in the north
-    if (!entry.up) continue;
+    entry.dot.hidden = !entry.up; // below the horizon, or behind us in the north
+    if (!entry.up) return;
     entry.x = ((az - 90) / 180) * 100;
     entry.y = (1 - Math.min(alt, STAR_TOP_ALT) / STAR_TOP_ALT) * 100;
-    dot.style.left = `${entry.x.toFixed(2)}%`;
-    dot.style.top = `${entry.y.toFixed(2)}%`;
+    entry.dot.style.left = `${entry.x.toFixed(2)}%`;
+    entry.dot.style.top = `${entry.y.toFixed(2)}%`;
+  };
+  for (const entry of box.stars) place(entry, entry.star[0], entry.star[1]);
+  for (const entry of box.planets) {
+    place(entry, ...planetRaDec(entry.planet.orbit, t));
+    entry.dot.classList.toggle("planet--flip", entry.x > 85); // name on the left near the right edge
   }
   for (const { a, b, line } of box.lines) {
     const show = a && b && a.up && b.up;
@@ -932,9 +1000,15 @@ function placeMoon(scene, t) {
   const x = span.up ? 0.06 + 0.64 * f : 0.70 - 0.64 * f;
   let y = 0.92 * (alt / Math.max(10, span.peak));
   if (alt < 0) y = Math.max(-1, alt / 10);
+  // The moon belongs to the night: it fades in as the sun gets low
+  // (from 6 degrees up) and is fully out once the sun is 2 degrees
+  // under, then fades out the same way at dawn. So the two share the
+  // sky for a little while around sunset and sunrise, like real life.
+  const show = Math.max(0, Math.min(1, (6 - sunAltitude(t)) / 8));
   scene.style.setProperty("--moon-x", x.toFixed(3));
   scene.style.setProperty("--moon-alt", Math.min(1, y).toFixed(3));
-  scene.style.setProperty("--glint-moon", (glint(y) * 0.6).toFixed(3));
+  scene.style.setProperty("--moon-show", show.toFixed(3));
+  scene.style.setProperty("--glint-moon", (glint(y) * 0.6 * show).toFixed(3));
 }
 
 // How strong the light on the ground is for a sun or moon at height y:
