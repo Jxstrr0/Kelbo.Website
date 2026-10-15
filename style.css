@@ -436,8 +436,18 @@ img {
   margin-bottom: 1.5rem;
 }
 
+/* "by Kelbo" under the studio name in the home hero */
+.hero__by {
+  margin: -0.35rem 0 1rem;
+  font-size: clamp(1.25rem, 3.5vw, 1.75rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--sky-muted);
+}
+
 /* Links on the sky (like "Kelbo" in the home hero): ivory text with a clay
    underline, since clay text on purple is too faint to read */
+.hero__by a,
 .hero__line a,
 .page-head__line a {
   color: var(--sky-ink);
@@ -446,6 +456,7 @@ img {
   text-underline-offset: 0.2em;
 }
 
+.hero__by a:hover,
 .hero__line a:hover,
 .page-head__line a:hover {
   color: var(--sky-ink);
@@ -924,12 +935,22 @@ img {
   list-style: none;
 }
 
+/* Each tile fills its whole grid cell, so a row of tiles lines up even
+   when one has a longer line of text */
+.tiles > li {
+  display: flex;
+}
+
+.tiles .tile {
+  flex: 1;
+}
+
 .tile {
   position: relative;
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
-  min-height: 9rem;
+  min-height: 8rem;
   padding: 1.1rem 1.2rem;
   border-radius: var(--radius);
   border: 1px solid var(--rule);
@@ -1126,6 +1147,12 @@ img {
   margin-top: 0.5rem;
 }
 
+/* The other ways to reach Kelbo: under the form on phones, in a card
+   beside it on wider screens (see the 48rem section below) */
+.contact-aside .contact-form__also {
+  margin-top: 1.5rem;
+}
+
 .form-row {
   margin-bottom: 1rem;
 }
@@ -1187,7 +1214,6 @@ img {
 }
 
 .contact-form__also {
-  margin-top: 1.5rem;
   color: var(--muted);
 }
 
@@ -1271,6 +1297,33 @@ img {
   text-decoration-color: var(--accent);
 }
 
+/* ---------- Phones only: shorter game cards on the home page ----------
+   The first "Pick a game" card stays full size; the rest get a wider,
+   shorter picture and a two-line summary so four games don't take five
+   screens of scrolling. The full summary is on the Games page. */
+@media (max-width: 39.99rem) {
+  .project-list[data-projects="featured"] > .project + .project .project__cover {
+    aspect-ratio: 16 / 9;
+  }
+
+  .project-list[data-projects="featured"] > .project + .project .project__body {
+    gap: 0.5rem;
+    padding: 0.85rem 1rem 1rem;
+  }
+
+  .project-list[data-projects="featured"] > .project + .project .project__title {
+    font-size: 1.25rem;
+  }
+
+  .project-list[data-projects="featured"] > .project + .project .project__summary {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+  }
+}
+
 /* ---------- Wider screens ---------- */
 @media (min-width: 40rem) {
   .project-list {
@@ -1303,7 +1356,7 @@ img {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  /* Bigger logo once there's room: larger mark, KELBO text, taller bar */
+  /* Bigger logo once there's room: larger mark, wordmark text, taller bar */
   .site-header__inner {
     min-height: 4.25rem;
   }
@@ -1357,6 +1410,47 @@ img {
   }
 
   .facts {
+    margin-top: 0;
+  }
+}
+
+/* Contact: the form and the "also find me" card side by side */
+@media (min-width: 48rem) {
+  .contact-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+    gap: 2.5rem;
+    align-items: start;
+  }
+
+  .contact-form {
+    max-width: none;
+  }
+
+  .contact-aside {
+    position: relative;
+    overflow: hidden;
+    padding: 1.4rem 1.4rem 4.5rem;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    background: var(--card);
+    box-shadow: var(--shadow);
+  }
+
+  /* The same sun peeking over the corner as the mode tiles */
+  .contact-aside::before {
+    content: "";
+    position: absolute;
+    right: -1.5rem;
+    bottom: -3rem;
+    width: 6rem;
+    height: 6rem;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.9;
+  }
+
+  .contact-aside .contact-form__also {
     margin-top: 0;
   }
 }
