@@ -554,6 +554,46 @@ img {
   vector-effect: non-scaling-stroke;
 }
 
+/* The planets: steady ivory dots with a soft glow (Mars is clay, like
+   the real red planet), plus their name on the home sky. */
+.horizon__stars .planet {
+  position: absolute;
+  width: var(--s);
+  height: var(--s);
+  margin: calc(var(--s) / -2) 0 0 calc(var(--s) / -2);
+  border-radius: 50%;
+  background: var(--ll-ivory);
+  box-shadow: 0 0 9px 2px rgba(250, 249, 245, 0.55);
+}
+
+.horizon__stars .planet--mars {
+  background: var(--ll-clay);
+  box-shadow: 0 0 9px 2px rgba(217, 119, 87, 0.6);
+}
+
+.horizon__stars .planet[hidden] {
+  display: none;
+}
+
+.planet span {
+  position: absolute;
+  left: calc(100% + 6px);
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--ll-ivory);
+  opacity: 0.7;
+}
+
+.planet--flip span {
+  left: auto;
+  right: calc(100% + 6px);
+}
+
 /* The brightest stars (Sirius, Vega, Rigel...) get a soft halo */
 .horizon__stars .star--bright {
   box-shadow: 0 0 8px 2px rgba(180, 140, 232, 0.75);
@@ -626,7 +666,8 @@ img {
   width: var(--moon-size);
   height: var(--moon-size);
   filter: drop-shadow(0 0 6px rgba(217, 119, 87, 0.85)) drop-shadow(0 0 18px rgba(217, 119, 87, 0.5));
-  transition: top 1200ms var(--ease), left 1200ms var(--ease);
+  opacity: var(--moon-show, 0); /* main.js: 0 by day, 1 at night, fading around sunset and sunrise */
+  transition: top 1200ms var(--ease), left 1200ms var(--ease), opacity 1200ms var(--ease);
 }
 
 /* main.js draws tonight's real phase into the moon as a small SVG: the

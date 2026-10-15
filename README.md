@@ -256,13 +256,23 @@ date and time, so there's no internet service or key involved.
   skies at the top of other pages only show the brightest stars and no
   lines. The star list is `STARS` in `main.js`, and the lines are
   `CONSTELLATION_LINES` (pairs of star names, easy to add to).
+- **The planets:** Mercury, Venus, Mars, Jupiter and Saturn come out
+  with the stars, each where it really is tonight (worked out from their
+  orbits, within about a tenth of a degree). They're steady ivory dots
+  that don't twinkle, like real planets, and Mars is clay like the red
+  planet. On the home page each one has its name beside it. They drift
+  slowly against the stars from night to night. The orbit numbers are
+  `PLANETS` in `main.js`. Try `?at=2026-10-16T05:30` for Mars, Jupiter
+  and Saturn before sunrise.
 - **The moon:** the clay moon with its soft glow is the real moon over
   Saskatoon, worked out from the date like the sun. It shows its real
   phase (crescent, half, gibbous, full, or just a faint disc at new moon)
   and follows its real path: it rises on the left, climbs as high as the
-  real moon does, and sets on the right on its own schedule. So some
-  afternoons it's up in the daytime sky beside the sun, and some nights
-  it isn't up at all. At night the line under the horizon says which
+  real moon does, and sets on the right on its own schedule. It only
+  shows at night: it fades in as the sun gets low (from 6 degrees up)
+  and fades out the same way at dawn, so the sun and moon share the sky
+  for a little while around sunset and sunrise. On nights when the real
+  moon isn't up, there's no moon. At night the line under the horizon says which
   moon it is and where: "Waxing crescent moon over Saskatoon", or
   "Waxing crescent moon rises 2:31 PM" when it's down. It floats up and
   down a little and its glow breathes. Its look is `.horizon__moon` in
