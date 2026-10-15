@@ -511,7 +511,8 @@ img {
   margin-top: 1rem;
 }
 
-/* A few lilac stars that only come out after dark */
+/* Lilac stars that only come out after dark. main.js swaps the few
+   placeholder stars in the HTML for the real night sky (see STARS). */
 .horizon__stars {
   position: absolute;
   inset: 0 0 auto 0;
@@ -523,14 +524,24 @@ img {
 
 .horizon__stars i {
   position: absolute;
-  width: 4px;
-  height: 4px;
+  width: var(--s, 4px);
+  height: var(--s, 4px);
+  margin: calc(var(--s, 4px) / -2) 0 0 calc(var(--s, 4px) / -2); /* centre the dot on its spot */
   border-radius: 50%;
   background: var(--ll-lilac);
 }
 
+.horizon__stars i[hidden] {
+  display: none;
+}
+
+/* The brightest stars (Sirius, Vega, Rigel...) get a soft halo */
+.horizon__stars .star--bright {
+  box-shadow: 0 0 8px 2px rgba(180, 140, 232, 0.75);
+}
+
 :root[data-theme="dark"] .horizon__stars {
-  opacity: 0.9;
+  opacity: 1;
 }
 
 .page-head .horizon {

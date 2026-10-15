@@ -107,6 +107,13 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   the readout's left side is `moonLine` ("Waxing crescent moon over
   Saskatoon", or "... moon rises 2:31 PM" while it's down) and the right
   side "Sun's back at 7:34 AM".
+  `placeSun` also calls `placeStars`: the real sky from `STARS` (the
+  named bright stars from PyEphem's catalogue, J2000 RA/Dec + magnitude,
+  dec > -38° so they can rise here), alt/az from local sidereal time,
+  shown facing south (az 90..270 → left..right, alt/`STAR_TOP_ALT` →
+  height, hidden below 2° or in the north). `makeStars` swaps the HTML's
+  placeholder dots for sized ones (`--s`, `.star--bright` halo); page
+  heads only get magnitude ≤ 2.
   `placeSun` also sets `--sun-low` (0 high, 1 near the horizon: bigger,
   stronger glow), `--sun-show` (fades the glow/halo out once set, so they
   don't peek over the short page-head sky) and `--glint-sun`/`--glint-moon`
