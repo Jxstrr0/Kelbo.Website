@@ -26,11 +26,15 @@
    index.html?at=noon, ?at=sunset, ?at=night, or ?at=2026-06-21T22:30
    ========================================================================== */
 
-// Status labels, in order from "just an idea" to "done".
+// Status labels, from "done" down to "just an idea". Projects are
+// sorted in this order, furthest along first.
 // "spot" is how full the progress bar is, from 0 to 100.
 // To add a new status, add a line here.
+// "For Now" means done but may get more updates; "Final Form" means
+// it's complete and won't change.
 const STATUSES = [
-  { label: "Shipped", spot: 100 },
+  { label: "Finished - Final Form", spot: 100 },
+  { label: "Finished - For Now", spot: 100 },
   { label: "Mostly done", spot: 78 },
   { label: "Building", spot: 50 },
   { label: "Early stages", spot: 32 },
@@ -286,12 +290,18 @@ async function refilter(listEl, projects, emptyMessage, isStillCurrent) {
   });
 }
 
-// Sort projects so the furthest-along come first. Projects with the
-// same status keep the order they have in projects.json.
+// Where a status sits in the STATUSES list (unknown ones go last).
+function statusRank(statusText) {
+  const rank = STATUSES.indexOf(findStatus(statusText));
+  return rank === -1 ? STATUSES.length : rank;
+}
+
+// Sort projects so the furthest-along come first (in STATUSES order).
+// Projects with the same status keep the order they have in projects.json.
 function sortByProgress(projects) {
   return projects
     .map((p, i) => ({ p, i }))
-    .sort((a, b) => findStatus(b.p.status).spot - findStatus(a.p.status).spot || a.i - b.i)
+    .sort((a, b) => statusRank(a.p.status) - statusRank(b.p.status) || a.i - b.i)
     .map((x) => x.p);
 }
 
