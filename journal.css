@@ -605,3 +605,9 @@
   font-size: 0.8125rem;
   color: var(--muted);
 }
+
+/* ---------- Weekly scan (agent-fleet.html) ---------- */
+/* The scan is one card, using the entry styles above */
+.scan {
+  max-width: 44rem;
+}
