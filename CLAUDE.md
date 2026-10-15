@@ -82,7 +82,7 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
 - The header (Longlight mark + KELBO wordmark as home, the nav Games,
   Trading, AI, Projects, and the ☀/☾ button) is copied in every page and
   only just fits at 360px, where the KELBO text hides and only the mark
-  shows. Test before adding to it. The parked tracker doesn't load
+  shows (drawn big with its ray cropped). Test before adding to it. The parked tracker doesn't load
   `main.js` (its names clash), so it has no ☀/☾ button or live sun.
 - The AI Trading Journal is `journal.html` + `journal.js` + `journal.css`,
   with entries in `journal.json` (a list, newest first by `date`). The
