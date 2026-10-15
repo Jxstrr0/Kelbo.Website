@@ -249,8 +249,13 @@ date and time, so there's no internet service or key involved.
   left edge, south in the middle and west on the right, and higher stars
   sit higher. They turn slowly across the sky through the night and race
   round during the opening spin. The bigger, glowing dots are the
-  brightest stars. The small skies at the top of other pages only show
-  the brightest ones. The star list is `STARS` in `main.js`.
+  brightest stars. On the home page, faint lines join the stars of
+  well-known constellations (Orion, the Big Dog, the Twins, the bull's
+  horn, Leo, the Summer Triangle, the Swan, the Eagle, Pegasus and
+  Andromeda); a line only shows while both its stars are up. The small
+  skies at the top of other pages only show the brightest stars and no
+  lines. The star list is `STARS` in `main.js`, and the lines are
+  `CONSTELLATION_LINES` (pairs of star names, easy to add to).
 - **The moon:** the clay moon with its soft glow is the real moon over
   Saskatoon, worked out from the date like the sun. It shows its real
   phase (crescent, half, gibbous, full, or just a faint disc at new moon)
