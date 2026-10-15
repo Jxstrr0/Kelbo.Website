@@ -657,14 +657,16 @@ function placeSun(scene, t) {
   // The light on the ground fades in as the sun clears the horizon,
   // strongest when the sun is low.
   scene.style.setProperty("--glint-sun", (glint(y) * (0.55 + 0.45 * low)).toFixed(3));
-  placeMoon(scene, t, day);
+  placeMoon(scene, t);
 }
 
 /* ---------- The moon ----------
-   The moon's shape is its real phase tonight, worked out from the date
-   like the sun (no internet). Its path across the sky is made up: it
-   rises on the left at sunset, arcs across the night and sets on the
-   right at sunrise, so there's a moon every night. */
+   The real moon over Saskatoon, worked out from the date like the sun (no
+   internet): its phase (the shape) and its height in the sky. Like the
+   real moon it rises on the left, crosses, and sets on the right on its
+   own schedule, so some days it's up in the daytime sky and some nights
+   it isn't up at all. */
+const MOONRISE_ALT = -0.833; // its top edge touches the horizon (close enough, same as the sun)
 
 // Where the moon is in its month: 0 = new, 0.25 = first quarter (right
 // half lit), 0.5 = full, 0.75 = last quarter (left half lit). It's the
@@ -705,6 +707,68 @@ function moonPath(phase) {
   return `M0 -1A1 1 0 0 ${outer} 0 1A${rx} 1 0 0 ${inner} 0 -1Z`;
 }
 
+// Height of the moon above the horizon, in degrees, as seen from
+// Saskatoon. Short formulas for where the moon is against the stars
+// (good to a fraction of a degree), then the same sky maths as the sun.
+function moonAltitude(date) {
+  const n = date.getTime() / 86400000 - 10957.5; // days since 1 Jan 2000, noon UTC
+  const L = 218.316 + 13.176396 * n; // mean longitude
+  const M = (134.963 + 13.064993 * n) * D2R; // mean anomaly
+  const F = (93.272 + 13.22935 * n) * D2R; // distance from its node
+  const Dm = (297.85 + 12.190749 * n) * D2R; // distance from the sun
+  const Ms = (357.529 + 0.98560028 * n) * D2R; // the sun's mean anomaly
+  const lon = (L + 6.289 * Math.sin(M) + 1.274 * Math.sin(2 * Dm - M) + 0.658 * Math.sin(2 * Dm)
+    + 0.214 * Math.sin(2 * M) - 0.186 * Math.sin(Ms) - 0.114 * Math.sin(2 * F)) * D2R;
+  const lat = (5.128 * Math.sin(F) + 0.281 * Math.sin(M + F) + 0.278 * Math.sin(M - F)
+    + 0.173 * Math.sin(2 * Dm - F)) * D2R;
+  const e = (23.439 - 0.00000036 * n) * D2R; // tilt of the Earth
+  const ra = Math.atan2(Math.sin(lon) * Math.cos(e) - Math.tan(lat) * Math.sin(e), Math.cos(lon));
+  const dec = Math.asin(Math.sin(lat) * Math.cos(e) + Math.cos(lat) * Math.sin(e) * Math.sin(lon));
+  const gmst = 18.697374558 + 24.06570982441908 * n; // sidereal time, hours
+  const ha = (gmst * 15 + YXE.lon) * D2R - ra;
+  const la = YXE.lat * D2R;
+  const alt = Math.asin(Math.sin(la) * Math.sin(dec) + Math.cos(la) * Math.cos(dec) * Math.cos(ha)) * R2D;
+  return alt - 0.95 * Math.cos(alt * D2R); // the moon is close, so it sits a bit lower from the ground
+}
+
+// The moon's current stretch above (or below) the horizon: when it last
+// crossed the horizon (prev), when it next will (next), whether it's up,
+// and how high it gets this time. Found by stepping 10 minutes at a time
+// and narrowing to the minute. Kept until "t" leaves the stretch.
+let moonSpan = null;
+function moonSpanAt(t) {
+  const ms = t.getTime();
+  if (moonSpan && ms >= moonSpan.prev && ms < moonSpan.next) return moonSpan;
+  const STEP = 10 * 60000, LIMIT = 30 * 3600000;
+  const isUp = (when) => moonAltitude(new Date(when)) >= MOONRISE_ALT;
+  const up = isUp(ms);
+  // dir -1 looks back, +1 looks ahead
+  function crossing(dir) {
+    let same = ms;
+    for (let k = STEP; k <= LIMIT; k += STEP) {
+      const other = ms + dir * k;
+      if (isUp(other) !== up) {
+        let a = same, b = other; // narrow it down to the minute
+        while (Math.abs(b - a) > 60000) {
+          const mid = (a + b) / 2;
+          if (isUp(mid) === up) a = mid; else b = mid;
+        }
+        return b;
+      }
+      same = other;
+    }
+    return ms + dir * LIMIT;
+  }
+  const prev = crossing(-1);
+  const next = crossing(1);
+  let peak = 0;
+  if (up) {
+    for (let s2 = prev; s2 <= next; s2 += STEP) peak = Math.max(peak, moonAltitude(new Date(s2)));
+  }
+  moonSpan = { prev, next, up, peak };
+  return moonSpan;
+}
+
 // Draws the phase into the moon (only when the shape has changed).
 function drawMoon(scene, phase) {
   const moon = scene.querySelector(".horizon__moon");
@@ -715,25 +779,20 @@ function drawMoon(scene, phase) {
   moon.innerHTML = `<svg viewBox="-1 -1 2 2" aria-hidden="true"><circle class="moon__dark" r="1"/><path class="moon__lit" d="${d}"/></svg>`;
 }
 
-// Puts the moon in the night sky. In daytime it waits below the ground.
-function placeMoon(scene, t, day) {
+// Puts the moon where the real moon is at moment "t", the same way as the
+// sun: left to right across its time above the horizon, and as high as
+// it is compared with its highest point this time round. Below the
+// horizon it drifts back under the ground, ready to rise again.
+function placeMoon(scene, t) {
   drawMoon(scene, moonPhase(t));
-  let nightStart = null, nightEnd = null;
-  if (day.set && t > day.set) {
-    nightStart = day.set; // evening: tonight runs until tomorrow's sunrise
-    nightEnd = sunDay(new Date(day.end + 60000)).rise;
-  } else if (day.rise && t < day.rise) {
-    nightStart = sunDay(new Date(day.start - 60000)).set; // small hours: since last night's sunset
-    nightEnd = day.rise;
-  }
-  let x = 0.06, y = -1;
-  if (nightStart && nightEnd) {
-    const f = (t - nightStart) / (nightEnd - nightStart); // 0 at sunset, 1 at sunrise
-    x = 0.06 + 0.64 * f;
-    y = 0.8 * Math.sin(Math.PI * f); // up and over, highest around midnight
-  }
+  const span = moonSpanAt(t);
+  const alt = moonAltitude(t);
+  const f = Math.min(1, Math.max(0, (t - span.prev) / (span.next - span.prev)));
+  const x = span.up ? 0.06 + 0.64 * f : 0.70 - 0.64 * f;
+  let y = 0.92 * (alt / Math.max(10, span.peak));
+  if (alt < 0) y = Math.max(-1, alt / 10);
   scene.style.setProperty("--moon-x", x.toFixed(3));
-  scene.style.setProperty("--moon-alt", y.toFixed(3));
+  scene.style.setProperty("--moon-alt", Math.min(1, y).toFixed(3));
   scene.style.setProperty("--glint-moon", (glint(y) * 0.6).toFixed(3));
 }
 
@@ -785,6 +844,14 @@ function spinSun(scene) {
   requestAnimationFrame(frame);
 }
 
+// The night readout: "Waxing crescent moon over Saskatoon" while the
+// moon is up, or when it rises if it's down.
+function moonLine(t) {
+  const name = moonName(moonPhase(t));
+  const span = moonSpanAt(t);
+  return span.up ? `${name} moon over Saskatoon` : `${name} moon rises ${clock(new Date(span.next))}`;
+}
+
 function setUpHorizon() {
   const scene = document.querySelector("[data-horizon]");
   const readout = document.querySelector("[data-horizon-readout]");
@@ -832,12 +899,12 @@ function setUpHorizon() {
         right.textContent = `Sets ${clock(new Date(day.set))} · ${hoursMins(day.set - t)} of light left`;
       } else if (!isDay && day.rise && t < day.rise) {
         // Night: tonight's moon, and when the sun comes back
-        left.textContent = `${moonName(moonPhase(t))} moon over Saskatoon`;
+        left.textContent = moonLine(t);
         right.textContent = `Sun's up at ${clock(new Date(day.rise))}`;
       } else {
         // After sunset: tomorrow's sunrise
         const tomorrow = sunDay(new Date(day.end + 60000));
-        left.textContent = `${moonName(moonPhase(t))} moon over Saskatoon`;
+        left.textContent = moonLine(t);
         right.textContent = tomorrow.rise ? `Sun's back at ${clock(new Date(tomorrow.rise))}` : "Sun's back tomorrow";
       }
     }
