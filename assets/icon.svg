@@ -1,10 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <!-- Longlight home-screen icon: the sun on an ivory line, on a purple
-       tile. Edge to edge, because phones round the corners themselves.
+  <!-- Longlight home-screen icon: the sun with its soft glow and halo ring,
+       on an ivory line, on a purple tile (same look as the site logo).
+       Edge to edge, because phones round the corners themselves.
        icon-180.png is made from this file; icon-192.png and icon-512.png
        are the rounded-tile version, and icon-maskable-512.png keeps the
        art inside the middle 80% for Android. -->
+  <defs>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4"/>
+    </filter>
+  </defs>
   <rect width="64" height="64" fill="#7B3FC4"/>
+  <path d="M14 38A18 18 0 0 1 50 38Z" fill="#D97757" opacity="0.85" filter="url(#glow)"/>
+  <path d="M12 38A20 20 0 0 1 52 38" fill="none" stroke="#D97757" stroke-width="1.8" opacity="0.65"/>
   <path d="M17 38A15 15 0 0 1 47 38Z" fill="#D97757"/>
   <rect x="8" y="38" width="48" height="4" fill="#FAF9F5"/>
 </svg>

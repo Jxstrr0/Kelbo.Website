@@ -47,14 +47,17 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   `<head>` adds a `<base>` pointing at the site's top folder before any
   links load. Keep that script first in the `<head>`.
 - The link preview image is `assets/social-preview.jpg` (1200×630, the
-  Longlight sky, sun and horizon, "Longlight Interactive", plus the four
-  game covers; it still shows the old sun + ray). Regenerate it if the
-  covers change a lot. The favicon and home-screen icons are the sun on an
-  ivory line on a purple tile (the favicon turns slate in dark mode):
+  Longlight sky, the sun with its glow and halo on the horizon line,
+  "Longlight Interactive", plus the four game covers). Every `og:image`
+  ends `?v=2` so apps refetch it; bump it on every page when the picture
+  changes. Regenerate it if the covers change a lot. The favicon and
+  home-screen icons are the logo's sun (glow, halo, sun) on an ivory line
+  on a purple tile (the favicon turns slate in dark mode):
   `assets/icon.svg` (square source), `icon-180.png` (square), `icon-192/512`
   (rounded tile), `icon-maskable-512.png` (art inside the middle 80%) and
   `site.webmanifest`. Every page's `<head>` links the favicon and
-  apple-touch-icon with `?v=2`; bump it on every page when they change.
+  apple-touch-icon with `?v=3` (the manifest's icons too); bump it
+  everywhere when they change.
 - Footers read "© year Kelbo / Longlight Interactive" because the studio
   name isn't a registered business yet.
 
