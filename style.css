@@ -585,11 +585,10 @@ img {
   transition: top 1200ms var(--ease), left 1200ms var(--ease), transform 1200ms var(--ease), opacity 600ms;
 }
 
-/* The moon: a clay crescent with a soft glow, out from sunset to
-   sunrise. main.js sets --moon-x and --moon-alt so it rises on the left
-   as the sun sets on the right, arcs over the night and sets at sunrise.
-   The glow (drop-shadow) sits on the outer box and the crescent is cut
-   out of the inner one, so the glow follows the crescent's shape. */
+/* The moon: clay, with a soft glow, showing tonight's real phase. It's
+   out from sunset to sunrise: main.js sets --moon-x and --moon-alt so it
+   rises on the left as the sun sets on the right, arcs over the night and
+   sets at sunrise. The glow (drop-shadow) follows the lit shape. */
 .horizon__moon {
   position: absolute;
   left: calc(var(--moon-x) * (100% - var(--moon-size)));
@@ -600,15 +599,22 @@ img {
   transition: top 1200ms var(--ease), left 1200ms var(--ease);
 }
 
-.horizon__moon::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: var(--ll-clay);
-  /* Bite a circle out of the top right to leave a crescent */
-  -webkit-mask: radial-gradient(circle at 72% 30%, transparent calc(var(--moon-size) * 0.4), #000 calc(var(--moon-size) * 0.4 + 1px));
-  mask: radial-gradient(circle at 72% 30%, transparent calc(var(--moon-size) * 0.4), #000 calc(var(--moon-size) * 0.4 + 1px));
+/* main.js draws tonight's real phase into the moon as a small SVG: the
+   whole disc, faint (the dark part of the moon), with the lit part on top. */
+.horizon__moon svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.moon__dark {
+  fill: var(--ll-clay);
+  opacity: 0.07;
+}
+
+.moon__lit {
+  fill: var(--ll-clay);
 }
 
 /* Light on the ground: a soft clay shimmer on the ground strip under

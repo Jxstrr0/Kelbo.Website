@@ -94,10 +94,15 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   sun does a full day before landing on now (`sessionStorage["kelbo.sunSpun"]`,
   `.horizon--spin` turns off the CSS easing; skipped with reduce motion).
   `placeSun` is the one place the sun gets positioned; it also calls
-  `placeMoon`, which puts the clay crescent moon (`.horizon__moon`, glow
-  via drop-shadow, crescent via mask) in the sky from sunset to sunrise:
-  rising left at sunset, highest mid-night, setting right at sunrise. It's
-  stylized, not the real moon, and sits below the ground by day.
+  `placeMoon`, which puts the clay moon (`.horizon__moon`, glow via
+  drop-shadow) in the sky from sunset to sunrise: rising left at sunset,
+  highest mid-night, setting right at sunrise (a made-up path, so there's
+  a moon every night), below the ground by day. Its shape is the real
+  phase: `moonPhase` (moon-sun elongation, good to a few hours) feeds
+  `moonPath`, an SVG drawn into the moon by `drawMoon` (faint
+  `.moon__dark` disc + `.moon__lit`; waxing lit on the right). At night
+  the readout names it via `moonName` ("Waxing crescent moon over
+  Saskatoon" / "Sun's back at 7:34 AM").
   `placeSun` also sets `--sun-low` (0 high, 1 near the horizon: bigger,
   stronger glow), `--sun-show` (fades the glow/halo out once set, so they
   don't peek over the short page-head sky) and `--glint-sun`/`--glint-moon`

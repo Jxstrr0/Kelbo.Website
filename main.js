@@ -660,10 +660,64 @@ function placeSun(scene, t) {
   placeMoon(scene, t, day);
 }
 
-// Puts the clay moon in the night sky. It isn't the real moon: it rises
-// on the left at sunset, arcs across the night, and sets on the right at
-// sunrise. In daytime it waits below the ground.
+/* ---------- The moon ----------
+   The moon's shape is its real phase tonight, worked out from the date
+   like the sun (no internet). Its path across the sky is made up: it
+   rises on the left at sunset, arcs across the night and sets on the
+   right at sunrise, so there's a moon every night. */
+
+// Where the moon is in its month: 0 = new, 0.25 = first quarter (right
+// half lit), 0.5 = full, 0.75 = last quarter (left half lit). It's the
+// angle between the moon and the sun as seen from Earth, from short
+// formulas that are good to a few hours.
+function moonPhase(date) {
+  const n = date.getTime() / 86400000 - 10957.5; // days since 1 Jan 2000, noon UTC
+  const Mm = (134.963 + 13.064993 * n) * D2R; // the moon's mean anomaly
+  const moonLon = 218.316 + 13.176396 * n + 6.289 * Math.sin(Mm);
+  const g = (357.529 + 0.98560028 * n) * D2R;
+  const sunLon = 280.459 + 0.98564736 * n + 1.915 * Math.sin(g) + 0.02 * Math.sin(2 * g);
+  return ((((moonLon - sunLon) % 360) + 360) % 360) / 360;
+}
+
+// How much of the moon is lit, 0 (new) to 1 (full).
+function moonLit(phase) {
+  return (1 - Math.cos(2 * Math.PI * phase)) / 2;
+}
+
+// "Waxing crescent", "Full", ... for the readout under the horizon.
+const MOON_NAMES = ["New", "Waxing crescent", "First quarter", "Waxing gibbous", "Full", "Waning gibbous", "Last quarter", "Waning crescent"];
+function moonName(phase) {
+  return MOON_NAMES[Math.round(phase * 8) % 8];
+}
+
+// The lit part of the moon as an SVG path, on a circle of radius 1. It
+// runs down the lit edge of the disc, then back up the line between
+// light and dark (an ellipse that's thin near the quarters).
+// Waxing moons are lit on the right, waning on the left (as seen from
+// Saskatoon, and anywhere north of the tropics).
+function moonPath(phase) {
+  const waxing = phase < 0.5;
+  const lit = moonLit(phase);
+  const rx = Math.abs(1 - 2 * lit).toFixed(3); // how wide the light/dark line bows
+  const outer = waxing ? 1 : 0; // down the right side, or the left
+  const bowsRight = lit < 0.5 ? waxing : !waxing; // a crescent bows toward its lit side
+  const inner = bowsRight ? 0 : 1;
+  return `M0 -1A1 1 0 0 ${outer} 0 1A${rx} 1 0 0 ${inner} 0 -1Z`;
+}
+
+// Draws the phase into the moon (only when the shape has changed).
+function drawMoon(scene, phase) {
+  const moon = scene.querySelector(".horizon__moon");
+  if (!moon) return;
+  const d = moonPath(phase);
+  if (moon.dataset.path === d) return;
+  moon.dataset.path = d;
+  moon.innerHTML = `<svg viewBox="-1 -1 2 2" aria-hidden="true"><circle class="moon__dark" r="1"/><path class="moon__lit" d="${d}"/></svg>`;
+}
+
+// Puts the moon in the night sky. In daytime it waits below the ground.
 function placeMoon(scene, t, day) {
+  drawMoon(scene, moonPhase(t));
   let nightStart = null, nightEnd = null;
   if (day.set && t > day.set) {
     nightStart = day.set; // evening: tonight runs until tomorrow's sunrise
@@ -777,13 +831,14 @@ function setUpHorizon() {
         left.textContent = "Sun's up over Saskatoon";
         right.textContent = `Sets ${clock(new Date(day.set))} · ${hoursMins(day.set - t)} of light left`;
       } else if (!isDay && day.rise && t < day.rise) {
-        left.textContent = "Sun's down in Saskatoon";
-        right.textContent = `Up at ${clock(new Date(day.rise))}`;
+        // Night: tonight's moon, and when the sun comes back
+        left.textContent = `${moonName(moonPhase(t))} moon over Saskatoon`;
+        right.textContent = `Sun's up at ${clock(new Date(day.rise))}`;
       } else {
         // After sunset: tomorrow's sunrise
         const tomorrow = sunDay(new Date(day.end + 60000));
-        left.textContent = "Sun's down in Saskatoon";
-        right.textContent = tomorrow.rise ? `Back at ${clock(new Date(tomorrow.rise))}` : "Back tomorrow";
+        left.textContent = `${moonName(moonPhase(t))} moon over Saskatoon`;
+        right.textContent = tomorrow.rise ? `Sun's back at ${clock(new Date(tomorrow.rise))}` : "Sun's back tomorrow";
       }
     }
   }

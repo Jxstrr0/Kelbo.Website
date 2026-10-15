@@ -243,13 +243,17 @@ date and time, so there's no internet service or key involved.
   twinkling are all switched off for anyone with "reduce motion" on.
   The look is in the "live horizon" part of `style.css`, and the
   animations are near the bottom of it.
-- **The moon:** at night a clay crescent moon with a soft glow comes
-  out. It rises on the left as the sun sets, arcs across the night sky
-  (highest around midnight) and sets on the right at sunrise. It's a
-  stand-in moon, not the real one, so it's out every night. It floats up
-  and down a little and its glow breathes. Its look is
-  `.horizon__moon` in `style.css` and its path is `placeMoon` in `main.js`.
-  Try it with `?at=night`.
+- **The moon:** at night a clay moon with a soft glow comes out, showing
+  its real phase tonight (crescent, half, gibbous, full, or just a faint
+  disc at new moon). The phase is worked out from the date, like the sun,
+  and the line under the horizon names it ("Waxing crescent moon over
+  Saskatoon"). Its path is made up so there's a moon every night: it
+  rises on the left as the sun sets, arcs across the night sky (highest
+  around midnight) and sets on the right at sunrise. It floats up and
+  down a little and its glow breathes. Its look is `.horizon__moon` in
+  `style.css`, and the phase and path are in the moon part of `main.js`
+  (`moonPhase`, `placeMoon`). Try it with `?at=night`, or a date like
+  `?at=2026-10-26T23:30` for a full moon.
 - **The opening spin:** when someone opens the site or refreshes, the sun
   plays through a whole day in about 4.5 seconds (rises, crosses, sets,
   comes back up) and lands where the real sun is. It doesn't replay on
