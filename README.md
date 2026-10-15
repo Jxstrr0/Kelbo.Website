@@ -159,8 +159,9 @@ week. It comes from `now.json`:
 
 To change the browser-tab icon, replace `assets/favicon.svg` (or upload a
 `favicon.png` and change `favicon.svg` to `favicon.png` in every page).
-Browsers hold on to old icons, so every page links them with `?v=2` on the
-end. Bump that number (to `?v=3`) in every page when the icon changes.
+Browsers hold on to old icons, so every page links them with `?v=3` on the
+end (and so does `site.webmanifest`). Bump that number (to `?v=4`)
+everywhere when the icon changes.
 
 ### The logo
 
@@ -183,9 +184,11 @@ borrows it, so leave that `<defs>` block in the footer.
 
 When someone shares a link to the site in a text, Discord, or X, the app
 shows a preview card. That card is `assets/social-preview.jpg` (1200×630).
-To change it, upload a new picture with the same name and size. Apps
-remember old previews for a while, so a change can take a day or so to show
-up when you share the link.
+It shows the sun with the same glow and halo as the logo. To change it,
+upload a new picture with the same name and size, then bump the `?v=2` on
+the end of every page's `og:image` line (to `?v=3`) so apps fetch the new
+one. Apps remember old previews for a while, so a change can still take a
+day or so to show up when you share the link.
 
 The preview's title and description come from the `og:` lines near the top
 of each page. Those are the one place on the site that uses full web
@@ -454,7 +457,8 @@ It runs entirely in the visitor's browser:
   keep working. The only full addresses to update are the `og:` and
   `canonical` tags in each page's `<head>`, `robots.txt` and `sitemap.xml`.
 - **Home screen icon:** on a phone, "Add to Home Screen" in the browser
-  menu puts the Longlight sun on a purple tile on the home screen. The icon
+  menu puts the Longlight sun (with its glow and halo) on a purple tile on
+  the home screen. The icon
   is `assets/icon.svg` (with PNG copies at 180, 192 and 512 pixels, plus
   `icon-maskable-512.png` for Android) and the name and colours are in
   `site.webmanifest`.
