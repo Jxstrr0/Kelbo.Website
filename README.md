@@ -235,6 +235,12 @@ date and time, so there's no internet service or key involved.
   or an exact Saskatoon time like `?at=2026-06-21T21:30`. Only you see it.
 - **To move it somewhere else**, change `YXE` near the "LIVE HORIZON"
   heading in `main.js` (latitude, longitude, and time zone).
+- **The moon:** at night a clay crescent moon with a soft glow comes
+  out. It rises on the left as the sun sets, arcs across the night sky
+  (highest around midnight) and sets on the right at sunrise. It's a
+  stand-in moon, not the real one, so it's out every night. Its look is
+  `.horizon__moon` in `style.css` and its path is `placeMoon` in `main.js`.
+  Try it with `?at=night`.
 - **The opening spin:** when someone opens the site or refreshes, the sun
   plays through a whole day in about 4.5 seconds (rises, crosses, sets,
   comes back up) and lands where the real sun is. It doesn't replay on
