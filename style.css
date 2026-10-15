@@ -501,6 +501,9 @@ img {
   --sun-x: 0.25;
   --sun-alt: 0.6;
   --sun-size: clamp(64px, 16vw, 110px);
+  --moon-x: 0.06;
+  --moon-alt: -1; /* below the ground until main.js says it's night */
+  --moon-size: calc(var(--sun-size) * 0.62);
   --sky-height: clamp(170px, 40vw, 240px);
   --ground-height: 3.9rem;
   position: relative;
@@ -565,9 +568,36 @@ img {
   transition: top 1200ms var(--ease), left 1200ms var(--ease), transform 1200ms var(--ease), opacity 600ms;
 }
 
+/* The moon: a clay crescent with a soft glow, out from sunset to
+   sunrise. main.js sets --moon-x and --moon-alt so it rises on the left
+   as the sun sets on the right, arcs over the night and sets at sunrise.
+   The glow (drop-shadow) sits on the outer box and the crescent is cut
+   out of the inner one, so the glow follows the crescent's shape. */
+.horizon__moon {
+  position: absolute;
+  left: calc(var(--moon-x) * (100% - var(--moon-size)));
+  top: calc((1 - var(--moon-alt)) * (var(--sky-height) - var(--moon-size) / 2));
+  width: var(--moon-size);
+  height: var(--moon-size);
+  filter: drop-shadow(0 0 6px rgba(217, 119, 87, 0.85)) drop-shadow(0 0 18px rgba(217, 119, 87, 0.5));
+  transition: top 1200ms var(--ease), left 1200ms var(--ease);
+}
+
+.horizon__moon::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--ll-clay);
+  /* Bite a circle out of the top right to leave a crescent */
+  -webkit-mask: radial-gradient(circle at 72% 30%, transparent calc(var(--moon-size) * 0.4), #000 calc(var(--moon-size) * 0.4 + 1px));
+  mask: radial-gradient(circle at 72% 30%, transparent calc(var(--moon-size) * 0.4), #000 calc(var(--moon-size) * 0.4 + 1px));
+}
+
 /* While the opening spin plays (main.js), the sun is moved every frame,
    so the slow easing above would only make it lag behind. */
 .horizon--spin .horizon__sun,
+.horizon--spin .horizon__moon,
 .horizon--spin .horizon__ray {
   transition: none;
 }
@@ -1618,6 +1648,16 @@ img {
   @keyframes now-glow {
     0%, 100% { box-shadow: 0 0 0 0 rgba(217, 119, 87, 0.45); }
     50% { box-shadow: 0 0 0 5px rgba(217, 119, 87, 0); }
+  }
+
+  /* The moon's glow breathes slowly */
+  .horizon__moon {
+    animation: moon-glow 5s ease-in-out infinite;
+  }
+
+  @keyframes moon-glow {
+    0%, 100% { filter: drop-shadow(0 0 6px rgba(217, 119, 87, 0.85)) drop-shadow(0 0 18px rgba(217, 119, 87, 0.5)); }
+    50% { filter: drop-shadow(0 0 9px rgba(217, 119, 87, 0.95)) drop-shadow(0 0 28px rgba(217, 119, 87, 0.6)); }
   }
 
   /* The logo's sun rises up out of its line when a page opens: the sun
