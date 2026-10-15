@@ -243,17 +243,19 @@ date and time, so there's no internet service or key involved.
   twinkling are all switched off for anyone with "reduce motion" on.
   The look is in the "live horizon" part of `style.css`, and the
   animations are near the bottom of it.
-- **The moon:** at night a clay moon with a soft glow comes out, showing
-  its real phase tonight (crescent, half, gibbous, full, or just a faint
-  disc at new moon). The phase is worked out from the date, like the sun,
-  and the line under the horizon names it ("Waxing crescent moon over
-  Saskatoon"). Its path is made up so there's a moon every night: it
-  rises on the left as the sun sets, arcs across the night sky (highest
-  around midnight) and sets on the right at sunrise. It floats up and
+- **The moon:** the clay moon with its soft glow is the real moon over
+  Saskatoon, worked out from the date like the sun. It shows its real
+  phase (crescent, half, gibbous, full, or just a faint disc at new moon)
+  and follows its real path: it rises on the left, climbs as high as the
+  real moon does, and sets on the right on its own schedule. So some
+  afternoons it's up in the daytime sky beside the sun, and some nights
+  it isn't up at all. At night the line under the horizon says which
+  moon it is and where: "Waxing crescent moon over Saskatoon", or
+  "Waxing crescent moon rises 2:31 PM" when it's down. It floats up and
   down a little and its glow breathes. Its look is `.horizon__moon` in
-  `style.css`, and the phase and path are in the moon part of `main.js`
-  (`moonPhase`, `placeMoon`). Try it with `?at=night`, or a date like
-  `?at=2026-10-26T23:30` for a full moon.
+  `style.css`, and the maths is in the moon part of `main.js`
+  (`moonPhase`, `moonAltitude`, `placeMoon`). Try a full moon with
+  `?at=2026-10-26T23:30`.
 - **The opening spin:** when someone opens the site or refreshes, the sun
   plays through a whole day in about 4.5 seconds (rises, crosses, sets,
   comes back up) and lands where the real sun is. It doesn't replay on
