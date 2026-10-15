@@ -67,6 +67,15 @@
   }
 }
 
+/* A smaller second value under a big number ("59% with scratches") */
+.record dd.record__sub {
+  margin-top: 0.25rem;
+  font-weight: 500;
+  font-size: 0.875rem;
+  line-height: 1.3;
+  color: var(--muted);
+}
+
 .record__note {
   margin: 0.6rem 0 0;
   font-size: 0.9375rem;
