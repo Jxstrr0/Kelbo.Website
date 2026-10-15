@@ -1043,7 +1043,9 @@ function glint(y) {
    Skipped when "reduce motion" is on. */
 const SPIN_MS = 4500; // how long the whole day takes to play
 const SPIN_KEY = "kelbo.sunSpun"; // set once the spin has played this visit
-let spinning = false;
+let spinning = false; // true while the spin or a swipe is moving the sun instead of the clock
+let skyRun = 0; // bumped whenever a new spin or swipe takes over, so the old one stops
+let swiping = false; // true from the start of a swipe until the sky is back at "now"
 
 function shouldSpin() {
   if (REDUCE_MOTION) return false;
@@ -1061,8 +1063,10 @@ function shouldSpin() {
 function spinSun(scene) {
   spinning = true;
   scene.classList.add("horizon--spin"); // turns off the slow CSS easing while it plays
+  const run = ++skyRun;
   const start = performance.now();
   function frame(ms) {
+    if (run !== skyRun) return; // a swipe took over
     const p = Math.min(1, (ms - start) / SPIN_MS);
     const eased = p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2; // gentle start and finish
     // Play back the last 24 hours, so it starts and ends at "now".
@@ -1075,6 +1079,106 @@ function spinSun(scene) {
     }
   }
   requestAnimationFrame(frame);
+}
+
+/* ---------- Swiping through time ----------
+   On a phone, sliding a finger left or right along the horizon winds the
+   sky backward or forward: the sun, moon, stars and planets all move to
+   where they'd be at that time, and the page goes dark after sunset like
+   it really would. The readout shows the time you're looking at. Let go
+   and it all slides back to right now. Only touch, so a mouse can still
+   select text; up-and-down swipes still scroll the page. */
+const SWIPE_HOURS = 16; // hours per full width: about how fast the sun crosses
+const SWIPE_MAX_HOURS = 36; // how far either way a swipe can go
+const SWIPE_START_PX = 10; // sideways movement before it counts as a swipe
+const SWIPE_BACK_MS = 900; // how long the slide back to "now" takes
+
+function setUpSwipe(scene, paint) {
+  let shown = 0; // how far from now the sky is showing, in ms
+  let drag = null; // { id, x, y, from, live } while a finger is down
+  let queued = false;
+
+  // Draw at most once a frame, however fast the finger moves.
+  function draw() {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(() => {
+      queued = false;
+      paint(new Date(now().getTime() + shown), shown);
+    });
+  }
+
+  function slideBack() {
+    const run = ++skyRun;
+    const from = shown;
+    const start = performance.now();
+    function frame(ms) {
+      if (run !== skyRun) return; // a new swipe took over
+      const p = REDUCE_MOTION ? 1 : Math.min(1, (ms - start) / SWIPE_BACK_MS);
+      shown = from * Math.pow(1 - p, 3); // fast at first, easing into place
+      if (p < 1) {
+        paint(new Date(now().getTime() + shown), shown);
+        requestAnimationFrame(frame);
+      } else {
+        shown = 0;
+        swiping = spinning = false;
+        scene.classList.remove("horizon--spin");
+        paint(now(), null);
+      }
+    }
+    requestAnimationFrame(frame);
+  }
+
+  scene.addEventListener("pointerdown", (e) => {
+    if (e.pointerType === "mouse" || drag) return;
+    drag = { id: e.pointerId, x: e.clientX, y: e.clientY, from: shown, live: false };
+  });
+
+  scene.addEventListener("pointermove", (e) => {
+    if (!drag || e.pointerId !== drag.id) return;
+    const dx = e.clientX - drag.x;
+    const dy = e.clientY - drag.y;
+    if (!drag.live) {
+      if (Math.abs(dy) > SWIPE_START_PX && Math.abs(dy) > Math.abs(dx)) {
+        drag = null; // scrolling the page, not swiping
+        return;
+      }
+      if (Math.abs(dx) < SWIPE_START_PX) return;
+      // It's a swipe: stop the opening spin or slide back, and take over.
+      drag.live = true;
+      drag.x = e.clientX;
+      ++skyRun;
+      swiping = spinning = true;
+      scene.classList.add("horizon--spin");
+      try {
+        scene.setPointerCapture(e.pointerId);
+      } catch (err) {}
+    }
+    // Finger right = later in the day, the way the sun travels.
+    const width = scene.clientWidth || 1;
+    const max = SWIPE_MAX_HOURS * 3600000;
+    const ms = drag.from + ((e.clientX - drag.x) / width) * SWIPE_HOURS * 3600000;
+    shown = Math.max(-max, Math.min(max, ms));
+    draw();
+  });
+
+  function end(e) {
+    if (!drag || e.pointerId !== drag.id) return;
+    const wasLive = drag.live;
+    drag = null;
+    if (wasLive) slideBack();
+  }
+  scene.addEventListener("pointerup", end);
+  scene.addEventListener("pointercancel", end);
+}
+
+// While swiping: "Tomorrow 2:15 AM" and how far from now that is.
+function swipeLine(t, ahead) {
+  const a = localParts(t);
+  const b = localParts(now());
+  const days = Math.round((Date.UTC(a.y, a.m - 1, a.d) - Date.UTC(b.y, b.m - 1, b.d)) / 86400000);
+  const word = { "-1": "Yesterday", 0: "Today", 1: "Tomorrow" }[days] || a.weekday;
+  return [`${word} ${clock(t)}`, `${ahead < 0 ? "−" : "+"}${hoursMins(Math.abs(ahead))} · let go to return`];
 }
 
 // The night readout: "Waxing crescent moon over Saskatoon" while the
@@ -1090,8 +1194,10 @@ function setUpHorizon() {
   const readout = document.querySelector("[data-horizon-readout]");
   const badge = document.querySelector("[data-horizon-badge]");
 
-  function tick() {
-    const t = now();
+  // Draws the sky, theme and readout for moment "t". "ahead" is how far
+  // a swipe has moved it from now in ms, or null when it's live.
+  function paint(t, ahead) {
+    const swiped = ahead != null;
     const alt = sunAltitude(t);
     const day = sunDay(t);
     const isDay = alt >= SUNRISE_ALT;
@@ -1122,12 +1228,14 @@ function setUpHorizon() {
     document.documentElement.style.setProperty("--warm", warm.toFixed(3));
 
     // While the opening spin is playing, it moves the sun instead.
-    if (scene && !spinning) placeSun(scene, t);
+    if (scene && (!spinning || swiped)) placeSun(scene, t);
 
     if (readout) {
       const left = readout.children[0];
       const right = readout.children[1];
-      if (isDay && day.set) {
+      if (swiped) {
+        [left.textContent, right.textContent] = swipeLine(t, ahead);
+      } else if (isDay && day.set) {
         left.textContent = "Sun's up over Saskatoon";
         right.textContent = `Sets ${clock(new Date(day.set))} · ${hoursMins(day.set - t)} of light left`;
       } else if (!isDay && day.rise && t < day.rise) {
@@ -1143,7 +1251,13 @@ function setUpHorizon() {
     }
   }
 
+  // The once-a-minute update; a swipe in progress keeps the sky instead.
+  function tick() {
+    if (!swiping) paint(now(), null);
+  }
+
   if (scene && shouldSpin()) spinSun(scene);
+  if (scene) setUpSwipe(scene, paint);
   tick();
   setUpThemeToggle(tick);
   setInterval(tick, 60000);
