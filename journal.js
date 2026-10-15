@@ -125,12 +125,14 @@ function resultText(result) {
 /* ---------- The record ---------- */
 
 // One group of big numbers, with a heading and small print underneath.
+// Each stat is [label, value] or [label, value, smaller line under the value].
 function statGroup(parent, title, stats, notes, pair) {
   parent.append(el("h3", "record__label", title));
   const list = el("dl", pair ? "record record--pair" : "record");
-  stats.forEach(([label, value]) => {
+  stats.forEach(([label, value, sub]) => {
     const group = el("div");
     group.append(el("dt", null, label), el("dd", null, value));
+    if (sub) group.append(el("dd", "record__sub", sub));
     list.append(group);
   });
   parent.append(list);
@@ -164,7 +166,7 @@ function renderRecord(entries, options) {
     const t = tally(optionTrades);
     const notes = [
       `${t.wins} wins, ${t.losses} losses, ${t.scratches} ${t.scratches === 1 ? "scratch" : "scratches"} (sold for what it cost).`,
-      `Without scratches the win rate is ${t.winRateNoScratch}.`,
+      "The big win rate leaves scratches out; the smaller one under it counts them as not a win.",
       "Returns are on the premium paid.",
     ];
     if (t.open) notes.push(`${t.open} open ${t.open === 1 ? "trade" : "trades"} not counted yet.`);
@@ -173,7 +175,7 @@ function renderRecord(entries, options) {
       "Options trades",
       [
         ["Closed trades", String(t.closed)],
-        ["Win rate", t.winRate],
+        ["Win rate", t.winRateNoScratch, `${t.winRate} with scratches`],
         ["Avg return", t.closed ? signedPercent(t.average) : "–"],
         ["W–L–S", `${t.wins}–${t.losses}–${t.scratches}`],
       ],
