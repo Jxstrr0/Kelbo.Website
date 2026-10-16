@@ -374,6 +374,16 @@ from the optional weather and northern lights, below).
   and in the hours before ("Lunar eclipse tonight · 5:05 AM"). Try
   `?at=2026-03-03T05:30` (total lunar) or `?at=2024-04-08T12:52` (partial
   solar).
+- **Your sky:** under "Saskatoon, SK" at the top of the home page there's
+  a **See your sky** link. Tapping it asks the visitor's phone for their
+  location (rounded to about 10 km) and switches every sky on the site to
+  theirs: their sunrise and sunset in their own time zone, their moon,
+  stars, planets, eclipses, meteor showers, weather and northern (or
+  southern) lights. The readout says "over you" instead of "over
+  Saskatoon". Their location is kept only on their device; the only place
+  it goes is the weather check (Open-Meteo, rounded). **Back to
+  Saskatoon** switches it back. Geese, fireflies and the usual winter snow
+  stay Saskatoon-only, since they follow Saskatoon's calendar.
 - **Seasons:** the ray coming off the sun reaches further in summer than in
   winter (full length on the longest day, a bit under half on the
   shortest). On the longest and shortest days of the year a badge appears

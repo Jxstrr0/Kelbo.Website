@@ -179,6 +179,16 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   sky-coloured disc in `.sun__disc`). `eclipseLine` (now, or the next
   20 h via cached `nextEclipse`) leads the readout turns. The moon glow's
   `--glow-k` fades it by day and in an eclipse.
+  Your sky: `[data-sky-switch]` in the home hero eyebrow
+  (`setUpSkySwitch`) saves geolocation rounded to 0.1° in
+  `localStorage["kelbo.sky"]` and reloads; a block right after `YXE`
+  swaps its lat/lon/tz (the phone's zone), `elev` 0 and `home: false`
+  before anything runs. So all sky code must read `YXE` (never hard-code
+  Saskatoon): `zoneMidnight` gives local midnight in `YXE.tz`, `overHere`
+  the readout wording, `dayLengthFor` the season range, `auroraKp` the
+  Kp needed from magnetic latitude (4 for Saskatoon). Geese, fireflies
+  and calendar snow check `YXE.home`. `?at=` reads Saskatoon time
+  (UTC-6), or the phone's time in your own sky.
   `placeSun` also sets `--sun-low` (0 high, 1 near the horizon: bigger,
   stronger glow), `--sun-show` (fades the glow/halo out once set, so they
   don't peek over the short page-head sky) and `--glint-sun`/`--glint-moon`
