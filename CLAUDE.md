@@ -83,7 +83,7 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   it's shot at 600px wide mid-shift with a jet on the TV camera, cropped 4:3).
 - The live horizon (`[data-horizon]` in the home hero, every page head and
   the 404) puts the sun where the real sun is over Saskatoon (`YXE` in
-  `main.js`, no network), switches to the dark theme at real sunset, and
+  `main.js`, no network; only the optional weather and aurora fetch), switches to the dark theme at real sunset, and
   warms the sky toward clay over the last 20 minutes before it (`--warm`).
   Preview any time with `?at=noon|sunrise|sunset|dusk|night` or
   `?at=2026-06-21T21:30`. The ray's reach scales with the season
@@ -153,6 +153,21 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   press of `HOLD_START_MS` (any pointer) eases `shown` to `nextTurn`
   (next sunset +35 min, or sunrise +25 min) over `HOLD_RUN_MS`; release
   calls `slideBack`. `setUpSwipe` returns the shown time for the taps.
+  Weather and aurora (the only network calls, both free/no key, cached in
+  localStorage by `cachedFetch`): `loadWeather` (Open-Meteo current
+  weather_code, cloud_cover, temperature_2m, snow_depth; every
+  `WEATHER_MS`) and `loadKp` (NOAA SWPC planetary_k_index_1m, latest
+  estimated_kp; `KP_MS`). Both are skipped with `?at=` (unless
+  `?weather=`/`?kp=` previews are given) and fail silently. `setUpWeather`
+  adds `.horizon__aurora`, `.horizon__clouds`, `.horizon__precip`
+  and `.horizon__snowline`; `paintWeather` (from `paint`) toggles
+  `horizon--rain/snow/storm/fog/overcast/snowy`, sets `--aurora`
+  (`auroraStrength`: Kp 4+ at night, not overcast) and builds `.cloud`s.
+  Lightning toggles `horizon--flash`. `weatherLine` and `auroraLine` join
+  the readout turns. `snowOnGround` falls back to the calendar.
+  `setUpCritters` (calendar only, off with reduce motion): `.geese` V's
+  (SVG, flapping) every ~`GEESE_EVERY_S` in `geeseTime`, and `.firefly`
+  dots in `firefliesTime`.
   `placeSun` also sets `--sun-low` (0 high, 1 near the horizon: bigger,
   stronger glow), `--sun-show` (fades the glow/halo out once set, so they
   don't peek over the short page-head sky) and `--glint-sun`/`--glint-moon`
