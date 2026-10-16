@@ -302,6 +302,16 @@ date and time, so there's no internet service or key involved.
   `SWIPE_MAX_HOURS` (how far either way, 36), `SWIPE_GLIDE_MS` (how long
   a flick coasts, 550; bigger glides further) and `SWIPE_HOLD_MS` (the
   wait before it heads back, 2000 = 2 seconds).
+- **The readout takes turns:** every 6 seconds the left side of the line
+  under the home page horizon swaps with a second fact. By day it's how
+  today's light compares with yesterday's ("3m 55s shorter than
+  yesterday"), worked out to the second. For three weeks after the
+  shortest day in December it says "Days are getting longer again". Around
+  sunrise and sunset it names golden hour (the sun between 4° under the
+  horizon and 6° up, the warm light photographers chase) and blue hour (4°
+  to 6° under), with how long is left: "Golden hour · 24m left". The
+  timing is `READOUT_TURN_MS` in `main.js` (6000 = 6 seconds). Try
+  `?at=sunset`.
 - **Seasons:** the ray coming off the sun reaches further in summer than in
   winter (full length on the longest day, a bit under half on the
   shortest). On the longest and shortest days of the year a badge appears
