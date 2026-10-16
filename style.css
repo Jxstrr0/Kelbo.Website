@@ -1798,6 +1798,15 @@ img {
     to { transform: translateY(calc(var(--moon-size) * -0.1)); }
   }
 
+  /* A new line in the horizon readout fades in (main.js adds .is-new) */
+  .horizon__readout .is-new {
+    animation: readout-in 500ms var(--ease);
+  }
+
+  @keyframes readout-in {
+    from { opacity: 0; translate: 0 3px; }
+  }
+
   /* The sun's glow breathes too, a little slower */
   .horizon__sun::before {
     animation: sun-breathe 6s ease-in-out infinite;

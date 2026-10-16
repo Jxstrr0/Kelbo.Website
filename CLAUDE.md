@@ -119,7 +119,11 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   `.moon__dark` disc + `.moon__lit`; waxing lit on the right). At night
   the readout's left side is `moonLine` ("Waxing crescent moon over
   Saskatoon", or "... moon rises 2:31 PM" while it's down) and the right
-  side "Sun's back at 7:34 AM".
+  side "Sun's back at 7:34 AM". The left side takes turns every
+  `READOUT_TURN_MS` (`takeTurns`, `setLine` fades it in) with
+  `dayLengthLine` (today vs yesterday to the second, from `sunDay().length`)
+  by day and `lightHourLine` (golden hour -4°..6°, blue hour -6°..-4°)
+  around sunrise and sunset.
   `placeSun` also calls `placeStars`: the real sky from `STARS` (the
   named bright stars from PyEphem's catalogue, J2000 RA/Dec + magnitude,
   dec > -38° so they can rise here), alt/az from local sidereal time,
