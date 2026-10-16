@@ -457,7 +457,7 @@ function sunPosition(date) {
   const dec = Math.asin(Math.sin(e) * Math.sin(L)); // declination
   const gmst = 18.697374558 + 24.06570982441908 * n; // sidereal time, hours
   const lst = (gmst * 15 + YXE.lon) * D2R; // local sidereal time
-  return { dec, ha: lst - ra };
+  return { dec, ha: lst - ra, ra, lst, g };
 }
 
 // Altitude of the sun above the horizon, in degrees, at a moment in time.
@@ -688,6 +688,7 @@ function placeSun(scene, t) {
   // strongest when the sun is low.
   scene.style.setProperty("--glint-sun", (glint(y) * (0.55 + 0.45 * low)).toFixed(3));
   placeMoon(scene, t);
+  placeEclipse(scene, t);
   placeStars(scene, t);
 }
 
@@ -962,10 +963,12 @@ function moonPath(phase) {
   return `M0 -1A1 1 0 0 ${outer} 0 1A${rx} 1 0 0 ${inner} 0 -1Z`;
 }
 
-// Height of the moon above the horizon, in degrees, as seen from
-// Saskatoon. Short formulas for where the moon is against the stars
-// (good to a fraction of a degree), then the same sky maths as the sun.
-function moonAltitude(date) {
+// Where the moon is against the stars at moment "date", as seen from the
+// middle of the Earth: right ascension and declination (radians), plus
+// its parallax (degrees, how much it shifts depending on where on Earth
+// you stand; bigger when it's closer). The biggest terms of the moon's
+// wobbles, good to about a twentieth of a degree.
+function moonRaDec(date) {
   const n = date.getTime() / 86400000 - 10957.5; // days since 1 Jan 2000, noon UTC
   const L = 218.316 + 13.176396 * n; // mean longitude
   const M = (134.963 + 13.064993 * n) * D2R; // mean anomaly
@@ -973,12 +976,27 @@ function moonAltitude(date) {
   const Dm = (297.85 + 12.190749 * n) * D2R; // distance from the sun
   const Ms = (357.529 + 0.98560028 * n) * D2R; // the sun's mean anomaly
   const lon = (L + 6.289 * Math.sin(M) + 1.274 * Math.sin(2 * Dm - M) + 0.658 * Math.sin(2 * Dm)
-    + 0.214 * Math.sin(2 * M) - 0.186 * Math.sin(Ms) - 0.114 * Math.sin(2 * F)) * D2R;
+    + 0.214 * Math.sin(2 * M) - 0.186 * Math.sin(Ms) - 0.114 * Math.sin(2 * F)
+    + 0.059 * Math.sin(2 * Dm - 2 * M) + 0.057 * Math.sin(2 * Dm - Ms - M) + 0.053 * Math.sin(2 * Dm + M)
+    + 0.046 * Math.sin(2 * Dm - Ms) - 0.041 * Math.sin(Ms - M) - 0.035 * Math.sin(Dm)
+    - 0.031 * Math.sin(Ms + M)) * D2R;
   const lat = (5.128 * Math.sin(F) + 0.281 * Math.sin(M + F) + 0.278 * Math.sin(M - F)
-    + 0.173 * Math.sin(2 * Dm - F)) * D2R;
+    + 0.173 * Math.sin(2 * Dm - F) + 0.055 * Math.sin(2 * Dm - M + F) + 0.046 * Math.sin(2 * Dm - M - F)
+    + 0.033 * Math.sin(2 * Dm + F) + 0.017 * Math.sin(2 * M + F)) * D2R;
+  const parallax = 0.9508 + 0.0518 * Math.cos(M) + 0.0095 * Math.cos(2 * Dm - M)
+    + 0.0078 * Math.cos(2 * Dm) + 0.0028 * Math.cos(2 * M);
   const e = (23.439 - 0.00000036 * n) * D2R; // tilt of the Earth
   const ra = Math.atan2(Math.sin(lon) * Math.cos(e) - Math.tan(lat) * Math.sin(e), Math.cos(lon));
   const dec = Math.asin(Math.sin(lat) * Math.cos(e) + Math.cos(lat) * Math.sin(e) * Math.sin(lon));
+  return { ra, dec, parallax };
+}
+
+// Height of the moon above the horizon, in degrees, as seen from
+// Saskatoon: where it is against the stars, then the same sky maths as
+// the sun.
+function moonAltitude(date) {
+  const { ra, dec } = moonRaDec(date);
+  const n = date.getTime() / 86400000 - 10957.5;
   const gmst = 18.697374558 + 24.06570982441908 * n; // sidereal time, hours
   const ha = (gmst * 15 + YXE.lon) * D2R - ra;
   const la = YXE.lat * D2R;
@@ -1031,7 +1049,41 @@ function drawMoon(scene, phase) {
   const d = moonPath(phase);
   if (moon.dataset.path === d) return;
   moon.dataset.path = d;
-  moon.innerHTML = `<svg viewBox="-1 -1 2 2" aria-hidden="true"><circle class="moon__dark" r="1"/><path class="moon__lit" d="${d}"/></svg>`;
+  // The last circle is the Earth's shadow in a lunar eclipse, kept inside
+  // the moon's disc (placeEclipse moves it; r="0" hides it otherwise).
+  moon.innerHTML = `<svg viewBox="-1 -1 2 2" aria-hidden="true"><defs><clipPath id="moon-clip"><circle r="1"/></clipPath></defs>`
+    + `<circle class="moon__dark" r="1"/><path class="moon__lit" d="${d}"/>`
+    + `<circle class="moon__shadow" r="0" clip-path="url(#moon-clip)"/></svg>`;
+}
+
+// Draws an eclipse at moment t: the Earth's shadow on the moon, or the
+// moon's bite out of the sun (a sky-coloured disc inside the sun).
+function placeEclipse(scene, t) {
+  const e = visibleEclipse(t);
+  const lunar = e && e.kind === "lunar" ? e : null;
+  const solar = e && e.kind === "solar" ? e : null;
+  const shade = scene.querySelector(".moon__shadow");
+  if (shade) {
+    shade.setAttribute("cx", lunar ? lunar.x.toFixed(3) : 0);
+    shade.setAttribute("cy", lunar ? lunar.y.toFixed(3) : 0);
+    shade.setAttribute("r", lunar ? lunar.r.toFixed(3) : 0);
+  }
+  scene.style.setProperty("--eclipse", lunar ? lunar.share.toFixed(3) : 0); // style.css dims the glow
+  const sun = scene.querySelector(".horizon__sun");
+  if (!sun) return;
+  let bite = sun.querySelector(".sun__bite");
+  if (solar && !bite) {
+    const disc = el("span", "sun__disc");
+    bite = el("i", "sun__bite");
+    disc.append(bite);
+    sun.append(disc);
+  }
+  if (!bite) return;
+  bite.hidden = !solar;
+  if (!solar) return;
+  bite.style.setProperty("--bx", solar.x.toFixed(3));
+  bite.style.setProperty("--by", solar.y.toFixed(3));
+  bite.style.setProperty("--br", solar.r.toFixed(3));
 }
 
 // Puts the moon where the real moon is at moment "t", the same way as the
@@ -1652,6 +1704,131 @@ function setUpCritters(scene, timeNow) {
   }, 1000);
 }
 
+/* ---------- Eclipses ----------
+   Worked out from the same sun and moon positions as everything else (no
+   internet). In a lunar eclipse the Earth's shadow creeps across the moon
+   and, when it's total, turns it a deep copper red. In a solar eclipse
+   the moon takes a bite out of the sun, as seen from Saskatoon (the
+   moon's spot is adjusted for where Saskatoon is on the Earth, which
+   moves it by up to a degree). The readout says so while it's on, and
+   on the day ahead ("Lunar eclipse tonight · 2:31 AM"). Try
+   ?at=2026-03-03T05:30 (total lunar) or ?at=2024-04-08T13:20 (partial
+   solar). */
+
+// Angle between two spots on the sky (ra, dec in radians), in degrees.
+function skyGap(ra1, dec1, ra2, dec2) {
+  const a = Math.sin((dec2 - dec1) / 2) ** 2 + Math.cos(dec1) * Math.cos(dec2) * Math.sin((ra2 - ra1) / 2) ** 2;
+  return 2 * Math.asin(Math.min(1, Math.sqrt(a))) * R2D;
+}
+
+// Where one spot sits from another in Saskatoon's sky, in degrees:
+// x to the right (west, as the sky faces south) and y down.
+function skyOffset(from, to, lst) {
+  const la = YXE.lat * D2R;
+  const altAzOf = ({ ra, dec }) => {
+    const ha = lst - ra;
+    const alt = Math.asin(Math.sin(la) * Math.sin(dec) + Math.cos(la) * Math.cos(dec) * Math.cos(ha));
+    const az = Math.atan2(-Math.sin(ha) * Math.cos(dec), Math.cos(la) * Math.sin(dec) - Math.sin(la) * Math.cos(dec) * Math.cos(ha));
+    return { alt, az };
+  };
+  const a = altAzOf(from), b = altAzOf(to);
+  let daz = b.az - a.az;
+  daz = Math.atan2(Math.sin(daz), Math.cos(daz)); // the short way round
+  return { x: daz * Math.cos(a.alt) * R2D, y: -(b.alt - a.alt) * R2D };
+}
+
+// How much of a disc of radius r is covered by one of radius R whose
+// centre is d away (all in the same units), 0..1.
+function covered(r, R, d) {
+  if (d >= r + R) return 0;
+  if (d <= Math.abs(R - r)) return R >= r ? 1 : (R * R) / (r * r);
+  const a = r * r * Math.acos((d * d + r * r - R * R) / (2 * d * r));
+  const b = R * R * Math.acos((d * d + R * R - r * r) / (2 * d * R));
+  const c = 0.5 * Math.sqrt((-d + r + R) * (d + r - R) * (d - r + R) * (d + r + R));
+  return (a + b - c) / (Math.PI * r * r);
+}
+
+// The eclipse going on at moment t, if one is: { kind: "lunar" or
+// "solar", total, share (how much is covered, 0..1), x, y, r } where x,
+// y is where the shadow (or the moon's disc) is from the middle of the
+// moon (or sun), and r its size, both measured in moon (or sun) radii.
+// Lunar ones count from when the dark part of the shadow (the umbra)
+// touches the moon; the faint outer shadow is too subtle to see.
+function eclipseAt(t) {
+  const sun = sunPosition(t);
+  const moon = moonRaDec(t);
+  const sunR = 0.2666 / sunDistanceAU(t); // the sun's radius on the sky, degrees
+  // Lunar: the Earth's shadow points straight away from the sun
+  const moonR = 0.2725 * moon.parallax;
+  const shadow = { ra: sun.ra + Math.PI, dec: -sun.dec };
+  const umbra = 1.02 * (moon.parallax + 0.00244 - sunR); // its dark middle, degrees
+  const lunarGap = skyGap(moon.ra, moon.dec, shadow.ra, shadow.dec);
+  if (lunarGap < umbra + moonR) {
+    const off = skyOffset(moon, shadow, sun.lst);
+    const share = covered(moonR, umbra, lunarGap);
+    return { kind: "lunar", total: share >= 0.999, share, x: off.x / moonR, y: off.y / moonR, r: umbra / moonR };
+  }
+  // Solar: shift the moon to where it looks from Saskatoon (486 m up)
+  const la = YXE.lat * D2R;
+  const u = Math.atan(0.99664719 * Math.tan(la));
+  const rhoSin = 0.99664719 * Math.sin(u) + (486 / 6378140) * Math.sin(la);
+  const rhoCos = Math.cos(u) + (486 / 6378140) * Math.cos(la);
+  const sp = Math.sin(moon.parallax * D2R);
+  const H = sun.lst - moon.ra;
+  const dRa = Math.atan2(-rhoCos * sp * Math.sin(H), Math.cos(moon.dec) - rhoCos * sp * Math.cos(H));
+  const here = {
+    ra: moon.ra + dRa,
+    dec: Math.atan2((Math.sin(moon.dec) - rhoSin * sp) * Math.cos(dRa), Math.cos(moon.dec) - rhoCos * sp * Math.cos(H)),
+  };
+  const moonHereR = moonR * (1 + Math.sin(sunAltitude(t) * D2R) * 0.0167); // a touch bigger when high (closer)
+  const solarGap = skyGap(sun.ra, sun.dec, here.ra, here.dec);
+  if (solarGap < sunR + moonHereR) {
+    const off = skyOffset(sun, here, sun.lst);
+    const share = covered(sunR, moonHereR, solarGap);
+    return { kind: "solar", total: share >= 0.999, share, x: off.x / sunR, y: off.y / sunR, r: moonHereR / sunR };
+  }
+  return null;
+}
+
+// Only the eclipses Saskatoon can see: the moon (or sun) has to be up.
+function visibleEclipse(t) {
+  const e = eclipseAt(t);
+  if (!e) return null;
+  if (e.kind === "lunar" && moonAltitude(t) < MOONRISE_ALT) return null;
+  if (e.kind === "solar" && sunAltitude(t) < SUNRISE_ALT) return null;
+  return e;
+}
+
+// The next visible eclipse in the 20 hours from t, checked every 5
+// minutes and kept for half an hour: { kind, total, at } (at = its peak).
+let eclipseAhead = null;
+function nextEclipse(t) {
+  const slot = Math.floor(t / 1800000);
+  if (eclipseAhead && eclipseAhead.slot === slot) return eclipseAhead.found;
+  let found = null;
+  for (let k = 0; k <= 240; k++) {
+    const when = new Date(slot * 1800000 + k * 300000);
+    const e = visibleEclipse(when);
+    if (e && (!found || e.share > found.share)) found = { kind: e.kind, total: e.total, share: e.share, at: when.getTime() };
+    else if (found && !e) break; // it's over
+  }
+  eclipseAhead = { slot, found };
+  return found;
+}
+
+// "Total lunar eclipse · 100%" while one is on, "Solar eclipse today ·
+// 11:21 AM" when one is coming up in the next 20 hours, otherwise "".
+function eclipseLine(t) {
+  const e = visibleEclipse(t);
+  const name = (x) => `${x.total ? "Total" : "Partial"} ${x.kind} eclipse`;
+  if (e) return `${name(e)} · ${Math.round(e.share * 100)}% ${e.kind === "lunar" ? "in shadow" : "covered"}`;
+  const next = nextEclipse(t);
+  if (!next || next.at <= t) return "";
+  const sameDay = localParts(new Date(next.at)).d === localParts(t).d;
+  const when = next.kind === "lunar" ? "tonight" : sameDay ? "today" : "tomorrow";
+  return `${next.kind === "lunar" ? "Lunar" : "Solar"} eclipse ${when} · ${clock(new Date(next.at))}`;
+}
+
 /* ---------- The opening spin ----------
    When someone opens the site or refreshes, the sun runs through a whole
    day in a few seconds (rise, cross the sky, set, slip back under the
@@ -2029,16 +2206,16 @@ function setUpHorizon() {
       if (swiped) {
         [l, r] = swipeLine(t, ahead);
       } else if (isDay && day.set) {
-        l = takeTurns([lightHourLine(t) || "Sun's up over Saskatoon", dayLengthLine(t), weatherLine()]);
+        l = takeTurns([eclipseLine(t), lightHourLine(t) || "Sun's up over Saskatoon", dayLengthLine(t), weatherLine()]);
         r = `Sets ${clock(new Date(day.set))} · ${hoursMins(day.set - t)} of light left`;
       } else if (!isDay && day.rise && t < day.rise) {
         // Night: tonight's moon, and when the sun comes back
-        l = takeTurns([moonLine(t), lightHourLine(t), showerLine(t), auroraLine(t), weatherLine()]);
+        l = takeTurns([eclipseLine(t), moonLine(t), lightHourLine(t), showerLine(t), auroraLine(t), weatherLine()]);
         r = `Sun's up at ${clock(new Date(day.rise))}`;
       } else {
         // After sunset: tomorrow's sunrise
         const tomorrow = sunDay(new Date(day.end + 60000));
-        l = takeTurns([moonLine(t), lightHourLine(t), showerLine(t), auroraLine(t), weatherLine()]);
+        l = takeTurns([eclipseLine(t), moonLine(t), lightHourLine(t), showerLine(t), auroraLine(t), weatherLine()]);
         r = tomorrow.rise ? `Sun's back at ${clock(new Date(tomorrow.rise))}` : "Sun's back tomorrow";
       }
       setLine(left, l, swiped);

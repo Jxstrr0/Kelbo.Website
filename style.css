@@ -674,8 +674,9 @@ img {
   width: var(--moon-size);
   height: var(--moon-size);
   /* The glow fades out by day (--moon-day: 0 at night, 1 by day) */
-  filter: drop-shadow(0 0 6px rgba(217, 119, 87, calc(0.85 * (1 - var(--moon-day, 0)))))
-    drop-shadow(0 0 18px rgba(217, 119, 87, calc(0.5 * (1 - var(--moon-day, 0)))));
+  --glow-k: calc((1 - var(--moon-day, 0)) * (1 - 0.6 * var(--eclipse, 0)));
+  filter: drop-shadow(0 0 6px rgba(217, 119, 87, calc(0.85 * var(--glow-k))))
+    drop-shadow(0 0 18px rgba(217, 119, 87, calc(0.5 * var(--glow-k))));
   /* main.js: 1 at night, faint by day (only while the real moon is up),
      changing over around sunset and sunrise */
   opacity: var(--moon-show, 0);
@@ -696,10 +697,43 @@ img {
   opacity: 0.07;
 }
 
+/* A lunar eclipse: the Earth's shadow, a deep copper red, creeping
+   across the moon (main.js moves it). Its edge is soft, like the real
+   one. The moon's glow dims as more of it is in shadow (--eclipse). */
+.moon__shadow {
+  fill: color-mix(in srgb, var(--ll-clay) 40%, var(--ll-slate));
+  opacity: 0.85;
+  filter: blur(0.05px); /* in the moon's own units (it's 2 across), so a soft edge */
+}
+
 .moon__lit {
   fill: var(--ll-clay);
   /* By day it turns pale, mixing toward ivory like the real daytime moon */
   fill: color-mix(in srgb, var(--ll-clay), var(--ll-ivory) calc(var(--moon-day, 0) * 70%));
+}
+
+/* A solar eclipse: the moon's disc takes a bite out of the sun. It's a
+   sky-coloured circle inside the sun; --bx, --by (where it is from the
+   sun's middle) and --br (its size) are in sun radii, set by main.js. */
+.sun__disc {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.sun__bite {
+  position: absolute;
+  width: calc(var(--br) * 100%);
+  height: calc(var(--br) * 100%);
+  left: calc(50% + var(--bx) * 50% - var(--br) * 50%);
+  top: calc(50% + var(--by) * 50% - var(--br) * 50%);
+  border-radius: 50%;
+  background: var(--sky);
+}
+
+.sun__bite[hidden] {
+  display: none;
 }
 
 /* Light on the ground: a soft clay shimmer on the ground strip under
@@ -2202,8 +2236,9 @@ img {
   }
 
   @keyframes moon-glow {
-    0%, 100% { filter: drop-shadow(0 0 6px rgba(217, 119, 87, 0.85)) drop-shadow(0 0 18px rgba(217, 119, 87, 0.5)); }
-    50% { filter: drop-shadow(0 0 9px rgba(217, 119, 87, 0.95)) drop-shadow(0 0 28px rgba(217, 119, 87, 0.6)); }
+    /* --glow-k fades the glow by day and in a lunar eclipse */
+    0%, 100% { filter: drop-shadow(0 0 6px rgba(217, 119, 87, calc(0.85 * var(--glow-k)))) drop-shadow(0 0 18px rgba(217, 119, 87, calc(0.5 * var(--glow-k)))); }
+    50% { filter: drop-shadow(0 0 9px rgba(217, 119, 87, calc(0.95 * var(--glow-k)))) drop-shadow(0 0 28px rgba(217, 119, 87, calc(0.6 * var(--glow-k)))); }
   }
 
   /* The logo's sun rises up out of its line when a page opens: the sun
