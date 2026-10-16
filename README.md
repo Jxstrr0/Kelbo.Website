@@ -299,10 +299,11 @@ from the optional weather and northern lights, below).
   again and keep going, then everything slides back to right now. Up and down swipes
   still scroll the page. It's only for touch, so a mouse can still select
   text. The numbers are at the top of the swipe code in `main.js`:
-  `SWIPE_HOURS` (hours per full screen width, 12; bigger is faster),
+  `SWIPE_HOURS` (hours per full screen width, 10; bigger is faster),
   `SWIPE_MAX_HOURS` (how far either way, 36), `SWIPE_GLIDE_MS` (how long
-  a flick coasts, 550; bigger glides further) and `SWIPE_HOLD_MS` (the
-  wait before it heads back, 2000 = 2 seconds).
+  a flick coasts, 550; bigger glides further), `SWIPE_HOLD_MS` (the
+  wait before it heads back, 2000 = 2 seconds) and `SWIPE_BACK_MS` (how
+  long the slide back to now takes, 1800 = 1.8 seconds).
 - **The readout takes turns:** every 6 seconds the left side of the line
   under the home page horizon swaps with a second fact. By day it's how
   today's light compares with yesterday's ("3m 55s shorter than
