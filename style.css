@@ -432,6 +432,40 @@ img {
   color: var(--sky-muted);
 }
 
+/* "See your sky" / "Back to Saskatoon" beside the place name */
+.eyebrow__switch {
+  margin: -0.6rem 0 -0.6rem 0.4rem;
+  padding: 0.6rem 0.2rem;
+  border: 0;
+  background: none;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: var(--sky-ink);
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.3em;
+  cursor: pointer;
+}
+
+.eyebrow__switch::before {
+  content: "· ";
+  color: var(--sky-muted);
+  display: inline-block;
+  margin-right: 0.4rem;
+  text-decoration: none;
+}
+
+.eyebrow__switch[hidden] {
+  display: none;
+}
+
+.eyebrow__switch:disabled {
+  cursor: progress;
+  opacity: 0.75;
+}
+
 .hero__name {
   font-size: clamp(2.75rem, 11vw, 5.25rem);
   max-width: 11ch;
