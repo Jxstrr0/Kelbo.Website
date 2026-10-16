@@ -1094,7 +1094,7 @@ const SWIPE_MAX_HOURS = 36; // how far either way a swipe can go
 const SWIPE_START_PX = 10; // sideways movement before it counts as a swipe
 const SWIPE_HOLD_MS = 2000; // how long it waits after you let go before heading back
 const SWIPE_BACK_MS = 900; // how long the slide back to "now" takes
-const SWIPE_GLIDE_MS = 325; // how long a flick keeps coasting (bigger = longer glide)
+const SWIPE_GLIDE_MS = 550; // how long a flick keeps coasting (bigger = longer glide)
 
 function setUpSwipe(scene, paint) {
   let shown = 0; // how far from now the sky is showing, in ms
