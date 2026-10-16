@@ -1948,8 +1948,9 @@ function spinSun(scene) {
    where they'd be at that time, and the page goes dark after sunset like
    it really would. The readout shows the time you're looking at. Flick it
    and it keeps spinning a moment, slowing to a stop. Then it waits a couple of seconds (so you can grab it again and keep
-   fiddling), then slides back to right now. Only touch, so a mouse can still
-   select text; up-and-down swipes still scroll the page. */
+   fiddling), then slides back to right now. On a computer it's the same
+   with the mouse: click and drag sideways. Up-and-down swipes on a phone
+   still scroll the page. */
 const SWIPE_HOURS = 10; // hours per full width (bigger = faster)
 const SWIPE_MAX_HOURS = 36; // how far either way a swipe can go
 const SWIPE_START_PX = 10; // sideways movement before it counts as a swipe
@@ -2088,7 +2089,7 @@ function setUpSwipe(scene, paint) {
   scene.addEventListener("contextmenu", (e) => e.preventDefault()); // no long-press menu
 
   scene.addEventListener("pointerdown", (e) => {
-    if (e.pointerType === "mouse" || drag) return;
+    if (e.button > 0 || drag) return; // left mouse button, finger or pen
     drag = { id: e.pointerId, x: e.clientX, y: e.clientY, from: 0, live: false, trail: [] };
   });
 
@@ -2109,7 +2110,7 @@ function setUpSwipe(scene, paint) {
       drag.from = shown; // pick up wherever the sky is, even mid slide back
       ++skyRun;
       swiping = spinning = true;
-      scene.classList.add("horizon--spin");
+      scene.classList.add("horizon--spin", "horizon--grabbing");
       try {
         scene.setPointerCapture(e.pointerId);
       } catch (err) {}
@@ -2139,11 +2140,13 @@ function setUpSwipe(scene, paint) {
     const was = drag;
     drag = null;
     if (!was.live) return;
+    scene.classList.remove("horizon--grabbing");
     lastSkyDrag = performance.now();
     glide(e.type === "pointerup" ? flickSpeed(was, e.timeStamp) : 0);
   }
   scene.addEventListener("pointerup", end);
   scene.addEventListener("pointercancel", end);
+  scene.addEventListener("dragstart", (e) => e.preventDefault()); // no ghost image when dragging with a mouse
 
   // The moment the sky is showing (now, or wherever a swipe left it)
   return () => new Date(now().getTime() + shown);
