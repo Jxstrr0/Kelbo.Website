@@ -96,7 +96,9 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   On touch screens `setUpSwipe` lets a sideways swipe on the horizon
   scrub time (`SWIPE_HOURS` per width, clamped to `SWIPE_MAX_HOURS`,
   finger right = later); `paint(t, ahead)` in `setUpHorizon` redraws sky,
-  theme and readout (`swipeLine`) for that moment, and on release it holds
+  theme and readout (`swipeLine`) for that moment. On release `glide`
+  coasts at the flick's speed (from the last ~100 ms of moves), slowing
+  with time constant `SWIPE_GLIDE_MS`, then it holds
   for `SWIPE_HOLD_MS` (a new swipe picks up from there) then eases back to
   now in `SWIPE_BACK_MS`. `swiping` pauses the minute tick;
   `skyRun` lets a swipe cut off the spin. `.horizon` has
