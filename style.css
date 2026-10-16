@@ -105,7 +105,7 @@
   --sky-ink: var(--ll-ivory);
   --sky-muted: var(--ll-lilac);
   --horizon: var(--ll-purple);
-  --logo-line: var(--ll-lilac);
+  --logo-line: var(--ll-purple);
   --ground: #0E0E0D;
 
   --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
@@ -152,7 +152,7 @@
     --sky: var(--ll-slate);
     --sky-muted: var(--ll-lilac);
     --horizon: var(--ll-purple);
-    --logo-line: var(--ll-lilac);
+    --logo-line: var(--ll-purple);
     --ground: #0E0E0D;
     --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
     --shadow-lift: 0 16px 40px rgba(0, 0, 0, 0.55);
