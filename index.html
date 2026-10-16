@@ -95,7 +95,8 @@
          sunset. Without JavaScript the sun just sits mid-sky. -->
     <section class="hero" aria-labelledby="hero-name">
       <div class="wrap hero__top">
-        <p class="eyebrow">Saskatoon, SK</p>
+        <!-- main.js shows the switch so visitors can see their own sky -->
+        <p class="eyebrow"><span data-sky-place>Saskatoon, SK</span> <button type="button" class="eyebrow__switch" data-sky-switch hidden>See your sky</button></p>
         <h1 id="hero-name" class="hero__name">Longlight Interactive</h1>
         <p class="hero__by">by <a href="about.html">Kelbo</a></p>
         <p class="hero__line">Browser games, tools, and AI projects.</p>
