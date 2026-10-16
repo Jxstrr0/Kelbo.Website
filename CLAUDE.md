@@ -138,6 +138,21 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   `EARTH_ORBIT`; `orbitXYZ`, `planetRaDec`, within ~0.1°) are placed the
   same way as `b.planet` dots (steady, ivory, Mars clay; name `span`
   on the home sky only, flipped left near the right edge).
+  Shooting stars: `setUpMeteors` rolls dice every 500 ms (dark theme,
+  sun below -8°, not spinning/swiping, off with reduce motion) from
+  `meteorRate`: strays (`METEOR_EVERY_S`) plus the active `SHOWERS` entry
+  (`showerAt`; rate from zhr, distance from the peak and the radiant's
+  height via `altAz`), shower meteors flying away from the radiant's
+  screen spot. They're `.meteor` streaks in `.horizon__meteors`, animated
+  with the Web Animations API; `showerLine` joins the night readout.
+  `setUpSkyTaps` (click on the scene, ignored right after a swipe or hold
+  via `lastSkyDrag`) shows `.horizon__tip` for the nearest sun, moon,
+  planet or star (`STAR_LY` light-travel years, `planetDistanceAU`,
+  `sunDistanceAU`), or counts a wish in `localStorage["kelbo.wishes"]`
+  if a meteor just flew there (`caughtMeteor`). In `setUpSwipe`, a still
+  press of `HOLD_START_MS` (any pointer) eases `shown` to `nextTurn`
+  (next sunset +35 min, or sunrise +25 min) over `HOLD_RUN_MS`; release
+  calls `slideBack`. `setUpSwipe` returns the shown time for the taps.
   `placeSun` also sets `--sun-low` (0 high, 1 near the horizon: bigger,
   stronger glow), `--sun-show` (fades the glow/halo out once set, so they
   don't peek over the short page-head sky) and `--glint-sun`/`--glint-moon`
