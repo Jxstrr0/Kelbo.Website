@@ -553,6 +553,16 @@ img {
   -webkit-touch-callout: none;
 }
 
+/* With a mouse, the hand cursor hints you can click and drag the sky. */
+@media (hover: hover) and (pointer: fine) {
+  .horizon {
+    cursor: grab;
+  }
+  .horizon--grabbing {
+    cursor: grabbing;
+  }
+}
+
 /* Lilac stars that only come out after dark. main.js swaps the few
    placeholder stars in the HTML for the real night sky (see STARS). */
 .horizon__stars {
