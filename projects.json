@@ -60,6 +60,18 @@
     "featured": false
   },
   {
+    "title": "Season Ticket",
+    "status": "Early stages",
+    "category": "Game",
+    "summary": "A soccer club management game set in Valmere, a made-up northern country. Own a club in the 16-team Kestrel Football League: run the business, build the squad and change tactics mid-match. For now you can sim a full season and the playoffs.",
+    "version": "0.1.0",
+    "latest": "The league plays a full season",
+    "link": "https://jxstrr0.github.io/SeasonTicket/",
+    "code": "https://github.com/Jxstrr0/SeasonTicket",
+    "image": "assets/covers/season-ticket.jpg",
+    "featured": false
+  },
+  {
     "title": "AI Trading Journal",
     "status": "Building",
     "category": "Trading",
