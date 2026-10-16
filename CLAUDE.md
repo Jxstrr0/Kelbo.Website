@@ -156,8 +156,9 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   Weather and aurora (the only network calls, both free/no key, cached in
   localStorage by `cachedFetch`): `loadWeather` (Open-Meteo current
   weather_code, cloud_cover, temperature_2m, snow_depth; every
-  `WEATHER_MS`) and `loadKp` (NOAA SWPC planetary_k_index_1m, latest
-  estimated_kp; `KP_MS`). Both are skipped with `?at=` (unless
+  `WEATHER_MS`) and `loadKp` (NOAA SWPC planetary_k_index_1m, highest
+  estimated_kp of the last 30 minutes, since each 3-hour block starts at 0;
+  `KP_MS`). Both are skipped with `?at=` (unless
   `?weather=`/`?kp=` previews are given) and fail silently. `setUpWeather`
   adds `.horizon__aurora`, `.horizon__clouds`, `.horizon__precip`
   and `.horizon__snowline`; `paintWeather` (from `paint`) toggles
