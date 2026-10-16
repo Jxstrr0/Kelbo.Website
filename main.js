@@ -1086,11 +1086,13 @@ function spinSun(scene) {
    sky backward or forward: the sun, moon, stars and planets all move to
    where they'd be at that time, and the page goes dark after sunset like
    it really would. The readout shows the time you're looking at. Let go
-   and it all slides back to right now. Only touch, so a mouse can still
+   and it waits a couple of seconds (so you can grab it again and keep
+   fiddling), then slides back to right now. Only touch, so a mouse can still
    select text; up-and-down swipes still scroll the page. */
-const SWIPE_HOURS = 16; // hours per full width: about how fast the sun crosses
+const SWIPE_HOURS = 12; // hours per full width (bigger = faster)
 const SWIPE_MAX_HOURS = 36; // how far either way a swipe can go
 const SWIPE_START_PX = 10; // sideways movement before it counts as a swipe
+const SWIPE_HOLD_MS = 2000; // how long it waits after you let go before heading back
 const SWIPE_BACK_MS = 900; // how long the slide back to "now" takes
 
 function setUpSwipe(scene, paint) {
@@ -1108,12 +1110,18 @@ function setUpSwipe(scene, paint) {
     });
   }
 
+  // Holds still for SWIPE_HOLD_MS, then eases back to now. A new swipe
+  // during either part bumps skyRun, which cancels this one.
   function slideBack() {
     const run = ++skyRun;
     const from = shown;
-    const start = performance.now();
+    let start = null;
+    setTimeout(() => {
+      if (run === skyRun) requestAnimationFrame(frame);
+    }, SWIPE_HOLD_MS);
     function frame(ms) {
       if (run !== skyRun) return; // a new swipe took over
+      if (start === null) start = ms;
       const p = REDUCE_MOTION ? 1 : Math.min(1, (ms - start) / SWIPE_BACK_MS);
       shown = from * Math.pow(1 - p, 3); // fast at first, easing into place
       if (p < 1) {
@@ -1126,12 +1134,11 @@ function setUpSwipe(scene, paint) {
         paint(now(), null);
       }
     }
-    requestAnimationFrame(frame);
   }
 
   scene.addEventListener("pointerdown", (e) => {
     if (e.pointerType === "mouse" || drag) return;
-    drag = { id: e.pointerId, x: e.clientX, y: e.clientY, from: shown, live: false };
+    drag = { id: e.pointerId, x: e.clientX, y: e.clientY, from: 0, live: false };
   });
 
   scene.addEventListener("pointermove", (e) => {
@@ -1147,6 +1154,7 @@ function setUpSwipe(scene, paint) {
       // It's a swipe: stop the opening spin or slide back, and take over.
       drag.live = true;
       drag.x = e.clientX;
+      drag.from = shown; // pick up wherever the sky is, even mid slide back
       ++skyRun;
       swiping = spinning = true;
       scene.classList.add("horizon--spin");
@@ -1178,7 +1186,7 @@ function swipeLine(t, ahead) {
   const b = localParts(now());
   const days = Math.round((Date.UTC(a.y, a.m - 1, a.d) - Date.UTC(b.y, b.m - 1, b.d)) / 86400000);
   const word = { "-1": "Yesterday", 0: "Today", 1: "Tomorrow" }[days] || a.weekday;
-  return [`${word} ${clock(t)}`, `${ahead < 0 ? "−" : "+"}${hoursMins(Math.abs(ahead))} · let go to return`];
+  return [`${word} ${clock(t)}`, `${ahead < 0 ? "−" : "+"}${hoursMins(Math.abs(ahead))} · back to now soon`];
 }
 
 // The night readout: "Waxing crescent moon over Saskatoon" while the
