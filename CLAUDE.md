@@ -96,8 +96,9 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   On touch screens `setUpSwipe` lets a sideways swipe on the horizon
   scrub time (`SWIPE_HOURS` per width, clamped to `SWIPE_MAX_HOURS`,
   finger right = later); `paint(t, ahead)` in `setUpHorizon` redraws sky,
-  theme and readout (`swipeLine`) for that moment, and on release it eases
-  back to now in `SWIPE_BACK_MS`. `swiping` pauses the minute tick;
+  theme and readout (`swipeLine`) for that moment, and on release it holds
+  for `SWIPE_HOLD_MS` (a new swipe picks up from there) then eases back to
+  now in `SWIPE_BACK_MS`. `swiping` pauses the minute tick;
   `skyRun` lets a swipe cut off the spin. `.horizon` has
   `touch-action: pan-y pinch-zoom` so vertical scrolling still works.
   `placeSun` is the one place the sun gets positioned; it also calls
