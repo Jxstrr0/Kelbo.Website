@@ -298,7 +298,7 @@ date and time, so there's no internet service or key involved.
   text. The numbers are at the top of the swipe code in `main.js`:
   `SWIPE_HOURS` (hours per full screen width, 12; bigger is faster),
   `SWIPE_MAX_HOURS` (how far either way, 36), `SWIPE_GLIDE_MS` (how long
-  a flick coasts, 325; bigger glides further) and `SWIPE_HOLD_MS` (the
+  a flick coasts, 550; bigger glides further) and `SWIPE_HOLD_MS` (the
   wait before it heads back, 2000 = 2 seconds).
 - **Seasons:** the ray coming off the sun reaches further in summer than in
   winter (full length on the longest day, a bit under half on the
