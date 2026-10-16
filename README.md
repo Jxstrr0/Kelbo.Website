@@ -227,7 +227,8 @@ rises on the left, crosses as the day goes on, and sinks behind the
 horizon line at sunset. In the last 20 minutes before sunset the purple sky
 warms up, and when the sun goes down the whole site switches to its dark
 theme and the real stars come out. It's all worked out on the visitor's phone from the
-date and time, so there's no internet service or key involved.
+date and time, so there's no internet service or key involved (apart
+from the optional weather and northern lights, below).
 
 - **The ☀/☾ button** in the header lets a visitor pick light or dark
   instead. Tap it to go light → dark → back to following the sun. Their
@@ -337,6 +338,33 @@ date and time, so there's no internet service or key involved.
   instead. Let go and it slides back to now a couple of seconds later.
   `HOLD_START_MS` and `HOLD_RUN_MS` in `main.js` set how long to hold and
   how long the wind takes.
+- **Real weather:** the sky shows Saskatoon's weather right now. Clouds
+  drift past (more of them the cloudier it is), rain or snow falls,
+  lightning flashes in a thunderstorm, fog sits low on the horizon, and an
+  overcast sky goes pale and hides the stars. While real snow is lying on
+  the ground, a thin band of snow sits under the horizon line. The readout
+  takes turns with it too ("Light snow · −4°C"). It comes from
+  Open-Meteo, a free weather service with no key, checked at most every
+  15 minutes. If it can't be reached, the sky carries on without it (snow
+  on the ground then just follows the usual Saskatoon winter, late
+  November to late March). Preview it with `?weather=` plus `clear`,
+  `cloudy`, `overcast`, `rain`, `snow`, `storm` or `fog`.
+- **Northern lights:** when NOAA's space weather feed (free, no key,
+  checked at most every 20 minutes) says the lights are likely this far
+  south (a Kp index of 4 or more), soft lilac and purple curtains ripple
+  across the top of the night sky, stronger the bigger the storm, and the
+  readout says "Northern lights likely · Kp 5". Only on dark, clear nights.
+  Preview with `?kp=6&at=night`.
+- **Prairie seasons:** from mid September to mid November (heading south)
+  and late March to early May (coming back), V's of Canada geese fly
+  across the daytime sky every so often, flapping as they go. From mid
+  June to early August, fireflies blink low over the ground on dry nights.
+  These follow the calendar, so they need no internet, and they're off
+  with "reduce motion" on. Try `?at=2026-07-10T23:45` for fireflies.
+  `GEESE_EVERY_S` in `main.js` sets how often a flock comes over.
+- Weather and the northern lights are the only parts of the site that
+  fetch anything. They send no personal details, just a request for
+  Saskatoon's weather and the latest space weather.
 - **Seasons:** the ray coming off the sun reaches further in summer than in
   winter (full length on the longest day, a bit under half on the
   shortest). On the longest and shortest days of the year a badge appears
