@@ -365,6 +365,15 @@ from the optional weather and northern lights, below).
 - Weather and the northern lights are the only parts of the site that
   fetch anything. They send no personal details, just a request for
   Saskatoon's weather and the latest space weather.
+- **Eclipses:** worked out from the same sun and moon maths (no
+  internet), within a few minutes of the real times. In a lunar eclipse
+  the Earth's shadow, a deep copper red, creeps across the moon and covers
+  it at totality, and the moon's glow dims. In a solar eclipse the moon
+  takes a bite out of the sun, as it really looks from Saskatoon. The
+  readout says so while it's on ("Total lunar eclipse · 100% in shadow")
+  and in the hours before ("Lunar eclipse tonight · 5:05 AM"). Try
+  `?at=2026-03-03T05:30` (total lunar) or `?at=2024-04-08T12:52` (partial
+  solar).
 - **Seasons:** the ray coming off the sun reaches further in summer than in
   winter (full length on the longest day, a bit under half on the
   shortest). On the longest and shortest days of the year a badge appears
