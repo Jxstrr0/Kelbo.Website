@@ -706,29 +706,26 @@ const STARS = [
   [79.17, 46.0, 0.1, "Capella"], [78.63, -8.2, 0.2, "Rigel"], [114.83, 5.22, 0.4, "Procyon"],
   [88.79, 7.41, 0.5, "Betelgeuse"], [297.7, 8.87, 0.8, "Altair"], [68.98, 16.51, 0.9, "Aldebaran"],
   [201.3, -11.16, 1.0, "Spica"], [247.35, -26.43, 1.1, "Antares"], [310.36, 45.28, 1.2, "Deneb"],
-  [344.41, -29.62, 1.2, "Fomalhaut"], [344.41, -29.62, 1.2, "Formalhaut"], [116.33, 28.03, 1.2, "Pollux"],
-  [152.09, 11.97, 1.4, "Regulus"], [104.66, -28.97, 1.5, "Adara"], [104.66, -28.97, 1.5, "Adhara"],
-  [81.28, 6.35, 1.6, "Bellatrix"], [113.65, 31.89, 1.6, "Castor"], [81.57, 28.61, 1.6, "Elnath"],
+  [344.41, -29.62, 1.2, "Fomalhaut"], [116.33, 28.03, 1.2, "Pollux"], [152.09, 11.97, 1.4, "Regulus"],
+  [104.66, -28.97, 1.5, "Adhara"], [81.28, 6.35, 1.6, "Bellatrix"], [113.65, 31.89, 1.6, "Castor"], [81.57, 28.61, 1.6, "Elnath"],
   [263.4, -37.1, 1.6, "Shaula"], [84.05, -1.2, 1.7, "Alnilam"], [85.19, -1.94, 1.7, "Alnitak"],
   [193.51, 55.96, 1.8, "Alioth"], [165.93, 61.75, 1.8, "Dubhe"], [276.04, -34.38, 1.8, "Kaus Australis"],
-  [51.08, 49.86, 1.8, "Mirfak"], [107.1, -26.39, 1.8, "Wezen"], [206.89, 49.31, 1.9, "Alcaid"],
-  [99.43, 16.4, 1.9, "Alhena"], [206.89, 49.31, 1.9, "Alkaid"], [89.88, 44.95, 1.9, "Menkalinan"],
+  [51.08, 49.86, 1.8, "Mirfak"], [107.1, -26.39, 1.8, "Wezen"], [99.43, 16.4, 1.9, "Alhena"], [206.89, 49.31, 1.9, "Alkaid"], [89.88, 44.95, 1.9, "Menkalinan"],
   [154.99, 19.84, 2.0, "Algieba"], [141.9, -8.66, 2.0, "Alphard"], [10.9, -17.99, 2.0, "Diphda"],
   [31.79, 23.46, 2.0, "Hamal"], [95.67, -17.96, 2.0, "Mirzam"], [283.82, -26.3, 2.0, "Nunki"],
   [37.95, 89.26, 2.0, "Polaris"], [47.04, 40.96, 2.1, "Algol"], [30.97, 42.33, 2.1, "Almach"],
   [2.1, 29.09, 2.1, "Alpheratz"], [177.26, 14.57, 2.1, "Denebola"], [222.68, 74.16, 2.1, "Kochab"],
   [211.67, -36.37, 2.1, "Menkent"], [17.43, 35.62, 2.1, "Mirach"], [263.73, 12.56, 2.1, "Rasalhague"],
-  [86.94, -9.67, 2.1, "Saiph"], [2.1, 29.09, 2.1, "Sirrah"], [233.67, 26.71, 2.2, "Alphecca"],
-  [269.15, 51.49, 2.2, "Eltanin"], [269.15, 51.49, 2.2, "Etamin"], [83.0, -0.3, 2.2, "Mintaka"],
+  [86.94, -9.67, 2.1, "Saiph"], [233.67, 26.71, 2.2, "Alphecca"],
+  [269.15, 51.49, 2.2, "Eltanin"], [83.0, -0.3, 2.2, "Mintaka"],
   [200.98, 54.93, 2.2, "Mizar"], [305.56, 40.26, 2.2, "Sadr"], [10.13, 56.54, 2.2, "Schedar"],
   [2.29, 59.15, 2.3, "Caph"], [165.46, 56.38, 2.3, "Merak"], [326.05, 9.88, 2.4, "Enif"],
   [221.25, 27.07, 2.4, "Izar"], [178.46, 53.69, 2.4, "Phecda"], [257.59, -15.72, 2.4, "Sabik"],
   [345.94, 28.08, 2.4, "Scheat"], [319.64, 62.59, 2.5, "Alderamin"], [346.19, 15.21, 2.5, "Markab"],
-  [45.57, 4.09, 2.5, "Menkar"], [83.18, -17.82, 2.6, "Arneb"], [183.95, -17.54, 2.6, "Gienah Corvi"],
-  [183.95, -17.54, 2.6, "Gienah"], [236.07, 6.43, 2.6, "Unukalhai"], [296.56, 10.61, 2.7, "Tarazed"],
+  [45.57, 4.09, 2.5, "Menkar"], [83.18, -17.82, 2.6, "Arneb"], [183.95, -17.54, 2.6, "Gienah"], [236.07, 6.43, 2.6, "Unukalhai"], [296.56, 10.61, 2.7, "Tarazed"],
   [3.31, 15.18, 2.8, "Algenib"], [265.87, 4.57, 2.8, "Cebalrai"], [82.06, -20.76, 2.8, "Nihal"],
   [258.66, 14.39, 2.8, "Rasalgethi"], [222.72, -16.04, 2.8, "Zubenelgenubi"], [56.87, 24.11, 2.9, "Alcyone"],
-  [195.54, 10.96, 2.9, "Vindemiatrix"], [292.68, 27.96, 3.0, "Albereo"], [292.68, 27.96, 3.0, "Albireo"],
+  [195.54, 10.96, 2.9, "Vindemiatrix"], [292.68, 27.96, 3.0, "Albireo"],
   [182.53, -22.62, 3.0, "Minkar"], [331.45, -0.32, 3.0, "Sadalmelik"], [59.51, -13.51, 3.0, "Zaurak"],
   [322.16, 70.56, 3.2, "Alfirk"], [284.74, 32.69, 3.2, "Sulafat"], [183.86, 57.03, 3.3, "Megrez"],
   [282.52, 33.36, 3.5, "Sheliak"], [57.29, 24.05, 3.6, "Atlas"], [298.83, 6.41, 3.7, "Alshain"],
@@ -736,6 +733,25 @@ const STARS = [
   [201.31, 54.99, 4.0, "Alcor"], [56.58, 23.95, 4.1, "Merope"], [56.3, 24.47, 4.3, "Taygeta"],
 ];
 const STAR_TOP_ALT = 80; // a star this high (degrees) touches the top of the strip
+
+// Roughly how far away each star is, in light years (so how long its
+// light has been travelling). Tapping a star shows it. Far stars are
+// only known to within about a tenth, so those read "about".
+const STAR_LY = {
+  Sirius: 8.6, Arcturus: 37, Vega: 25, Capella: 43, Rigel: 860, Procyon: 11.5, Betelgeuse: 550,
+  Altair: 17, Aldebaran: 65, Spica: 250, Antares: 550, Deneb: 2600, Fomalhaut: 25, Pollux: 34,
+  Regulus: 79, Adhara: 430, Bellatrix: 250, Castor: 51, Elnath: 134, Shaula: 570, Alnilam: 2000,
+  Alnitak: 1260, Alioth: 83, Dubhe: 123, "Kaus Australis": 143, Mirfak: 510, Wezen: 1600,
+  Alhena: 109, Alkaid: 104, Menkalinan: 81, Algieba: 130, Alphard: 177, Diphda: 96, Hamal: 66,
+  Mirzam: 490, Nunki: 228, Polaris: 430, Algol: 90, Almach: 350, Alpheratz: 97, Denebola: 36,
+  Kochab: 131, Menkent: 59, Mirach: 197, Rasalhague: 49, Saiph: 650, Alphecca: 75, Eltanin: 154,
+  Mintaka: 1200, Mizar: 83, Sadr: 1800, Schedar: 228, Caph: 55, Merak: 79, Enif: 690, Izar: 202,
+  Phecda: 83, Sabik: 88, Scheat: 196, Alderamin: 49, Markab: 133, Menkar: 250, Arneb: 2200,
+  Gienah: 154, Unukalhai: 74, Tarazed: 395, Algenib: 390, Cebalrai: 82, Nihal: 160,
+  Rasalgethi: 360, Zubenelgenubi: 75, Alcyone: 440, Vindemiatrix: 110, Albireo: 430, Minkar: 300,
+  Sadalmelik: 520, Zaurak: 220, Alfirk: 690, Sulafat: 620, Megrez: 81, Sheliak: 960, Atlas: 440,
+  Alshain: 45, Electra: 440, Thuban: 300, Maia: 440, Alcor: 82, Merope: 440, Taygeta: 440,
+};
 
 // Faint lines joining the stars of well-known constellations, as pairs of
 // names from STARS. A line only shows while both its stars are up in the
@@ -1054,6 +1070,296 @@ function glint(y) {
   return Math.max(0, Math.min(1, (y + 0.15) * 6));
 }
 
+/* ---------- Shooting stars ----------
+   Every so often on a dark night a meteor streaks across the sky. Most
+   nights that's one every half a minute or so, from any direction. On
+   the nights of the big meteor showers there are many more, and they fly
+   out from the shower's real spot in the sky (its "radiant"), just like
+   the real ones: the higher that spot is, the more of them. Tap one to
+   make a wish. Off for "reduce motion", during the spin and swipes, and
+   by day. */
+const METEOR_EVERY_S = 30; // a stray meteor on an ordinary night, on average (seconds)
+
+// The yearly meteor showers: name, peak (month, day: the morning after
+// the best night), where they fly out of (ra, dec in degrees), how many
+// an hour at best under a perfect sky (zhr), and how many days either
+// side of the peak they're worth watching (days, the rate halves about
+// every "days / 2"). Peak dates shift by a day or so year to year.
+const SHOWERS = [
+  { name: "Quadrantids", m: 1, d: 4, ra: 230, dec: 49, zhr: 110, days: 2 },
+  { name: "Lyrids", m: 4, d: 22, ra: 271, dec: 34, zhr: 18, days: 4 },
+  { name: "Eta Aquariids", m: 5, d: 6, ra: 338, dec: -1, zhr: 50, days: 10 },
+  { name: "Perseids", m: 8, d: 13, ra: 48, dec: 58, zhr: 100, days: 10 },
+  { name: "Draconids", m: 10, d: 8, ra: 262, dec: 54, zhr: 10, days: 2 },
+  { name: "Orionids", m: 10, d: 21, ra: 95, dec: 16, zhr: 20, days: 8 },
+  { name: "Leonids", m: 11, d: 17, ra: 152, dec: 22, zhr: 15, days: 5 },
+  { name: "Geminids", m: 12, d: 14, ra: 112, dec: 33, zhr: 150, days: 6 },
+  { name: "Ursids", m: 12, d: 22, ra: 217, dec: 76, zhr: 10, days: 2 },
+];
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+// Where a spot on the sky's map (ra, dec in degrees) is from Saskatoon at
+// moment t: alt (degrees up) and az (compass, 90 east, 180 south).
+function altAz(raDeg, decDeg, t) {
+  const n = t.getTime() / 86400000 - 10957.5;
+  const ha = ((18.697374558 + 24.06570982441908 * n) * 15 + YXE.lon - raDeg) * D2R;
+  const dec = decDeg * D2R, la = YXE.lat * D2R;
+  const alt = Math.asin(Math.sin(la) * Math.sin(dec) + Math.cos(la) * Math.cos(dec) * Math.cos(ha)) * R2D;
+  const az = Math.atan2(-Math.sin(ha) * Math.cos(dec), Math.cos(la) * Math.sin(dec) - Math.sin(la) * Math.cos(dec) * Math.cos(ha)) * R2D;
+  return { alt, az: (az + 360) % 360 };
+}
+
+// The shower going on at moment t, if any: { shower, days } where days
+// is how far from the peak (negative = before it). Peaks are at 6 AM
+// Saskatoon time on the peak date, the end of the best night.
+function showerAt(t) {
+  const p = localParts(t);
+  let best = null;
+  for (const shower of SHOWERS) {
+    for (const y of [p.y - 1, p.y, p.y + 1]) { // the Quadrantids straddle New Year
+      const days = (t - Date.UTC(y, shower.m - 1, shower.d, 12)) / 86400000; // 12:00 UTC = 6 AM here
+      if (Math.abs(days) <= shower.days && (!best || Math.abs(days) < Math.abs(best.days))) best = { shower, days };
+    }
+  }
+  return best;
+}
+
+// The night readout's shower line: "Orionids peak tonight" on the night
+// itself, "Orionids active · peak Oct 21" in the days around it.
+function showerLine(t) {
+  const now = showerAt(t);
+  if (!now) return "";
+  const { shower, days } = now;
+  if (days > -1 && days < 0.25) return `${shower.name} peak tonight`;
+  if (days >= 0.25 && days < 1) return `${shower.name} peaked last night`;
+  return `${shower.name} active · peak ${MONTHS[shower.m - 1]} ${shower.d}`;
+}
+
+// How many meteors a second to show at moment t, and the shower (if
+// any) they belong to. Stray ones all night; shower ones by how close to
+// the peak it is and how high its radiant is.
+function meteorRate(t) {
+  const rates = [{ rate: 1 / METEOR_EVERY_S, shower: null }];
+  const now = showerAt(t);
+  if (now) {
+    const up = Math.sin(Math.max(0, altAz(now.shower.ra, now.shower.dec, t).alt) * D2R);
+    const strength = Math.pow(0.5, Math.abs(now.days) / (now.shower.days / 2));
+    rates.push({ rate: (now.shower.zhr * strength * up) / 500, shower: now.shower }); // 100 an hour = one every 5 s
+  }
+  return rates;
+}
+
+const meteorsFlying = []; // recent meteors, for tap-to-wish
+
+function setUpMeteors(scene, timeNow) {
+  if (REDUCE_MOTION) return;
+  const sky = document.createElement("div");
+  sky.className = "horizon__meteors";
+  scene.querySelector(".horizon__stars").after(sky);
+
+  function launch(t, shower) {
+    const w = sky.clientWidth, h = sky.clientHeight;
+    if (!w || !h) return;
+    const small = h < 140; // the short page-head skies
+    // Start somewhere in the upper part of the sky
+    const x = w * (0.08 + 0.84 * Math.random());
+    const y = h * (0.06 + 0.5 * Math.random());
+    let angle;
+    if (shower) {
+      // Fly straight away from the radiant, placed like a star (it may be
+      // off the strip to the left or right, or above it)
+      const { alt, az } = altAz(shower.ra, shower.dec, t);
+      const rx = ((az - 90) / 180) * w;
+      const ry = (1 - alt / STAR_TOP_ALT) * h;
+      angle = Math.atan2(y - ry, x - rx);
+    } else {
+      angle = (0.12 + 0.76 * Math.random()) * Math.PI; // any way, as long as it's falling
+    }
+    const len = (small ? 40 : 70) + Math.random() * (small ? 40 : 80); // the tail
+    const travel = len * (1.2 + Math.random());
+    const dur = 500 + Math.random() * 500;
+    const dx = Math.cos(angle) * travel, dy = Math.sin(angle) * travel;
+    const m = document.createElement("i");
+    m.className = "meteor";
+    m.style.width = `${len}px`;
+    m.style.left = `${x - len}px`;
+    m.style.top = `${y}px`;
+    sky.append(m);
+    const turn = `rotate(${angle}rad)`;
+    m.animate(
+      [
+        { transform: `translate(0, 0) ${turn} scaleX(0.2)`, opacity: 0 },
+        { opacity: 1, offset: 0.2 },
+        { transform: `translate(${dx}px, ${dy}px) ${turn} scaleX(1)`, opacity: 0 },
+      ],
+      { duration: dur, easing: "cubic-bezier(0.3, 0, 0.7, 1)" }
+    ).onfinish = () => m.remove();
+    // Remember it for a moment so a tap near its path counts as a wish
+    const born = performance.now();
+    meteorsFlying.push({ born, dur, x, y, dx, dy, sky });
+    while (meteorsFlying.length && born - meteorsFlying[0].born > 3000) meteorsFlying.shift();
+  }
+
+  // Every half second, roll the dice for each kind of meteor.
+  setInterval(() => {
+    if (document.hidden || spinning) return;
+    const t = timeNow();
+    // Needs a properly dark sky, and the dark theme (so the stars are out)
+    if (sunAltitude(t) > -8 || document.documentElement.dataset.theme !== "dark") return;
+    for (const { rate, shower } of meteorRate(t)) {
+      if (Math.random() < rate * 0.5) launch(t, shower);
+    }
+  }, 500);
+}
+
+// Did a tap at (px, py) on the page catch a meteor? It counts if it's
+// near where one flew in the last moment (a generous target, they're quick).
+function caughtMeteor(px, py) {
+  const at = performance.now();
+  return meteorsFlying.some((m) => {
+    if (at - m.born > m.dur + 900) return false;
+    const box = m.sky.getBoundingClientRect();
+    const ax = box.left + m.x, ay = box.top + m.y;
+    // Distance from the tap to the meteor's path
+    const len2 = m.dx * m.dx + m.dy * m.dy;
+    const k = Math.max(-0.6, Math.min(1, ((px - ax) * m.dx + (py - ay) * m.dy) / len2));
+    return Math.hypot(px - (ax + k * m.dx), py - (ay + k * m.dy)) < 48;
+  });
+}
+
+/* ---------- Tap the sky ----------
+   Tapping (or clicking) a star, planet, the moon or the sun shows its
+   name and a fact about it in a little label: how long its light took to
+   reach us, how far it is, how much of the moon is lit. Catching a
+   shooting star makes a wish (counted on this device only). */
+const WISHES_KEY = "kelbo.wishes";
+const LIGHT_KM_S = 299792.458;
+const AU_KM = 149597870.7;
+
+// The sun's distance today in AU (it's closest in early January).
+function sunDistanceAU(t) {
+  const g = (357.529 + 0.98560028 * (t.getTime() / 86400000 - 10957.5)) * D2R;
+  return 1.00014 - 0.01671 * Math.cos(g) - 0.00014 * Math.cos(2 * g);
+}
+
+// A planet's distance from Earth in AU at moment t.
+function planetDistanceAU(orbit, t) {
+  const T = (t.getTime() / 86400000 - 10957.5) / 36525;
+  const [px, py, pz] = orbitXYZ(orbit, T);
+  const [ex, ey, ez] = orbitXYZ(EARTH_ORBIT, T);
+  return Math.hypot(px - ex, py - ey, pz - ez);
+}
+
+// "8m 19s" / "43 min" / "1h 12m" for how long light takes
+function lightTime(seconds) {
+  if (seconds < 3600) return seconds < 600 ? minsSecs(seconds * 1000) : `${Math.round(seconds / 60)} min`;
+  return hoursMins(seconds * 1000);
+}
+
+function millionKm(au) {
+  return `${Math.round((au * AU_KM) / 1e6).toLocaleString("en-CA")} million km`;
+}
+
+// What the label says for a star (by name).
+function starFact(name, t) {
+  const ly = STAR_LY[name];
+  if (!ly) return "";
+  if (ly < 150) return `This light left it in ${localParts(t).y - Math.round(ly)}`;
+  const years = ly < 1000 ? Math.round(ly / 10) * 10 : Math.round(ly / 100) * 100;
+  return `This light left it ${years.toLocaleString("en-CA")} years ago`;
+}
+
+// Hides the tap label (when a swipe or hold starts moving the sky).
+function hideTip(scene) {
+  const tip = scene.querySelector(".horizon__tip");
+  if (tip) tip.hidden = true;
+}
+
+function setUpSkyTaps(scene, timeNow) {
+  const tip = document.createElement("p");
+  tip.className = "horizon__tip";
+  tip.hidden = true;
+  scene.append(tip);
+  let hideTimer = 0;
+
+  // Shows the label just above a spot (x, y on the page) that's r big,
+  // or just below it if there's no room above inside the sky.
+  function show(x, y, r, title, detail) {
+    const box = scene.getBoundingClientRect();
+    tip.replaceChildren(el("strong", "", title), el("span", "", detail));
+    tip.hidden = false;
+    const half = tip.offsetWidth / 2;
+    const left = Math.max(half, Math.min(box.width - half, x - box.left)); // kept inside the sky's width
+    const below = y - r - box.top < tip.offsetHeight + 10;
+    tip.classList.toggle("horizon__tip--below", below);
+    tip.style.left = `${left}px`;
+    tip.style.top = `${y - box.top + (below ? r : -r)}px`;
+    tip.classList.remove("is-new");
+    void tip.offsetWidth;
+    tip.classList.add("is-new");
+    clearTimeout(hideTimer);
+    hideTimer = setTimeout(() => { tip.hidden = true; }, 4500);
+  }
+
+  function wish(x, y) {
+    let count = 1;
+    try {
+      count = (parseInt(localStorage.getItem(WISHES_KEY), 10) || 0) + 1;
+      localStorage.setItem(WISHES_KEY, String(count));
+    } catch (e) {}
+    show(x, y, 0, "Wish made", count === 1 ? "Your first one on this device" : `That's ${count} on this device`);
+  }
+
+  // Everything that could be tapped right now, with where it is on screen.
+  function targets(t) {
+    const list = [];
+    const centre = (node) => {
+      const r = node.getBoundingClientRect();
+      return { x: r.left + r.width / 2, y: r.top + r.height / 2, r: r.width / 2 };
+    };
+    const sun = scene.querySelector(".horizon__sun");
+    if (sun && sunAltitude(t) > -1) {
+      const au = sunDistanceAU(t);
+      list.push({ ...centre(sun), title: "The Sun", detail: `Light takes ${lightTime((au * AU_KM) / LIGHT_KM_S)} to get here` });
+    }
+    const moon = scene.querySelector(".horizon__moon");
+    if (moon && moonSpanAt(t).up && parseFloat(getComputedStyle(scene).getPropertyValue("--moon-show")) > 0.15) {
+      const phase = moonPhase(t);
+      const span = moonSpanAt(t);
+      list.push({ ...centre(moon), title: `${moonName(phase)} moon`, detail: `${Math.round(moonLit(phase) * 100)}% lit · sets ${clock(new Date(span.next))}` });
+    }
+    const box = scene.querySelector(".horizon__stars");
+    if (box && box.stars && document.documentElement.dataset.theme === "dark") {
+      for (const p of box.planets) {
+        if (!p.up) continue;
+        const au = planetDistanceAU(p.planet.orbit, t);
+        list.push({ ...centre(p.dot), r: 6, title: p.planet.name, detail: `${millionKm(au)} · light takes ${lightTime((au * AU_KM) / LIGHT_KM_S)}` });
+      }
+      for (const s of box.stars) {
+        if (!s.up) continue;
+        const fact = starFact(s.star[3], t);
+        list.push({ ...centre(s.dot), r: 3, title: s.star[3], detail: fact });
+      }
+    }
+    return list;
+  }
+
+  scene.addEventListener("click", (e) => {
+    if (performance.now() - lastSkyDrag < 400) return; // the end of a swipe or hold
+    const t = timeNow();
+    if (caughtMeteor(e.clientX, e.clientY)) return wish(e.clientX, e.clientY);
+    // The nearest thing within reach of the finger (planets and the
+    // sun and moon win ties, so they're easy to hit among the stars)
+    let best = null, bestGap = 26;
+    for (const item of targets(t)) {
+      const gap = Math.max(0, Math.hypot(e.clientX - item.x, e.clientY - item.y) - item.r);
+      if (gap < bestGap) { best = item; bestGap = gap; }
+    }
+    if (best) show(best.x, best.y, best.r, best.title, best.detail);
+    else tip.hidden = true;
+  });
+}
+
 /* ---------- The opening spin ----------
    When someone opens the site or refreshes, the sun runs through a whole
    day in a few seconds (rise, cross the sky, set, slip back under the
@@ -1065,6 +1371,7 @@ const SPIN_KEY = "kelbo.sunSpun"; // set once the spin has played this visit
 let spinning = false; // true while the spin or a swipe is moving the sun instead of the clock
 let skyRun = 0; // bumped whenever a new spin or swipe takes over, so the old one stops
 let swiping = false; // true from the start of a swipe until the sky is back at "now"
+let lastSkyDrag = 0; // when the last swipe or hold let go, so its tap doesn't count
 
 function shouldSpin() {
   if (REDUCE_MOTION) return false;
@@ -1114,6 +1421,18 @@ const SWIPE_START_PX = 10; // sideways movement before it counts as a swipe
 const SWIPE_HOLD_MS = 2000; // how long it waits after you let go before heading back
 const SWIPE_BACK_MS = 900; // how long the slide back to "now" takes
 const SWIPE_GLIDE_MS = 550; // how long a flick keeps coasting (bigger = longer glide)
+const HOLD_START_MS = 450; // press and hold this long (without moving) to wind on to sunset or sunrise
+const HOLD_RUN_MS = 2600; // how long winding on takes
+
+// Where holding the sky winds to: just after the next sunset (into dusk,
+// so the stars come out) by day, or just after the next sunrise at night.
+function nextTurn(t) {
+  const day = sunDay(t);
+  if (sunAltitude(t) >= SUNRISE_ALT && day.set && day.set > t) return day.set + 35 * 60000;
+  if (day.rise && day.rise > t) return day.rise + 25 * 60000;
+  const tomorrow = sunDay(new Date(day.end + 60000));
+  return (tomorrow.rise || day.end + 8 * 3600000) + 25 * 60000;
+}
 
 function setUpSwipe(scene, paint) {
   let shown = 0; // how far from now the sky is showing, in ms
@@ -1180,6 +1499,59 @@ function setUpSwipe(scene, paint) {
     }
   }
 
+  // Press and hold (finger or mouse) without moving: after HOLD_START_MS
+  // the sky winds on to the next sunset, or sunrise at night, and stays
+  // there while held. Letting go hands over to slideBack like a swipe.
+  let hold = null; // { id, x, y, timer, live } while pressed
+  function startHold() {
+    hideTip(scene);
+    hold.live = true;
+    drag = null; // a hold, so the finger moving now won't start a swipe
+    const run = ++skyRun;
+    swiping = spinning = true;
+    scene.classList.add("horizon--spin");
+    try {
+      scene.setPointerCapture(hold.id);
+    } catch (err) {}
+    const max = SWIPE_MAX_HOURS * 3600000;
+    const from = shown;
+    const base = now().getTime();
+    const to = Math.max(-max, Math.min(max, nextTurn(new Date(base + shown)) - base));
+    let start = null;
+    requestAnimationFrame(function frame(ms) {
+      if (run !== skyRun) return; // let go, or a swipe took over
+      if (start === null) start = ms;
+      const p = REDUCE_MOTION ? 1 : Math.min(1, (ms - start) / HOLD_RUN_MS);
+      shown = from + (to - from) * (p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2);
+      paint(new Date(now().getTime() + shown), shown);
+      if (p < 1) requestAnimationFrame(frame);
+    });
+  }
+  function endHold(e) {
+    if (!hold || e.pointerId !== hold.id) return;
+    clearTimeout(hold.timer);
+    if (hold.live) {
+      lastSkyDrag = performance.now();
+      slideBack();
+    }
+    hold = null;
+  }
+  scene.addEventListener("pointerdown", (e) => {
+    if (hold || e.button > 0) return;
+    hold = { id: e.pointerId, x: e.clientX, y: e.clientY, live: false };
+    hold.timer = setTimeout(startHold, HOLD_START_MS);
+  });
+  scene.addEventListener("pointermove", (e) => {
+    if (!hold || hold.live || e.pointerId !== hold.id) return;
+    if (Math.hypot(e.clientX - hold.x, e.clientY - hold.y) > SWIPE_START_PX) {
+      clearTimeout(hold.timer); // it's a swipe or a scroll, not a hold
+      hold = null;
+    }
+  });
+  scene.addEventListener("pointerup", endHold);
+  scene.addEventListener("pointercancel", endHold);
+  scene.addEventListener("contextmenu", (e) => e.preventDefault()); // no long-press menu
+
   scene.addEventListener("pointerdown", (e) => {
     if (e.pointerType === "mouse" || drag) return;
     drag = { id: e.pointerId, x: e.clientX, y: e.clientY, from: 0, live: false, trail: [] };
@@ -1196,6 +1568,7 @@ function setUpSwipe(scene, paint) {
       }
       if (Math.abs(dx) < SWIPE_START_PX) return;
       // It's a swipe: stop the opening spin or slide back, and take over.
+      hideTip(scene);
       drag.live = true;
       drag.x = e.clientX;
       drag.from = shown; // pick up wherever the sky is, even mid slide back
@@ -1230,10 +1603,15 @@ function setUpSwipe(scene, paint) {
     if (!drag || e.pointerId !== drag.id) return;
     const was = drag;
     drag = null;
-    if (was.live) glide(e.type === "pointerup" ? flickSpeed(was, e.timeStamp) : 0);
+    if (!was.live) return;
+    lastSkyDrag = performance.now();
+    glide(e.type === "pointerup" ? flickSpeed(was, e.timeStamp) : 0);
   }
   scene.addEventListener("pointerup", end);
   scene.addEventListener("pointercancel", end);
+
+  // The moment the sky is showing (now, or wherever a swipe left it)
+  return () => new Date(now().getTime() + shown);
 }
 
 // While swiping: "Tomorrow 2:15 AM" and how far from now that is.
@@ -1362,12 +1740,12 @@ function setUpHorizon() {
         r = `Sets ${clock(new Date(day.set))} · ${hoursMins(day.set - t)} of light left`;
       } else if (!isDay && day.rise && t < day.rise) {
         // Night: tonight's moon, and when the sun comes back
-        l = takeTurns([moonLine(t), lightHourLine(t)]);
+        l = takeTurns([moonLine(t), lightHourLine(t), showerLine(t)]);
         r = `Sun's up at ${clock(new Date(day.rise))}`;
       } else {
         // After sunset: tomorrow's sunrise
         const tomorrow = sunDay(new Date(day.end + 60000));
-        l = takeTurns([moonLine(t), lightHourLine(t)]);
+        l = takeTurns([moonLine(t), lightHourLine(t), showerLine(t)]);
         r = tomorrow.rise ? `Sun's back at ${clock(new Date(tomorrow.rise))}` : "Sun's back tomorrow";
       }
       setLine(left, l, swiped);
@@ -1382,7 +1760,11 @@ function setUpHorizon() {
   }
 
   if (scene && shouldSpin()) spinSun(scene);
-  if (scene) setUpSwipe(scene, paint);
+  if (scene) {
+    const shownTime = setUpSwipe(scene, paint);
+    setUpMeteors(scene, now);
+    setUpSkyTaps(scene, shownTime);
+  }
   tick();
   setUpThemeToggle(tick);
   setInterval(tick, READOUT_TURN_MS);
