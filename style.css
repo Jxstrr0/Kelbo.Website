@@ -809,6 +809,203 @@ img {
   opacity: 0;
 }
 
+/* ---------- Weather, northern lights and the seasons ----------
+   main.js adds these layers to the horizon and switches them with
+   classes on .horizon: --rain, --snow, --storm, --fog, --overcast and
+   --snowy (snow lying on the ground), plus --aurora (0..1). */
+
+/* Northern lights: soft lilac curtains across the top of the night sky */
+.horizon__aurora {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: calc(var(--sky-height) * 0.85);
+  background:
+    repeating-linear-gradient(90deg,
+      rgba(180, 140, 232, 0) 0 4%, rgba(180, 140, 232, 0.75) 7%, rgba(180, 140, 232, 0) 10%,
+      rgba(180, 140, 232, 0) 13%, rgba(180, 140, 232, 0.45) 15%, rgba(180, 140, 232, 0) 18%,
+      rgba(123, 63, 196, 0.8) 22%, rgba(123, 63, 196, 0) 27%),
+    linear-gradient(to bottom, rgba(123, 63, 196, 0), rgba(180, 140, 232, 0.35) 65%, rgba(180, 140, 232, 0));
+  background-size: 180% 100%, 100% 100%;
+  -webkit-mask: linear-gradient(to bottom, transparent, #000 30%, #000 60%, transparent);
+  mask: linear-gradient(to bottom, transparent, #000 30%, #000 60%, transparent);
+  filter: blur(5px);
+  opacity: calc(var(--aurora, 0) * 0.9);
+  transition: opacity 3s var(--ease);
+  pointer-events: none;
+}
+
+:root:not([data-theme="dark"]) .horizon__aurora {
+  opacity: 0;
+}
+
+/* Clouds: soft ivory blobs drifting across, fainter at night. Each is a
+   rounded bar with two bumps on top. */
+.horizon__clouds {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: var(--sky-height);
+  overflow: hidden;
+  opacity: 0.45;
+  transition: opacity 1.2s var(--ease);
+  pointer-events: none;
+}
+
+:root[data-theme="dark"] .horizon__clouds {
+  opacity: 0.08;
+}
+
+.cloud {
+  position: absolute;
+  height: var(--h);
+  width: calc(var(--h) * 3.2);
+  border-radius: 999px;
+  background: var(--ll-ivory);
+}
+
+.cloud::before,
+.cloud::after {
+  content: "";
+  position: absolute;
+  bottom: 35%;
+  border-radius: 50%;
+  background: inherit;
+  aspect-ratio: 1;
+}
+
+.cloud::before {
+  left: 16%;
+  width: 46%;
+}
+
+.cloud::after {
+  left: 50%;
+  width: 34%;
+}
+
+/* Overcast: a pale veil over the whole sky; the stars and sun dim */
+.horizon--overcast .horizon__clouds::before,
+.horizon--fog .horizon__clouds::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--ll-ivory);
+  opacity: 0.45;
+}
+
+/* Fog sits low, thickest at the horizon */
+.horizon--fog .horizon__clouds::after {
+  top: 35%;
+  background: linear-gradient(to bottom, rgba(250, 249, 245, 0), var(--ll-ivory));
+  opacity: 1;
+}
+
+:root[data-theme="dark"] .horizon--overcast .horizon__stars {
+  opacity: 0.12;
+}
+
+.horizon--overcast .horizon__sun {
+  opacity: 0.6;
+}
+
+/* Rain and snow: an ivory pattern of streaks or flakes (an SVG tile used
+   as a mask), falling (style.css motion block) */
+.horizon__precip {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: calc(var(--sky-height) + 3.5px);
+  display: none;
+  pointer-events: none;
+}
+
+.horizon--rain .horizon__precip,
+.horizon--snow .horizon__precip {
+  display: block;
+}
+
+.horizon__precip::before,
+.horizon__precip::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--ll-ivory);
+  -webkit-mask: var(--drops) 0 0 / var(--tile) repeat;
+  mask: var(--drops) 0 0 / var(--tile) repeat;
+  opacity: 0.4;
+}
+
+.horizon--rain .horizon__precip {
+  --drops: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='96'%3E%3Cpath d='M6 2l-2 14M30 34l-2 14M52 62l-2 14M18 70l-2 14M44 6l-2 14M60 40l-2 12' stroke='%23000' stroke-width='1.2' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+.horizon--snow .horizon__precip {
+  --drops: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cg%3E%3Ccircle cx='10' cy='14' r='1.8'/%3E%3Ccircle cx='52' cy='40' r='2.2'/%3E%3Ccircle cx='96' cy='10' r='1.5'/%3E%3Ccircle cx='30' cy='82' r='2'/%3E%3Ccircle cx='78' cy='70' r='1.6'/%3E%3Ccircle cx='108' cy='100' r='2.1'/%3E%3Ccircle cx='62' cy='108' r='1.4'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+.horizon__precip::before { --tile: 64px 96px; }
+.horizon__precip::after { --tile: 96px 144px; opacity: 0.25; }
+.horizon--snow .horizon__precip::before { --tile: 120px 120px; opacity: 0.85; }
+.horizon--snow .horizon__precip::after { --tile: 190px 190px; opacity: 0.6; }
+
+/* Snow lying on the ground: a soft ivory band under the horizon line */
+.horizon__snowline {
+  position: absolute;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  top: calc(var(--sky-height) + 3.5px);
+  height: 7px;
+  z-index: 2;
+  display: none;
+  background: linear-gradient(to bottom, var(--ll-ivory) 40%, rgba(250, 249, 245, 0));
+  opacity: 0.85;
+}
+
+.horizon--snowy .horizon__snowline {
+  display: block;
+}
+
+/* Geese and fireflies */
+.horizon__critters {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: var(--sky-height);
+  overflow: hidden;
+  color: var(--ll-slate);
+  pointer-events: none;
+}
+
+:root[data-theme="dark"] .horizon__critters {
+  color: var(--ll-lilac);
+}
+
+.geese {
+  position: absolute;
+  left: 0;
+  overflow: visible;
+  opacity: 0.6;
+}
+
+.geese path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+
+.firefly {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  margin: -1.5px 0 0 -1.5px;
+  border-radius: 50%;
+  background: var(--ll-clay);
+  box-shadow: 0 0 6px 2px rgba(217, 119, 87, 0.7);
+  opacity: 0;
+}
+
 /* The label from tapping a star, planet, the moon or the sun (or a wish).
    main.js puts it just above whatever was tapped. */
 .horizon__tip {
@@ -1861,6 +2058,97 @@ img {
   /* A new line in the horizon readout fades in (main.js adds .is-new) */
   .horizon__readout .is-new {
     animation: readout-in 500ms var(--ease);
+  }
+
+  /* Weather and the seasons on the move */
+  .horizon__aurora {
+    animation: aurora-shimmer 26s linear infinite, aurora-sway 9s ease-in-out infinite alternate;
+  }
+
+  @keyframes aurora-shimmer {
+    to { background-position: 180% 0, 0 0; }
+  }
+
+  @keyframes aurora-sway {
+    from { transform: skewX(-6deg) scaleY(0.92); }
+    to { transform: skewX(6deg) scaleY(1.05); }
+  }
+
+  .cloud {
+    animation: cloud-drift 200s linear infinite;
+  }
+
+  @keyframes cloud-drift {
+    from { left: -40%; }
+    to { left: 105%; }
+  }
+
+  .horizon__precip::before {
+    animation: rain-fall 0.55s linear infinite;
+  }
+
+  .horizon__precip::after {
+    animation: rain-fall-far 0.8s linear infinite;
+  }
+
+  @keyframes rain-fall {
+    to { -webkit-mask-position: -14px 96px; mask-position: -14px 96px; }
+  }
+
+  @keyframes rain-fall-far {
+    to { -webkit-mask-position: -21px 144px; mask-position: -21px 144px; }
+  }
+
+  .horizon--snow .horizon__precip::before {
+    animation: snow-fall 8s linear infinite;
+  }
+
+  .horizon--snow .horizon__precip::after {
+    animation: snow-fall-far 13s linear infinite;
+  }
+
+  @keyframes snow-fall {
+    to { -webkit-mask-position: 24px 120px; mask-position: 24px 120px; }
+  }
+
+  @keyframes snow-fall-far {
+    to { -webkit-mask-position: 38px 190px; mask-position: 38px 190px; }
+  }
+
+  /* Lightning: main.js adds .horizon--flash now and then in a storm */
+  .horizon--flash .horizon__clouds {
+    animation: lightning 700ms ease-out;
+  }
+
+  @keyframes lightning {
+    10% { opacity: 1; }
+    25% { opacity: 0.3; }
+    40% { opacity: 0.9; }
+  }
+
+  .geese path {
+    animation: flap 0.6s ease-in-out infinite alternate;
+  }
+
+  @keyframes flap {
+    to { transform: scaleY(-0.4); }
+  }
+
+  .firefly {
+    animation-name: firefly-blink, firefly-drift;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    animation-direction: normal, alternate;
+  }
+
+  @keyframes firefly-blink {
+    0%, 55%, 100% { opacity: 0; }
+    70% { opacity: 1; }
+  }
+
+  @keyframes firefly-drift {
+    from { translate: 0 0; }
+    to { translate: 14px -10px; }
   }
 
   .horizon__tip.is-new {
