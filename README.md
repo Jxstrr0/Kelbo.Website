@@ -172,7 +172,7 @@ so they never wait on the font). Phones show the short version (just the
 sun on its line) and wider screens show the full lockup, which also has
 the ray: a faded clay beam running from the sun to the right edge, just
 under LONGLIGHT (`logo__ray`). The colours come
-from the theme: the line is ivory in light mode and lilac in dark mode
+from the theme: the line is ivory in light mode and purple in dark mode
 (`--logo-line` in `style.css`).
 
 The sun has a soft clay glow and a thin halo ring around it. When a page
