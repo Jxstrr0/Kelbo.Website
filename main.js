@@ -1552,8 +1552,10 @@ function loadKp() {
   }
   if (q.has("at")) return Promise.resolve();
   return cachedFetch(KP_KEY, KP_MS, "https://services.swpc.noaa.gov/json/planetary_k_index_1m.json", (list) => {
-    const last = list[list.length - 1];
-    return last ? last.estimated_kp : null;
+    // The feed restarts at 0 for the first minutes of each 3-hour block,
+    // so take the highest reading of the last half hour.
+    const recent = list.slice(-30).map((row) => row.estimated_kp).filter(Number.isFinite);
+    return recent.length ? Math.max(...recent) : null;
   })
     .then((k) => { kp = k; })
     .catch(() => {});
