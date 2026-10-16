@@ -1085,8 +1085,8 @@ function spinSun(scene) {
    On a phone, sliding a finger left or right along the horizon winds the
    sky backward or forward: the sun, moon, stars and planets all move to
    where they'd be at that time, and the page goes dark after sunset like
-   it really would. The readout shows the time you're looking at. Let go
-   and it waits a couple of seconds (so you can grab it again and keep
+   it really would. The readout shows the time you're looking at. Flick it
+   and it keeps spinning a moment, slowing to a stop. Then it waits a couple of seconds (so you can grab it again and keep
    fiddling), then slides back to right now. Only touch, so a mouse can still
    select text; up-and-down swipes still scroll the page. */
 const SWIPE_HOURS = 12; // hours per full width (bigger = faster)
@@ -1094,6 +1094,7 @@ const SWIPE_MAX_HOURS = 36; // how far either way a swipe can go
 const SWIPE_START_PX = 10; // sideways movement before it counts as a swipe
 const SWIPE_HOLD_MS = 2000; // how long it waits after you let go before heading back
 const SWIPE_BACK_MS = 900; // how long the slide back to "now" takes
+const SWIPE_GLIDE_MS = 325; // how long a flick keeps coasting (bigger = longer glide)
 
 function setUpSwipe(scene, paint) {
   let shown = 0; // how far from now the sky is showing, in ms
@@ -1108,6 +1109,30 @@ function setUpSwipe(scene, paint) {
       queued = false;
       paint(new Date(now().getTime() + shown), shown);
     });
+  }
+
+  // After a flick, keeps the sky moving at the finger's speed and lets it
+  // slow down like a spun wheel, then hands over to slideBack. `speed` is
+  // in px per ms. A new swipe bumps skyRun, which stops the glide.
+  function glide(speed) {
+    const run = ++skyRun;
+    const width = scene.clientWidth || 1;
+    const max = SWIPE_MAX_HOURS * 3600000;
+    let last = null;
+    if (REDUCE_MOTION || Math.abs(speed) < 0.05) return slideBack();
+    requestAnimationFrame(frame);
+    function frame(ms) {
+      if (run !== skyRun) return; // a new swipe took over
+      const dt = last === null ? 16 : Math.min(50, ms - last);
+      last = ms;
+      shown += (speed * dt / width) * SWIPE_HOURS * 3600000;
+      speed *= Math.exp(-dt / SWIPE_GLIDE_MS); // friction
+      const atEdge = Math.abs(shown) >= max;
+      shown = Math.max(-max, Math.min(max, shown));
+      paint(new Date(now().getTime() + shown), shown);
+      if (atEdge || Math.abs(speed) < 0.02) slideBack();
+      else requestAnimationFrame(frame);
+    }
   }
 
   // Holds still for SWIPE_HOLD_MS, then eases back to now. A new swipe
@@ -1138,7 +1163,7 @@ function setUpSwipe(scene, paint) {
 
   scene.addEventListener("pointerdown", (e) => {
     if (e.pointerType === "mouse" || drag) return;
-    drag = { id: e.pointerId, x: e.clientX, y: e.clientY, from: 0, live: false };
+    drag = { id: e.pointerId, x: e.clientX, y: e.clientY, from: 0, live: false, trail: [] };
   });
 
   scene.addEventListener("pointermove", (e) => {
@@ -1167,14 +1192,26 @@ function setUpSwipe(scene, paint) {
     const max = SWIPE_MAX_HOURS * 3600000;
     const ms = drag.from + ((e.clientX - drag.x) / width) * SWIPE_HOURS * 3600000;
     shown = Math.max(-max, Math.min(max, ms));
+    // Remember the last ~100 ms of finger positions to measure flick speed.
+    drag.trail.push({ x: e.clientX, t: e.timeStamp });
+    while (drag.trail.length > 2 && e.timeStamp - drag.trail[0].t > 100) drag.trail.shift();
     draw();
   });
 
+  // How fast the finger was moving as it let go, in px per ms (0 if it
+  // had stopped before lifting off).
+  function flickSpeed(d, t) {
+    const a = d.trail[0];
+    const b = d.trail[d.trail.length - 1];
+    if (!a || a === b || t - b.t > 80) return 0;
+    return (b.x - a.x) / Math.max(1, b.t - a.t);
+  }
+
   function end(e) {
     if (!drag || e.pointerId !== drag.id) return;
-    const wasLive = drag.live;
+    const was = drag;
     drag = null;
-    if (wasLive) slideBack();
+    if (was.live) glide(e.type === "pointerup" ? flickSpeed(was, e.timeStamp) : 0);
   }
   scene.addEventListener("pointerup", end);
   scene.addEventListener("pointercancel", end);

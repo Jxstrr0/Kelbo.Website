@@ -291,12 +291,14 @@ date and time, so there's no internet service or key involved.
   the horizon and the sky winds backward or forward: the sun, moon, stars
   and planets move to where they'd be, the page goes dark after sunset,
   and the readout shows the time you're looking at ("Tomorrow 1:52 AM").
-  Let go and it stays put for a couple of seconds, so you can grab it
+  Flick it and it keeps spinning a moment, slowing down like a wheel.
+  Once it stops it stays put for a couple of seconds, so you can grab it
   again and keep going, then everything slides back to right now. Up and down swipes
   still scroll the page. It's only for touch, so a mouse can still select
   text. The numbers are at the top of the swipe code in `main.js`:
   `SWIPE_HOURS` (hours per full screen width, 12; bigger is faster),
-  `SWIPE_MAX_HOURS` (how far either way, 36) and `SWIPE_HOLD_MS` (the
+  `SWIPE_MAX_HOURS` (how far either way, 36), `SWIPE_GLIDE_MS` (how long
+  a flick coasts, 325; bigger glides further) and `SWIPE_HOLD_MS` (the
   wait before it heads back, 2000 = 2 seconds).
 - **Seasons:** the ray coming off the sun reaches further in summer than in
   winter (full length on the longest day, a bit under half on the
