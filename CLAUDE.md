@@ -168,10 +168,13 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   `#logo-glow` filter, defined once per page in the footer lockup's
   `<defs>` because the footer is never hidden) and `.logo__halo` (a thin
   clay ring). On load the sun, halo and glow rise out of the line
-  (`logo-rise`/`logo-fade`, in the reduced-motion-safe block); hover lifts
+  (`logo-rise`/`logo-fade`/`logo-ray`, in the reduced-motion-safe block); hover lifts
   the sun. Sizes: compact 3.4rem, header lockup 13.8rem, footer
-  min(19rem, 80vw). The ray is retired from the logo and only lives in the
-  hero's live horizon. Below 40rem the header shows `.logo--compact` (sun +
+  min(19rem, 80vw). The full lockup also has the ray (`.logo__ray`, a
+  tapered clay polygon at 0.6 opacity from just past the halo to the right
+  edge, under LONGLIGHT, which is lifted with `translate(0 -9)` to make
+  room; it grows out with `logo-ray`). The compact mark and icons have no
+  ray. Below 40rem the header shows `.logo--compact` (sun +
   short line), from 40rem `.logo--full`; the footer always shows the full
   lockup.
 - The header (the logo as home, the nav Games, Trading, AI, Projects, plus

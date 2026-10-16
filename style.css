@@ -295,7 +295,8 @@ img {
 
 /* ---------- Logo: the horizon lockup ----------
    Sun + horizon line running under LONGLIGHT, INTERACTIVE spaced to the
-   same width below it. The words are outlined paths, so the logo never
+   same width below it. The full lockup also has the ray: a long clay beam
+   running from the sun to the right edge, just under LONGLIGHT. The words are outlined paths, so the logo never
    waits on the web font. Colours come from the theme tokens below.
    Phones show the compact mark (sun + line); 40rem and up show the full lockup. */
 .logo {
@@ -310,6 +311,7 @@ img {
 .logo__glow { fill: var(--ll-clay); opacity: 0.85; }
 .logo__halo { fill: none; stroke: var(--ll-clay); stroke-width: 1.6; opacity: 0.6; }
 .logo--compact .logo__halo { stroke-width: 1.4; }
+.logo__ray  { fill: var(--ll-clay); opacity: 0.6; }
 .logo__line { fill: var(--logo-line); }
 .logo__word { fill: var(--sky-ink); }
 .logo__sub  { fill: var(--sky-muted); }
@@ -1861,6 +1863,25 @@ img {
 
   .logo__glow {
     animation: logo-fade 900ms var(--ease) 700ms backwards;
+  }
+
+  /* Once the sun is up, the ray shoots out from it to the right. */
+  .logo__ray {
+    transform-box: fill-box;
+    transform-origin: 0 50%;
+    transition: opacity 300ms var(--ease);
+    animation: logo-ray 1100ms cubic-bezier(0.22, 1, 0.36, 1) 550ms backwards;
+  }
+
+  @keyframes logo-ray {
+    from { transform: scaleX(0); opacity: 0; }
+  }
+
+  .lockup:hover .logo__ray,
+  .lockup:focus-visible .logo__ray,
+  .wordmark:hover .logo__ray,
+  .wordmark:focus-visible .logo__ray {
+    opacity: 0.85;
   }
 
   @keyframes logo-rise {
