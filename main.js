@@ -1950,11 +1950,11 @@ function spinSun(scene) {
    and it keeps spinning a moment, slowing to a stop. Then it waits a couple of seconds (so you can grab it again and keep
    fiddling), then slides back to right now. Only touch, so a mouse can still
    select text; up-and-down swipes still scroll the page. */
-const SWIPE_HOURS = 12; // hours per full width (bigger = faster)
+const SWIPE_HOURS = 10; // hours per full width (bigger = faster)
 const SWIPE_MAX_HOURS = 36; // how far either way a swipe can go
 const SWIPE_START_PX = 10; // sideways movement before it counts as a swipe
 const SWIPE_HOLD_MS = 2000; // how long it waits after you let go before heading back
-const SWIPE_BACK_MS = 900; // how long the slide back to "now" takes
+const SWIPE_BACK_MS = 1800; // how long the slide back to "now" takes
 const SWIPE_GLIDE_MS = 550; // how long a flick keeps coasting (bigger = longer glide)
 const HOLD_START_MS = 450; // press and hold this long (without moving) to wind on to sunset or sunrise
 const HOLD_RUN_MS = 2600; // how long winding on takes
