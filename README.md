@@ -169,13 +169,15 @@ The logo is the Longlight "horizon lockup": the sun sitting on a line that
 runs under LONGLIGHT, with INTERACTIVE spaced out below it. It's drawn in
 each page's header and footer as an SVG (the letters are shapes, not text,
 so they never wait on the font). Phones show the short version (just the
-sun on its line) and wider screens show the full lockup. The colours come
+sun on its line) and wider screens show the full lockup, which also has
+the ray: a faded clay beam running from the sun to the right edge, just
+under LONGLIGHT (`logo__ray`). The colours come
 from the theme: the line is ivory in light mode and lilac in dark mode
 (`--logo-line` in `style.css`).
 
 The sun has a soft clay glow and a thin halo ring around it. When a page
-opens, the sun rises up out of its line, then the halo and glow come in,
-and it lifts a little when you hover over the logo. Anyone with "reduce
+opens, the sun rises up out of its line, then the halo and glow come in
+and the ray shoots out to the right, and it lifts a little when you hover over the logo. Anyone with "reduce
 motion" on just sees the finished logo. The glow's blur is set once per
 page, inside the footer logo (`<filter id="logo-glow">`), and the header
 borrows it, so leave that `<defs>` block in the footer.
