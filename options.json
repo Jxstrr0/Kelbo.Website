@@ -1,11 +1,11 @@
 {
-  "updated": "2026-10-15",
+  "updated": "2026-10-16",
   "since": "2026-09-15",
   "systems": {
     "V2": "my earlier hold-or-flip rules",
     "V3": "same-day flips on the stocks moving most that day (started Oct 14, 2026)"
   },
-  "ai": "What worked: 13 wins, 6 losses and 3 scratches, up 8.2% per trade on average. Winners averaged +21.4% and losers −16.4%, so the wins were bigger than the losses, which is the right shape. Losers were cut instead of held in hope, like the RGTI put closed to free up buying power and the SOFI call closed when the fade kept going.\n\nWhat didn't: the first 10 trades (through Oct 8) went 9–1 and averaged +21%. The 9 after that (Oct 9 to 13) went 2–4 with 3 scratches and averaged −7%. Those were also the busier days, and the notes show why: a wide spread at entry, paying over the ask, thin volume, a market order by mistake. On options that cost under $1, a few cents of spread is 5–10% of the trade before the stock even moves. Limit orders near the middle of the bid and ask, and skipping contracts with wide spreads or little volume, would have saved most of that.\n\nThe biggest loss was the IREN 40 call (−32%), held overnight on a stock that had gapped and then faded. Holding overnight without a planned exit was the mistake there. V3 is 2–1 after two days (+27%, −17%, +20%), which is too early to judge. The SOFI 14.50 call shows the cut working as intended: closing it on Oct 14 kept the loss to 17%, and the same contract made +20% when bought again the next day. About 20 trades should show whether V3 beats V2.",
+  "ai": "What worked: 15 wins, 8 losses and 3 scratches, up 6.1% per trade on average. Winners averaged +20.1% and losers −17.8%, so the wins are still bigger than the losses, which is the right shape. Losers were cut instead of held in hope, like the RGTI put closed to free up buying power, the SOFI call closed when the fade kept going, and the MARA 8 put stopped out at its planned level. Scaling out worked on the F 12.50 call: selling most of it at +23% and moving the rest to break-even locked in the gain with no stress.\n\nWhat didn't: the first 10 trades (through Oct 8) went 9–1 and averaged +21%. The 9 after that (Oct 9 to 13) went 2–4 with 3 scratches and averaged −7%. Those were also the busier days, and the notes show why: a wide spread at entry, paying over the ask, thin volume, a market order by mistake. On options that cost under $1, a few cents of spread is 5–10% of the trade before the stock even moves. Limit orders near the middle of the bid and ask, and skipping contracts with wide spreads or little volume, would have saved most of that.\n\nThe biggest loss was the IREN 40 call (−32%), held overnight on a stock that had gapped and then faded. Holding overnight without a planned exit was the mistake there. V3 is 4–3 after three days and up 1.3% per trade on average (winners +17.4%, losers −20.1%), a thinner edge than V2 had so far. The two weakest V3 entries share a cause: the SOFI 15.50 call was bought before its breakout trigger printed, and the RIVN 13 call was a third entry taken after the entry window closed (a small win, but off-rule). Waiting for the level to actually print is the fix. The SOFI 14.50 call shows the cut working as intended: closing it on Oct 14 kept the loss to 17%, and the same contract made +20% when bought again the next day. About 20 trades should show whether V3 beats V2.",
   "trades": [
     {
       "opened": "2026-09-15",
@@ -262,6 +262,17 @@
     {
       "opened": "2026-10-15",
       "closed": "2026-10-15",
+      "symbol": "MARA",
+      "strike": 8,
+      "type": "put",
+      "paid": 0.53,
+      "sold": 0.39,
+      "system": "V3",
+      "note": "Planned stop when the stock took back its morning high."
+    },
+    {
+      "opened": "2026-10-15",
+      "closed": "2026-10-15",
       "symbol": "SOFI",
       "strike": 14.5,
       "type": "call",
@@ -270,6 +281,39 @@
       "sold": 0.54,
       "system": "V3",
       "note": "Same contract cut on Oct 14; back in a day later and out green."
+    },
+    {
+      "opened": "2026-10-15",
+      "closed": "2026-10-15",
+      "symbol": "RIVN",
+      "strike": 13,
+      "type": "call",
+      "paid": 0.4,
+      "sold": 0.42,
+      "system": "V3",
+      "note": "Quick small win, but off-rule: a third entry after the entry window closed."
+    },
+    {
+      "opened": "2026-10-16",
+      "closed": "2026-10-16",
+      "symbol": "SOFI",
+      "strike": 15.5,
+      "type": "call",
+      "paid": 0.29,
+      "sold": 0.24,
+      "system": "V3",
+      "note": "Bought before the breakout trigger; the breakout never came, so out on a thesis exit."
+    },
+    {
+      "opened": "2026-10-16",
+      "closed": "2026-10-16",
+      "symbol": "F",
+      "strike": 12.5,
+      "type": "call",
+      "paid": 0.3,
+      "sold": 0.353,
+      "system": "V3",
+      "note": "Broke out to new highs. Sold most at +23%, moved the rest to break-even, then sold it for a small gain. The exit price is the average of both sales."
     }
   ]
 }
