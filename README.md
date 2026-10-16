@@ -312,6 +312,31 @@ date and time, so there's no internet service or key involved.
   to 6° under), with how long is left: "Golden hour · 24m left". The
   timing is `READOUT_TURN_MS` in `main.js` (6000 = 6 seconds). Try
   `?at=sunset`.
+- **Shooting stars:** on dark nights a meteor streaks across the sky every
+  half a minute or so. On the nights around the big yearly meteor showers
+  (Quadrantids, Lyrids, Eta Aquariids, Perseids, Draconids, Orionids,
+  Leonids, Geminids, Ursids) there are more, and they fly out from the
+  shower's real spot in the sky, the way real ones do. The higher that
+  spot is, the more there are. At night the readout mentions it too
+  ("Orionids peak tonight", "Geminids active · peak Dec 14"). Tap a
+  shooting star to make a wish; the phone counts them ("That's 3 on this
+  device"), and nothing is sent anywhere. They're off with "reduce motion"
+  on. The shower list is `SHOWERS` in `main.js` (peak date, spot in the
+  sky, and how busy it gets), and `METEOR_EVERY_S` sets the ordinary-night
+  rate (30 = one every 30 seconds on average). Try
+  `?at=2026-12-14T02:00` for the Geminids.
+- **Tap the sky:** tap (or click) a star, planet, the moon or the sun and a
+  little label says what it is plus a fact: when the starlight you're
+  seeing left it ("This light left it in 2001"), how far a planet is
+  tonight and how long its light takes, how much of the moon is lit, or
+  how long sunlight takes to get here. Star distances are `STAR_LY` in
+  `main.js`, in light years.
+- **Hold the sky:** press and hold on the sky (finger or mouse) for half a
+  second and it winds on to just after the next sunset, so the site goes
+  dark and the stars come out. At night it winds on to the next sunrise
+  instead. Let go and it slides back to now a couple of seconds later.
+  `HOLD_START_MS` and `HOLD_RUN_MS` in `main.js` set how long to hold and
+  how long the wind takes.
 - **Seasons:** the ray coming off the sun reaches further in summer than in
   winter (full length on the longest day, a bit under half on the
   shortest). On the longest and shortest days of the year a badge appears
