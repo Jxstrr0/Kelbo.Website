@@ -1204,8 +1204,10 @@ function setUpMeteors(scene, timeNow) {
   setInterval(() => {
     if (document.hidden || spinning) return;
     const t = timeNow();
-    // Needs a properly dark sky, and the dark theme (so the stars are out)
+    // Needs a properly dark sky, the dark theme (so the stars are out) and
+    // a break in the clouds
     if (sunAltitude(t) > -8 || document.documentElement.dataset.theme !== "dark") return;
+    if (weather && weather.cloud >= 85) return;
     for (const { rate, shower } of meteorRate(t)) {
       if (Math.random() < rate * 0.5) launch(t, shower);
     }
@@ -1358,6 +1360,296 @@ function setUpSkyTaps(scene, timeNow) {
     if (best) show(best.x, best.y, best.r, best.title, best.detail);
     else tip.hidden = true;
   });
+}
+
+/* ---------- Real weather and the northern lights ----------
+   The only parts of the sky that use the internet, both free with no
+   key: Open-Meteo for Saskatoon's weather right now (clouds drift past,
+   rain or snow falls, lightning in a thunderstorm, fog low down, snow
+   on the ground while there's real snow lying), and NOAA's space
+   weather feed for the northern lights (soft lilac curtains at the top
+   of the night sky when they're likely this far south). Each is checked
+   at most every 15 or 20 minutes and kept on the phone in between. If
+   either can't be reached the sky just carries on without it.
+   Preview with ?weather=clear|cloudy|overcast|rain|snow|storm|fog and
+   ?kp=6 (any number 0..9). */
+const WEATHER_KEY = "kelbo.weather";
+const WEATHER_MS = 15 * 60000;
+const KP_KEY = "kelbo.kp";
+const KP_MS = 20 * 60000;
+let weather = null; // { code, cloud, temp, snow } once known
+let kp = null; // the latest Kp index (0..9) once known
+
+// What Open-Meteo's weather codes mean, in words for the readout
+const WEATHER_WORDS = {
+  0: "Clear", 1: "Mostly clear", 2: "Partly cloudy", 3: "Cloudy", 45: "Fog", 48: "Freezing fog",
+  51: "Light drizzle", 53: "Drizzle", 55: "Heavy drizzle", 56: "Freezing drizzle", 57: "Freezing drizzle",
+  61: "Light rain", 63: "Rain", 65: "Heavy rain", 66: "Freezing rain", 67: "Freezing rain",
+  71: "Light snow", 73: "Snow", 75: "Heavy snow", 77: "Snow grains", 80: "Rain showers",
+  81: "Rain showers", 82: "Heavy showers", 85: "Snow showers", 86: "Heavy snow showers",
+  95: "Thunderstorm", 96: "Thunderstorm", 99: "Thunderstorm",
+};
+
+// Made-up weather for ?weather= previews: [code, cloud cover %, snow on the ground]
+const WEATHER_PREVIEWS = {
+  clear: [0, 0, false], cloudy: [2, 55, false], overcast: [3, 100, false], rain: [63, 100, false],
+  snow: [73, 100, true], storm: [95, 100, false], fog: [45, 100, false],
+};
+
+// "rain", "snow", "storm", "fog" or "" for a weather code
+function weatherKind(code) {
+  if (code >= 95) return "storm";
+  if ((code >= 71 && code <= 77) || code === 85 || code === 86) return "snow";
+  if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) return "rain";
+  if (code === 45 || code === 48) return "fog";
+  return "";
+}
+
+// Fetches JSON, keeping what "pick" takes from it on the phone for maxAge
+// so every page and refresh doesn't ask again.
+async function cachedFetch(key, maxAge, url, pick) {
+  try {
+    const kept = JSON.parse(localStorage.getItem(key));
+    if (kept && Date.now() - kept.at < maxAge) return kept.data;
+  } catch (e) {}
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`${res.status}`);
+  const data = pick(await res.json());
+  try {
+    localStorage.setItem(key, JSON.stringify({ at: Date.now(), data }));
+  } catch (e) {}
+  return data;
+}
+
+function loadWeather() {
+  const q = new URLSearchParams(location.search);
+  const preview = WEATHER_PREVIEWS[q.get("weather")];
+  if (preview) {
+    weather = { code: preview[0], cloud: preview[1], temp: null, snow: preview[2] };
+    return Promise.resolve();
+  }
+  if (q.has("at")) return Promise.resolve(); // a preview of another time: today's weather wouldn't fit
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${YXE.lat}&longitude=${YXE.lon}`
+    + "&current=temperature_2m,weather_code,cloud_cover,snow_depth";
+  return cachedFetch(WEATHER_KEY, WEATHER_MS, url, (d) => ({
+    code: d.current.weather_code,
+    cloud: d.current.cloud_cover,
+    temp: d.current.temperature_2m,
+    snow: d.current.snow_depth > 0,
+  }))
+    .then((w) => { weather = w; })
+    .catch(() => {});
+}
+
+function loadKp() {
+  const q = new URLSearchParams(location.search);
+  if (q.has("kp")) {
+    kp = parseFloat(q.get("kp")) || 0;
+    return Promise.resolve();
+  }
+  if (q.has("at")) return Promise.resolve();
+  return cachedFetch(KP_KEY, KP_MS, "https://services.swpc.noaa.gov/json/planetary_k_index_1m.json", (list) => {
+    const last = list[list.length - 1];
+    return last ? last.estimated_kp : null;
+  })
+    .then((k) => { kp = k; })
+    .catch(() => {});
+}
+
+// "Light snow · −4°C" for the readout, or "" if the weather isn't known.
+function weatherLine() {
+  if (!weather) return "";
+  const words = WEATHER_WORDS[weather.code] || "";
+  if (weather.temp == null) return words;
+  const temp = Math.round(weather.temp);
+  return `${words} · ${temp < 0 ? "−" : ""}${Math.abs(temp)}°C`;
+}
+
+// How strong the northern lights look at moment t, 0..1. Saskatoon sits
+// near the southern edge of where they're usually seen: they start to
+// show around Kp 4 and fill the sky in a big storm. They need a dark,
+// clear sky.
+function auroraStrength(t) {
+  if (kp == null || kp < 4 || sunAltitude(t) > -10) return 0;
+  if (weather && weather.cloud >= 85) return 0;
+  return Math.min(1, 0.35 + (kp - 4) * 0.25);
+}
+
+function auroraLine(t) {
+  if (!auroraStrength(t)) return "";
+  return `Northern lights ${kp >= 5 ? "likely" : "possible"} · Kp ${Math.round(kp * 10) / 10}`;
+}
+
+// Snow lying on the ground: the real snow depth when the weather is
+// known, otherwise the usual Saskatoon winter (late November to late March).
+function snowOnGround(t) {
+  if (weather) return weather.snow;
+  const p = localParts(t);
+  const day = p.m * 100 + p.d;
+  return day >= 1125 || day <= 325;
+}
+
+// Builds the weather layers once, then paintWeather switches them.
+function setUpWeather(scene) {
+  const sky = scene.querySelector(".horizon__stars");
+  const layer = (cls, before) => {
+    const node = el("div", cls);
+    if (before) sky.before(node); else sky.after(node);
+    return node;
+  };
+  scene.aurora = layer("horizon__aurora", true);
+  scene.clouds = layer("horizon__clouds");
+  scene.precip = layer("horizon__precip");
+  scene.snowline = el("div", "horizon__snowline");
+  scene.querySelector(".horizon__ground").after(scene.snowline);
+  const refresh = () => Promise.all([loadWeather(), loadKp()]).then(() => { scene.weatherCode = null; });
+  refresh();
+  setInterval(() => { if (!document.hidden) refresh(); }, WEATHER_MS);
+  // Lightning in a thunderstorm: a quick flash every 5 to 20 seconds
+  if (!REDUCE_MOTION) {
+    (function flash() {
+      setTimeout(() => {
+        if (scene.classList.contains("horizon--storm") && !document.hidden) {
+          scene.classList.remove("horizon--flash");
+          void scene.offsetWidth;
+          scene.classList.add("horizon--flash");
+        }
+        flash();
+      }, 5000 + Math.random() * 15000);
+    })();
+  }
+}
+
+// Shows the weather, snow and northern lights for moment t.
+function paintWeather(scene, t) {
+  if (!scene.clouds) return;
+  scene.classList.toggle("horizon--snowy", snowOnGround(t));
+  scene.style.setProperty("--aurora", auroraStrength(t).toFixed(2));
+  const code = weather ? weather.code : -1;
+  const cloud = weather ? weather.cloud : 0;
+  if (scene.weatherCode === `${code}/${cloud}`) return; // nothing new
+  scene.weatherCode = `${code}/${cloud}`;
+  const kind = weather ? weatherKind(code) : "";
+  for (const k of ["rain", "snow", "storm", "fog"]) {
+    scene.classList.toggle(`horizon--${k}`, kind === k || (k === "rain" && kind === "storm"));
+  }
+  scene.classList.toggle("horizon--overcast", cloud >= 85);
+  // A few clouds for every 20% of cover, each a different size, height
+  // and speed, starting spread across the sky.
+  const count = cloud < 15 ? 0 : Math.min(6, Math.round(cloud / 17));
+  const size = scene.closest(".page-head") ? 0.6 : 1; // smaller on the short page-head skies
+  const clouds = [];
+  for (let i = 0; i < count; i++) {
+    const c = el("i", "cloud");
+    const slow = 140 + Math.random() * 120; // seconds to cross
+    c.style.setProperty("--h", `${((14 + Math.random() * 18) * size).toFixed(0)}px`);
+    c.style.top = `${(4 + Math.random() * 50).toFixed(0)}%`;
+    c.style.left = `${((i + Math.random() * 0.6) / count * 100).toFixed(0)}%`;
+    c.style.animationDuration = `${slow.toFixed(0)}s`;
+    c.style.animationDelay = `${(-slow * ((i + 0.5) / count)).toFixed(0)}s`; // already partway across
+    clouds.push(c);
+  }
+  scene.clouds.replaceChildren(...clouds);
+}
+
+/* ---------- Prairie seasons ----------
+   Things that come with the time of year, from the calendar (no
+   internet): Canada geese flying over in V's in the fall (heading south)
+   and spring (back north), and fireflies blinking low over the ground on
+   summer nights. Off for "reduce motion". */
+const GEESE_EVERY_S = 40; // a flock every 40 seconds on average, in season
+
+// Is it goose season (mid September to mid November, and late March to
+// early May), and light enough for them to be flying?
+function geeseTime(t) {
+  const p = localParts(t);
+  const day = p.m * 100 + p.d;
+  const season = (day >= 910 && day <= 1115) || (day >= 320 && day <= 510);
+  return season && sunAltitude(t) > -6;
+}
+
+// Fireflies: mid June to early August, after dark, when it isn't raining.
+function firefliesTime(t) {
+  const p = localParts(t);
+  const day = p.m * 100 + p.d;
+  const wet = weather && ["rain", "storm", "snow"].includes(weatherKind(weather.code));
+  return day >= 615 && day <= 805 && sunAltitude(t) < -4 && !wet;
+}
+
+function setUpCritters(scene, timeNow) {
+  if (REDUCE_MOTION) return;
+  const box = el("div", "horizon__critters");
+  scene.querySelector(".horizon__stars").after(box);
+
+  // One V of geese across the sky. The V points the way they're flying.
+  function flock() {
+    const w = box.clientWidth, h = box.clientHeight;
+    if (!w || !h) return;
+    const small = h < 140;
+    const birds = 5 + Math.floor(Math.random() * 8);
+    const gap = small ? 7 : 10;
+    const svgNS = "http://www.w3.org/2000/svg";
+    const svg = document.createElementNS(svgNS, "svg");
+    svg.setAttribute("class", "geese");
+    const span = Math.ceil(birds / 2) * gap + 10;
+    svg.setAttribute("viewBox", `${-span} ${-span * 0.7} ${span + 8} ${span * 1.4}`);
+    svg.style.width = `${span + 8}px`;
+    for (let i = 0; i < birds; i++) {
+      // Leader at the point, the rest alternating down the two arms
+      const rank = Math.ceil(i / 2);
+      const side = i % 2 ? 1 : -1;
+      const g = document.createElementNS(svgNS, "g");
+      g.setAttribute("transform", `translate(${-rank * gap} ${side * rank * gap * 0.6})`);
+      const bird = document.createElementNS(svgNS, "path"); // two wings, flapping (style.css)
+      bird.setAttribute("d", "M-4 -1.6Q-2 -1.2 0 0Q2 -1.2 4 -1.6");
+      bird.style.animationDelay = `${(-Math.random()).toFixed(2)}s`;
+      g.append(bird);
+      svg.append(g);
+    }
+    const left = Math.random() < 0.5; // flying toward the left, or the right
+    if (left) svg.style.transform = "scaleX(-1)";
+    const y = h * (0.12 + Math.random() * 0.4);
+    svg.style.top = `${y}px`;
+    box.append(svg);
+    const across = w + span * 2;
+    const dur = (small ? 9000 : 14000) + Math.random() * 6000;
+    const dir = left ? -1 : 1;
+    const x0 = left ? w + span : -span - 8;
+    svg.animate(
+      [
+        { translate: `${x0}px 0` },
+        { translate: `${x0 + dir * across * 0.5}px ${-6 - Math.random() * 10}px` },
+        { translate: `${x0 + dir * across}px ${-4}px` },
+      ],
+      { duration: dur, easing: "linear" }
+    ).onfinish = () => svg.remove();
+  }
+
+  // Fireflies are made once and kept while it's their time
+  let flies = null;
+  function fireflies(on) {
+    if (on && !flies) {
+      flies = Array.from({ length: 12 }, () => {
+        const f = el("i", "firefly");
+        f.style.left = `${(3 + Math.random() * 94).toFixed(1)}%`;
+        f.style.top = `${(72 + Math.random() * 24).toFixed(1)}%`;
+        f.style.animationDuration = `${(2.5 + Math.random() * 3).toFixed(2)}s, ${(6 + Math.random() * 6).toFixed(2)}s`;
+        f.style.animationDelay = `${(-Math.random() * 6).toFixed(2)}s, ${(-Math.random() * 6).toFixed(2)}s`;
+        return f;
+      });
+      box.append(...flies);
+    } else if (!on && flies) {
+      flies.forEach((f) => f.remove());
+      flies = null;
+    }
+  }
+
+  setInterval(() => {
+    if (document.hidden) return;
+    const t = timeNow();
+    fireflies(firefliesTime(t));
+    if (!spinning && geeseTime(t) && Math.random() < 1 / GEESE_EVERY_S) flock();
+  }, 1000);
 }
 
 /* ---------- The opening spin ----------
@@ -1728,6 +2020,7 @@ function setUpHorizon() {
 
     // While the opening spin is playing, it moves the sun instead.
     if (scene && (!spinning || swiped)) placeSun(scene, t);
+    if (scene) paintWeather(scene, t);
 
     if (readout) {
       const left = readout.children[0];
@@ -1736,16 +2029,16 @@ function setUpHorizon() {
       if (swiped) {
         [l, r] = swipeLine(t, ahead);
       } else if (isDay && day.set) {
-        l = takeTurns([lightHourLine(t) || "Sun's up over Saskatoon", dayLengthLine(t)]);
+        l = takeTurns([lightHourLine(t) || "Sun's up over Saskatoon", dayLengthLine(t), weatherLine()]);
         r = `Sets ${clock(new Date(day.set))} · ${hoursMins(day.set - t)} of light left`;
       } else if (!isDay && day.rise && t < day.rise) {
         // Night: tonight's moon, and when the sun comes back
-        l = takeTurns([moonLine(t), lightHourLine(t), showerLine(t)]);
+        l = takeTurns([moonLine(t), lightHourLine(t), showerLine(t), auroraLine(t), weatherLine()]);
         r = `Sun's up at ${clock(new Date(day.rise))}`;
       } else {
         // After sunset: tomorrow's sunrise
         const tomorrow = sunDay(new Date(day.end + 60000));
-        l = takeTurns([moonLine(t), lightHourLine(t), showerLine(t)]);
+        l = takeTurns([moonLine(t), lightHourLine(t), showerLine(t), auroraLine(t), weatherLine()]);
         r = tomorrow.rise ? `Sun's back at ${clock(new Date(tomorrow.rise))}` : "Sun's back tomorrow";
       }
       setLine(left, l, swiped);
@@ -1762,7 +2055,9 @@ function setUpHorizon() {
   if (scene && shouldSpin()) spinSun(scene);
   if (scene) {
     const shownTime = setUpSwipe(scene, paint);
+    setUpWeather(scene);
     setUpMeteors(scene, now);
+    setUpCritters(scene, shownTime);
     setUpSkyTaps(scene, shownTime);
   }
   tick();
