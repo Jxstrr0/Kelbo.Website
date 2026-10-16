@@ -168,6 +168,17 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   `setUpCritters` (calendar only, off with reduce motion): `.geese` V's
   (SVG, flapping) every ~`GEESE_EVERY_S` in `geeseTime`, and `.firefly`
   dots in `firefliesTime`.
+  Eclipses: `moonRaDec` (geocentric moon with the main Meeus terms,
+  ~0.06° vs PyEphem, plus parallax) feeds `eclipseAt`: lunar when the
+  moon touches the umbra (1.02 × (parallax + 0.00244 − sun radius)),
+  solar from the topocentric moon (Saskatoon at 486 m); both give the
+  covered share (`covered`) and the offset in moon/sun radii
+  (`skyOffset`, south-facing). `visibleEclipse` needs the body up;
+  `placeEclipse` (from `placeSun`) moves `.moon__shadow` (an SVG circle
+  clipped to the moon) and sets `--eclipse`, or shows `.sun__bite` (a
+  sky-coloured disc in `.sun__disc`). `eclipseLine` (now, or the next
+  20 h via cached `nextEclipse`) leads the readout turns. The moon glow's
+  `--glow-k` fades it by day and in an eclipse.
   `placeSun` also sets `--sun-low` (0 high, 1 near the horizon: bigger,
   stronger glow), `--sun-show` (fades the glow/halo out once set, so they
   don't peek over the short page-head sky) and `--glint-sun`/`--glint-moon`
