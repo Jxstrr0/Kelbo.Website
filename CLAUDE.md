@@ -93,7 +93,8 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   refresh, `spinSun` plays the last 24 hours in `SPIN_MS` (4.5 s) so the
   sun does a full day before landing on now (`sessionStorage["kelbo.sunSpun"]`,
   `.horizon--spin` turns off the CSS easing; skipped with reduce motion).
-  On touch screens `setUpSwipe` lets a sideways swipe on the horizon
+  `setUpSwipe` lets a sideways swipe (finger, or left-button mouse drag
+  with `cursor: grab`/`.horizon--grabbing` on fine pointers) on the horizon
   scrub time (`SWIPE_HOURS` per width, clamped to `SWIPE_MAX_HOURS`,
   finger right = later); `paint(t, ahead)` in `setUpHorizon` redraws sky,
   theme and readout (`swipeLine`) for that moment. On release `glide`
