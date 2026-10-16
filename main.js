@@ -523,6 +523,13 @@ function clock(date) {
     .replace(/\s+/g, " ");
 }
 
+// "2m 51s", for small gaps like how much shorter today is than yesterday
+function minsSecs(ms) {
+  const secs = Math.round(Math.abs(ms) / 1000);
+  const m = Math.floor(secs / 60);
+  return m ? `${m}m ${secs % 60}s` : `${secs}s`;
+}
+
 // "5h 38m"
 function hoursMins(ms) {
   const mins = Math.max(0, Math.round(ms / 60000));
@@ -550,7 +557,19 @@ function sunDay(date) {
     if (alt > peakAlt) { peakAlt = alt; peakAt = t; }
     prev = alt;
   }
-  const info = { start, end: start + 86400000, rise, set, peakAlt, peakAt };
+  // The minute steps are fine for clock times, but comparing one day with
+  // the next needs the seconds too, so narrow each crossing down to a
+  // second for the day length ("2m 51s shorter than yesterday").
+  const exact = (t) => {
+    let a = t - 60000, b = t;
+    while (b - a > 1000) {
+      const mid = (a + b) / 2;
+      if ((sunAltitude(new Date(mid)) >= SUNRISE_ALT) === (sunAltitude(new Date(b)) >= SUNRISE_ALT)) b = mid; else a = mid;
+    }
+    return b;
+  };
+  const length = rise && set ? exact(set) - exact(rise) : null;
+  const info = { start, end: start + 86400000, rise, set, peakAlt, peakAt, length };
   dayCache[key] = info;
   return info;
 }
@@ -1234,6 +1253,63 @@ function moonLine(t) {
   return span.up ? `${name} moon over Saskatoon` : `${name} moon rises ${clock(new Date(span.next))}`;
 }
 
+/* ---------- Extra readout lines ----------
+   The left side of the readout takes turns with a second fact every
+   READOUT_TURN_MS: by day how today's length compares with yesterday's,
+   and around sunrise and sunset how long golden hour (sun between 4°
+   under and 6° up, the warm light photographers love) or blue hour (4°
+   to 6° under, the deep blue just after) has left. */
+const READOUT_TURN_MS = 6000;
+
+// Which "hour" the light is in at sun height alt (degrees), or "".
+function lightName(alt) {
+  if (alt >= -4 && alt < 6) return "Golden";
+  if (alt >= -6 && alt < -4) return "Blue";
+  return "";
+}
+
+// "Golden hour · 24m left", or "" outside golden and blue hour.
+function lightHourLine(t) {
+  const name = lightName(sunAltitude(t));
+  if (!name) return "";
+  // Step ahead a minute at a time until it changes (never more than a
+  // few hours, even in June when the sun skims under the horizon).
+  let end = t.getTime() + 60000;
+  for (let i = 0; i < 300 && lightName(sunAltitude(new Date(end))) === name; i++) end += 60000;
+  return `${name} hour · ${hoursMins(end - t)} left`;
+}
+
+// "2m 51s shorter than yesterday". For three weeks after the shortest
+// day of the year it's the good news instead.
+function dayLengthLine(t) {
+  const today = sunDay(t);
+  const yesterday = sunDay(new Date(today.start - 3600000));
+  if (!today.length || !yesterday.length) return "";
+  const diff = today.length - yesterday.length;
+  const p = localParts(t);
+  const afterShortest = (p.m === 12 && p.d >= 21) || (p.m === 1 && p.d <= 11);
+  if (afterShortest && diff > 0) return "Days are getting longer again";
+  if (Math.abs(diff) < 1000) return "Same length as yesterday";
+  return `${minsSecs(diff)} ${diff < 0 ? "shorter" : "longer"} than yesterday`;
+}
+
+// Picks this turn's line from a list (empty ones skipped).
+function takeTurns(lines) {
+  const list = lines.filter(Boolean);
+  return list[Math.floor(Date.now() / READOUT_TURN_MS) % list.length] || "";
+}
+
+// Swaps a readout line's text, fading the new one in (style.css,
+// .is-new) unless it's being moved every frame by a swipe.
+function setLine(node, text, quiet) {
+  if (node.textContent === text) return;
+  node.textContent = text;
+  if (quiet) return;
+  node.classList.remove("is-new");
+  void node.offsetWidth; // restart the fade
+  node.classList.add("is-new");
+}
+
 function setUpHorizon() {
   const scene = document.querySelector("[data-horizon]");
   const readout = document.querySelector("[data-horizon-readout]");
@@ -1278,25 +1354,29 @@ function setUpHorizon() {
     if (readout) {
       const left = readout.children[0];
       const right = readout.children[1];
+      let l, r;
       if (swiped) {
-        [left.textContent, right.textContent] = swipeLine(t, ahead);
+        [l, r] = swipeLine(t, ahead);
       } else if (isDay && day.set) {
-        left.textContent = "Sun's up over Saskatoon";
-        right.textContent = `Sets ${clock(new Date(day.set))} · ${hoursMins(day.set - t)} of light left`;
+        l = takeTurns([lightHourLine(t) || "Sun's up over Saskatoon", dayLengthLine(t)]);
+        r = `Sets ${clock(new Date(day.set))} · ${hoursMins(day.set - t)} of light left`;
       } else if (!isDay && day.rise && t < day.rise) {
         // Night: tonight's moon, and when the sun comes back
-        left.textContent = moonLine(t);
-        right.textContent = `Sun's up at ${clock(new Date(day.rise))}`;
+        l = takeTurns([moonLine(t), lightHourLine(t)]);
+        r = `Sun's up at ${clock(new Date(day.rise))}`;
       } else {
         // After sunset: tomorrow's sunrise
         const tomorrow = sunDay(new Date(day.end + 60000));
-        left.textContent = moonLine(t);
-        right.textContent = tomorrow.rise ? `Sun's back at ${clock(new Date(tomorrow.rise))}` : "Sun's back tomorrow";
+        l = takeTurns([moonLine(t), lightHourLine(t)]);
+        r = tomorrow.rise ? `Sun's back at ${clock(new Date(tomorrow.rise))}` : "Sun's back tomorrow";
       }
+      setLine(left, l, swiped);
+      setLine(right, r, true);
     }
   }
 
-  // The once-a-minute update; a swipe in progress keeps the sky instead.
+  // The regular update (every few seconds, so the readout can take
+  // turns); a swipe in progress keeps the sky instead.
   function tick() {
     if (!swiping) paint(now(), null);
   }
@@ -1305,7 +1385,7 @@ function setUpHorizon() {
   if (scene) setUpSwipe(scene, paint);
   tick();
   setUpThemeToggle(tick);
-  setInterval(tick, 60000);
+  setInterval(tick, READOUT_TURN_MS);
   document.addEventListener("visibilitychange", () => {
     if (!document.hidden) tick();
   });
