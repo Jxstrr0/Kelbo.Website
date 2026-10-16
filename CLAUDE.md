@@ -213,7 +213,7 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   projects whose `category` matches the list's `data-category` (Game,
   Trading, AI). The home page tiles link to them and show counts.
 - Games each live in their own repo with their own GitHub Pages site
-  (GarageToGlory, RedSkies, BaccaratTable, 350Chev, Outpost-). This site only links to
+  (GarageToGlory, RedSkies, BaccaratTable, 350Chev, Outpost-, SeasonTicket). This site only links to
   them via `link` (the pink Play it button) and `code` (the repo). The home
   page "Pick a game" cards are the `featured` projects (max 4); on phones
   all but the first are shortened (16:9 picture, two-line summary).
