@@ -438,7 +438,32 @@ function setUpContactForm() {
    internet service is involved, so it works offline and never breaks.
    ====================================================================== */
 
-const YXE = { lat: 52.1332, lon: -106.67, tz: "America/Regina" }; // Saskatoon. SK has no DST.
+const YXE = { lat: 52.1332, lon: -106.67, tz: "America/Regina", elev: 486, home: true }; // Saskatoon. SK has no DST.
+
+/* ---------- Your sky ----------
+   A visitor can tap "See your sky" (in the home page hero) to see their
+   own sun, moon, stars and weather instead of Saskatoon's. Their phone
+   asks permission, and the spot is rounded to about 10 km and kept only
+   on their device (localStorage "kelbo.sky"); the weather check sends that
+   rounded spot to Open-Meteo. Everything sky-related reads YXE, so this
+   just swaps its numbers before anything else runs. "Back to Saskatoon"
+   clears it. The calendar extras (geese, fireflies, the usual winter
+   snow) stay Saskatoon-only. */
+const SKY_KEY = "kelbo.sky";
+try {
+  const mine = JSON.parse(localStorage.getItem(SKY_KEY));
+  if (mine && Number.isFinite(mine.lat) && Number.isFinite(mine.lon)) {
+    Object.assign(YXE, {
+      lat: mine.lat, lon: mine.lon, elev: 0, home: false,
+      tz: Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC",
+    });
+  }
+} catch (e) {}
+
+// "over Saskatoon", or "over you" in your own sky
+function overHere() {
+  return YXE.home ? "over Saskatoon" : "over you";
+}
 const SUNRISE_ALT = -0.833; // the sun's top edge touches the horizon (with refraction)
 const TWILIGHT_MS = 20 * 60000; // the sky starts warming 20 minutes before sunset
 const D2R = Math.PI / 180;
@@ -471,8 +496,16 @@ function sunAltitude(date) {
    Saskatoon's days run from about 7h 40m of light in December to 16h 45m
    in June. "season" is where today sits between those: 0 on the shortest
    day, 1 on the longest. The hero's ray reaches further in summer. */
-const SHORTEST_DAY_MS = 7.65 * 3600000;
-const LONGEST_DAY_MS = 16.75 * 3600000;
+// Day length (ms) at this latitude when the sun sits at declination dec
+// (degrees): +23.44 is the June solstice, -23.44 December.
+function dayLengthFor(dec) {
+  const la = YXE.lat * D2R, d = dec * D2R;
+  const c = (Math.sin(SUNRISE_ALT * D2R) - Math.sin(la) * Math.sin(d)) / (Math.cos(la) * Math.cos(d));
+  return ((2 * Math.acos(Math.max(-1, Math.min(1, c))) * R2D) / 15) * 3600000;
+}
+// Saskatoon's are measured; anywhere else they're worked out.
+const SHORTEST_DAY_MS = YXE.home ? 7.65 * 3600000 : Math.min(dayLengthFor(23.44), dayLengthFor(-23.44));
+const LONGEST_DAY_MS = YXE.home ? 16.75 * 3600000 : Math.max(dayLengthFor(23.44), dayLengthFor(-23.44)) + 1;
 
 function seasonOf(day) {
   if (!day.rise || !day.set) return 0.5;
@@ -494,18 +527,34 @@ function solsticeToday(date) {
     if (dec > best) { best = dec; winner = d; }
   }
   if (winner !== p.d) return "";
-  return p.m === 6 ? "longest" : "shortest";
+  return (p.m === 6) === YXE.lat >= 0 ? "longest" : "shortest"; // flipped south of the equator
+}
+
+// The moment local midnight starts on day y-m-d in the sky's time zone
+// (06:00 UTC for Saskatoon). Works out the zone's offset from UTC that
+// day, so places with daylight saving time work too.
+function zoneMidnight(y, m, d) {
+  const guess = Date.UTC(y, m - 1, d);
+  const offset = (at) => {
+    const p = localParts(new Date(at));
+    return Date.UTC(p.y, p.m - 1, p.d, p.h, p.min) - Math.floor(at / 60000) * 60000;
+  };
+  const first = guess - offset(guess);
+  return guess - offset(first);
 }
 
 // Parts of a moment in Saskatoon time: { y, m, d, h, min, weekday }.
+const partsFormats = {}; // one formatter per time zone, made once (they're slow to make)
 function localParts(date, tz) {
+  const zone = tz || YXE.tz;
   const parts = {};
-  new Intl.DateTimeFormat("en-CA", {
-    timeZone: tz || YXE.tz,
+  partsFormats[zone] = partsFormats[zone] || new Intl.DateTimeFormat("en-CA", {
+    timeZone: zone,
     hourCycle: "h23",
     year: "numeric", month: "numeric", day: "numeric",
     hour: "numeric", minute: "numeric", weekday: "short",
-  })
+  });
+  partsFormats[zone]
     .formatToParts(date)
     .forEach((p) => { parts[p.type] = p.value; });
   return {
@@ -547,7 +596,7 @@ function sunDay(date) {
   const key = `${p.y}-${p.m}-${p.d}`;
   if (dayCache[key]) return dayCache[key];
 
-  const start = Date.UTC(p.y, p.m - 1, p.d, 6, 0, 0); // local midnight = 06:00 UTC (UTC-6)
+  const start = zoneMidnight(p.y, p.m, p.d); // local midnight
   let rise = null, set = null, peakAlt = -90, peakAt = start, prev = sunAltitude(new Date(start));
   for (let i = 1; i <= 1440; i++) {
     const t = start + i * 60000;
@@ -587,7 +636,9 @@ function previewClock() {
   else if (at === "night") fixed = today.start + 23 * 3600000;
   else if (at === "dusk") fixed = (today.set || today.start) + 25 * 60000;
   else {
-    const parsed = Date.parse(/[zZ]|[+-]\d\d:\d\d$/.test(at) ? at : at + "-06:00");
+    // Saskatoon time (UTC-6), or the phone's own time in your own sky
+    const zone = YXE.home ? "-06:00" : "";
+    const parsed = Date.parse(/[zZ]|[+-]\d\d:\d\d$/.test(at) ? at : at + zone);
     fixed = Number.isNaN(parsed) ? Date.now() : parsed;
   }
   const offset = fixed - Date.now();
@@ -1169,7 +1220,7 @@ function showerAt(t) {
   let best = null;
   for (const shower of SHOWERS) {
     for (const y of [p.y - 1, p.y, p.y + 1]) { // the Quadrantids straddle New Year
-      const days = (t - Date.UTC(y, shower.m - 1, shower.d, 12)) / 86400000; // 12:00 UTC = 6 AM here
+      const days = (t - (zoneMidnight(y, shower.m, shower.d) + 6 * 3600000)) / 86400000; // 6 AM local
       if (Math.abs(days) <= shower.days && (!best || Math.abs(days) < Math.abs(best.days))) best = { shower, days };
     }
   }
@@ -1483,7 +1534,7 @@ function loadWeather() {
   if (q.has("at")) return Promise.resolve(); // a preview of another time: today's weather wouldn't fit
   const url = `https://api.open-meteo.com/v1/forecast?latitude=${YXE.lat}&longitude=${YXE.lon}`
     + "&current=temperature_2m,weather_code,cloud_cover,snow_depth";
-  return cachedFetch(WEATHER_KEY, WEATHER_MS, url, (d) => ({
+  return cachedFetch(`${WEATHER_KEY}:${YXE.lat},${YXE.lon}`, WEATHER_MS, url, (d) => ({
     code: d.current.weather_code,
     cloud: d.current.cloud_cover,
     temp: d.current.temperature_2m,
@@ -1522,20 +1573,33 @@ function weatherLine() {
 // show around Kp 4 and fill the sky in a big storm. They need a dark,
 // clear sky.
 function auroraStrength(t) {
-  if (kp == null || kp < 4 || sunAltitude(t) > -10) return 0;
+  const need = auroraKp();
+  if (kp == null || kp < need || sunAltitude(t) > -10) return 0;
   if (weather && weather.cloud >= 85) return 0;
-  return Math.min(1, 0.35 + (kp - 4) * 0.25);
+  return Math.min(1, 0.35 + (kp - need) * 0.25);
+}
+
+// The Kp the lights need to show here (4 for Saskatoon). The lights
+// circle the Earth's magnetic poles and reach about 2° further from them
+// for every step of Kp, so it's worked out from the magnetic latitude
+// (distance from the magnetic north pole, near 80.7° N 72.7° W).
+function auroraKp() {
+  const la = YXE.lat * D2R, pole = 80.7 * D2R;
+  const mag = Math.asin(Math.sin(la) * Math.sin(pole) + Math.cos(la) * Math.cos(pole) * Math.cos((YXE.lon + 72.7) * D2R)) * R2D;
+  return (66.5 - Math.abs(mag)) / 2 + 0.75;
 }
 
 function auroraLine(t) {
   if (!auroraStrength(t)) return "";
-  return `Northern lights ${kp >= 5 ? "likely" : "possible"} · Kp ${Math.round(kp * 10) / 10}`;
+  const name = YXE.lat >= 0 ? "Northern" : "Southern";
+  return `${name} lights ${kp >= auroraKp() + 1 ? "likely" : "possible"} · Kp ${Math.round(kp * 10) / 10}`;
 }
 
 // Snow lying on the ground: the real snow depth when the weather is
 // known, otherwise the usual Saskatoon winter (late November to late March).
 function snowOnGround(t) {
   if (weather) return weather.snow;
+  if (!YXE.home) return false; // the calendar guess only fits Saskatoon
   const p = localParts(t);
   const day = p.m * 100 + p.d;
   return day >= 1125 || day <= 325;
@@ -1617,7 +1681,7 @@ function geeseTime(t) {
   const p = localParts(t);
   const day = p.m * 100 + p.d;
   const season = (day >= 910 && day <= 1115) || (day >= 320 && day <= 510);
-  return season && sunAltitude(t) > -6;
+  return YXE.home && season && sunAltitude(t) > -6;
 }
 
 // Fireflies: mid June to early August, after dark, when it isn't raining.
@@ -1625,7 +1689,7 @@ function firefliesTime(t) {
   const p = localParts(t);
   const day = p.m * 100 + p.d;
   const wet = weather && ["rain", "storm", "snow"].includes(weatherKind(weather.code));
-  return day >= 615 && day <= 805 && sunAltitude(t) < -4 && !wet;
+  return YXE.home && day >= 615 && day <= 805 && sunAltitude(t) < -4 && !wet;
 }
 
 function setUpCritters(scene, timeNow) {
@@ -1771,8 +1835,8 @@ function eclipseAt(t) {
   // Solar: shift the moon to where it looks from Saskatoon (486 m up)
   const la = YXE.lat * D2R;
   const u = Math.atan(0.99664719 * Math.tan(la));
-  const rhoSin = 0.99664719 * Math.sin(u) + (486 / 6378140) * Math.sin(la);
-  const rhoCos = Math.cos(u) + (486 / 6378140) * Math.cos(la);
+  const rhoSin = 0.99664719 * Math.sin(u) + (YXE.elev / 6378140) * Math.sin(la);
+  const rhoCos = Math.cos(u) + (YXE.elev / 6378140) * Math.cos(la);
   const sp = Math.sin(moon.parallax * D2R);
   const H = sun.lst - moon.ra;
   const dRa = Math.atan2(-rhoCos * sp * Math.sin(H), Math.cos(moon.dec) - rhoCos * sp * Math.cos(H));
@@ -2097,7 +2161,7 @@ function swipeLine(t, ahead) {
 function moonLine(t) {
   const name = moonName(moonPhase(t));
   const span = moonSpanAt(t);
-  return span.up ? `${name} moon over Saskatoon` : `${name} moon rises ${clock(new Date(span.next))}`;
+  return span.up ? `${name} moon ${overHere()}` : `${name} moon rises ${clock(new Date(span.next))}`;
 }
 
 /* ---------- Extra readout lines ----------
@@ -2134,7 +2198,9 @@ function dayLengthLine(t) {
   if (!today.length || !yesterday.length) return "";
   const diff = today.length - yesterday.length;
   const p = localParts(t);
-  const afterShortest = (p.m === 12 && p.d >= 21) || (p.m === 1 && p.d <= 11);
+  const afterShortest = YXE.lat >= 0
+    ? (p.m === 12 && p.d >= 21) || (p.m === 1 && p.d <= 11)
+    : (p.m === 6 && p.d >= 21) || (p.m === 7 && p.d <= 11); // south of the equator it's June
   if (afterShortest && diff > 0) return "Days are getting longer again";
   if (Math.abs(diff) < 1000) return "Same length as yesterday";
   return `${minsSecs(diff)} ${diff < 0 ? "shorter" : "longer"} than yesterday`;
@@ -2155,6 +2221,52 @@ function setLine(node, text, quiet) {
   node.classList.remove("is-new");
   void node.offsetWidth; // restart the fade
   node.classList.add("is-new");
+}
+
+// The "See your sky" / "Back to Saskatoon" switch in the home hero.
+function setUpSkySwitch() {
+  const btn = document.querySelector("[data-sky-switch]");
+  const place = document.querySelector("[data-sky-place]");
+  if (!btn) return;
+  if (!YXE.home) {
+    if (place) place.textContent = "Your sky";
+    btn.textContent = "Back to Saskatoon";
+    btn.hidden = false;
+    btn.addEventListener("click", () => {
+      try {
+        localStorage.removeItem(SKY_KEY);
+      } catch (e) {}
+      location.reload();
+    });
+    return;
+  }
+  if (!navigator.geolocation) return; // nothing to ask, so no button
+  btn.hidden = false;
+  btn.addEventListener("click", () => {
+    btn.textContent = "Finding you…";
+    btn.disabled = true;
+    const giveUp = (text) => {
+      btn.textContent = text;
+      setTimeout(() => {
+        btn.textContent = "See your sky";
+        btn.disabled = false;
+      }, 3000);
+    };
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        // Rounded to a tenth of a degree (about 10 km): plenty for the sky
+        const round = (x) => Math.round(x * 10) / 10;
+        try {
+          localStorage.setItem(SKY_KEY, JSON.stringify({ lat: round(pos.coords.latitude), lon: round(pos.coords.longitude) }));
+          location.reload();
+        } catch (e) {
+          giveUp("Couldn't save it");
+        }
+      },
+      () => giveUp("Couldn't find you"),
+      { maximumAge: 3600000, timeout: 15000 }
+    );
+  });
 }
 
 function setUpHorizon() {
@@ -2206,7 +2318,7 @@ function setUpHorizon() {
       if (swiped) {
         [l, r] = swipeLine(t, ahead);
       } else if (isDay && day.set) {
-        l = takeTurns([eclipseLine(t), lightHourLine(t) || "Sun's up over Saskatoon", dayLengthLine(t), weatherLine()]);
+        l = takeTurns([eclipseLine(t), lightHourLine(t) || `Sun's up ${overHere()}`, dayLengthLine(t), weatherLine()]);
         r = `Sets ${clock(new Date(day.set))} · ${hoursMins(day.set - t)} of light left`;
       } else if (!isDay && day.rise && t < day.rise) {
         // Night: tonight's moon, and when the sun comes back
@@ -2409,6 +2521,7 @@ function setUpMarketLight() {
 // Start here once the page has loaded.
 async function init() {
   setUpHorizon();
+  setUpSkySwitch();
   rememberPlays();
   setUpContinue();
   setUpMarketLight();
