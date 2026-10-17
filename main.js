@@ -1522,6 +1522,9 @@ function setUpSkyTaps(scene, timeNow) {
     if (scene.elevator && scene.elevator.getBoundingClientRect().width) {
       list.push({ ...centre(scene.elevator), title: "Grain elevator", detail: elevatorFact(t) });
     }
+    if (scene.depot && scene.depot.getBoundingClientRect().width) {
+      list.push({ ...centre(scene.depot), title: "Longlight Station", detail: scene.trainRunning ? "A freight train is rolling through" : "A freight train rolls through every few minutes" });
+    }
     const sun = scene.querySelector(".horizon__sun");
     if (sun && sunAltitude(t) > -1) {
       const au = sunDistanceAU(t);
@@ -1979,6 +1982,12 @@ const ELEVATOR = [[2, 72], [2, 58], [16, 52], [17, 20], [21, 15], [21, 6], [26, 
 const ELEVATOR_W = 52;
 const ELEVATOR_H = 72;
 const ELEVATOR_MID = 26; // the middle of the main house, which stands on the noon spot
+// The little station depot beside it, in a 40 × 22 box: a pitched roof with
+// a chimney, and a low platform canopy on the right.
+const DEPOT = [[0, 22], [0, 12], [12, 4], [16, 7], [16, 2], [19, 2], [19, 9], [24, 12], [40, 12], [40, 22]];
+const DEPOT_W = 40;
+const DEPOT_H = 22;
+const DEPOT_MID = 12; // under the ridge of the roof
 const SHADOW_SQUASH = 0.3; // the ground is seen from low down, so shadows toward you look this much shorter
 
 function svgNode(tag, attrs) {
@@ -1996,10 +2005,20 @@ function setUpLand(scene) {
     svgNode("path", { d: `M${ELEVATOR.map((p) => p.join(" ")).join("L")}Z` }),
     svgNode("circle", { class: "elevator__light", cx: 26, cy: 10, r: 1.6 }) // a light up top after dark
   );
+  // The station depot to the right of it, and the rail line they stand beside
+  const depot = svgNode("svg", { class: "horizon__depot", viewBox: `0 0 ${DEPOT_W} ${DEPOT_H}` });
+  depot.append(
+    svgNode("path", { d: `M${DEPOT.map((p) => p.join(" ")).join("L")}Z` }),
+    svgNode("rect", { class: "elevator__light", x: 5, y: 15, width: 3, height: 3 }) // a lit window after dark
+  );
+  const track = el("div", "horizon__track");
   const shadow = svgNode("svg", { class: "horizon__shadow" });
   scene.shadowShape = svgNode("polygon", {});
-  shadow.append(scene.shadowShape);
+  scene.depotShape = svgNode("polygon", {});
+  shadow.append(scene.shadowShape, scene.depotShape);
   scene.elevator = elevator;
+  scene.depot = depot;
+  scene.track = track;
   scene.shadow = shadow;
 
   // Prairie crocuses: little clumps of two or three pale purple cups
@@ -2019,7 +2038,7 @@ function setUpLand(scene) {
     clump.style.left = `${(i + 0.2 + Math.random() * 0.6) * (100 / 18)}%`;
     crocuses.append(clump);
   }
-  ground.after(shadow, elevator, el("div", "horizon__wheat"), crocuses);
+  ground.after(shadow, elevator, depot, track, el("div", "horizon__wheat"), crocuses);
   scene.land = null; // measured on the first paint, and again whenever the sky or window changes size
   const remeasure = () => { scene.land = null; scene.sky = null; };
   if ("ResizeObserver" in window) new ResizeObserver(remeasure).observe(scene);
@@ -2051,9 +2070,10 @@ function shadowStrength(alt) {
   return Math.min(1, alt / 4) * (1 - 0.5 * cloud) * (1 - 0.6 * smokeStrength());
 }
 
-// Lays the elevator's shadow on the ground for moment t: each corner of
-// its outline is moved away from the sun by its height ÷ tan(the sun's
-// height), then squashed toward you for the low view of the ground.
+// Lays the shadows of the elevator and the depot on the ground for moment
+// t: each corner of an outline is moved away from the sun by its height ÷
+// tan(the sun's height), then squashed toward you for the low view of the
+// ground.
 function placeShadow(scene, t) {
   if (!scene.shadowShape) return;
   const sun = sunAltAz(t);
@@ -2063,26 +2083,32 @@ function placeShadow(scene, t) {
   scene.style.setProperty("--land-shadow", show.toFixed(2));
   if (!show) {
     scene.shadowShape.removeAttribute("points"); // no stale sunset shadow left lying there
+    scene.depotShape.removeAttribute("points");
     return;
   }
   if (!scene.land) {
     const box = scene.elevator.getBoundingClientRect();
+    const hut = scene.depot.getBoundingClientRect();
     if (!box.width) return;
+    const left = scene.shadow.getBoundingClientRect().left;
     scene.land = {
-      base: box.left + box.width * (ELEVATOR_MID / ELEVATOR_W) - scene.shadow.getBoundingClientRect().left,
+      base: box.left + box.width * (ELEVATOR_MID / ELEVATOR_W) - left,
       scale: box.height / ELEVATOR_H,
+      depotBase: hut.left + hut.width * (DEPOT_MID / DEPOT_W) - left,
+      depotScale: hut.height / DEPOT_H,
     };
   }
-  const { base, scale } = scene.land;
+  const { base, scale, depotBase, depotScale } = scene.land;
   const long = Math.min(80, 1 / Math.tan(alt * D2R)); // shadow length for each unit of height
   const away = (az + 180) * D2R; // shadows point away from the sun
   const dx = -Math.sin(away) * long; // east is on the left
   const dy = Math.max(0.05, Math.cos(away)) * long * SHADOW_SQUASH; // north comes toward you (down)
-  const points = ELEVATOR.map(([x, y]) => {
-    const up = (ELEVATOR_H - y) * scale;
-    return `${(base + (x - ELEVATOR_MID) * scale + dx * up).toFixed(1)},${(dy * up).toFixed(1)}`;
-  });
-  scene.shadowShape.setAttribute("points", points.join(" "));
+  const cast = (outline, tall, mid, from, size) => outline.map(([x, y]) => {
+    const up = (tall - y) * size;
+    return `${(from + (x - mid) * size + dx * up).toFixed(1)},${(dy * up).toFixed(1)}`;
+  }).join(" ");
+  scene.shadowShape.setAttribute("points", cast(ELEVATOR, ELEVATOR_H, ELEVATOR_MID, base, scale));
+  scene.depotShape.setAttribute("points", cast(DEPOT, DEPOT_H, DEPOT_MID, depotBase, depotScale));
 }
 
 // "Your shadow is 2.4× your height", while the sun's out
@@ -2201,6 +2227,7 @@ function paintWeather(scene, t) {
    ?critter=geese|fireflies|leaves|jet|hawk|kite. */
 const GEESE_EVERY_S = 40; // a flock every 40 seconds on average, in season
 const JET_EVERY_S = 90; // a jet every minute and a half on average, by day
+const TRAIN_EVERY_S = 150; // a freight train along the rails every couple of minutes, any hour
 const HAWK_EVERY_S = 60; // how often a hawk turns up on a windy afternoon
 const CRITTER = new URLSearchParams(location.search).get("critter"); // a ?critter= preview
 
@@ -2394,6 +2421,42 @@ function setUpCritters(scene, timeNow) {
     };
   }
 
+  // A freight train along the rails by the depot: a locomotive and a string
+  // of grain cars, a silhouette like the elevator. It runs on the ground
+  // strip, so it's added to the scene itself (the critter box only covers
+  // the sky).
+  let trainRunning = false;
+  function train() {
+    if (!scene.track || !scene.track.clientWidth) return;
+    trainRunning = scene.trainRunning = true;
+    const cars = 9 + Math.floor(Math.random() * 6);
+    // In a 12-high box: the locomotive (16 long, with a cab), then the cars
+    let d = "M0 9V4H3V2H9V4H16V9Z";
+    let x = 17;
+    for (let i = 0; i < cars; i++) {
+      d += `M${x} 9V3.5H${x + 12}V9Z`;
+      x += 13;
+    }
+    const wheels = [];
+    for (let wx = 3; wx < x; wx += 6.5) wheels.push(svgNode("circle", { cx: wx, cy: 10, r: 1.2 }));
+    const len = x;
+    const rig = svgNode("svg", { class: "train", viewBox: `0 0 ${len} 12` });
+    rig.append(svgNode("path", { d }), ...wheels, svgNode("circle", { class: "elevator__light", cx: 0.6, cy: 6, r: 1.1 })); // headlight after dark
+    const right = Math.random() < 0.5; // the locomotive is drawn at the left end, so it heads left unless flipped
+    const wrap = el("div", "train-path");
+    wrap.style.transform = right ? "scaleX(-1)" : "";
+    wrap.append(rig);
+    scene.track.after(wrap);
+    const w = scene.track.clientWidth;
+    const own = rig.getBoundingClientRect().width || len;
+    // Heading left: from past the right edge to past the left. The wrap is flipped to go right.
+    const dur = 16000 + Math.random() * 8000;
+    rig.animate([{ translate: `${w}px 0` }, { translate: `${-own}px 0` }], { duration: dur, easing: "linear" }).onfinish = () => {
+      wrap.remove();
+      trainRunning = scene.trainRunning = false;
+    };
+  }
+
   // A hawk riding the wind: it circles (seen from below, so the circle
   // looks flattened), tilting into each turn, while the wind carries it
   // slowly across the sky.
@@ -2494,6 +2557,7 @@ function setUpCritters(scene, timeNow) {
       if (wind > 25 && Math.random() < 0.5) leaf(wind, dir); // gusty: more of them
     }
     if (!jetFlying && (CRITTER === "jet" || (jetTime(t) && Math.random() < 1 / JET_EVERY_S))) jet();
+    if (!trainRunning && (CRITTER === "train" || Math.random() < 1 / TRAIN_EVERY_S)) train();
     if (!hawkFlying && (CRITTER === "hawk" || (hawkTime(t) && Math.random() < 1 / HAWK_EVERY_S))) hawk(breeze().dir);
   }, 1000);
 }

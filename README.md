@@ -404,6 +404,14 @@ from the optional weather, air quality and northern lights, below).
   long your own shadow is right now ("Your shadow is 2.4× your
   height"). Heavy cloud takes the shadow away. At night a little light
   glows at the top.
+- **The railway:** a little station depot (Longlight Station) stands just
+  to the right of the elevator, with a line of track running across the
+  ground in front of both. The depot casts its own shadow like the
+  elevator does, and a window glows after dark. Every couple of minutes
+  (any hour) a freight train rolls along the rails from one edge to the
+  other (off with "reduce motion"; the depot and track stay). Preview the
+  train any time with `?critter=train`. `TRAIN_EVERY_S` in `main.js` sets
+  how often.
 - **The ground through the year:** purple prairie crocuses dot the horizon
   in April and early May, young wheat lines it in June and July, and it
   turns gold from August until harvest in mid September (the site's five
@@ -420,7 +428,7 @@ from the optional weather, air quality and northern lights, below).
     sky it only shows from April to October, when the hawks are around.
     At weekends it's **a kite** on a long string instead (any month).
   - Preview any of them with `?critter=` plus `leaves`, `jet`, `hawk`,
-    `kite`, `geese` or `fireflies` (add `&weather=windy` for a strong
+    `kite`, `geese`, `fireflies` or `train` (add `&weather=windy` for a strong
     wind). `JET_EVERY_S` and `HAWK_EVERY_S` in `main.js` set how often.
 - **Winter ground** (needs snow lying, so it uses the real weather):
   - **Frost glitter:** on a clear morning of -10°C or colder, the snow
@@ -430,7 +438,8 @@ from the optional weather, air quality and northern lights, below).
   - Preview with `?weather=frost&at=2026-12-15T09:30` or
     `?weather=drift&at=2026-12-15T13:00`.
 - **Tap the grain elevator** and it says how long its shadow is and which
-  way it points (or why there's no shadow right now).
+  way it points (or why there's no shadow right now). **Tap the depot**
+  and it says whether a train is passing.
 - **Tap a cloud** and it puffs apart and drifts off. A new cloud drifts in
   from the left a while later.
 - Weather, the air quality and the northern lights are the only parts of
