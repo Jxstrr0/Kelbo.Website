@@ -1438,8 +1438,19 @@ img {
    plus the season along the horizon (main.js switches these on):
    prairie crocuses in April (.horizon--crocus), young wheat in June and
    July (.horizon--wheat) turning gold in August (.horizon--gold). */
-.horizon__elevator {
+.horizon__elevator,
+.horizon__depot,
+.train-path {
   --elevator-h: clamp(50px, 12.5vw, 72.5px);
+}
+
+.page-head .horizon__elevator,
+.page-head .horizon__depot,
+.page-head .train-path {
+  --elevator-h: 37.5px;
+}
+
+.horizon__elevator {
   position: absolute;
   z-index: 1;
   left: calc(0.38 * (100% - var(--sun-size)) + var(--sun-size) / 2 - var(--elevator-h) * 26 / 72);
@@ -1451,17 +1462,88 @@ img {
   pointer-events: none;
 }
 
-.page-head .horizon__elevator {
-  --elevator-h: 37.5px;
+/* The station depot, a third as tall as the elevator and just to its
+   right (its left edge is the elevator's right edge plus a small gap) */
+.horizon__depot {
+  position: absolute;
+  z-index: 1;
+  left: calc(0.38 * (100% - var(--sun-size)) + var(--sun-size) / 2 + var(--elevator-h) * 26 / 72 + var(--elevator-h) * 0.06);
+  top: calc(var(--sky-height) - var(--elevator-h) * 0.31 + 0.5px);
+  width: calc(var(--elevator-h) * 0.31 * 40 / 22);
+  height: calc(var(--elevator-h) * 0.31);
+  overflow: visible;
+  pointer-events: none;
+}
+
+/* The rails: a lilac line with sleepers under it, running right across the
+   ground just below the horizon (full-bleed like the line and the ground) */
+.horizon__track {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  top: calc(var(--sky-height) + 3.5px + 5px);
+  height: 5px;
+  background:
+    linear-gradient(to bottom, var(--rail) 0 1.5px, transparent 1.5px),
+    repeating-linear-gradient(to right, var(--sleeper) 0 2px, transparent 2px 7px) 0 1.5px / 100% 3.5px no-repeat;
+  --rail: color-mix(in srgb, var(--ll-lilac) 80%, var(--ll-purple));
+  --sleeper: color-mix(in srgb, var(--ll-slate) 55%, transparent);
+  pointer-events: none;
+}
+
+:root[data-theme="dark"] .horizon__track {
+  --rail: color-mix(in srgb, var(--ll-lilac) 55%, var(--ll-slate));
+  --sleeper: color-mix(in srgb, var(--ll-purple) 45%, transparent);
+}
+
+/* The freight train: same silhouette colour as the elevator, sitting on
+   the rails, running in from one edge (main.js; motion only) */
+.train-path {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  top: calc(var(--sky-height) + 3.5px + 5px - var(--elevator-h) * 0.2 + 1.5px);
+  height: calc(var(--elevator-h) * 0.2);
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.train {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: auto;
+  overflow: visible;
+}
+
+.train path,
+.train circle {
+  fill: color-mix(in srgb, var(--ll-slate) 72%, var(--ll-purple));
+}
+
+:root[data-theme="dark"] .train path,
+:root[data-theme="dark"] .train circle {
+  fill: color-mix(in srgb, var(--ll-slate) 55%, var(--ll-purple));
+}
+
+.train .elevator__light {
+  fill: var(--ll-clay);
 }
 
 /* A dark silhouette, a little purple so it sits in the sky */
-.horizon__elevator path {
+.horizon__elevator path,
+.horizon__depot path {
   fill: var(--ll-slate);
   fill: color-mix(in srgb, var(--ll-slate) 72%, var(--ll-purple));
 }
 
-:root[data-theme="dark"] .horizon__elevator path {
+:root[data-theme="dark"] .horizon__elevator path,
+:root[data-theme="dark"] .horizon__depot path {
   fill: color-mix(in srgb, var(--ll-slate) 55%, var(--ll-purple));
 }
 
@@ -1596,7 +1678,13 @@ img {
   }
 
   .horizon__elevator path,
-  :root[data-theme="dark"] .horizon__elevator path {
+  .horizon__depot path,
+  .train path,
+  .train circle,
+  :root[data-theme="dark"] .horizon__elevator path,
+  :root[data-theme="dark"] .horizon__depot path,
+  :root[data-theme="dark"] .train path,
+  :root[data-theme="dark"] .train circle {
     fill: var(--ll-slate);
   }
 
@@ -2969,7 +3057,8 @@ img {
     to { opacity: 1; transform: scaleY(1.15); }
   }
 
-  .horizon--hot .horizon__elevator {
+  .horizon--hot .horizon__elevator,
+  .horizon--hot .horizon__depot {
     animation: shimmer-waver 0.42s ease-in-out infinite alternate;
   }
 

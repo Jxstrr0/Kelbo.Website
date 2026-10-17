@@ -210,6 +210,17 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   unchanged-weather early return, motion only in the no-preference block.
   `frostLine` and `driftLine` join the readout turns. Preview with
   `?weather=frost&at=2026-12-15T09:30` or `?weather=drift&at=2026-12-15T13:00`.
+  The railway: `.horizon__depot` (SVG from `DEPOT`, 40 × 22 box, a third
+  the elevator's height, just right of it, with its own `.elevator__light`
+  window after dark) and `.horizon__track` (a full-bleed rail line with
+  sleepers just under the horizon, z1). `placeShadow` casts both outlines
+  (`scene.shadowShape`, `scene.depotShape`; `scene.land` holds both
+  measurements). `train()` in `setUpCritters` (every ~`TRAIN_EVERY_S`,
+  any hour; `?critter=train`) runs a `.train` SVG (loco + 9 to 14 cars,
+  headlight after dark) inside a full-bleed `.train-path` after the track,
+  flipped with scaleX for the other direction; `scene.trainRunning` feeds
+  the depot's tap ("Longlight Station"). Motion only: with reduce motion
+  the depot and track stay, there's no train.
   Tapping the elevator (`targets` in `setUpSkyTaps`) names it and says
   what its shadow is doing (`elevatorFact`; `compassName` is shared with
   `rainbowLine`). The aurora is lilac and purple with a thin ivory glow in
@@ -239,7 +250,7 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   `windyAfternoon` on weekdays, Apr–Oct at home; `windyAfternoon` = known
   wind ≥ 20 km/h, 12–6 PM, sun ≥ 8° and not hidden, ≥ 3°C or temp
   unknown) and a `.kite` (SVG, sways about its string's ground end) when
-  `windyAfternoon` falls on a weekend (`kiteTime`). `?critter=geese|fireflies|leaves|jet|hawk|kite`
+  `windyAfternoon` falls on a weekend (`kiteTime`). `?critter=geese|fireflies|leaves|jet|hawk|kite|train`
   forces one. In `setUpSkyTaps`, `puffCloud` (light theme, not reduce
   motion) breaks a tapped `.cloud` into `.cloud-puff`s and restarts its
   drift from the left; a tap right on the sun or moon still names it.
