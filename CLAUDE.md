@@ -67,6 +67,11 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   renders it. Adding a project should never need an HTML edit. Each project
   can carry a `version` ("1.4", no "v") and `latest` (what changed), shown
   as "v1.4 · Added night mode" under the summary; either may be "".
+  It can also carry `shots` (`[{src, alt}]`, files in `assets/shots/`,
+  about 360px tall JPG, under 40 KB): `renderProject` makes a closed
+  `<details class="shots">` "Screenshots (N)" with a scroll-snap strip of
+  lazy images, all `12rem` tall so portrait and landscape mix. Hidden on
+  the home featured list by CSS; the What's new rows don't show it.
 - `now.json` feeds the "Now building" strip under the home hero (`updated`
   date plus `items`, each `text` with an optional `link`). Empty items hide
   the strip. Refresh it when Kelbo says what he's working on.
