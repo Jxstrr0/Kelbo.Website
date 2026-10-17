@@ -242,8 +242,11 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   stronger glow), `--sun-show` (fades the glow/halo out once set, so they
   don't peek over the short page-head sky) and `--glint-sun`/`--glint-moon`
   (the `.horizon__glint` shimmer on the ground under each). The sun's halo
-  is an `outline` with `outline-offset`, its glow is `::before`. Motion
-  (sun-breathe, moon-float, glint-flow/sway, twinkle) is in the
+  is an `outline` with `outline-offset`, its glow is `::before`; the disc
+  is a radial gradient from `--sun-base` (paler core, darker rim) with an
+  inset ivory rim and a tight `box-shadow` glow, and `::after` is the fine
+  rays (a `repeating-conic-gradient` masked to a ring). Motion
+  (sun-breathe, sun-rays, moon-float, glint-flow/sway, twinkle) is in the
   reduced-motion-safe block. The ☀/☾ button cycles auto → light → dark and is
   saved in `localStorage["kelbo.theme"]`; a tiny inline script in every
   page's `<head>` applies it before paint. The home page also has the

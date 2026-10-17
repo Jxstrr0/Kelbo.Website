@@ -239,11 +239,14 @@ from the optional weather and northern lights, below).
 - **To move it somewhere else**, change `YXE` near the "LIVE HORIZON"
   heading in `main.js` (latitude, longitude, and time zone).
 - **The sun's look:** the sun has the same soft glow and thin halo ring
-  as the logo, and the glow slowly breathes. Near sunrise and sunset the
+  as the logo, and the glow slowly breathes. The disc has a warm, paler
+  middle that deepens toward a crisp edge, and a ring of fine rays turns
+  slowly around it (once every two minutes). Near sunrise and sunset the
   glow grows bigger and stronger, like a real low sun. Under the sun (and
   the moon at night) a clay shimmer ripples on the ground strip, like
   light on water. At night the stars twinkle. The breathing, rippling and
-  twinkling are all switched off for anyone with "reduce motion" on.
+  twinkling (and the turning rays) are all switched off for anyone with
+  "reduce motion" on.
   The look is in the "live horizon" part of `style.css`, and the
   animations are near the bottom of it.
 - **The stars:** the night sky shows the real stars over Saskatoon right

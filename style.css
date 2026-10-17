@@ -670,14 +670,43 @@ img {
   width: var(--sun-size);
   height: var(--sun-size);
   border-radius: 50%;
-  background: var(--accent);
   /* In wildfire smoke (--smoke from main.js, 0..1) the sun turns a deeper
-     red and loses its halo and most of its glow */
-  background: color-mix(in srgb, var(--accent), var(--ll-slate) calc(var(--smoke, 0) * 22%));
+     red and loses its halo, rays and most of its glow */
+  --sun-base: color-mix(in srgb, var(--accent), var(--ll-slate) calc(var(--smoke, 0) * 22%));
+  background: var(--accent);
+  /* The disc: a warm, paler core easing out to clay, a touch darker at
+     the very edge (the real sun is dimmer at its rim) */
+  background: radial-gradient(circle,
+    color-mix(in srgb, var(--sun-base), var(--ll-ivory) calc(28% * (1 - var(--smoke, 0)))) 0%,
+    var(--sun-base) 52%,
+    color-mix(in srgb, var(--sun-base) 86%, var(--ll-slate)) 100%);
+  /* A crisp, faint ivory rim just inside the edge, and a tight glow
+     hugging it, so the disc reads sharp against the sky */
+  box-shadow:
+    inset 0 0 0 1.5px rgba(250, 249, 245, calc(0.2 * (1 - var(--smoke, 0)))),
+    0 0 calc(var(--sun-size) * 0.1) rgba(217, 119, 87, calc(0.7 * var(--sun-show, 1) * (1 - 0.8 * var(--smoke, 0))));
   /* The halo: a thin clay ring around the sun, like the logo's */
   outline: 2px solid rgba(217, 119, 87, calc((0.45 + 0.3 * var(--sun-low, 0)) * var(--sun-show, 1) * (1 - var(--smoke, 0))));
   outline-offset: calc(var(--sun-size) * 0.13);
   transition: top 1200ms var(--ease), left 1200ms var(--ease);
+}
+
+/* Fine rays all round the sun, long and short in turn, fading out
+   before they reach the edge of the glow (turning very slowly in the
+   motion block at the bottom). A mask hides the middle, so they start
+   just outside the disc. */
+.horizon__sun::after {
+  content: "";
+  position: absolute;
+  inset: calc(var(--sun-size) * -0.34);
+  border-radius: 50%;
+  background: repeating-conic-gradient(
+    rgba(217, 119, 87, 0.42) 0deg 1.6deg, rgba(217, 119, 87, 0) 1.6deg 7.5deg,
+    rgba(217, 119, 87, 0.2) 7.5deg 8.6deg, rgba(217, 119, 87, 0) 8.6deg 15deg);
+  -webkit-mask: radial-gradient(closest-side, transparent 64%, #000 69%, transparent 100%);
+  mask: radial-gradient(closest-side, transparent 64%, #000 69%, transparent 100%);
+  opacity: calc(var(--sun-show, 1) * (1 - var(--smoke, 0)));
+  pointer-events: none;
 }
 
 /* The sun's soft glow. --sun-low (set by main.js) is 0 when the sun is
@@ -2713,6 +2742,15 @@ img {
   @keyframes sun-breathe {
     0%, 100% { transform: scale(1); opacity: 0.85; }
     50% { transform: scale(1.08); opacity: 1; }
+  }
+
+  /* ...and its rays turn, once every two minutes */
+  .horizon__sun::after {
+    animation: sun-rays 120s linear infinite;
+  }
+
+  @keyframes sun-rays {
+    to { transform: rotate(360deg); }
   }
 
   /* The light on the ground ripples and sways */
