@@ -49,7 +49,7 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
 - The link preview image is `assets/social-preview.jpg` (1200×630, the
   Longlight sky, the sun with its glow and halo on the horizon line,
   "Longlight Interactive", plus the four game covers). Every `og:image`
-  ends `?v=2` so apps refetch it; bump it on every page when the picture
+  ends `?v=3` so apps refetch it; bump it on every page when the picture
   changes. Regenerate it if the covers change a lot. The favicon and
   home-screen icons are the logo's sun (glow, halo, sun) on an ivory line
   on a purple tile (the favicon turns slate in dark mode):
@@ -80,7 +80,11 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   = slate. Clay text on the purple sky is too faint, so keep clay for the
   sun, buttons and underlines there. Game covers live in `assets/covers/`
   (640×480 JPG, captured from each live game; Red Skies is portrait-only, so
-  it's shot at 600px wide mid-shift with a jet on the TV camera, cropped 4:3).
+  it's shot at 600px wide mid-shift with a jet on the TV camera, cropped 4:3;
+  Prairie Engine Works is the Chevrolet 350 from the game's own studio render,
+  `ENGINE_VIS.photoShot(1280, 960)`, so no stray parts show; Season Ticket is
+  the 3D Office at a wide view, cropped 4:3 from the left to keep the sunset
+  window).
 - The live horizon (`[data-horizon]` in the home hero, every page head and
   the 404) puts the sun where the real sun is over Saskatoon (`YXE` in
   `main.js`, no network; only the optional weather and aurora fetch), switches to the dark theme at real sunset, and
