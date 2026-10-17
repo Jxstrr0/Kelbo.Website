@@ -1877,12 +1877,20 @@ function sunAltAz(t) {
   return altAz(p.ra * R2D, p.dec * R2D, t);
 }
 
-// How strong shadows are (0..1): none until the sun clears the horizon,
-// fainter through broken cloud or smoke, gone when the sun's hidden.
+// The sun's height as you see it: the air bends low sunlight up a little
+// (about half a degree at the horizon), which makes low shadows shorter.
+// Takes and gives degrees.
+function seenAltitude(alt) {
+  return alt + 1.02 / Math.tan((alt + 10.3 / (alt + 5.11)) * D2R) / 60;
+}
+
+// How strong shadows are (0..1), from the seen height: none until the sun
+// clears the horizon, fainter through broken cloud or smoke, gone when
+// the sun's hidden.
 function shadowStrength(alt) {
-  if (alt <= 0.5 || sunHidden()) return 0;
+  if (alt <= 0 || sunHidden()) return 0;
   const cloud = weather ? weather.cloud / 85 : 0;
-  return Math.min(1, (alt - 0.5) / 4) * (1 - 0.5 * cloud) * (1 - 0.6 * smokeStrength());
+  return Math.min(1, alt / 4) * (1 - 0.5 * cloud) * (1 - 0.6 * smokeStrength());
 }
 
 // Lays the elevator's shadow on the ground for moment t: each corner of
@@ -1890,7 +1898,9 @@ function shadowStrength(alt) {
 // height), then squashed toward you for the low view of the ground.
 function placeShadow(scene, t) {
   if (!scene.shadowShape) return;
-  const { alt, az } = sunAltAz(t);
+  const sun = sunAltAz(t);
+  const alt = seenAltitude(sun.alt);
+  const az = sun.az;
   const show = shadowStrength(alt);
   scene.style.setProperty("--shadow", show.toFixed(2));
   if (!show) return;
@@ -1916,9 +1926,10 @@ function placeShadow(scene, t) {
 
 // "Your shadow is 2.4× your height right now", while the sun's out
 function shadowLine(t) {
-  const alt = sunAltitude(t);
+  const alt = seenAltitude(sunAltitude(t));
   if (!shadowStrength(alt)) return "";
-  const long = 1 / Math.tan(alt * D2R);
+  const long = Math.round(10 / Math.tan(alt * D2R)) / 10; // to one decimal
+  if (long > 100) return "Your shadow is over 100× your height right now";
   if (long > 0.95 && long < 1.05) return "Your shadow is as long as you are tall";
   return `Your shadow is ${long < 10 ? long.toFixed(1) : Math.round(long)}× your height right now`;
 }

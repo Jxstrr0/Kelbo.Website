@@ -1300,21 +1300,31 @@ img {
 
 /* Sun dogs: a faint ring around the sun (clay on its inside edge), and
    a bright spot where it crosses the sun's height on either side. The
-   box is centred on the sun, so it moves with it. */
+   box is centred on the sun, so it moves with it, and is wider than the
+   ring (--dog-pad each side) so the dogs fit inside: the mask that fades
+   the ring's top also cuts off anything outside the box. */
 .horizon__sundogs {
   --dog-r: calc(var(--sun-size) * 1.45);
+  --dog-pad: calc(var(--sun-size) * 0.5);
   position: absolute;
-  left: calc(var(--sun-x) * (100% - var(--sun-size)) + var(--sun-size) / 2 - var(--dog-r));
+  left: calc(var(--sun-x) * (100% - var(--sun-size)) + var(--sun-size) / 2 - var(--dog-r) - var(--dog-pad));
   top: calc((1 - var(--sun-alt)) * (var(--sky-height) - var(--sun-size) / 2) + var(--sun-size) / 2 - var(--dog-r));
-  width: calc(var(--dog-r) * 2);
+  width: calc((var(--dog-r) + var(--dog-pad)) * 2);
   height: calc(var(--dog-r) * 2);
-  border-radius: 50%;
-  background: radial-gradient(closest-side, rgba(217, 119, 87, 0) 88%, rgba(217, 119, 87, 0.3) 92%, rgba(250, 249, 245, 0.22) 96%, rgba(250, 249, 245, 0) 100%);
+  background: radial-gradient(circle var(--dog-r), rgba(217, 119, 87, 0) 88%, rgba(217, 119, 87, 0.3) 92%, rgba(250, 249, 245, 0.22) 96%, rgba(250, 249, 245, 0) 100%);
   /* The top of the ring fades away, so it never ends in a hard edge */
   -webkit-mask: linear-gradient(to bottom, transparent 4%, #000 36%);
   mask: linear-gradient(to bottom, transparent 4%, #000 36%);
   opacity: var(--sundogs, 0);
   transition: top 1200ms var(--ease), left 1200ms var(--ease), opacity 3s var(--ease);
+}
+
+/* On phones the ring sits closer in, so the morning dog isn't off the
+   left edge while the sun is still low in the east */
+@media (max-width: 40rem) {
+  .horizon__sundogs {
+    --dog-r: calc(var(--sun-size) * 1.15);
+  }
 }
 
 /* Each dog: clay on the side facing the sun, then bright ivory, then a
@@ -1332,12 +1342,12 @@ img {
 }
 
 .horizon__sundogs::before {
-  left: calc(var(--sun-size) * -0.41);
+  left: calc(var(--dog-pad) - var(--sun-size) * 0.41);
   background: linear-gradient(to left, rgba(217, 119, 87, 0.9), rgba(250, 249, 245, 0.95) 30%, rgba(180, 140, 232, 0.5) 65%, rgba(180, 140, 232, 0));
 }
 
 .horizon__sundogs::after {
-  right: calc(var(--sun-size) * -0.41);
+  right: calc(var(--dog-pad) - var(--sun-size) * 0.41);
   background: linear-gradient(to right, rgba(217, 119, 87, 0.9), rgba(250, 249, 245, 0.95) 30%, rgba(180, 140, 232, 0.5) 65%, rgba(180, 140, 232, 0));
 }
 

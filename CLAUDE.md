@@ -184,7 +184,8 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   `heatShimmer` (`HOT_C`); `sunHidden` is overcast or any weather kind.
   `placeOptics` (from `placeSun`) sets `--sundogs`, `--rainbow`, `--bow-x`
   (1 − sun x) and `--bow-d` (sun alt / 42) for `.horizon__sundogs`
-  (centred on the sun) and `.horizon__rainbow` inside `.horizon__optics`
+  (centred on the sun, `--dog-pad` wider than the ring each side so its
+  mask doesn't cut off the dogs) and `.horizon__rainbow` inside `.horizon__optics`
   (clip-path polygon clips top and bottom only, so they run to the screen
   edges; its `::before` is the full-bleed smoke haze). `--smoke` also
   darkens the sun and drops its halo/glow. Heat shimmer (wavy masked
@@ -196,7 +197,8 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   `.elevator__light` in the dark theme) and `.horizon__shadow` (a
   full-bleed SVG over the ground strip): `placeShadow` (from `placeSun`)
   projects each outline point by its height × 1/tan(alt) away from the
-  sun's azimuth (`sunAltAz`; east = left, north = down × `SHADOW_SQUASH`),
+  sun's azimuth (`sunAltAz`, with `seenAltitude` adding refraction; east =
+  left, north = down × `SHADOW_SQUASH`),
   measuring the elevator once into `scene.land` (reset by a
   ResizeObserver); `shadowStrength` sets `--shadow`. `groundSeason`
   (`YXE.home`, not snowy) switches `.horizon__crocuses` (Apr 1 to May 5)
