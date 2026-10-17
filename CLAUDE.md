@@ -226,8 +226,16 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   `rainbowLine`). The aurora is lilac and purple with a thin ivory glow in
   each curtain: the palette has no green, so don't add it without Kelbo's say.
   The land (`setUpLand`, every sky): `.horizon__elevator` (SVG from
-  `ELEVATOR` outline, z1, standing at the sun's noon x, 0.38; clay
-  `.elevator__light` in the dark theme) and `.horizon__shadow` (a
+  `ELEVATOR` outline in an 86 × 72 box, z1, its main-house peak
+  (`ELEVATOR_MID` 30) standing at the sun's noon x, 0.38; modelled on a
+  real wooden elevator: steep-gabled main house, taller narrow leg
+  house, sloping annex, cyclone, loading spout and scale shed. Thin
+  extras (`ELEVATOR_BITS`: dust pipe, prop, utility pole) are separate
+  paths in the same fill that cast no shadow; `.elevator__door` is a
+  darker barn-door panel; three `.elevator__light` windows glow clay in
+  the dark theme. If the box size or `ELEVATOR_MID` changes, update the
+  `30 / 72`, `86 / 72` and depot `56 / 72` (= W − MID) numbers in
+  `style.css` too) and `.horizon__shadow` (a
   full-bleed SVG over the ground strip): `placeShadow` (from `placeSun`)
   projects each outline point by its height × 1/tan(alt) away from the
   sun's azimuth (`sunAltAz`, with `seenAltitude` adding refraction; east =
