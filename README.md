@@ -24,6 +24,7 @@ you save on the `main` branch goes live within a minute or two.
 | `style.css` | Colours, fonts, and layout for every page |
 | `main.js` | Reads `projects.json` and puts the projects on the page, and runs the live sun, the ☀/☾ button, and the "Continue?" card |
 | `assets/` | Images, game cover screenshots (`assets/covers/`), the screenshot strips (`assets/shots/`), the link preview picture, the browser-tab icon, and the home-screen icon |
+| `sw.js` | The offline helper: keeps a copy of each page and file on the phone so the site still opens with no signal. Keep it in the top folder |
 | `site.webmanifest` | The site's name, colours and icon for phones that add it to the home screen |
 | `robots.txt`, `sitemap.xml` | Tell search engines they're welcome and which pages exist. Add a line to the sitemap when you add a page |
 | `agent-fleet.html` | The Agent Fleet page. All plain text except the weekly scan, so edit the words directly |
@@ -336,7 +337,8 @@ from the optional weather, air quality and northern lights, below).
   spot is, the more there are. At night the readout mentions it too
   ("Orionids peak tonight", "Geminids active · peak Dec 14"). Tap a
   shooting star to make a wish; the phone counts them ("That's 3 on this
-  device"), and nothing is sent anywhere. They're off with "reduce motion"
+  device"), shows the count and badges in **Sky this week**, and nothing is
+  sent anywhere. They're off with "reduce motion"
   on. The shower list is `SHOWERS` in `main.js` (peak date, spot in the
   sky, and how busy it gets), and `METEOR_EVERY_S` sets the ordinary-night
   rate (30 = one every 30 seconds on average). Try
@@ -470,11 +472,30 @@ from the optional weather, air quality and northern lights, below).
   Saskatoon** switches it back. Geese, fireflies, autumn leaves, the
   crocuses and wheat, and the usual winter snow stay Saskatoon-only,
   since they follow Saskatoon's calendar.
+- **Tilt sky (phones):** next to See your sky there's a **Tilt sky**
+  link on phones. Tapping it (iPhones ask permission once) makes the sky
+  follow the phone: tilt it and the stars, moon and clouds slide a little,
+  like looking through a window; turn around and the stars and planets turn
+  with you, a "Facing north" label shows in the corner, and the sun or moon
+  fades when it's behind you. The other pages' skies follow too. **Stop
+  tilting** turns it off. The tilt slide is off with "reduce motion" on;
+  the compass still works. `TILT_DEG` in `main.js` sets how far you tilt
+  for the full slide.
 - **Seasons:** the ray coming off the sun reaches further in summer than in
   winter (full length on the longest day, a bit under half on the
   shortest). On the longest and shortest days of the year a badge appears
   on the home page sky, like "Longest day of the year · 16h 46m of light".
   Preview it with `?at=2026-06-21T13:00` or `?at=2026-12-21T13:00`.
+
+**Sky this week** is the card under "Now building" on the home page. The
+phone works it out from the same sky maths (no internet): which planets
+are up after dark tonight, the moon's new, quarter and full dates (the full
+moon gets its name, like "the Hunter's Moon"), the moon passing close to a
+planet, meteor shower peaks (and whether the moon will wash them out),
+eclipses, equinoxes and solstices, and how sunset moves over the week.
+Under it is the wish counter, with badges at 1, 10, 25, 50 and 100 wishes
+(`WISH_BADGES` in `main.js`). Preview a busy week with
+`?at=2026-03-01T12:00` (a total lunar eclipse).
 
 Two small extras ride along on the home page:
 
@@ -488,12 +509,23 @@ Two small extras ride along on the home page:
 ## Motion
 
 The animations are at the bottom of `style.css` under "Motion": pages fade
-into each other, sections and cards slide up as you scroll, the sun glides
+into each other (the header and the page-top sky stay put while the rest
+changes, in browsers that support it, like Safari 18.2+ and Chrome), sections and cards slide up as you scroll, the sun glides
 to its new spot, and buttons and cards lift when you tap them. On the
 Projects page, cards glide into place when you tap a filter. Anyone whose
 phone is set to **Reduce Motion** (iPhone: Settings → Accessibility →
 Motion) sees the same site with nothing moving. Turn that setting on to
 check it.
+
+## Offline
+
+`sw.js` is the offline helper (a "service worker"). Once someone has
+opened the site, their phone keeps a copy of every page and file they
+visit, plus the main pages straight away, so it still opens with no
+signal. Online it always fetches the newest version first, so your edits
+show up as normal. If it ever seems stuck on an old version, change
+`CACHE` at the top of `sw.js` (for example `"longlight-2"`) and the old
+copies are thrown away.
 
 ## Previewing on a computer
 

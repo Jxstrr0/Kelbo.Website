@@ -1775,6 +1775,36 @@ img {
   display: none;
 }
 
+/* "Facing southwest": shown in the corner while the compass turns the
+   sky (Tilt sky, main.js) */
+.horizon__facing {
+  position: absolute;
+  left: 0;
+  top: 0.4rem;
+  z-index: 3;
+  margin: 0;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--sky-muted);
+  pointer-events: none;
+}
+
+.horizon__facing[hidden] {
+  display: none;
+}
+
+/* With the compass on, the sun or moon fades when it's behind you */
+.horizon--sun-behind .horizon__sun,
+.horizon--sun-behind .horizon__ray {
+  opacity: 0.15;
+}
+
+.horizon--moon-behind .horizon__moon {
+  opacity: calc(var(--moon-show, 0) * 0.15);
+}
+
 /* The "· 16h 46m of light" part only fits from tablet size up */
 .horizon__badge-extra {
   display: none;
@@ -1951,6 +1981,92 @@ img {
   font-size: 0.78rem;
   color: var(--muted);
   white-space: nowrap;
+}
+
+/* ---------- Sky this week ----------
+   The card under "Now building" on the home page: a short dated list of
+   what's coming up in the sky (main.js, skyWeek), then the wish counter
+   and its badges. */
+.sky-week {
+  margin-top: 1rem;
+  padding: 0.9rem 1.1rem;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--card);
+  box-shadow: var(--shadow);
+}
+
+.sky-week[hidden] {
+  display: none;
+}
+
+.sky-week__list {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Date on the left, what's happening on the right; stacked on phones */
+.sky-week__item {
+  display: grid;
+  grid-template-columns: 6.5rem 1fr;
+  gap: 0.15rem 0.75rem;
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.sky-week__when {
+  font-weight: 700;
+  color: var(--secondary);
+}
+
+@media (max-width: 26rem) {
+  .sky-week__item {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sky-week__wishes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.6rem;
+  margin: 0.9rem 0 0;
+  padding-top: 0.8rem;
+  border-top: 1px solid var(--rule);
+  font-size: 0.9rem;
+}
+
+.sky-week__wishes strong::before {
+  content: "\2726  "; /* a four-point star */
+  color: var(--accent);
+}
+
+.sky-week__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.sky-week__badge {
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: var(--secondary-soft);
+  color: var(--secondary);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.sky-week__next,
+.sky-week__note {
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.sky-week__note {
+  margin: 0.5rem 0 0;
 }
 
 /* ---------- Memory card ("Continue?") ----------
@@ -2833,6 +2949,23 @@ img {
     from { opacity: 0; transform: translateY(8px); }
   }
 
+  /* The header and the page-head sky stay put while the page under them
+     changes, so moving between pages feels like one place. If the sky is
+     a different height on the next page it slides smoothly into place. */
+  .site-header {
+    view-transition-name: site-header;
+  }
+
+  .page-head .horizon {
+    view-transition-name: page-sky;
+  }
+
+  ::view-transition-group(site-header),
+  ::view-transition-group(page-sky) {
+    animation-duration: 320ms;
+    animation-timing-function: var(--ease);
+  }
+
   /* Scroll reveal: main.js adds "reveal", then "is-in" when in view.
      Content is never hidden if JavaScript doesn't run. */
   .reveal {
@@ -2869,6 +3002,26 @@ img {
 
   @keyframes moon-float {
     to { transform: translateY(calc(var(--moon-size) * -0.1)); }
+  }
+
+  /* Tilt sky (main.js sets --tilt-x and --tilt-y, -1..1, from the
+     phone's tilt): the far-off things slide a little against the land,
+     like looking through a window. Stars and meteors move most. */
+  .horizon__stars,
+  .horizon__meteors {
+    translate: calc(var(--tilt-x, 0) * -14px) calc(var(--tilt-y, 0) * -9px);
+  }
+
+  .horizon__aurora {
+    translate: calc(var(--tilt-x, 0) * -12px) calc(var(--tilt-y, 0) * -7px);
+  }
+
+  .horizon__moon {
+    translate: calc(var(--tilt-x, 0) * -9px) calc(var(--tilt-y, 0) * -6px);
+  }
+
+  .horizon__clouds {
+    translate: calc(var(--tilt-x, 0) * -6px) calc(var(--tilt-y, 0) * -3px);
   }
 
   /* A new line in the horizon readout fades in (main.js adds .is-new) */
