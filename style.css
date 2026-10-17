@@ -1439,7 +1439,7 @@ img {
    prairie crocuses in April (.horizon--crocus), young wheat in June and
    July (.horizon--wheat) turning gold in August (.horizon--gold). */
 .horizon__elevator {
-  --elevator-h: clamp(40px, 10vw, 58px);
+  --elevator-h: clamp(50px, 12.5vw, 72.5px);
   position: absolute;
   z-index: 1;
   left: calc(0.38 * (100% - var(--sun-size)) + var(--sun-size) / 2 - var(--elevator-h) * 26 / 72);
@@ -1452,7 +1452,7 @@ img {
 }
 
 .page-head .horizon__elevator {
-  --elevator-h: 30px;
+  --elevator-h: 37.5px;
 }
 
 /* A dark silhouette, a little purple so it sits in the sky */

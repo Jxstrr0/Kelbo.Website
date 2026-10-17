@@ -2683,7 +2683,7 @@ const SWIPE_HOURS = 10; // hours per full width (bigger = faster)
 const SWIPE_MAX_HOURS = 36; // how far either way a swipe can go
 const SWIPE_START_PX = 10; // sideways movement before it counts as a swipe
 const SWIPE_HOLD_MS = 2000; // how long it waits after you let go before heading back
-const SWIPE_BACK_MS = 1800; // how long the slide back to "now" takes
+const SWIPE_BACK_MS = 8000; // how long the slide back to "now" takes (slow, so the elevator's shadow can be watched turning)
 const SWIPE_GLIDE_MS = 550; // how long a flick keeps coasting (bigger = longer glide)
 const HOLD_START_MS = 450; // press and hold this long (without moving) to wind on to sunset or sunrise
 const HOLD_RUN_MS = 2600; // how long winding on takes
@@ -2750,7 +2750,7 @@ function setUpSwipe(scene, paint) {
       if (run !== skyRun) return; // a new swipe took over
       if (start === null) start = ms;
       const p = REDUCE_MOTION ? 1 : Math.min(1, (ms - start) / SWIPE_BACK_MS);
-      shown = from * Math.pow(1 - p, 3); // fast at first, easing into place
+      shown = from * Math.pow(1 - p, 2); // a little quicker at first, then a long gentle ease into place
       if (p < 1) {
         paint(new Date(now().getTime() + shown), shown);
         requestAnimationFrame(frame);
