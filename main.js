@@ -175,6 +175,29 @@ function renderProject(project) {
   }
   if (links.children.length) body.append(links);
 
+  // Screenshots: "shots" in projects.json is a list of { src, alt }. They
+  // sit in a closed "Screenshots (4)" drawer so the cards stay short; the
+  // pictures only download once the drawer is opened (loading="lazy").
+  // The home page hides this with CSS, since it shows the short cards.
+  if (Array.isArray(project.shots) && project.shots.length) {
+    const drawer = el("details", "shots");
+    drawer.append(el("summary", null, "Screenshots (" + project.shots.length + ")"));
+    const strip = el("div", "shots__strip");
+    strip.tabIndex = 0; // so keyboard users can scroll the strip with the arrow keys
+    strip.setAttribute("role", "region");
+    strip.setAttribute("aria-label", title + " screenshots");
+    project.shots.forEach((shot) => {
+      const img = el("img");
+      img.src = shot.src;
+      img.alt = shot.alt || "";
+      img.loading = "lazy";
+      img.decoding = "async";
+      strip.append(img);
+    });
+    drawer.append(strip);
+    body.append(drawer);
+  }
+
   item.append(body);
   return item;
 }
