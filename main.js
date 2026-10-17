@@ -1022,6 +1022,17 @@ function makeStars(box, limit, withLines) {
   box.replaceChildren(...parts);
 }
 
+// Which way the sky strip faces (compass degrees, 180 = south). The
+// compass (see "Tilt and compass" below) turns it to match the phone.
+let skyFacing = 180;
+
+// Where compass direction az sits across the sky strip: 0 at the left
+// edge, 1 at the right, outside 0..1 when it's off the strip.
+function skyX(az) {
+  const off = ((((az - skyFacing) % 360) + 540) % 360) - 180; // -180..180, 0 = straight ahead
+  return (off + 90) / 180;
+}
+
 // Puts every star where it really is at moment "t".
 function placeStars(scene, t) {
   const box = scene.querySelector(".horizon__stars");
@@ -1040,10 +1051,11 @@ function placeStars(scene, t) {
     // Compass direction: 90 = east, 180 = south, 270 = west
     let az = Math.atan2(-Math.sin(ha) * Math.cos(dec), Math.cos(la) * Math.sin(dec) - Math.sin(la) * Math.cos(dec) * Math.cos(ha)) * R2D;
     az = (az + 360) % 360;
-    entry.up = !(alt < 2 || az < 90 || az > 270);
-    entry.dot.hidden = !entry.up; // below the horizon, or behind us in the north
+    const across = skyX(az);
+    entry.up = !(alt < 2 || across < 0 || across > 1);
+    entry.dot.hidden = !entry.up; // below the horizon, or behind us
     if (!entry.up) return;
-    entry.x = ((az - 90) / 180) * 100;
+    entry.x = across * 100;
     entry.y = (1 - Math.min(alt, STAR_TOP_ALT) / STAR_TOP_ALT) * 100;
     entry.dot.style.left = `${entry.x.toFixed(2)}%`;
     entry.dot.style.top = `${entry.y.toFixed(2)}%`;
@@ -1369,7 +1381,7 @@ function setUpMeteors(scene, timeNow) {
       // Fly straight away from the radiant, placed like a star (it may be
       // off the strip to the left or right, or above it)
       const { alt, az } = altAz(shower.ra, shower.dec, t);
-      const rx = ((az - 90) / 180) * w;
+      const rx = skyX(az) * w;
       const ry = (1 - alt / STAR_TOP_ALT) * h;
       angle = Math.atan2(y - ry, x - rx);
     } else {
@@ -1509,7 +1521,10 @@ function setUpSkyTaps(scene, timeNow) {
       count = (parseInt(localStorage.getItem(WISHES_KEY), 10) || 0) + 1;
       localStorage.setItem(WISHES_KEY, String(count));
     } catch (e) {}
-    show(x, y, 0, "Wish made", count === 1 ? "Your first one on this device" : `That's ${count} on this device`);
+    const badge = WISH_BADGES.find(([n]) => n === count && n > 1);
+    if (badge) show(x, y, 0, `Badge: ${badge[1]}`, `${count} wishes on this device`);
+    else show(x, y, 0, "Wish made", count === 1 ? "Your first one on this device" : `That's ${count} on this device`);
+    showWishes(document.querySelector("[data-wishes]"));
   }
 
   // Everything that could be tapped right now, with where it is on screen.
@@ -3088,6 +3103,154 @@ function setUpSkySwitch() {
   });
 }
 
+/* ---------- Tilt and compass ----------
+   On a phone, "Tilt sky" (in the home page hero) lets the sky follow the
+   phone. Tilting it slides the stars, moon and clouds a little, like
+   looking through a window (style.css moves them by --tilt-x and
+   --tilt-y, only when motion is allowed). The compass turns the stars and
+   planets to whichever way the phone faces, and dims the sun or moon when
+   they're behind you. iPhones ask permission once, after the tap. The
+   choice is kept on this phone (localStorage "kelbo.motion"), so the
+   other pages' skies follow too. */
+const MOTION_KEY = "kelbo.motion";
+const TILT_DEG = 25; // tilting this far (degrees) moves the sky all the way
+const TILT_SETTLE = 0.006; // how fast "level" catches up with how you hold the phone (per reading, about 3 s)
+
+function setUpMotion(scene, timeNow) {
+  const btn = document.querySelector("[data-motion-switch]");
+  if (!("DeviceOrientationEvent" in window) || !matchMedia("(pointer: coarse)").matches) return;
+  const needsAsk = typeof DeviceOrientationEvent.requestPermission === "function"; // iPhone
+  const facing = scene.closest(".page-head") ? null : document.createElement("p");
+  if (facing) {
+    facing.className = "horizon__facing";
+    facing.hidden = true;
+    scene.append(facing);
+  }
+  let on = false;
+  let level = null; // the tilt the phone is held at, which counts as "flat"
+  let tilt = { x: 0, y: 0 }, aim = { x: 0, y: 0 };
+  let heading = null, shownHeading = null;
+  let frame = 0, lastBehind = 0;
+
+  function reading(e) {
+    if (e.beta == null || e.gamma == null) return;
+    if (!level) level = { b: e.beta, g: e.gamma };
+    // "Level" drifts slowly toward however you're holding it, so the sky
+    // settles back to the middle when you stop tilting.
+    level.b += (e.beta - level.b) * TILT_SETTLE;
+    level.g += (e.gamma - level.g) * TILT_SETTLE;
+    const clamp = (v) => Math.max(-1, Math.min(1, v / TILT_DEG));
+    aim = { x: clamp(e.gamma - level.g), y: clamp(e.beta - level.b) };
+    // Compass: iPhones give the heading straight; Android gives alpha on
+    // its "absolute" event, which runs the other way round.
+    let h = null;
+    if (Number.isFinite(e.webkitCompassHeading)) h = e.webkitCompassHeading;
+    else if (e.absolute && Number.isFinite(e.alpha)) h = 360 - e.alpha;
+    if (h != null) heading = (h + ((screen.orientation && screen.orientation.angle) || 0) + 360) % 360;
+    if (!frame) frame = requestAnimationFrame(draw);
+  }
+
+  // Once a frame at most: ease toward the latest reading and redraw.
+  function draw() {
+    frame = 0;
+    tilt.x += (aim.x - tilt.x) * 0.2;
+    tilt.y += (aim.y - tilt.y) * 0.2;
+    scene.style.setProperty("--tilt-x", tilt.x.toFixed(3));
+    scene.style.setProperty("--tilt-y", tilt.y.toFixed(3));
+    if (heading != null) {
+      if (shownHeading == null) shownHeading = heading;
+      const turn = ((heading - shownHeading + 540) % 360) - 180; // the short way round
+      shownHeading = (shownHeading + turn * 0.25 + 360) % 360;
+      if (Math.abs(skyFacing - shownHeading) > 0.4 || (facing && facing.hidden)) {
+        skyFacing = shownHeading;
+        const t = timeNow();
+        placeStars(scene, t);
+        if (performance.now() - lastBehind > 300) behind(t);
+      }
+    }
+    if (Math.abs(aim.x - tilt.x) > 0.002 || Math.abs(aim.y - tilt.y) > 0.002) frame = requestAnimationFrame(draw);
+  }
+
+  // Dims the sun and moon when they're behind the way you face, and
+  // says which way that is.
+  function behind(t) {
+    lastBehind = performance.now();
+    const back = (az) => Math.abs(skyX(az) - 0.5) > 0.6;
+    const m = moonRaDec(t);
+    scene.classList.toggle("horizon--sun-behind", back(sunAltAz(t).az));
+    scene.classList.toggle("horizon--moon-behind", back(altAz(m.ra * R2D, m.dec * R2D, t).az));
+    if (facing) {
+      facing.textContent = `Facing ${compassName(skyFacing)}`;
+      facing.hidden = false;
+    }
+  }
+
+  function start() {
+    on = true;
+    level = null;
+    window.addEventListener("deviceorientation", reading);
+    window.addEventListener("deviceorientationabsolute", reading);
+    label();
+  }
+
+  function stop() {
+    on = false;
+    window.removeEventListener("deviceorientation", reading);
+    window.removeEventListener("deviceorientationabsolute", reading);
+    aim = { x: 0, y: 0 };
+    heading = shownHeading = null;
+    skyFacing = 180;
+    scene.classList.remove("horizon--sun-behind", "horizon--moon-behind");
+    if (facing) facing.hidden = true;
+    placeStars(scene, timeNow());
+    if (!frame) frame = requestAnimationFrame(draw);
+    label();
+  }
+
+  function label() {
+    if (!btn) return;
+    btn.textContent = on ? "Stop tilting" : "Tilt sky";
+    btn.setAttribute("aria-pressed", String(on));
+  }
+
+  // Asks the iPhone for permission (it only asks after a tap; once
+  // allowed it answers straight away).
+  function ask() {
+    if (!needsAsk) return Promise.resolve(true);
+    return DeviceOrientationEvent.requestPermission().then((r) => r === "granted", () => false);
+  }
+
+  let saved = false;
+  try {
+    saved = localStorage.getItem(MOTION_KEY) === "on";
+  } catch (e) {}
+  if (saved) ask().then((ok) => ok && start());
+
+  if (!btn) return;
+  btn.hidden = false;
+  label();
+  btn.addEventListener("click", () => {
+    if (on) {
+      stop();
+      try {
+        localStorage.removeItem(MOTION_KEY);
+      } catch (e) {}
+      return;
+    }
+    ask().then((ok) => {
+      if (!ok) {
+        btn.textContent = "Motion not allowed";
+        setTimeout(label, 3000);
+        return;
+      }
+      start();
+      try {
+        localStorage.setItem(MOTION_KEY, "on");
+      } catch (e) {}
+    });
+  });
+}
+
 function setUpHorizon() {
   const scene = document.querySelector("[data-horizon]");
   const readout = document.querySelector("[data-horizon-readout]");
@@ -3171,6 +3334,7 @@ function setUpHorizon() {
     setUpMeteors(scene, now);
     setUpCritters(scene, shownTime);
     setUpSkyTaps(scene, shownTime);
+    setUpMotion(scene, shownTime);
   }
   tick();
   setUpThemeToggle(tick);
@@ -3178,6 +3342,237 @@ function setUpHorizon() {
   document.addEventListener("visibilitychange", () => {
     if (!document.hidden) tick();
   });
+}
+
+/* ======================================================================
+   SKY THIS WEEK
+   ----------------------------------------------------------------------
+   The card under the home hero lists what's coming up in the sky over
+   the next seven days, all worked out on the phone from the same sky
+   maths as the horizon (no internet): which planets are up tonight, the
+   moon's phases, the moon passing a planet, meteor shower peaks,
+   eclipses, equinoxes and solstices, and how sunset moves this week. It
+   follows "See your sky" too. Under it is the wish counter: shooting
+   stars caught on this phone, with a badge at 1, 10, 25, 50 and 100.
+   ====================================================================== */
+const FULL_MOON_NAMES = ["Wolf", "Snow", "Worm", "Pink", "Flower", "Strawberry", "Buck", "Sturgeon", "Harvest", "Hunter's", "Beaver", "Cold"];
+const WISH_BADGES = [[1, "First wish"], [10, "Stargazer"], [25, "Night owl"], [50, "Star catcher"], [100, "Meteor master"]];
+const NEAR_MOON_DEG = 5; // the moon passing closer than this to a planet makes the list
+const NEAR_PLANETS_DEG = 2.5; // and two planets closer than this
+const GLARE_DEG = 15; // a planet closer than this to the sun is lost in its glare
+const HOUR_MS = 3600000;
+
+function wishCount() {
+  try {
+    return parseInt(localStorage.getItem(WISHES_KEY), 10) || 0;
+  } catch (e) {
+    return 0;
+  }
+}
+
+// "Today", "Tomorrow" or "Sat Oct 18", in the sky's time zone.
+function dayLabel(ms, today) {
+  const p = localParts(new Date(ms));
+  const ahead = Math.round((zoneMidnight(p.y, p.m, p.d) - today) / 86400000);
+  if (ahead === 0) return "Today";
+  if (ahead === 1) return "Tomorrow";
+  return `${p.weekday} ${MONTHS[p.m - 1]} ${p.d}`;
+}
+
+// "Jupiter", "Jupiter and Saturn", "Mars, Jupiter and Saturn"
+function listWords(words) {
+  return words.length < 3 ? words.join(" and ") : `${words.slice(0, -1).join(", ")} and ${words[words.length - 1]}`;
+}
+
+// Everything worth a look in the 7 days from the start of t's day:
+// a list of { at, when, text }, in order.
+function skyWeek(t) {
+  const p = localParts(t);
+  const start = zoneMidnight(p.y, p.m, p.d);
+  const end = start + 7 * 86400000;
+  const events = [];
+  const add = (at, text, when) => events.push({ at, text, when: when || dayLabel(at, start) });
+  const north = YXE.lat >= 0;
+
+  // Narrows a change (f goes from below 0 to 0 or above) between a and b
+  // down to under a second.
+  const narrow = (f, a, b) => {
+    for (let i = 0; i < 13; i++) {
+      const mid = (a + b) / 2;
+      if (f(new Date(mid)) < 0) a = mid; else b = mid;
+    }
+    return b;
+  };
+
+  // Planets and the sun on the sky's map (radians), for a moment
+  const planetsAt = (when) => PLANETS.map((planet) => {
+    const [ra, dec] = planetRaDec(planet.orbit, when);
+    return { name: planet.name, ra: ra * D2R, dec: dec * D2R };
+  });
+  const sunGap = (body, sun) => skyGap(body.ra, body.dec, sun.ra, sun.dec); // degrees
+
+  // When to look for something at moment "at": after dark that evening
+  // or before dawn that morning, whichever has it higher (6°+).
+  const viewing = (at, raDeg, decDeg) => {
+    const day = sunDay(new Date(at));
+    if (!day.rise || !day.set) return null;
+    const evening = day.set + HOUR_MS, morning = day.rise - HOUR_MS;
+    const eveAlt = altAz(raDeg, decDeg, new Date(evening)).alt;
+    const mornAlt = altAz(raDeg, decDeg, new Date(morning)).alt;
+    if (Math.max(eveAlt, mornAlt) < 6) return null;
+    return eveAlt >= mornAlt ? { at: evening, words: "after dark" } : { at: morning, words: "before dawn" };
+  };
+
+  // Tonight's planets: up an hour after sunset, clear of the glare
+  const today = sunDay(new Date(start + 12 * HOUR_MS));
+  if (today.set) {
+    const dusk = new Date(today.set + HOUR_MS);
+    const sun = sunPosition(dusk);
+    const up = planetsAt(dusk).filter((b) => sunGap(b, sun) > GLARE_DEG && altAz(b.ra * R2D, b.dec * R2D, dusk).alt > 6);
+    add(start, up.length ? `${listWords(up.map((b) => b.name))} ${up.length > 1 ? "are" : "is"} up after dark` : "No bright planets up after dark", "Tonight");
+  }
+
+  // Step through the week an hour at a time, keeping last hour's numbers
+  // to spot the moments things change.
+  const phaseOff = (q) => (when) => ((moonPhase(when) - q + 1.5) % 1) - 0.5; // -0.5..0.5, 0 at phase q
+  let prev = null;
+  for (let at = start; at <= end; at += HOUR_MS) {
+    const when = new Date(at);
+    const sun = sunPosition(when);
+    const moon = moonRaDec(when);
+    const planets = planetsAt(when);
+    const nowStep = {
+      at,
+      phase: moonPhase(when),
+      dec: sun.dec,
+      moonGaps: planets.map((b) => skyGap(moon.ra, moon.dec, b.ra, b.dec)),
+      pairGaps: planets.map((a, i) => planets.map((b, j) => (j > i ? skyGap(a.ra, a.dec, b.ra, b.dec) : Infinity))),
+      glare: planets.map((b) => sunGap(b, sun) < GLARE_DEG),
+      planets,
+    };
+    if (prev) {
+      // The moon's quarters
+      [0, 0.25, 0.5, 0.75].forEach((q) => {
+        const f = phaseOff(q);
+        const a = f(new Date(prev.at)), b = f(when);
+        if (a < 0 && b >= 0 && b - a < 0.2) {
+          const exact = narrow(f, prev.at, at);
+          const m = localParts(new Date(exact)).m;
+          add(exact, [
+            "New moon · darkest nights for stars",
+            "First quarter moon · half lit in the evening",
+            `Full moon · the ${FULL_MOON_NAMES[m - 1]} Moon`,
+            "Last quarter moon · half lit before dawn",
+          ][q * 4]);
+        }
+      });
+      // Equinoxes (the sun crosses the equator)
+      if ((prev.dec < 0) !== (sun.dec < 0)) {
+        const spring = (sun.dec > 0) === north;
+        add(at, `${spring ? "Spring" : "Fall"} equinox · day and night almost equal`);
+      }
+      // Solstices (the sun turns back)
+      if (prev.turn != null) {
+        const turn = sun.dec - prev.dec;
+        if ((turn < 0) !== (prev.turn < 0)) {
+          const longest = (prev.turn > 0) === north;
+          add(at, longest ? "Summer solstice · the longest day of the year" : "Winter solstice · the shortest day, the light comes back from here");
+        }
+      }
+    }
+    nowStep.turn = prev ? sun.dec - prev.dec : null;
+    // A close pass is the hour with the smallest gap (a dip between the
+    // hour before and after), so it's judged one hour late.
+    if (prev && prev.before) {
+      planets.forEach((b, i) => {
+        const g = prev.moonGaps[i];
+        if (g < NEAR_MOON_DEG && g <= prev.before.moonGaps[i] && g < nowStep.moonGaps[i] && !prev.glare[i]) {
+          const pl = prev.planets[i];
+          const look = viewing(prev.at, pl.ra * R2D, pl.dec * R2D);
+          if (look) add(look.at, `Moon near ${b.name} · about ${Math.max(1, Math.round(g))}° apart, ${look.words}`);
+        }
+        for (let j = i + 1; j < planets.length; j++) {
+          const pg = prev.pairGaps[i][j];
+          if (pg < NEAR_PLANETS_DEG && pg <= prev.before.pairGaps[i][j] && pg < nowStep.pairGaps[i][j] && !prev.glare[i] && !prev.glare[j]) {
+            const pl = prev.planets[i];
+            const look = viewing(prev.at, pl.ra * R2D, pl.dec * R2D);
+            if (look) add(look.at, `${b.name} and ${planets[j].name} close together · ${pg.toFixed(1)}° apart, ${look.words}`);
+          }
+        }
+      });
+    }
+    nowStep.before = prev ? { moonGaps: prev.moonGaps, pairGaps: prev.pairGaps } : null;
+    prev = nowStep;
+  }
+
+  // Meteor shower peaks (the morning after the best night)
+  for (const shower of SHOWERS) {
+    for (const y of [p.y, p.y + 1]) {
+      const peak = zoneMidnight(y, shower.m, shower.d) + 6 * HOUR_MS;
+      if (peak < start || peak >= end) continue;
+      const bright = moonLit(moonPhase(new Date(peak))) > 0.6 && moonAltitude(new Date(peak)) > 0;
+      add(peak, `${shower.name} meteor shower peaks before dawn · up to ${shower.zhr} an hour${bright ? ", bright moon" : " in a dark sky"}`);
+    }
+  }
+
+  // Eclipses that can be seen from here, checked every 15 minutes
+  let ecl = null;
+  for (let at = start; at <= end + 15 * 60000; at += 15 * 60000) {
+    const e = at <= end ? visibleEclipse(new Date(at)) : null;
+    if (e && (!ecl || e.share > ecl.share)) ecl = { ...e, at };
+    else if (!e && ecl) {
+      add(ecl.at, `${ecl.total ? "Total" : "Partial"} ${ecl.kind} eclipse · deepest at ${clock(new Date(ecl.at))}`);
+      ecl = null;
+    }
+  }
+
+  events.sort((a, b) => a.at - b.at);
+
+  // How sunset moves over the week
+  const last = sunDay(new Date(start + 6 * 86400000 + 12 * HOUR_MS));
+  if (today.set && last.set) {
+    const lp = localParts(new Date(last.set));
+    events.push({ at: end, when: "This week", text: `Sunset goes from ${clock(new Date(today.set))} today to ${clock(new Date(last.set))} by ${lp.weekday}` });
+  }
+  return events;
+}
+
+// The wish counter under the list.
+function showWishes(node) {
+  if (!node) return;
+  const count = wishCount();
+  if (!count) {
+    node.replaceChildren("On a dark night, tap a shooting star to make a wish.");
+    return;
+  }
+  const earned = WISH_BADGES.filter(([n]) => count >= n);
+  const next = WISH_BADGES.find(([n]) => count < n);
+  const badges = el("span", "sky-week__badges");
+  earned.forEach(([, name]) => badges.append(el("span", "sky-week__badge", name)));
+  node.replaceChildren(
+    el("strong", "", `${count} ${count === 1 ? "wish" : "wishes"} on this phone`),
+    badges,
+    next ? el("span", "sky-week__next", `Next badge at ${next[0]}`) : ""
+  );
+}
+
+function setUpSkyWeek() {
+  const box = document.querySelector("[data-sky-week]");
+  if (!box) return;
+  const list = box.querySelector("[data-sky-week-list]");
+  const note = box.querySelector("[data-sky-week-note]");
+  // After the page has drawn, so it doesn't hold up the opening spin
+  setTimeout(() => {
+    list.replaceChildren(...skyWeek(now()).map((e) => {
+      const row = el("li", "sky-week__item");
+      row.append(el("span", "sky-week__when", e.when), el("span", "sky-week__what", e.text));
+      return row;
+    }));
+    if (note) note.textContent = `Worked out on this phone for ${YXE.home ? "Saskatoon" : "your sky"}.`;
+    showWishes(box.querySelector("[data-wishes]"));
+    box.hidden = false;
+    reveal(box);
+  }, 0);
 }
 
 /* ======================================================================
@@ -3345,11 +3740,16 @@ function setUpMarketLight() {
 async function init() {
   setUpHorizon();
   setUpSkySwitch();
+  setUpSkyWeek();
   rememberPlays();
   setUpContinue();
   setUpMarketLight();
   setUpContactForm();
   setUpNow();
+
+  // The offline helper (sw.js): keeps a copy of the site on this phone so
+  // it still opens with no signal.
+  if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
 
   // Keep the footer year current.
   document.querySelectorAll("[data-year]").forEach((n) => {
