@@ -45,7 +45,7 @@
     "link": "https://jxstrr0.github.io/GarageToGlory/",
     "code": "https://github.com/Jxstrr0/GarageToGlory",
     "image": "assets/covers/garage-to-glory.jpg",
-    "featured": true
+    "featured": false
   },
   {
     "title": "Outpost",
@@ -69,7 +69,7 @@
     "link": "https://jxstrr0.github.io/SeasonTicket/",
     "code": "https://github.com/Jxstrr0/SeasonTicket",
     "image": "assets/covers/season-ticket.jpg",
-    "featured": false
+    "featured": true
   },
   {
     "title": "AI Trading Journal",
