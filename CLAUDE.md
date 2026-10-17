@@ -297,6 +297,33 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   page's `<head>` applies it before paint. The home page also has the
   "Continue?" memory card (`kelbo.lastPlayed`, `kelbo.visits`, set when any
   Play button is tapped) and the NYSE market light on the Trading tile.
+- Tilt sky: `setUpMotion` (home hero `[data-motion-switch]`, shown only
+  with `pointer: coarse` and DeviceOrientationEvent; iPhone
+  `requestPermission` after the tap; choice in `localStorage["kelbo.motion"]`,
+  so page-head skies follow too). Tilt sets `--tilt-x/--tilt-y` (-1..1,
+  `TILT_DEG`, "level" drifts with `TILT_SETTLE`); the translate rules on
+  stars, meteors, aurora, moon and clouds are in the no-preference block.
+  The compass (`webkitCompassHeading`, or 360 − alpha on Android's
+  `deviceorientationabsolute`) sets `skyFacing`; star, planet and meteor
+  radiant x always go through `skyX(az)` (180 = south, never hard-code
+  `(az - 90) / 180`). It adds `.horizon__facing` ("Facing north", home only)
+  and `horizon--sun-behind`/`horizon--moon-behind` (dimmed).
+- Sky this week (`[data-sky-week]` under the Now strip, home only):
+  `skyWeek(t)` steps the 7 days from local midnight hourly: tonight's
+  planets (sunset + 1 h, alt > 6°, > `GLARE_DEG` from the sun), moon
+  quarters (`FULL_MOON_NAMES` by month), moon–planet passes under
+  `NEAR_MOON_DEG` and planet pairs under `NEAR_PLANETS_DEG` (geocentric,
+  with `viewing` picking after dark / before dawn), equinoxes and
+  solstices, `SHOWERS` peaks, `visibleEclipse` every 15 min, and the
+  sunset trend. `skyGap` returns degrees. `showWishes` renders the wish
+  count and `WISH_BADGES` (a badge also shows in the tap tip).
+- Offline: `sw.js` (root, registered in `init`) precaches `CORE` and is
+  network-first for same-origin GETs (saved copy on failure, `index.html`
+  for unknown pages offline) and cache-first for Google Fonts. Bump `CACHE`
+  if it ever serves stale files; add new top-level pages to `CORE`.
+- Page changes: cross-document view transitions (`@view-transition`)
+  with `.site-header` and `.page-head .horizon` named so they stay put;
+  all inside the no-preference block.
 - Motion lives at the bottom of `style.css`, all inside
   `prefers-reduced-motion: no-preference`; `main.js` handles scroll reveal
   and smooth filtering (FLIP) and skips both when reduce motion is on. Content must never depend on JS or
