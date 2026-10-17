@@ -15,6 +15,7 @@ you save on the `main` branch goes live within a minute or two.
 | `index.html` | Home page: the Longlight Interactive name, game cards, Games / Trading / AI tiles, contact |
 | `about.html` | The About page: your bio and the "player card" facts |
 | `projects.html` | The full projects page with status filters |
+| `whats-new.html` | The newest version and latest change for each project, built from `projects.json` (no dates, since the file has none) |
 | `games.html` | The Games section: every project with `"category": "Game"` |
 | `trading.html` | The Trading section: every project with `"category": "Trading"` |
 | `ai.html` | The AI section: every project with `"category": "AI"` |
@@ -102,7 +103,9 @@ Paste it after the last one and change the values:
   `latest` is a few words on what changed. Either can stay `""`, and the
   line disappears if both are empty. Red Skies and Prairie Engine Works
   show the version number their game pages report; fill in `latest` when
-  you ship something.
+  you ship something. The What's new page (`whats-new.html`) lists every
+  project that has a version or a `latest`, in the same order as this
+  file, so updating these two fields updates that page too.
 - **link**: a web address, or leave it as `""` for no link. A link can
   also point to a page in this repo later, like `tools/prediction-tracker/`.
 - **code**: the GitHub repo address, or `""`. Shows a "See the code" link.

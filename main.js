@@ -319,6 +319,78 @@ function setUpCategory(listEl, projects) {
   fillList(listEl, sortByProgress(inThis), "Nothing here yet. Check back soon.");
 }
 
+// What's new page: every project that has a "version" or a "latest" line,
+// in the same order as projects.json. Nothing to edit here: change the
+// version and latest in projects.json and this page follows.
+function setUpNews(listEl, projects) {
+  const rows = projects.filter(
+    (p) => String(p.version || "").trim() || String(p.latest || "").trim()
+  );
+  listEl.replaceChildren();
+  if (rows.length === 0) {
+    listEl.append(el("li", "project-list__note", "Nothing to report yet. Check back soon."));
+    return;
+  }
+  rows.forEach((p, i) => {
+    const row = renderNews(p);
+    row.style.setProperty("--i", i % 4);
+    listEl.append(row);
+    reveal(row);
+  });
+}
+
+// One row on the What's new page: small cover, name, "v1.4 · Added night
+// mode", and the same Play / code links as the project card.
+function renderNews(project) {
+  const title = project.title || "Untitled";
+  const status = findStatus(project.status);
+  const version = String(project.version || "").trim().replace(/^v/i, "");
+  const latest = String(project.latest || "").trim();
+
+  const row = el("li", "news");
+  const cover = el("div", "news__cover");
+  cover.dataset.cat = String(project.category || "").trim().toLowerCase();
+  if (project.image) {
+    const img = el("img");
+    img.src = project.image;
+    img.alt = ""; // decoration: the title is right beside it
+    img.width = 640;
+    img.height = 480;
+    img.loading = "lazy";
+    cover.append(img);
+  } else {
+    cover.append(el("span", "project__initials", initials(title)));
+  }
+  row.append(cover);
+
+  const body = el("div", "news__body");
+  body.append(el("h2", "news__title", title));
+  const line = el("p", "news__line");
+  if (version) line.append(el("strong", null, "v" + version));
+  if (version && latest) line.append(" · ");
+  if (latest) line.append(latest);
+  body.append(line);
+  body.append(el("p", "news__status", status.label));
+
+  const links = el("p", "project__links");
+  if (project.link) {
+    const link = el("a", isGame(project) ? "button button--play" : "project__link",
+      isGame(project) ? "Play it" : "Take a look →");
+    link.href = project.link;
+    link.setAttribute("aria-label", (isGame(project) ? "Play " : "Take a look at ") + title);
+    links.append(link);
+  }
+  if (project.code) {
+    const code = el("a", "project__link", "See the code →");
+    code.href = project.code;
+    code.setAttribute("aria-label", "See the code for " + title);
+    links.append(code);
+  }
+  if (links.children.length) body.append(links);
+  row.append(body);
+  return row;
+}
+
 // Home page tiles: "4 projects" under each section name.
 function fillCategoryCounts(projects) {
   document.querySelectorAll("[data-category-count]").forEach((node) => {
@@ -3148,6 +3220,7 @@ async function init() {
   lists.forEach((listEl) => {
     if (listEl.dataset.projects === "featured") setUpFeatured(listEl, projects);
     else if (listEl.dataset.projects === "category") setUpCategory(listEl, projects);
+    else if (listEl.dataset.projects === "news") setUpNews(listEl, projects);
     else setUpAll(listEl, projects);
   });
 }
