@@ -228,7 +228,7 @@ horizon line at sunset. In the last 20 minutes before sunset the purple sky
 warms up, and when the sun goes down the whole site switches to its dark
 theme and the real stars come out. It's all worked out on the visitor's phone from the
 date and time, so there's no internet service or key involved (apart
-from the optional weather and northern lights, below).
+from the optional weather, air quality and northern lights, below).
 
 - **The ☀/☾ button** in the header lets a visitor pick light or dark
   instead. Tap it to go light → dark → back to following the sun. Their
@@ -374,11 +374,13 @@ from the optional weather and northern lights, below).
     faint ring through them. Preview `?at=2027-01-12T11:00&weather=sundogs`.
   - **Wildfire smoke:** when the air is smoky (from Open-Meteo's free air
     quality feed), the sky goes hazy, the sun turns a deeper red and loses
-    its halo, and the readout says "Smoky out there today". `SMOKE_PM` in
-    `main.js` sets how much smoke it takes. Preview `?weather=smoke`.
+    its halo, and the readout says "Smoky out there today" ("Thick smoke
+    today" on a bad day, like the preview). `SMOKE_PM` in `main.js` sets
+    how much smoke it takes. Preview `?at=noon&weather=smoke`.
   - **Rainbow:** just after rain, with the sun out and fairly low, a
     rainbow (and a faint second one) appears on the far side of the sky
-    from the sun, and the readout says which way to look. Preview
+    from the sun (never under or round it), and the readout says which
+    way to look. Preview
     `?at=2026-09-10T17:30&weather=rainbow`.
   - **Heat shimmer:** from 28°C (`HOT_C`), the horizon line wobbles and
     the air above it ripples. Preview `?at=2027-07-15T15:00&weather=hot`.
@@ -386,8 +388,8 @@ from the optional weather and northern lights, below).
   where the sun is at noon. Its shadow on the ground follows the real sun:
   long and off to the right in the morning, short and pointing at you at
   noon, long and off to the left before sunset. The readout tells you how
-  long your own shadow is right now ("Your shadow is 2.4× your height
-  right now"). Heavy cloud takes the shadow away. At night a little light
+  long your own shadow is right now ("Your shadow is 2.4× your
+  height"). Heavy cloud takes the shadow away. At night a little light
   glows at the top.
 - **The ground through the year:** purple prairie crocuses dot the horizon
   in April and early May, young wheat lines it in June and July, and it
@@ -400,8 +402,10 @@ from the optional weather and northern lights, below).
   - **A jet** crosses high up every minute and a half or so by day. Its
     contrail is short on a warm, dry day and hangs about for up to half a
     minute on a cold, damp one.
-  - **A hawk** circles on windy afternoons (20 km/h or more), drifting
-    with the wind. At weekends it's **a kite** on a long string instead.
+  - **A hawk** circles on windy weekday afternoons (20 km/h or more,
+    above freezing, sun well up), drifting with the wind. In Saskatoon's
+    sky it only shows from April to October, when the hawks are around.
+    At weekends it's **a kite** on a long string instead (any month).
   - Preview any of them with `?critter=` plus `leaves`, `jet`, `hawk`,
     `kite`, `geese` or `fireflies` (add `&weather=windy` for a strong
     wind). `JET_EVERY_S` and `HAWK_EVERY_S` in `main.js` set how often.
@@ -425,8 +429,8 @@ from the optional weather and northern lights, below).
   theirs: their sunrise and sunset in their own time zone, their moon,
   stars, planets, eclipses, meteor showers, weather and northern (or
   southern) lights. The readout says "over you" instead of "over
-  Saskatoon". Their location is kept only on their device; the only place
-  it goes is the weather check (Open-Meteo, rounded). **Back to
+  Saskatoon". Their location is kept only on their device; the only places
+  it goes are the weather and air quality checks (Open-Meteo, rounded). **Back to
   Saskatoon** switches it back. Geese, fireflies, autumn leaves, the
   crocuses and wheat, and the usual winter snow stay Saskatoon-only,
   since they follow Saskatoon's calendar.

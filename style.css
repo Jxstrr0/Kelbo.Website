@@ -673,10 +673,12 @@ img {
   /* In wildfire smoke (--smoke from main.js, 0..1) the sun turns a deeper
      red and loses its halo, rays and most of its glow */
   --sun-base: color-mix(in srgb, var(--accent), var(--ll-slate) calc(var(--smoke, 0) * 22%));
-  background: var(--accent);
+  background-color: var(--accent);
   /* The disc: a warm, paler core easing out to clay, a touch darker at
-     the very edge (the real sun is dimmer at its rim) */
-  background: radial-gradient(circle,
+     the very edge (the real sun is dimmer at its rim). Kept separate from
+     the plain colour above, so browsers without color-mix() still get a
+     clay disc. */
+  background-image: radial-gradient(circle,
     color-mix(in srgb, var(--sun-base), var(--ll-ivory) calc(28% * (1 - var(--smoke, 0)))) 0%,
     var(--sun-base) 52%,
     color-mix(in srgb, var(--sun-base) 86%, var(--ll-slate)) 100%);
@@ -847,7 +849,8 @@ img {
 .horizon--spin .horizon__moon,
 .horizon--spin .horizon__glint,
 .horizon--spin .horizon__ray,
-.horizon--spin .horizon__sundogs {
+.horizon--spin .horizon__sundogs,
+.horizon--spin .horizon__shadow {
   transition: none;
 }
 
@@ -1078,7 +1081,10 @@ img {
 /* Geese and fireflies */
 .horizon__critters {
   position: absolute;
-  inset: 0 0 auto 0;
+  top: 0;
+  left: 50%;
+  width: 100vw; /* full-bleed like the line and ground, so things fly in from the screen's edges */
+  margin-left: -50vw;
   height: var(--sky-height);
   overflow: hidden;
   color: var(--ll-slate);
@@ -1272,7 +1278,7 @@ img {
    outside it the other way round, and the sky a touch brighter inside.
    It fades out toward the ground. */
 .horizon__rainbow {
-  --bow-r: calc(var(--sky-height) * 0.8);
+  --bow-r: min(calc(var(--sky-height) * 0.8), 30vw); /* smaller on narrow phones */
   --bow-box: calc(var(--bow-r) * 2.5); /* room for both bows, centred on their middle */
   --to-ground: calc((1.25 - var(--bow-d, 0.3)) * var(--bow-r)); /* from the box's top down to the horizon */
   position: absolute;
@@ -1302,19 +1308,26 @@ img {
    a bright spot where it crosses the sun's height on either side. The
    box is centred on the sun, so it moves with it, and is wider than the
    ring (--dog-pad each side) so the dogs fit inside: the mask that fades
-   the ring's top also cuts off anything outside the box. */
+   the ring's top also cuts off anything outside the box. The fade is
+   measured from the top of the sky, so a high sun's ring doesn't end in
+   a flat cut there. */
 .horizon__sundogs {
   --dog-r: calc(var(--sun-size) * 1.45);
   --dog-pad: calc(var(--sun-size) * 0.5);
+  /* Where the box's top sits (negative = above the top of the sky) */
+  --dog-top: calc((1 - var(--sun-alt)) * (var(--sky-height) - var(--sun-size) / 2) + var(--sun-size) / 2 - var(--dog-r));
+  /* The ring's fade starts at the top of the sky (or 4% down the box,
+     whichever is lower), so it never meets the sky's top as a flat cut */
+  --dog-fade: max(4%, calc(-1 * var(--dog-top)));
   position: absolute;
   left: calc(var(--sun-x) * (100% - var(--sun-size)) + var(--sun-size) / 2 - var(--dog-r) - var(--dog-pad));
-  top: calc((1 - var(--sun-alt)) * (var(--sky-height) - var(--sun-size) / 2) + var(--sun-size) / 2 - var(--dog-r));
+  top: var(--dog-top);
   width: calc((var(--dog-r) + var(--dog-pad)) * 2);
   height: calc(var(--dog-r) * 2);
   background: radial-gradient(circle var(--dog-r), rgba(217, 119, 87, 0) 88%, rgba(217, 119, 87, 0.3) 92%, rgba(250, 249, 245, 0.22) 96%, rgba(250, 249, 245, 0) 100%);
   /* The top of the ring fades away, so it never ends in a hard edge */
-  -webkit-mask: linear-gradient(to bottom, transparent 4%, #000 36%);
-  mask: linear-gradient(to bottom, transparent 4%, #000 36%);
+  -webkit-mask: linear-gradient(to bottom, transparent var(--dog-fade), #000 calc(var(--dog-fade) + var(--sun-size) * 0.45));
+  mask: linear-gradient(to bottom, transparent var(--dog-fade), #000 calc(var(--dog-fade) + var(--sun-size) * 0.45));
   opacity: var(--sundogs, 0);
   transition: top 1200ms var(--ease), left 1200ms var(--ease), opacity 3s var(--ease);
 }
@@ -1396,17 +1409,18 @@ img {
   filter: drop-shadow(0 0 2px rgba(217, 119, 87, 0.9));
 }
 
-/* Its shadow, on the ground strip (--shadow: 0..1 from main.js) */
+/* Its shadow, on the ground strip (--land-shadow: 0..1 from main.js),
+   drawn over the snow band so it stays joined to the elevator's foot */
 .horizon__shadow {
   position: absolute;
-  z-index: 1;
+  z-index: 2;
   left: 50%;
   width: 100vw;
   margin-left: -50vw;
   top: calc(var(--sky-height) + 3.5px);
   height: var(--ground-height);
   overflow: hidden;
-  opacity: calc(var(--shadow, 0) * 0.4);
+  opacity: calc(var(--land-shadow, 0) * 0.4);
   transition: opacity 1200ms var(--ease);
   pointer-events: none;
 }
@@ -1497,6 +1511,30 @@ img {
 
 :root[data-theme="dark"] .horizon__crocuses {
   opacity: 0.45;
+}
+
+/* Older browsers without color-mix() would drop the mixed colours above
+   (they hold var(), so the browser can't fall back), so they get plain
+   brand colours instead */
+@supports not (color: color-mix(in srgb, red, blue)) {
+  .leaf--gold,
+  .leaf--rust,
+  .horizon--gold .horizon__wheat {
+    background: var(--ll-clay);
+  }
+
+  .horizon__wheat {
+    background: var(--ll-lilac);
+  }
+
+  .horizon__elevator path,
+  :root[data-theme="dark"] .horizon__elevator path {
+    fill: var(--ll-slate);
+  }
+
+  .crocus__heart {
+    fill: var(--ll-ivory);
+  }
 }
 
 /* The label from tapping a star, planet, the moon or the sun (or a wish).

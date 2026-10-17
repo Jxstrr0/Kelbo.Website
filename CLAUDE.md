@@ -178,12 +178,15 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   (only when the code or cover changes, so they don't jump).
   Lightning toggles `horizon--flash`. `weatherLine` and `auroraLine` join
   the readout turns. `snowOnGround` falls back to the calendar.
-  The day sky (each 0..1, all 0 without weather): `sunDogStrength` (≤ −10°C,
-  high cloud ≥ 10% or ≤ −25°C, sun 0..35°), `smokeStrength` (PM2.5 from
-  `SMOKE_PM`), `rainbowStrength` (`wet`, cloud < 85, sun 1..40°) and
-  `heatShimmer` (`HOT_C`); `sunHidden` is overcast or any weather kind.
+  The day sky: `sunDogStrength` (0..1; ≤ −10°C, high cloud ≥ 10% or
+  ≤ −25°C, sun 0..35°) and `rainbowStrength` (0..1; `wet`, cloud < 85,
+  sun 1..40°), both 0 without weather; `smokeStrength` (0..1 from `pm25`,
+  the separate air feed, from `SMOKE_PM`; day or night) and `heatShimmer`
+  (true/false, `HOT_C`, sun up); `sunHidden` is overcast or any weather kind.
   `placeOptics` (from `placeSun`) sets `--sundogs`, `--rainbow`, `--bow-x`
-  (1 − sun x) and `--bow-d` (sun alt / 42) for `.horizon__sundogs`
+  (1 − sun x, pushed out past the sun's side when the outer bow would
+  reach it; sizes in `scene.sky`, measured once like `scene.land`) and
+  `--bow-d` (sun alt / 42) for `.horizon__sundogs`
   (centred on the sun, `--dog-pad` wider than the ring each side so its
   mask doesn't cut off the dogs) and `.horizon__rainbow` inside `.horizon__optics`
   (clip-path polygon clips top and bottom only, so they run to the screen
@@ -199,23 +202,25 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   projects each outline point by its height × 1/tan(alt) away from the
   sun's azimuth (`sunAltAz`, with `seenAltitude` adding refraction; east =
   left, north = down × `SHADOW_SQUASH`),
-  measuring the elevator once into `scene.land` (reset by a
-  ResizeObserver); `shadowStrength` sets `--shadow`. `groundSeason`
+  measuring the elevator once into `scene.land` (reset when the sky or
+  the window resizes); `shadowStrength` sets `--land-shadow` (z2, over
+  the snow band). `groundSeason`
   (`YXE.home`, not snowy) switches `.horizon__crocuses` (Apr 1 to May 5)
   and `.horizon__wheat` (young Jun–Jul, gold Aug 1 to Sep 15; masked
   stalk pattern, sways with `--wind`). The palette has no green, so young
   wheat is pale lilac-ivory.
-  `setUpCritters` (off with reduce motion; its box sits after
-  `.horizon__optics`): `.geese` V's
+  `setUpCritters` (off with reduce motion; its full-bleed box sits after
+  `.horizon__moon`, so they pass in front of the sun): `.geese` V's
   (SVG, flapping) every ~`GEESE_EVERY_S` in `geeseTime`, `.firefly`
   dots in `firefliesTime`, `.leaf`s in `leavesTime` (Sep–Oct, `YXE.home`;
   speed and direction from `breeze`, which defaults to 12 km/h from 290°),
   a `.jet` every ~`JET_EVERY_S` in `jetTime` with a `.contrail` of
   overlapping dashes that each fade over `contrailLinger` (3 s warm/dry
-  up to 30 s cold/damp), a circling `.hawk` (`HAWK_EVERY_S`, `hawkTime`:
-  `windyAfternoon` = known wind ≥ 20 km/h, 12–6 PM, weekdays, Apr–Oct at
-  home) and a `.kite` (SVG, sways about its string's ground end) on windy
-  weekend afternoons (`kiteTime`). `?critter=geese|fireflies|leaves|jet|hawk|kite`
+  up to 30 s cold/damp), a circling `.hawk` (`HAWK_EVERY_S`, `hawkTime` =
+  `windyAfternoon` on weekdays, Apr–Oct at home; `windyAfternoon` = known
+  wind ≥ 20 km/h, 12–6 PM, sun ≥ 8° and not hidden, ≥ 3°C or temp
+  unknown) and a `.kite` (SVG, sways about its string's ground end) when
+  `windyAfternoon` falls on a weekend (`kiteTime`). `?critter=geese|fireflies|leaves|jet|hawk|kite`
   forces one. In `setUpSkyTaps`, `puffCloud` (light theme, not reduce
   motion) breaks a tapped `.cloud` into `.cloud-puff`s and restarts its
   drift from the left; a tap right on the sun or moon still names it.

@@ -444,11 +444,11 @@ const YXE = { lat: 52.1332, lon: -106.67, tz: "America/Regina", elev: 486, home:
    A visitor can tap "See your sky" (in the home page hero) to see their
    own sun, moon, stars and weather instead of Saskatoon's. Their phone
    asks permission, and the spot is rounded to about 10 km and kept only
-   on their device (localStorage "kelbo.sky"); the weather check sends that
-   rounded spot to Open-Meteo. Everything sky-related reads YXE, so this
+   on their device (localStorage "kelbo.sky"); the weather and air quality
+   checks send that rounded spot to Open-Meteo. Everything sky-related reads YXE, so this
    just swaps its numbers before anything else runs. "Back to Saskatoon"
-   clears it. The calendar extras (geese, fireflies, the usual winter
-   snow) stay Saskatoon-only. */
+   clears it. The calendar extras (geese, fireflies, autumn leaves,
+   crocuses, wheat and the usual winter snow) stay Saskatoon-only. */
 const SKY_KEY = "kelbo.sky";
 try {
   const mine = JSON.parse(localStorage.getItem(SKY_KEY));
@@ -1509,14 +1509,14 @@ function setUpSkyTaps(scene, timeNow) {
 }
 
 /* ---------- Real weather and the northern lights ----------
-   The only parts of the sky that use the internet, both free with no
+   The only parts of the sky that use the internet, all free with no
    key: Open-Meteo for Saskatoon's weather right now (clouds drift past,
    rain or snow falls, lightning in a thunderstorm, fog low down, snow
    on the ground while there's real snow lying), and NOAA's space
    weather feed for the northern lights (soft lilac curtains at the top
    of the night sky when they're likely this far south). Each is checked
    at most every 15 or 20 minutes and kept on the phone in between. If
-   either can't be reached the sky just carries on without it.
+   any can't be reached the sky just carries on without it.
    Open-Meteo's free air quality feed adds the smoke in the air (for a
    smoky red sun), and the weather also brings high cloud, wind,
    dampness and recent rain for the day sky below (sun dogs, rainbows,
@@ -1688,9 +1688,11 @@ function snowOnGround(t) {
 }
 
 /* ---------- The day sky ----------
-   What the weather does to the daytime sky. Each one is 0 (not
-   happening) up to 1 (in full), worked out from the weather above, so
-   none of them show if the weather couldn't be fetched. */
+   What the weather does to the daytime sky. Sun dogs and the rainbow
+   are 0 (not happening) up to 1 (in full), worked out from the weather
+   above, so they don't show if the weather couldn't be fetched. Smoke
+   comes from the separate air quality reading (and shows at night too),
+   and heat shimmer is simply on or off. */
 const SMOKE_PM = 30; // PM2.5 where wildfire smoke starts to show: a hazy sky and a redder sun
 const HOT_C = 28; // the horizon shimmers at this temperature (°C) and up
 
@@ -1800,14 +1802,33 @@ function groundSeason(t) {
 function placeOptics(scene, t, sunX) {
   if (!scene.optics) return;
   scene.style.setProperty("--sundogs", sunDogStrength(t).toFixed(2));
-  const bow = rainbowStrength(t);
+  let bow = rainbowStrength(t);
+  if (bow && !scene.sky) {
+    // Sizes in pixels, measured once (and again after a resize)
+    const w = scene.optics.offsetWidth;
+    if (w) {
+      scene.sky = {
+        w,
+        sun: scene.querySelector(".horizon__sun").offsetWidth,
+        bow: scene.optics.querySelector(".horizon__rainbow").offsetWidth / 2.5, // --bow-r
+      };
+    } else bow = 0;
+  }
   scene.style.setProperty("--rainbow", bow.toFixed(2));
   if (!bow) return;
   // The bow's middle sits as far right of the middle of the sky as the
   // sun is left of it (and the other way round), and its centre is as
   // far under the horizon as the sun is above it, so a low sun makes a
-  // tall bow and a higher sun a shallow one.
-  scene.style.setProperty("--bow-x", (1 - sunX).toFixed(3));
+  // tall bow and a higher sun a shallow one. A rainbow is always on the
+  // far side of the sky from the sun, so when that would put the bow
+  // under or round the sun (around midday, or on a narrow phone), it's
+  // pushed out past the sun's side, and may run off the edge.
+  const { w, sun, bow: r } = scene.sky;
+  const sunAt = sunX * (w - sun) + sun / 2; // the sun's middle, as in .horizon__sun
+  const gap = r * 1.24 + sun * 0.6; // the outer bow's radius, plus the sun's and a little room
+  let at = (1 - sunX) * w;
+  if (Math.abs(at - sunAt) < gap) at = sunAt + (at >= sunAt ? gap : -gap);
+  scene.style.setProperty("--bow-x", (at / w).toFixed(3));
   scene.style.setProperty("--bow-d", (sunAltitude(t) / 42).toFixed(3));
 }
 
@@ -1866,9 +1887,12 @@ function setUpLand(scene) {
     crocuses.append(clump);
   }
   ground.after(shadow, elevator, el("div", "horizon__wheat"), crocuses);
-  scene.land = null; // measured on the first paint, and again whenever the sky changes size
-  if ("ResizeObserver" in window) new ResizeObserver(() => { scene.land = null; }).observe(scene);
-  else window.addEventListener("resize", () => { scene.land = null; });
+  scene.land = null; // measured on the first paint, and again whenever the sky or window changes size
+  const remeasure = () => { scene.land = null; scene.sky = null; };
+  if ("ResizeObserver" in window) new ResizeObserver(remeasure).observe(scene);
+  // The shadow strip is 100vw wide, so its left edge moves with the window
+  // even when the (capped) sky stays the same size
+  window.addEventListener("resize", remeasure);
 }
 
 // The sun's height and compass direction at moment t, in degrees.
@@ -1881,6 +1905,7 @@ function sunAltAz(t) {
 // (about half a degree at the horizon), which makes low shadows shorter.
 // Takes and gives degrees.
 function seenAltitude(alt) {
+  if (alt < -1) return alt; // the formula only holds near and above the horizon
   return alt + 1.02 / Math.tan((alt + 10.3 / (alt + 5.11)) * D2R) / 60;
 }
 
@@ -1902,8 +1927,11 @@ function placeShadow(scene, t) {
   const alt = seenAltitude(sun.alt);
   const az = sun.az;
   const show = shadowStrength(alt);
-  scene.style.setProperty("--shadow", show.toFixed(2));
-  if (!show) return;
+  scene.style.setProperty("--land-shadow", show.toFixed(2));
+  if (!show) {
+    scene.shadowShape.removeAttribute("points"); // no stale sunset shadow left lying there
+    return;
+  }
   if (!scene.land) {
     const box = scene.elevator.getBoundingClientRect();
     if (!box.width) return;
@@ -1924,14 +1952,15 @@ function placeShadow(scene, t) {
   scene.shadowShape.setAttribute("points", points.join(" "));
 }
 
-// "Your shadow is 2.4× your height right now", while the sun's out
+// "Your shadow is 2.4× your height", while the sun's out
 function shadowLine(t) {
   const alt = seenAltitude(sunAltitude(t));
   if (!shadowStrength(alt)) return "";
   const long = Math.round(10 / Math.tan(alt * D2R)) / 10; // to one decimal
-  if (long > 100) return "Your shadow is over 100× your height right now";
+  if (long > 100) return "Your shadow is over 100× your height";
+  if (long < 0.1) return "Barely any shadow, the sun's almost overhead";
   if (long > 0.95 && long < 1.05) return "Your shadow is as long as you are tall";
-  return `Your shadow is ${long < 10 ? long.toFixed(1) : Math.round(long)}× your height right now`;
+  return `Your shadow is ${long < 10 ? long.toFixed(1) : Math.round(long)}× your height`;
 }
 
 // Builds the weather layers once, then paintWeather switches them.
@@ -2054,8 +2083,7 @@ function jetTime(t) {
 }
 
 // A windy afternoon: a real wind of 20 km/h or more, noon to about 6
-// PM with the sun well up, dry and above freezing. Saskatoon's hawks
-// are only around from April to October.
+// PM with the sun well up, dry and above freezing.
 function windyAfternoon(t) {
   const { wind, known } = breeze();
   const p = localParts(t);
@@ -2063,6 +2091,8 @@ function windyAfternoon(t) {
   return !Number.isFinite(weather.temp) || weather.temp >= 3;
 }
 
+// Hawks on weekdays (kites at weekends). Saskatoon's hawks are only
+// around from April to October.
 function hawkTime(t) {
   const p = localParts(t);
   const weekend = p.weekday === "Sat" || p.weekday === "Sun";
@@ -2078,7 +2108,9 @@ function kiteTime(t) {
 function setUpCritters(scene, timeNow) {
   if (REDUCE_MOTION) return;
   const box = el("div", "horizon__critters");
-  (scene.optics || scene.querySelector(".horizon__stars")).after(box); // in front of the haze and rainbow
+  // In front of the sun, moon and clouds (they're all much closer), but
+  // behind the horizon line and the ground
+  (scene.querySelector(".horizon__moon") || scene.optics || scene.querySelector(".horizon__stars")).after(box);
 
   // One V of geese across the sky. The V points the way they're flying.
   function flock() {
@@ -2255,7 +2287,19 @@ function setUpCritters(scene, timeNow) {
       const k = small ? 0.65 : 1; // the kite's size
       const rise = h * (small ? 0.55 : 0.62); // how high it flies
       const reach = rise * 0.6; // how far downwind
-      const ground = dir < 0 ? w * (0.66 + Math.random() * 0.2) : w * (0.14 + Math.random() * 0.2);
+      // Where the string meets the ground: a few tries, keeping the kite
+      // clear of the sun if it can (a clay kite is hard to see on it)
+      const sun = scene.querySelector(".horizon__sun");
+      const sunSize = sun.offsetWidth;
+      const sky = scene.getBoundingClientRect();
+      const sunX = (parseFloat(scene.style.getPropertyValue("--sun-x")) || 0) * (sky.width - sunSize) + sunSize / 2 + sky.left - box.getBoundingClientRect().left;
+      const sunY = (1 - (parseFloat(scene.style.getPropertyValue("--sun-alt")) || 0)) * (h - sunSize / 2) + sunSize / 2;
+      let ground = 0, far = -1;
+      for (let i = 0; i < 8 && far < sunSize * 0.8 + 16 * k; i++) {
+        const spot = dir < 0 ? w * (0.66 + Math.random() * 0.2) : w * (0.14 + Math.random() * 0.2);
+        const gap = Math.hypot(spot + dir * reach - sunX, h - rise - sunY);
+        if (gap > far) { far = gap; ground = spot; }
+      }
       const width = reach + 26 * k, height = rise + 34 * k;
       kite = svgNode("svg", {
         class: "kite",
@@ -2287,7 +2331,7 @@ function setUpCritters(scene, timeNow) {
     if (document.hidden) return;
     const t = timeNow();
     fireflies(firefliesTime(t) || CRITTER === "fireflies");
-    kiteUp(kiteTime(t) || CRITTER === "kite");
+    if (!spinning) kiteUp(kiteTime(t) || CRITTER === "kite"); // not mid-spin, so it can see where the sun is
     if (spinning) return;
     const geese = CRITTER === "geese" ? 1 / 8 : geeseTime(t) ? 1 / GEESE_EVERY_S : 0;
     if (Math.random() < geese) flock();
