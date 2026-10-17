@@ -363,9 +363,50 @@ from the optional weather and northern lights, below).
   These follow the calendar, so they need no internet, and they're off
   with "reduce motion" on. Try `?at=2026-07-10T23:45` for fireflies.
   `GEESE_EVERY_S` in `main.js` sets how often a flock comes over.
-- Weather and the northern lights are the only parts of the site that
-  fetch anything. They send no personal details, just a request for
-  Saskatoon's weather and the latest space weather.
+- **The day sky:** the weather also brings a few daytime extras. Each one
+  only shows when the real conditions are right, and quietly stays away
+  if the weather can't be fetched:
+  - **Sun dogs:** on a cold day (about −10°C or colder) with thin high
+    cloud and a low sun, a bright spot sits either side of the sun with a
+    faint ring through them. Preview `?at=2027-01-12T11:00&weather=sundogs`.
+  - **Wildfire smoke:** when the air is smoky (from Open-Meteo's free air
+    quality feed), the sky goes hazy, the sun turns a deeper red and loses
+    its halo, and the readout says "Smoky out there today". `SMOKE_PM` in
+    `main.js` sets how much smoke it takes. Preview `?weather=smoke`.
+  - **Rainbow:** just after rain, with the sun out and fairly low, a
+    rainbow (and a faint second one) appears on the far side of the sky
+    from the sun, and the readout says which way to look. Preview
+    `?at=2026-09-10T17:30&weather=rainbow`.
+  - **Heat shimmer:** from 28°C (`HOT_C`), the horizon line wobbles and
+    the air above it ripples. Preview `?at=2027-07-15T15:00&weather=hot`.
+- **The grain elevator:** a prairie grain elevator stands on the horizon
+  where the sun is at noon. Its shadow on the ground follows the real sun:
+  long and off to the right in the morning, short and pointing at you at
+  noon, long and off to the left before sunset. The readout tells you how
+  long your own shadow is right now ("Your shadow is 2.4× your height
+  right now"). Heavy cloud takes the shadow away. At night a little light
+  glows at the top.
+- **The ground through the year:** purple prairie crocuses dot the horizon
+  in April and early May, young wheat lines it in June and July, and it
+  turns gold from August until harvest in mid September (the site's five
+  colours have no green, so the young wheat is pale instead). Saskatoon
+  calendar only. Preview `?at=2027-04-20T12:00` or `?at=2026-08-20T15:00`.
+- **Things passing by** (all off with "reduce motion"):
+  - **Autumn leaves** blow across in September and October, faster and
+    more of them in a real wind, going the way the wind blows.
+  - **A jet** crosses high up every minute and a half or so by day. Its
+    contrail is short on a warm, dry day and hangs about for up to half a
+    minute on a cold, damp one.
+  - **A hawk** circles on windy afternoons (20 km/h or more), drifting
+    with the wind. At weekends it's **a kite** on a long string instead.
+  - Preview any of them with `?critter=` plus `leaves`, `jet`, `hawk`,
+    `kite`, `geese` or `fireflies` (add `&weather=windy` for a strong
+    wind). `JET_EVERY_S` and `HAWK_EVERY_S` in `main.js` set how often.
+- **Tap a cloud** and it puffs apart and drifts off. A new cloud drifts in
+  from the left a while later.
+- Weather, the air quality and the northern lights are the only parts of
+  the site that fetch anything. They send no personal details, just a
+  request for Saskatoon's weather and air and the latest space weather.
 - **Eclipses:** worked out from the same sun and moon maths (no
   internet), within a few minutes of the real times. In a lunar eclipse
   the Earth's shadow, a deep copper red, creeps across the moon and covers
@@ -383,8 +424,9 @@ from the optional weather and northern lights, below).
   southern) lights. The readout says "over you" instead of "over
   Saskatoon". Their location is kept only on their device; the only place
   it goes is the weather check (Open-Meteo, rounded). **Back to
-  Saskatoon** switches it back. Geese, fireflies and the usual winter snow
-  stay Saskatoon-only, since they follow Saskatoon's calendar.
+  Saskatoon** switches it back. Geese, fireflies, autumn leaves, the
+  crocuses and wheat, and the usual winter snow stay Saskatoon-only,
+  since they follow Saskatoon's calendar.
 - **Seasons:** the ray coming off the sun reaches further in summer than in
   winter (full length on the longest day, a bit under half on the
   shortest). On the longest and shortest days of the year a badge appears

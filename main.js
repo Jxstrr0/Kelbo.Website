@@ -738,6 +738,8 @@ function placeSun(scene, t) {
   // The light on the ground fades in as the sun clears the horizon,
   // strongest when the sun is low.
   scene.style.setProperty("--glint-sun", (glint(y) * (0.55 + 0.45 * low)).toFixed(3));
+  placeOptics(scene, t, x);
+  placeShadow(scene, t);
   placeMoon(scene, t);
   placeEclipse(scene, t);
   placeStars(scene, t);
@@ -1449,6 +1451,42 @@ function setUpSkyTaps(scene, timeNow) {
     return list;
   }
 
+  // Tapping a cloud puffs it apart: it breaks into round puffs that
+  // drift off and fade, and the cloud starts over from the left edge a
+  // while later. By day only (clouds are barely there at night), and
+  // not with "reduce motion".
+  function puffCloud(px, py) {
+    if (REDUCE_MOTION || !scene.clouds || document.documentElement.dataset.theme === "dark") return false;
+    const hit = Array.from(scene.clouds.querySelectorAll(".cloud")).find((c) => {
+      const r = c.getBoundingClientRect();
+      // a little extra all round, and above for the bumps on top
+      return px >= r.left - 6 && px <= r.right + 6 && py >= r.top - r.height * 0.8 && py <= r.bottom + 6;
+    });
+    if (!hit) return false;
+    const r = hit.getBoundingClientRect();
+    const layer = scene.clouds.getBoundingClientRect();
+    for (let i = 0; i < 5; i++) {
+      const puff = el("i", "cloud-puff");
+      const size = r.height * (0.7 + Math.random() * 0.5);
+      puff.style.width = puff.style.height = `${size.toFixed(1)}px`;
+      puff.style.left = `${(r.left - layer.left + ((i + 0.5) / 5) * r.width - size / 2).toFixed(1)}px`;
+      puff.style.top = `${(r.top - layer.top + r.height / 2 - size / 2 - (i % 2) * r.height * 0.35).toFixed(1)}px`;
+      scene.clouds.append(puff);
+      const dx = ((i + 0.5) / 5 - 0.5) * r.width * 1.3 + (Math.random() - 0.5) * 20;
+      const dy = -r.height * (0.2 + Math.random() * 0.9);
+      puff.animate(
+        [{ transform: "translate(0, 0) scale(1)", opacity: 1 }, { transform: `translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px) scale(${(1.2 + Math.random() * 0.5).toFixed(2)})`, opacity: 0 }],
+        { duration: 1300 + Math.random() * 700, easing: "cubic-bezier(0.2, 0.7, 0.3, 1)" }
+      ).onfinish = () => puff.remove();
+    }
+    // Start the cloud's drift over, from just off the left edge
+    hit.style.animationName = "none";
+    void hit.offsetWidth;
+    hit.style.animationDelay = "0s";
+    hit.style.animationName = "";
+    return true;
+  }
+
   scene.addEventListener("click", (e) => {
     if (performance.now() - lastSkyDrag < 400) return; // the end of a swipe or hold
     const t = timeNow();
@@ -1459,6 +1497,11 @@ function setUpSkyTaps(scene, timeNow) {
     for (const item of targets(t)) {
       const gap = Math.max(0, Math.hypot(e.clientX - item.x, e.clientY - item.y) - item.r);
       if (gap < bestGap) { best = item; bestGap = gap; }
+    }
+    // A tap right on the sun or moon still names it, even behind a cloud
+    if (bestGap > 0 && puffCloud(e.clientX, e.clientY)) {
+      tip.hidden = true;
+      return;
     }
     if (best) show(best.x, best.y, best.r, best.title, best.detail);
     else tip.hidden = true;
@@ -1474,14 +1517,20 @@ function setUpSkyTaps(scene, timeNow) {
    of the night sky when they're likely this far south). Each is checked
    at most every 15 or 20 minutes and kept on the phone in between. If
    either can't be reached the sky just carries on without it.
-   Preview with ?weather=clear|cloudy|overcast|rain|snow|storm|fog and
-   ?kp=6 (any number 0..9). */
+   Open-Meteo's free air quality feed adds the smoke in the air (for a
+   smoky red sun), and the weather also brings high cloud, wind,
+   dampness and recent rain for the day sky below (sun dogs, rainbows,
+   heat shimmer, contrails, leaves in the wind, a hawk or a kite).
+   Preview with ?weather=clear|cloudy|overcast|rain|snow|storm|fog,
+   ?weather=sundogs|smoke|rainbow|hot|windy and ?kp=6 (any number 0..9). */
 const WEATHER_KEY = "kelbo.weather";
 const WEATHER_MS = 15 * 60000;
 const KP_KEY = "kelbo.kp";
 const KP_MS = 20 * 60000;
-let weather = null; // { code, cloud, temp, snow } once known
+const AIR_KEY = "kelbo.air";
+let weather = null; // { code, cloud, temp, snow, high, wind, windFrom, damp, wet } once known
 let kp = null; // the latest Kp index (0..9) once known
+let pm25 = null; // smoke and dust in the air (PM2.5, µg/m³) once known
 
 // What Open-Meteo's weather codes mean, in words for the readout
 const WEATHER_WORDS = {
@@ -1493,11 +1542,23 @@ const WEATHER_WORDS = {
   95: "Thunderstorm", 96: "Thunderstorm", 99: "Thunderstorm",
 };
 
-// Made-up weather for ?weather= previews: [code, cloud cover %, snow on the ground]
+// Made-up weather for ?weather= previews: [code, cloud cover %, snow on
+// the ground, and anything else to set: temp (°C), high (high cloud %),
+// wind (km/h), windFrom (degrees, 270 = from the west), damp (humidity
+// %), wet (rain in the last couple of hours) or pm (smoke, PM2.5)]
 const WEATHER_PREVIEWS = {
   clear: [0, 0, false], cloudy: [2, 55, false], overcast: [3, 100, false], rain: [63, 100, false],
   snow: [73, 100, true], storm: [95, 100, false], fog: [45, 100, false],
+  sundogs: [1, 30, true, { temp: -24, high: 40, damp: 80 }], smoke: [0, 5, false, { temp: 24, pm: 120 }],
+  rainbow: [2, 45, false, { temp: 17, wet: true }], hot: [0, 5, false, { temp: 33, damp: 30 }],
+  windy: [1, 25, false, { temp: 16, wind: 38, windFrom: 290 }],
 };
+
+// The ?weather= preview asked for, or null
+function weatherPreview() {
+  const name = new URLSearchParams(location.search).get("weather");
+  return Object.prototype.hasOwnProperty.call(WEATHER_PREVIEWS, name) ? WEATHER_PREVIEWS[name] : null;
+}
 
 // "rain", "snow", "storm", "fog" or "" for a weather code
 function weatherKind(code) {
@@ -1525,22 +1586,41 @@ async function cachedFetch(key, maxAge, url, pick) {
 }
 
 function loadWeather() {
-  const q = new URLSearchParams(location.search);
-  const preview = WEATHER_PREVIEWS[q.get("weather")];
+  const preview = weatherPreview();
   if (preview) {
-    weather = { code: preview[0], cloud: preview[1], temp: null, snow: preview[2] };
+    const more = preview[3] || {};
+    weather = Object.assign({ code: preview[0], cloud: preview[1], snow: preview[2], temp: null, wet: false }, more);
+    pm25 = Number.isFinite(more.pm) ? more.pm : null;
     return Promise.resolve();
   }
-  if (q.has("at")) return Promise.resolve(); // a preview of another time: today's weather wouldn't fit
+  if (new URLSearchParams(location.search).has("at")) return Promise.resolve(); // a preview of another time: today's weather wouldn't fit
   const url = `https://api.open-meteo.com/v1/forecast?latitude=${YXE.lat}&longitude=${YXE.lon}`
-    + "&current=temperature_2m,weather_code,cloud_cover,snow_depth";
+    + "&current=temperature_2m,weather_code,cloud_cover,cloud_cover_high,snow_depth,wind_speed_10m,"
+    + "wind_direction_10m,relative_humidity_2m,precipitation&hourly=precipitation&past_hours=2&forecast_hours=1";
   return cachedFetch(`${WEATHER_KEY}:${YXE.lat},${YXE.lon}`, WEATHER_MS, url, (d) => ({
     code: d.current.weather_code,
     cloud: d.current.cloud_cover,
     temp: d.current.temperature_2m,
     snow: d.current.snow_depth > 0,
+    high: d.current.cloud_cover_high,
+    wind: d.current.wind_speed_10m,
+    windFrom: d.current.wind_direction_10m,
+    damp: d.current.relative_humidity_2m,
+    // Any rain in the last couple of hours (for rainbows)
+    wet: d.current.precipitation > 0 || ((d.hourly && d.hourly.precipitation) || []).some((mm) => mm > 0),
   }))
     .then((w) => { weather = w; })
+    .catch(() => {});
+}
+
+// The smoke in the air: PM2.5, the fine particles that wildfire smoke is
+// mostly made of. Clean prairie air is under 10; a smoky day is 30 to
+// well over 100.
+function loadAir() {
+  if (weatherPreview() || new URLSearchParams(location.search).has("at")) return Promise.resolve(); // previews bring their own
+  const url = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${YXE.lat}&longitude=${YXE.lon}&current=pm2_5`;
+  return cachedFetch(`${AIR_KEY}:${YXE.lat},${YXE.lon}`, WEATHER_MS, url, (d) => d.current.pm2_5)
+    .then((pm) => { pm25 = Number.isFinite(pm) ? pm : null; })
     .catch(() => {});
 }
 
@@ -1607,6 +1687,242 @@ function snowOnGround(t) {
   return day >= 1125 || day <= 325;
 }
 
+/* ---------- The day sky ----------
+   What the weather does to the daytime sky. Each one is 0 (not
+   happening) up to 1 (in full), worked out from the weather above, so
+   none of them show if the weather couldn't be fetched. */
+const SMOKE_PM = 30; // PM2.5 where wildfire smoke starts to show: a hazy sky and a redder sun
+const HOT_C = 28; // the horizon shimmers at this temperature (°C) and up
+
+// True while the weather is falling or hiding the sun (rain, snow,
+// thunder, fog, or a sky that's all cloud).
+function sunHidden() {
+  return Boolean(weather && (weather.cloud >= 85 || weatherKind(weather.code)));
+}
+
+// How smoky it looks: a light haze from SMOKE_PM, the full deep red sun
+// from about 100 (a bad smoke day).
+function smokeStrength() {
+  if (pm25 == null || pm25 < SMOKE_PM) return 0;
+  return Math.min(1, 0.35 + (0.65 * (pm25 - SMOKE_PM)) / 70);
+}
+
+// "Smoky out there today", or "" when the air's clear.
+function smokeLine(t) {
+  if (!smokeStrength()) return "";
+  const when = sunAltitude(t) >= SUNRISE_ALT ? "today" : "tonight";
+  return pm25 >= 100 ? `Thick smoke ${when}` : `Smoky out there ${when}`;
+}
+
+// Sun dogs: a bright spot either side of a low sun, with a faint ring
+// through them. Ice crystals in thin high cloud bend the light, so they
+// need a cold day (about -10°C or colder), some high cloud (or bitter
+// cold, when the air itself glitters with ice), the sun up but under
+// 35°, and nothing lower down hiding it.
+function sunDogStrength(t) {
+  if (!weather || !Number.isFinite(weather.temp) || weather.temp > -10 || sunHidden()) return 0;
+  const high = Number.isFinite(weather.high) ? weather.high : 0;
+  if (high < 10 && weather.temp > -25) return 0;
+  const alt = sunAltitude(t);
+  if (alt < 0 || alt > 35) return 0;
+  return Math.min(1, alt / 2, (35 - alt) / 8); // fades in after sunrise, out as the sun climbs
+}
+
+function sunDogLine(t) {
+  return sunDogStrength(t) ? "Sun dogs out right now" : "";
+}
+
+// A rainbow: rain in the last couple of hours (or showers now), the sun
+// out and under 40° (the bow sits 42° out from the spot straight
+// opposite the sun, so a higher sun puts it under the horizon), and
+// enough gaps in the cloud for the sun to shine through.
+function rainbowStrength(t) {
+  if (!weather || !weather.wet || weather.cloud >= 85) return 0;
+  const kind = weatherKind(weather.code);
+  if (kind === "snow" || kind === "fog" || (Number.isFinite(weather.temp) && weather.temp < 1)) return 0;
+  const alt = sunAltitude(t);
+  if (alt < 1 || alt > 40) return 0;
+  return Math.min(1, (alt - 1) / 3, (40 - alt) / 6);
+}
+
+// "Rainbow weather · look east": the rainbow is always on the far side
+// of the sky from the sun.
+function rainbowLine(t) {
+  if (!rainbowStrength(t)) return "";
+  const p = sunPosition(t);
+  const away = (altAz(p.ra * R2D, p.dec * R2D, t).az + 180) % 360;
+  const names = ["north", "northeast", "east", "southeast", "south", "southwest", "west", "northwest"];
+  return `Rainbow weather · look ${names[Math.round(away / 45) % 8]}`;
+}
+
+// Heat shimmer over the horizon on a hot afternoon.
+function heatShimmer(t) {
+  return Boolean(weather && Number.isFinite(weather.temp) && weather.temp >= HOT_C && sunAltitude(t) > 0);
+}
+
+// The wind: its speed (km/h, a gentle 12 if it isn't known) and which
+// way it blows across the sky, 1 to the right or -1 to the left. The sky
+// faces south, so a wind from the west (the usual northwest wind in
+// Saskatoon too) blows things to the left.
+function breeze() {
+  const known = weather && Number.isFinite(weather.wind);
+  const from = known && Number.isFinite(weather.windFrom) ? weather.windFrom : 290;
+  return { wind: known ? weather.wind : 12, known, dir: Math.sin(from * D2R) > 0 ? 1 : -1 };
+}
+
+// How long a contrail hangs about, in ms: a few seconds on a warm, dry
+// day, up to half a minute on a cold, damp one (it's a trail of ice,
+// and damp air keeps it from drying out).
+function contrailLinger() {
+  if (!weather || !Number.isFinite(weather.temp)) return 6000;
+  const cold = Math.max(0, Math.min(1, (15 - weather.temp) / 35)); // 15°C: 0, -20°C: 1
+  const damp = Number.isFinite(weather.damp) ? Math.max(0, Math.min(1, (weather.damp - 40) / 55)) : 0.4;
+  return 3000 + 27000 * Math.sqrt(cold * damp);
+}
+
+// The prairie on the horizon, from the calendar (Saskatoon only):
+// "crocus" (prairie crocuses, Saskatchewan's flower) in April and early
+// May, "young" wheat in June and July, "gold" wheat from August until
+// harvest in mid September, otherwise "".
+function groundSeason(t) {
+  if (!YXE.home || snowOnGround(t)) return "";
+  const p = localParts(t);
+  const day = p.m * 100 + p.d;
+  if (day >= 401 && day <= 505) return "crocus";
+  if (day >= 601 && day <= 731) return "young";
+  if (day >= 801 && day <= 915) return "gold";
+  return "";
+}
+
+// Sun dogs, the rainbow and the smoky sun for moment t. placeSun calls
+// this (with the sun's place across the sky, 0..1), so they follow the
+// sun through the opening spin and a swipe too.
+function placeOptics(scene, t, sunX) {
+  if (!scene.optics) return;
+  scene.style.setProperty("--sundogs", sunDogStrength(t).toFixed(2));
+  const bow = rainbowStrength(t);
+  scene.style.setProperty("--rainbow", bow.toFixed(2));
+  if (!bow) return;
+  // The bow's middle sits as far right of the middle of the sky as the
+  // sun is left of it (and the other way round), and its centre is as
+  // far under the horizon as the sun is above it, so a low sun makes a
+  // tall bow and a higher sun a shallow one.
+  scene.style.setProperty("--bow-x", (1 - sunX).toFixed(3));
+  scene.style.setProperty("--bow-d", (sunAltitude(t) / 42).toFixed(3));
+}
+
+/* ---------- The grain elevator ----------
+   A prairie grain elevator stands on the horizon about where the sun is
+   at noon (due south). Its shadow lies on the ground and follows the
+   real sun: long and off to the right (northwest) after sunrise, short
+   and straight toward you at noon, long and off to the left (northeast)
+   before sunset. Heavy cloud takes it away. The readout says how long
+   your own shadow is: 1 ÷ tan(the sun's height) times your height. */
+// The elevator's outline: [x, y] in a 52 × 72 box, the ground at y = 72.
+// A driveway shed on the left, the tall main house with its cupola on
+// top, and the shorter annex on the right.
+const ELEVATOR = [[2, 72], [2, 58], [16, 52], [17, 20], [21, 15], [21, 6], [26, 1], [31, 6], [31, 15], [35, 20], [36, 28], [50, 31], [50, 72]];
+const ELEVATOR_W = 52;
+const ELEVATOR_H = 72;
+const ELEVATOR_MID = 26; // the middle of the main house, which stands on the noon spot
+const SHADOW_SQUASH = 0.3; // the ground is seen from low down, so shadows toward you look this much shorter
+
+function svgNode(tag, attrs) {
+  const node = document.createElementNS("http://www.w3.org/2000/svg", tag);
+  for (const name in attrs) node.setAttribute(name, attrs[name]);
+  return node;
+}
+
+// Builds the elevator, its shadow, the wheat and the crocuses (the
+// season ones stay hidden until paintWeather switches them on).
+function setUpLand(scene) {
+  const ground = scene.querySelector(".horizon__ground");
+  const elevator = svgNode("svg", { class: "horizon__elevator", viewBox: `0 0 ${ELEVATOR_W} ${ELEVATOR_H}` });
+  elevator.append(
+    svgNode("path", { d: `M${ELEVATOR.map((p) => p.join(" ")).join("L")}Z` }),
+    svgNode("circle", { class: "elevator__light", cx: 26, cy: 10, r: 1.6 }) // a light up top after dark
+  );
+  const shadow = svgNode("svg", { class: "horizon__shadow" });
+  scene.shadowShape = svgNode("polygon", {});
+  shadow.append(scene.shadowShape);
+  scene.elevator = elevator;
+  scene.shadow = shadow;
+
+  // Prairie crocuses: little clumps of two or three pale purple cups
+  // with gold hearts, dotted along the horizon
+  const crocuses = el("div", "horizon__crocuses");
+  for (let i = 0; i < 18; i++) {
+    const clump = svgNode("svg", { viewBox: "-8 -13 16 13" });
+    const n = 2 + Math.floor(Math.random() * 2);
+    for (let j = 0; j < n; j++) {
+      const flower = svgNode("g", { transform: `translate(${(j - (n - 1) / 2) * 4.5 + (Math.random() - 0.5) * 2} 0) scale(${0.75 + Math.random() * 0.35})` });
+      flower.append(
+        svgNode("path", { class: "crocus__cup", d: "M0 0C-3 -1 -3.4 -5 -2.8 -8.5L-1.3 -6.4L0 -10L1.3 -6.4L2.8 -8.5C3.4 -5 3 -1 0 0Z" }),
+        svgNode("circle", { class: "crocus__heart", cx: 0, cy: -7, r: 1 })
+      );
+      clump.append(flower);
+    }
+    clump.style.left = `${(i + 0.2 + Math.random() * 0.6) * (100 / 18)}%`;
+    crocuses.append(clump);
+  }
+  ground.after(shadow, elevator, el("div", "horizon__wheat"), crocuses);
+  scene.land = null; // measured on the first paint, and again whenever the sky changes size
+  if ("ResizeObserver" in window) new ResizeObserver(() => { scene.land = null; }).observe(scene);
+  else window.addEventListener("resize", () => { scene.land = null; });
+}
+
+// The sun's height and compass direction at moment t, in degrees.
+function sunAltAz(t) {
+  const p = sunPosition(t);
+  return altAz(p.ra * R2D, p.dec * R2D, t);
+}
+
+// How strong shadows are (0..1): none until the sun clears the horizon,
+// fainter through broken cloud or smoke, gone when the sun's hidden.
+function shadowStrength(alt) {
+  if (alt <= 0.5 || sunHidden()) return 0;
+  const cloud = weather ? weather.cloud / 85 : 0;
+  return Math.min(1, (alt - 0.5) / 4) * (1 - 0.5 * cloud) * (1 - 0.6 * smokeStrength());
+}
+
+// Lays the elevator's shadow on the ground for moment t: each corner of
+// its outline is moved away from the sun by its height ÷ tan(the sun's
+// height), then squashed toward you for the low view of the ground.
+function placeShadow(scene, t) {
+  if (!scene.shadowShape) return;
+  const { alt, az } = sunAltAz(t);
+  const show = shadowStrength(alt);
+  scene.style.setProperty("--shadow", show.toFixed(2));
+  if (!show) return;
+  if (!scene.land) {
+    const box = scene.elevator.getBoundingClientRect();
+    if (!box.width) return;
+    scene.land = {
+      base: box.left + box.width * (ELEVATOR_MID / ELEVATOR_W) - scene.shadow.getBoundingClientRect().left,
+      scale: box.height / ELEVATOR_H,
+    };
+  }
+  const { base, scale } = scene.land;
+  const long = Math.min(80, 1 / Math.tan(alt * D2R)); // shadow length for each unit of height
+  const away = (az + 180) * D2R; // shadows point away from the sun
+  const dx = -Math.sin(away) * long; // east is on the left
+  const dy = Math.max(0.05, Math.cos(away)) * long * SHADOW_SQUASH; // north comes toward you (down)
+  const points = ELEVATOR.map(([x, y]) => {
+    const up = (ELEVATOR_H - y) * scale;
+    return `${(base + (x - ELEVATOR_MID) * scale + dx * up).toFixed(1)},${(dy * up).toFixed(1)}`;
+  });
+  scene.shadowShape.setAttribute("points", points.join(" "));
+}
+
+// "Your shadow is 2.4× your height right now", while the sun's out
+function shadowLine(t) {
+  const alt = sunAltitude(t);
+  if (!shadowStrength(alt)) return "";
+  const long = 1 / Math.tan(alt * D2R);
+  if (long > 0.95 && long < 1.05) return "Your shadow is as long as you are tall";
+  return `Your shadow is ${long < 10 ? long.toFixed(1) : Math.round(long)}× your height right now`;
+}
+
 // Builds the weather layers once, then paintWeather switches them.
 function setUpWeather(scene) {
   const sky = scene.querySelector(".horizon__stars");
@@ -1618,9 +1934,12 @@ function setUpWeather(scene) {
   scene.aurora = layer("horizon__aurora", true);
   scene.clouds = layer("horizon__clouds");
   scene.precip = layer("horizon__precip");
+  // Smoke haze, the rainbow and sun dogs, under the clouds and rain
+  scene.optics = layer("horizon__optics");
+  scene.optics.append(el("div", "horizon__rainbow"), el("div", "horizon__sundogs"));
   scene.snowline = el("div", "horizon__snowline");
   scene.querySelector(".horizon__ground").after(scene.snowline);
-  const refresh = () => Promise.all([loadWeather(), loadKp()]).then(() => { scene.weatherCode = null; });
+  const refresh = () => Promise.all([loadWeather(), loadKp(), loadAir()]);
   refresh();
   setInterval(() => { if (!document.hidden) refresh(); }, WEATHER_MS);
   // Lightning in a thunderstorm: a quick flash every 5 to 20 seconds
@@ -1643,6 +1962,13 @@ function paintWeather(scene, t) {
   if (!scene.clouds) return;
   scene.classList.toggle("horizon--snowy", snowOnGround(t));
   scene.style.setProperty("--aurora", auroraStrength(t).toFixed(2));
+  scene.style.setProperty("--smoke", smokeStrength().toFixed(2));
+  scene.style.setProperty("--wind", Math.min(1, breeze().wind / 50).toFixed(2)); // sways the wheat
+  scene.classList.toggle("horizon--hot", heatShimmer(t));
+  const field = groundSeason(t);
+  scene.classList.toggle("horizon--crocus", field === "crocus");
+  scene.classList.toggle("horizon--wheat", field === "young" || field === "gold");
+  scene.classList.toggle("horizon--gold", field === "gold");
   const code = weather ? weather.code : -1;
   const cloud = weather ? weather.cloud : 0;
   if (scene.weatherCode === `${code}/${cloud}`) return; // nothing new
@@ -1673,9 +1999,17 @@ function paintWeather(scene, t) {
 /* ---------- Prairie seasons ----------
    Things that come with the time of year, from the calendar (no
    internet): Canada geese flying over in V's in the fall (heading south)
-   and spring (back north), and fireflies blinking low over the ground on
-   summer nights. Off for "reduce motion". */
+   and spring (back north), fireflies blinking low over the ground on
+   summer nights, and autumn leaves blowing across in September and
+   October (faster in a real wind). With them, a jet now and then by day,
+   its contrail hanging about longer on cold, damp days, and on windy
+   afternoons a hawk circling (or, at weekends, someone's kite). Off for
+   "reduce motion". Preview one with
+   ?critter=geese|fireflies|leaves|jet|hawk|kite. */
 const GEESE_EVERY_S = 40; // a flock every 40 seconds on average, in season
+const JET_EVERY_S = 90; // a jet every minute and a half on average, by day
+const HAWK_EVERY_S = 60; // how often a hawk turns up on a windy afternoon
+const CRITTER = new URLSearchParams(location.search).get("critter"); // a ?critter= preview
 
 // Is it goose season (mid September to mid November, and late March to
 // early May), and light enough for them to be flying?
@@ -1694,10 +2028,46 @@ function firefliesTime(t) {
   return YXE.home && day >= 615 && day <= 805 && sunAltitude(t) < -4 && !wet;
 }
 
+// Autumn leaves: September and October, from first light to dusk, when
+// it isn't snowing.
+function leavesTime(t) {
+  const p = localParts(t);
+  const snowing = weather && weatherKind(weather.code) === "snow";
+  return YXE.home && (p.m === 9 || p.m === 10) && sunAltitude(t) > -4 && !snowing;
+}
+
+// Jets: by day (that's when contrails show), under a sky that isn't
+// all cloud or rain.
+function jetTime(t) {
+  return sunAltitude(t) > 2 && !sunHidden();
+}
+
+// A windy afternoon: a real wind of 20 km/h or more, noon to about 6
+// PM with the sun well up, dry and above freezing. Saskatoon's hawks
+// are only around from April to October.
+function windyAfternoon(t) {
+  const { wind, known } = breeze();
+  const p = localParts(t);
+  if (!known || wind < 20 || p.h < 12 || p.h >= 18 || sunAltitude(t) < 8 || sunHidden()) return false;
+  return !Number.isFinite(weather.temp) || weather.temp >= 3;
+}
+
+function hawkTime(t) {
+  const p = localParts(t);
+  const weekend = p.weekday === "Sat" || p.weekday === "Sun";
+  return windyAfternoon(t) && !weekend && (!YXE.home || (p.m >= 4 && p.m <= 10));
+}
+
+// A kite instead of the hawk at weekends.
+function kiteTime(t) {
+  const p = localParts(t);
+  return windyAfternoon(t) && (p.weekday === "Sat" || p.weekday === "Sun");
+}
+
 function setUpCritters(scene, timeNow) {
   if (REDUCE_MOTION) return;
   const box = el("div", "horizon__critters");
-  scene.querySelector(".horizon__stars").after(box);
+  (scene.optics || scene.querySelector(".horizon__stars")).after(box); // in front of the haze and rainbow
 
   // One V of geese across the sky. The V points the way they're flying.
   function flock() {
@@ -1762,11 +2132,161 @@ function setUpCritters(scene, timeNow) {
     }
   }
 
+  // One autumn leaf tumbling across on the wind, low in the sky, bobbing
+  // and flipping over as it goes.
+  function leaf(wind, dir) {
+    const w = box.clientWidth, h = box.clientHeight;
+    if (!w || !h) return;
+    const small = h < 140;
+    const node = el("i", ["leaf", "leaf leaf--gold", "leaf leaf--rust"][Math.floor(Math.random() * 3)]);
+    box.append(node);
+    const size = (small ? 0.75 : 1) * (0.8 + Math.random() * 0.5);
+    const dur = (small ? 0.8 : 1) * (15000 / (1 + wind / 10)) * (0.8 + Math.random() * 0.4); // ~8 s on a light breeze
+    const y0 = h * (0.3 + Math.random() * 0.55);
+    const x0 = dir > 0 ? -14 : w + 14;
+    const spin = (1.5 + Math.random() * 3) * 360 * dir;
+    const bob = (small ? 4 : 7) + Math.random() * 12;
+    const drop = (Math.random() - 0.3) * h * 0.3; // mostly sinking, now and then lifted
+    const waves = 1.5 + Math.random() * 2;
+    const frames = [];
+    for (let i = 0; i <= 16; i++) {
+      const p = i / 16;
+      const x = x0 + (w + 28) * dir * p;
+      const y = y0 + drop * p + Math.sin(p * waves * 2 * Math.PI) * bob;
+      frames.push({ transform: `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) rotate(${(spin * p).toFixed(0)}deg) scale(${size.toFixed(2)}, ${(size * Math.cos(p * 14)).toFixed(2)})` });
+    }
+    node.animate(frames, { duration: dur, easing: "linear" }).onfinish = () => node.remove();
+  }
+
+  // A jet crossing high up. Its contrail is a row of short dashes, each
+  // appearing as the jet passes and fading (and spreading) over
+  // contrailLinger(), so the trail is short on a warm, dry day and
+  // stretches right across the sky on a cold, damp one.
+  let jetFlying = false;
+  function jet() {
+    const w = box.clientWidth, h = box.clientHeight;
+    if (!w || !h) return;
+    jetFlying = true;
+    const small = h < 140;
+    const len = w + 80;
+    const left = Math.random() < 0.5; // flying toward the left, or the right
+    const path = el("div", "jet-path"); // turned to the jet's heading, and flipped when it flies left
+    path.style.top = `${(h * (0.08 + Math.random() * 0.28)).toFixed(0)}px`;
+    path.style.width = `${len}px`;
+    path.style.transform = `rotate(${((Math.random() - 0.5) * 12).toFixed(1)}deg)${left ? " scaleX(-1)" : ""}`;
+    const dur = (small ? 14000 : 22000) + Math.random() * 8000;
+    const linger = contrailLinger();
+    const step = 8; // px between dashes (each is twice as long, so they overlap)
+    for (let x = 0; x < len; x += step) {
+      const dash = el("i", "contrail");
+      dash.style.left = `${x - step}px`;
+      dash.style.width = `${step * 2}px`;
+      path.append(dash);
+      dash.animate(
+        [{ opacity: 0.85, transform: "scaleY(1)" }, { opacity: 0, transform: `scaleY(${(1 + linger / 8000).toFixed(2)})` }],
+        { delay: (dur * (x + step)) / len, duration: linger, easing: "ease-in" }
+      );
+    }
+    const plane = svgNode("svg", { class: "jet", viewBox: "0 0 12 10" });
+    plane.append(svgNode("path", { d: "M0 5H12M7.5 5L4.5 0.5M7.5 5L4.5 9.5M1.6 5L0.4 2.8M1.6 5L0.4 7.2" }));
+    path.append(plane);
+    box.append(path);
+    plane.animate([{ translate: "0 0" }, { translate: `${len}px 0` }], { duration: dur, easing: "linear" }).onfinish = () => {
+      plane.remove();
+      jetFlying = false;
+      setTimeout(() => path.remove(), linger + 500); // once the last of the trail has gone
+    };
+  }
+
+  // A hawk riding the wind: it circles (seen from below, so the circle
+  // looks flattened), tilting into each turn, while the wind carries it
+  // slowly across the sky.
+  let hawkFlying = false;
+  function hawk(dir) {
+    const w = box.clientWidth, h = box.clientHeight;
+    if (!w || !h) return;
+    hawkFlying = true;
+    const small = h < 140;
+    const drift = el("div", "hawk-drift");
+    drift.style.top = `${(h * (0.15 + Math.random() * 0.3)).toFixed(0)}px`;
+    const bird = svgNode("svg", { class: "hawk", viewBox: "-12.5 -4 25 10.5" });
+    bird.append(svgNode("path", { d: "M0 -3.5L1.2 -1.8L11.6 -1.6L12 -0.9L11.1 -0.4L11.5 0.2L10.4 0.5L3 1.6L1.4 2.6L2.4 5.2Q0 6.2 -2.4 5.2L-1.4 2.6L-3 1.6L-10.4 0.5L-11.5 0.2L-11.1 -0.4L-12 -0.9L-11.6 -1.6L-1.2 -1.8Z" }));
+    drift.append(bird);
+    box.append(drift);
+    const rx = (small ? 16 : 26) + Math.random() * 14, ry = rx * 0.28;
+    const turn = Math.random() < 0.5 ? 1 : -1; // round one way or the other
+    const circle = [];
+    for (let i = 0; i <= 12; i++) {
+      const a = (i / 12) * 2 * Math.PI * turn;
+      circle.push({ transform: `translate(${(Math.cos(a) * rx).toFixed(1)}px, ${(Math.sin(a) * ry).toFixed(1)}px) rotate(${(-Math.sin(a) * 14 * turn).toFixed(1)}deg)` });
+    }
+    bird.animate(circle, { duration: 8000 + Math.random() * 4000, iterations: Infinity });
+    const x0 = dir > 0 ? -rx - 24 : w + rx + 24;
+    drift.animate(
+      [{ translate: `${x0}px 0` }, { translate: `${x0 + dir * (w + 2 * rx + 48)}px ${((Math.random() - 0.5) * 24).toFixed(0)}px` }],
+      { duration: 55000 + Math.random() * 25000, easing: "linear" }
+    ).onfinish = () => {
+      drift.remove();
+      hawkFlying = false;
+    };
+  }
+
+  // A kite on a long string from someone standing on the horizon. It
+  // flies downwind of them, swaying (style.css), its tail flicking.
+  // Kept up while it's kite weather.
+  let kite = null;
+  function kiteUp(on) {
+    if (on && !kite) {
+      const w = box.clientWidth, h = box.clientHeight;
+      if (!w || !h) return;
+      const small = h < 140;
+      const { dir } = breeze();
+      const k = small ? 0.65 : 1; // the kite's size
+      const rise = h * (small ? 0.55 : 0.62); // how high it flies
+      const reach = rise * 0.6; // how far downwind
+      const ground = dir < 0 ? w * (0.66 + Math.random() * 0.2) : w * (0.14 + Math.random() * 0.2);
+      const width = reach + 26 * k, height = rise + 34 * k;
+      kite = svgNode("svg", {
+        class: "kite",
+        viewBox: `${dir > 0 ? -6 : 6 - width} ${-height} ${width} ${height}`,
+      });
+      kite.style.width = `${width}px`;
+      kite.style.height = `${height}px`;
+      kite.style.left = `${dir > 0 ? ground - 6 : ground - width + 6}px`;
+      kite.style.transformOrigin = `${dir > 0 ? "6px" : "calc(100% - 6px)"} 100%`; // sways about the hand holding it
+      const kx = dir * reach, ky = -rise;
+      kite.append(svgNode("path", { class: "kite__string", d: `M0 0Q${(kx * 0.8).toFixed(1)} ${(ky * 0.3).toFixed(1)} ${kx.toFixed(1)} ${ky.toFixed(1)}` }));
+      const flyer = svgNode("g", { class: "kite__flyer", transform: `translate(${kx.toFixed(1)} ${ky.toFixed(1)}) scale(${k}) rotate(${dir * -12})` });
+      const wobble = svgNode("g", { class: "kite__wobble" }); // tilts back and forth (style.css)
+      wobble.append(
+        svgNode("path", { class: "kite__tail", d: "M0 10Q-3 14 0 18T0 26T0 34M-2 16.5L2 18.5M-2 18.5L2 16.5M-2 24.5L2 26.5M-2 26.5L2 24.5" }),
+        svgNode("path", { class: "kite__body", d: "M0 -8L6 -1L0 10L-6 -1Z" }),
+        svgNode("path", { class: "kite__spars", d: "M0 -8V10M-6 -1H6" })
+      );
+      flyer.append(wobble);
+      kite.append(flyer);
+      box.append(kite);
+    } else if (!on && kite) {
+      kite.remove();
+      kite = null;
+    }
+  }
+
   setInterval(() => {
     if (document.hidden) return;
     const t = timeNow();
-    fireflies(firefliesTime(t));
-    if (!spinning && geeseTime(t) && Math.random() < 1 / GEESE_EVERY_S) flock();
+    fireflies(firefliesTime(t) || CRITTER === "fireflies");
+    kiteUp(kiteTime(t) || CRITTER === "kite");
+    if (spinning) return;
+    const geese = CRITTER === "geese" ? 1 / 8 : geeseTime(t) ? 1 / GEESE_EVERY_S : 0;
+    if (Math.random() < geese) flock();
+    if (leavesTime(t) || CRITTER === "leaves") {
+      const { wind, dir } = breeze();
+      if (Math.random() < Math.min(0.9, 0.2 + wind / 50)) leaf(wind, dir);
+      if (wind > 25 && Math.random() < 0.5) leaf(wind, dir); // gusty: more of them
+    }
+    if (!jetFlying && (CRITTER === "jet" || (jetTime(t) && Math.random() < 1 / JET_EVERY_S))) jet();
+    if (!hawkFlying && (CRITTER === "hawk" || (hawkTime(t) && Math.random() < 1 / HAWK_EVERY_S))) hawk(breeze().dir);
   }, 1000);
 }
 
@@ -2323,16 +2843,19 @@ function setUpHorizon() {
       if (swiped) {
         [l, r] = swipeLine(t, ahead);
       } else if (isDay && day.set) {
-        l = takeTurns([eclipseLine(t), lightHourLine(t) || `Sun's up ${overHere()}`, dayLengthLine(t), weatherLine()]);
+        l = takeTurns([
+          eclipseLine(t), rainbowLine(t), sunDogLine(t), lightHourLine(t) || `Sun's up ${overHere()}`,
+          shadowLine(t), dayLengthLine(t), weatherLine(), smokeLine(t),
+        ]);
         r = `Sets ${clock(new Date(day.set))} · ${hoursMins(day.set - t)} of light left`;
       } else if (!isDay && day.rise && t < day.rise) {
         // Night: tonight's moon, and when the sun comes back
-        l = takeTurns([eclipseLine(t), moonLine(t), lightHourLine(t), showerLine(t), auroraLine(t), weatherLine()]);
+        l = takeTurns([eclipseLine(t), moonLine(t), lightHourLine(t), showerLine(t), auroraLine(t), weatherLine(), smokeLine(t)]);
         r = `Sun's up at ${clock(new Date(day.rise))}`;
       } else {
         // After sunset: tomorrow's sunrise
         const tomorrow = sunDay(new Date(day.end + 60000));
-        l = takeTurns([eclipseLine(t), moonLine(t), lightHourLine(t), showerLine(t), auroraLine(t), weatherLine()]);
+        l = takeTurns([eclipseLine(t), moonLine(t), lightHourLine(t), showerLine(t), auroraLine(t), weatherLine(), smokeLine(t)]);
         r = tomorrow.rise ? `Sun's back at ${clock(new Date(tomorrow.rise))}` : "Sun's back tomorrow";
       }
       setLine(left, l, swiped);
@@ -2349,6 +2872,7 @@ function setUpHorizon() {
   if (scene && shouldSpin()) spinSun(scene);
   if (scene) {
     const shownTime = setUpSwipe(scene, paint);
+    setUpLand(scene);
     setUpWeather(scene);
     setUpMeteors(scene, now);
     setUpCritters(scene, shownTime);

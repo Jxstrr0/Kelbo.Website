@@ -87,7 +87,7 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   stretched to a 1024×768 window and the buttons and top bar hidden).
 - The live horizon (`[data-horizon]` in the home hero, every page head and
   the 404) puts the sun where the real sun is over Saskatoon (`YXE` in
-  `main.js`, no network; only the optional weather and aurora fetch), switches to the dark theme at real sunset, and
+  `main.js`, no network; only the optional weather, air quality and aurora fetch), switches to the dark theme at real sunset, and
   warms the sky toward clay over the last 20 minutes before it (`--warm`).
   Preview any time with `?at=noon|sunrise|sunset|dusk|night` or
   `?at=2026-06-21T21:30`. The ray's reach scales with the season
@@ -158,22 +158,65 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   press of `HOLD_START_MS` (any pointer) eases `shown` to `nextTurn`
   (next sunset +35 min, or sunrise +25 min) over `HOLD_RUN_MS`; release
   calls `slideBack`. `setUpSwipe` returns the shown time for the taps.
-  Weather and aurora (the only network calls, both free/no key, cached in
+  Weather, air and aurora (the only network calls, all free/no key, cached in
   localStorage by `cachedFetch`): `loadWeather` (Open-Meteo current
-  weather_code, cloud_cover, temperature_2m, snow_depth; every
-  `WEATHER_MS`) and `loadKp` (NOAA SWPC planetary_k_index_1m, highest
+  weather_code, cloud_cover, cloud_cover_high, temperature_2m, snow_depth,
+  wind_speed_10m, wind_direction_10m, relative_humidity_2m, precipitation,
+  plus hourly precipitation for the past 2 h as `wet`; every
+  `WEATHER_MS`), `loadAir` (Open-Meteo air quality current pm2_5 into
+  `pm25`) and `loadKp` (NOAA SWPC planetary_k_index_1m, highest
   estimated_kp of the last 30 minutes, since each 3-hour block starts at 0;
-  `KP_MS`). Both are skipped with `?at=` (unless
-  `?weather=`/`?kp=` previews are given) and fail silently. `setUpWeather`
-  adds `.horizon__aurora`, `.horizon__clouds`, `.horizon__precip`
-  and `.horizon__snowline`; `paintWeather` (from `paint`) toggles
-  `horizon--rain/snow/storm/fog/overcast/snowy`, sets `--aurora`
-  (`auroraStrength`: Kp 4+ at night, not overcast) and builds `.cloud`s.
+  `KP_MS`). All are skipped with `?at=` (unless
+  `?weather=`/`?kp=` previews are given; `WEATHER_PREVIEWS` rows can carry
+  extra fields such as temp, high, wind, wet or pm, read via
+  `weatherPreview`) and fail silently; code reading the newer fields must
+  check `Number.isFinite`, since an older cached entry lacks them. `setUpWeather`
+  adds `.horizon__aurora`, `.horizon__clouds`, `.horizon__precip`,
+  `.horizon__optics` and `.horizon__snowline`; `paintWeather` (from `paint`) toggles
+  `horizon--rain/snow/storm/fog/overcast/snowy/hot/crocus/wheat/gold`, sets `--aurora`
+  (`auroraStrength`: Kp 4+ at night, not overcast), `--smoke` and `--wind`, and builds `.cloud`s
+  (only when the code or cover changes, so they don't jump).
   Lightning toggles `horizon--flash`. `weatherLine` and `auroraLine` join
   the readout turns. `snowOnGround` falls back to the calendar.
-  `setUpCritters` (calendar only, off with reduce motion): `.geese` V's
-  (SVG, flapping) every ~`GEESE_EVERY_S` in `geeseTime`, and `.firefly`
-  dots in `firefliesTime`.
+  The day sky (each 0..1, all 0 without weather): `sunDogStrength` (≤ −10°C,
+  high cloud ≥ 10% or ≤ −25°C, sun 0..35°), `smokeStrength` (PM2.5 from
+  `SMOKE_PM`), `rainbowStrength` (`wet`, cloud < 85, sun 1..40°) and
+  `heatShimmer` (`HOT_C`); `sunHidden` is overcast or any weather kind.
+  `placeOptics` (from `placeSun`) sets `--sundogs`, `--rainbow`, `--bow-x`
+  (1 − sun x) and `--bow-d` (sun alt / 42) for `.horizon__sundogs`
+  (centred on the sun) and `.horizon__rainbow` inside `.horizon__optics`
+  (clip-path polygon clips top and bottom only, so they run to the screen
+  edges; its `::before` is the full-bleed smoke haze). `--smoke` also
+  darkens the sun and drops its halo/glow. Heat shimmer (wavy masked
+  line, rippling air on `.horizon__ground::before`, wavering elevator)
+  is motion-only. Readout extras: `rainbowLine`, `sunDogLine`,
+  `shadowLine`, `smokeLine`.
+  The land (`setUpLand`, every sky): `.horizon__elevator` (SVG from
+  `ELEVATOR` outline, z1, standing at the sun's noon x, 0.38; clay
+  `.elevator__light` in the dark theme) and `.horizon__shadow` (a
+  full-bleed SVG over the ground strip): `placeShadow` (from `placeSun`)
+  projects each outline point by its height × 1/tan(alt) away from the
+  sun's azimuth (`sunAltAz`; east = left, north = down × `SHADOW_SQUASH`),
+  measuring the elevator once into `scene.land` (reset by a
+  ResizeObserver); `shadowStrength` sets `--shadow`. `groundSeason`
+  (`YXE.home`, not snowy) switches `.horizon__crocuses` (Apr 1 to May 5)
+  and `.horizon__wheat` (young Jun–Jul, gold Aug 1 to Sep 15; masked
+  stalk pattern, sways with `--wind`). The palette has no green, so young
+  wheat is pale lilac-ivory.
+  `setUpCritters` (off with reduce motion; its box sits after
+  `.horizon__optics`): `.geese` V's
+  (SVG, flapping) every ~`GEESE_EVERY_S` in `geeseTime`, `.firefly`
+  dots in `firefliesTime`, `.leaf`s in `leavesTime` (Sep–Oct, `YXE.home`;
+  speed and direction from `breeze`, which defaults to 12 km/h from 290°),
+  a `.jet` every ~`JET_EVERY_S` in `jetTime` with a `.contrail` of
+  overlapping dashes that each fade over `contrailLinger` (3 s warm/dry
+  up to 30 s cold/damp), a circling `.hawk` (`HAWK_EVERY_S`, `hawkTime`:
+  `windyAfternoon` = known wind ≥ 20 km/h, 12–6 PM, weekdays, Apr–Oct at
+  home) and a `.kite` (SVG, sways about its string's ground end) on windy
+  weekend afternoons (`kiteTime`). `?critter=geese|fireflies|leaves|jet|hawk|kite`
+  forces one. In `setUpSkyTaps`, `puffCloud` (light theme, not reduce
+  motion) breaks a tapped `.cloud` into `.cloud-puff`s and restarts its
+  drift from the left; a tap right on the sun or moon still names it.
   Eclipses: `moonRaDec` (geocentric moon with the main Meeus terms,
   ~0.06° vs PyEphem, plus parallax) feeds `eclipseAt`: lunar when the
   moon touches the umbra (1.02 × (parallax + 0.00244 − sun radius)),
@@ -192,8 +235,8 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   before anything runs. So all sky code must read `YXE` (never hard-code
   Saskatoon): `zoneMidnight` gives local midnight in `YXE.tz`, `overHere`
   the readout wording, `dayLengthFor` the season range, `auroraKp` the
-  Kp needed from magnetic latitude (4 for Saskatoon). Geese, fireflies
-  and calendar snow check `YXE.home`. `?at=` reads Saskatoon time
+  Kp needed from magnetic latitude (4 for Saskatoon). Geese, fireflies,
+  calendar snow, leaves, crocuses and wheat check `YXE.home`. `?at=` reads Saskatoon time
   (UTC-6), or the phone's time in your own sky.
   `placeSun` also sets `--sun-low` (0 high, 1 near the horizon: bigger,
   stronger glow), `--sun-show` (fades the glow/halo out once set, so they

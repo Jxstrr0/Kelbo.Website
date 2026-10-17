@@ -671,8 +671,11 @@ img {
   height: var(--sun-size);
   border-radius: 50%;
   background: var(--accent);
+  /* In wildfire smoke (--smoke from main.js, 0..1) the sun turns a deeper
+     red and loses its halo and most of its glow */
+  background: color-mix(in srgb, var(--accent), var(--ll-slate) calc(var(--smoke, 0) * 22%));
   /* The halo: a thin clay ring around the sun, like the logo's */
-  outline: 2px solid rgba(217, 119, 87, calc((0.45 + 0.3 * var(--sun-low, 0)) * var(--sun-show, 1)));
+  outline: 2px solid rgba(217, 119, 87, calc((0.45 + 0.3 * var(--sun-low, 0)) * var(--sun-show, 1) * (1 - var(--smoke, 0))));
   outline-offset: calc(var(--sun-size) * 0.13);
   transition: top 1200ms var(--ease), left 1200ms var(--ease);
 }
@@ -687,7 +690,7 @@ img {
   position: absolute;
   inset: calc(var(--sun-size) * (-0.4 - 0.4 * var(--sun-low, 0)));
   border-radius: 50%;
-  background: radial-gradient(closest-side, rgba(217, 119, 87, calc((0.5 + 0.3 * var(--sun-low, 0)) * var(--sun-show, 1))), rgba(217, 119, 87, 0));
+  background: radial-gradient(closest-side, rgba(217, 119, 87, calc((0.5 + 0.3 * var(--sun-low, 0)) * var(--sun-show, 1) * (1 - 0.7 * var(--smoke, 0)))), rgba(217, 119, 87, 0));
   pointer-events: none;
 }
 
@@ -814,7 +817,8 @@ img {
 .horizon--spin .horizon__sun,
 .horizon--spin .horizon__moon,
 .horizon--spin .horizon__glint,
-.horizon--spin .horizon__ray {
+.horizon--spin .horizon__ray,
+.horizon--spin .horizon__sundogs {
   transition: none;
 }
 
@@ -1082,6 +1086,378 @@ img {
   background: var(--ll-clay);
   box-shadow: 0 0 6px 2px rgba(217, 119, 87, 0.7);
   opacity: 0;
+}
+
+/* Autumn leaves (main.js blows them across): a little leaf shape,
+   pointed at two corners, in clay, gold or rust */
+.leaf {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 9px;
+  height: 6px;
+  margin: -3px 0 0 -4.5px;
+  border-radius: 0 100% 0 100%;
+  background: var(--ll-clay);
+}
+
+.leaf--gold {
+  background: color-mix(in srgb, var(--ll-clay) 55%, var(--ll-ivory));
+}
+
+.leaf--rust {
+  background: color-mix(in srgb, var(--ll-clay) 70%, var(--ll-slate));
+}
+
+/* A jet high up: a tiny ivory plane, and its contrail as a row of short
+   dashes that main.js fades out behind it */
+.jet-path {
+  position: absolute;
+  left: -40px;
+  height: 0;
+}
+
+.jet {
+  position: absolute;
+  left: 0;
+  top: -5px;
+  width: 12px;
+  height: 10px;
+  overflow: visible;
+}
+
+.jet path {
+  fill: none;
+  stroke: var(--ll-ivory);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+}
+
+/* Each dash fades in and out along its length and overlaps the next,
+   so together they make one smooth trail */
+.contrail {
+  position: absolute;
+  top: -1px;
+  height: 2px;
+  background: linear-gradient(to right, rgba(250, 249, 245, 0), var(--ll-ivory), rgba(250, 249, 245, 0));
+  opacity: 0;
+}
+
+/* A hawk circling (slate, like the geese) */
+.hawk-drift {
+  position: absolute;
+  left: 0;
+}
+
+.hawk {
+  position: absolute;
+  width: 23px;
+  margin: -5px 0 0 -11.5px;
+  overflow: visible;
+}
+
+.page-head .hawk {
+  width: 16px;
+  margin: -3.5px 0 0 -8px;
+}
+
+.hawk path {
+  fill: currentColor;
+  opacity: 0.75;
+}
+
+/* A kite on a long string: clay with ivory spars and a lilac tail */
+.kite {
+  position: absolute;
+  bottom: 0;
+  overflow: visible;
+}
+
+.kite__string {
+  fill: none;
+  stroke: var(--ll-ivory);
+  stroke-width: 0.8;
+  stroke-opacity: 0.5;
+}
+
+.kite__body {
+  fill: var(--ll-clay);
+}
+
+.kite__spars {
+  fill: none;
+  stroke: var(--ll-ivory);
+  stroke-width: 0.7;
+  stroke-opacity: 0.7;
+}
+
+.kite__tail {
+  fill: none;
+  stroke: var(--ll-lilac);
+  stroke-width: 1.1;
+  stroke-linecap: round;
+}
+
+/* Tap a cloud and it breaks into these puffs (main.js) */
+.cloud-puff {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--ll-ivory);
+}
+
+/* ---------- Sun dogs, rainbows and smoke ----------
+   One layer over the sky, cut off at its top and bottom (but free to
+   run past the sides to the edges of the screen). main.js sets
+   --sundogs, --rainbow and --smoke (each 0..1), plus --bow-x (where the
+   rainbow's middle is across the sky) and --bow-d (how far under the
+   horizon its centre is, as a share of its size). */
+.horizon__optics {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: var(--sky-height);
+  clip-path: polygon(-100vw 0, calc(100% + 100vw) 0, calc(100% + 100vw) 100%, -100vw 100%);
+  pointer-events: none;
+}
+
+/* Wildfire smoke: a warm haze across the whole width, thickest near
+   the horizon */
+.horizon__optics::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  background: linear-gradient(to bottom, rgba(217, 119, 87, 0), rgba(217, 119, 87, 0.45) 65%, rgba(250, 249, 245, 0.45));
+  opacity: calc(var(--smoke, 0) * 0.9);
+  transition: opacity 3s var(--ease);
+}
+
+:root[data-theme="dark"] .horizon__optics::before {
+  background: linear-gradient(to bottom, rgba(217, 119, 87, 0), rgba(217, 119, 87, 0.28));
+}
+
+/* The rainbow: bands of the five colours (clay outside, then ivory,
+   lilac and purple inside, like red to violet), a fainter second bow
+   outside it the other way round, and the sky a touch brighter inside.
+   It fades out toward the ground. */
+.horizon__rainbow {
+  --bow-r: calc(var(--sky-height) * 0.8);
+  --bow-box: calc(var(--bow-r) * 2.5); /* room for both bows, centred on their middle */
+  --to-ground: calc((1.25 - var(--bow-d, 0.3)) * var(--bow-r)); /* from the box's top down to the horizon */
+  position: absolute;
+  left: calc(var(--bow-x, 0.6) * 100% - var(--bow-box) / 2);
+  top: calc(100% + var(--bow-d, 0.3) * var(--bow-r) - var(--bow-box) / 2);
+  width: var(--bow-box);
+  height: var(--bow-box);
+  background:
+    radial-gradient(circle var(--bow-r),
+      rgba(250, 249, 245, 0.1) 0 80%, rgba(123, 63, 196, 0) 84%, rgba(123, 63, 196, 0.9) 87%,
+      rgba(180, 140, 232, 0.9) 90%, rgba(250, 249, 245, 0.9) 93%, rgba(217, 119, 87, 0.95) 96.5%,
+      rgba(217, 119, 87, 0) 100%),
+    radial-gradient(circle calc(var(--bow-r) * 1.24),
+      rgba(217, 119, 87, 0) 89%, rgba(217, 119, 87, 0.4) 91.5%, rgba(250, 249, 245, 0.35) 94.5%,
+      rgba(180, 140, 232, 0.3) 97%, rgba(180, 140, 232, 0) 100%);
+  -webkit-mask: linear-gradient(to bottom, #000 calc(var(--to-ground) - var(--sky-height) * 0.3), transparent var(--to-ground));
+  mask: linear-gradient(to bottom, #000 calc(var(--to-ground) - var(--sky-height) * 0.3), transparent var(--to-ground));
+  opacity: calc(var(--rainbow, 0) * 0.75);
+  transition: opacity 3s var(--ease);
+}
+
+:root[data-theme="dark"] .horizon__rainbow {
+  opacity: calc(var(--rainbow, 0) * 0.3);
+}
+
+/* Sun dogs: a faint ring around the sun (clay on its inside edge), and
+   a bright spot where it crosses the sun's height on either side. The
+   box is centred on the sun, so it moves with it. */
+.horizon__sundogs {
+  --dog-r: calc(var(--sun-size) * 1.45);
+  position: absolute;
+  left: calc(var(--sun-x) * (100% - var(--sun-size)) + var(--sun-size) / 2 - var(--dog-r));
+  top: calc((1 - var(--sun-alt)) * (var(--sky-height) - var(--sun-size) / 2) + var(--sun-size) / 2 - var(--dog-r));
+  width: calc(var(--dog-r) * 2);
+  height: calc(var(--dog-r) * 2);
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(217, 119, 87, 0) 88%, rgba(217, 119, 87, 0.3) 92%, rgba(250, 249, 245, 0.22) 96%, rgba(250, 249, 245, 0) 100%);
+  /* The top of the ring fades away, so it never ends in a hard edge */
+  -webkit-mask: linear-gradient(to bottom, transparent 4%, #000 36%);
+  mask: linear-gradient(to bottom, transparent 4%, #000 36%);
+  opacity: var(--sundogs, 0);
+  transition: top 1200ms var(--ease), left 1200ms var(--ease), opacity 3s var(--ease);
+}
+
+/* Each dog: clay on the side facing the sun, then bright ivory, then a
+   lilac tail pointing away */
+.horizon__sundogs::before,
+.horizon__sundogs::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: calc(var(--sun-size) * 0.5);
+  height: calc(var(--sun-size) * 0.42);
+  margin-top: calc(var(--sun-size) * -0.21);
+  border-radius: 50%;
+  filter: blur(3px);
+}
+
+.horizon__sundogs::before {
+  left: calc(var(--sun-size) * -0.41);
+  background: linear-gradient(to left, rgba(217, 119, 87, 0.9), rgba(250, 249, 245, 0.95) 30%, rgba(180, 140, 232, 0.5) 65%, rgba(180, 140, 232, 0));
+}
+
+.horizon__sundogs::after {
+  right: calc(var(--sun-size) * -0.41);
+  background: linear-gradient(to right, rgba(217, 119, 87, 0.9), rgba(250, 249, 245, 0.95) 30%, rgba(180, 140, 232, 0.5) 65%, rgba(180, 140, 232, 0));
+}
+
+/* ---------- The land ----------
+   A prairie grain elevator on the horizon where the sun is at noon
+   (main.js draws its shadow on the ground, following the real sun),
+   plus the season along the horizon (main.js switches these on):
+   prairie crocuses in April (.horizon--crocus), young wheat in June and
+   July (.horizon--wheat) turning gold in August (.horizon--gold). */
+.horizon__elevator {
+  --elevator-h: clamp(40px, 10vw, 58px);
+  position: absolute;
+  z-index: 1;
+  left: calc(0.38 * (100% - var(--sun-size)) + var(--sun-size) / 2 - var(--elevator-h) * 26 / 72);
+  top: calc(var(--sky-height) - var(--elevator-h) + 0.5px);
+  width: calc(var(--elevator-h) * 52 / 72);
+  height: var(--elevator-h);
+  overflow: visible;
+  transform-origin: 50% 100%;
+  pointer-events: none;
+}
+
+.page-head .horizon__elevator {
+  --elevator-h: 30px;
+}
+
+/* A dark silhouette, a little purple so it sits in the sky */
+.horizon__elevator path {
+  fill: var(--ll-slate);
+  fill: color-mix(in srgb, var(--ll-slate) 72%, var(--ll-purple));
+}
+
+:root[data-theme="dark"] .horizon__elevator path {
+  fill: color-mix(in srgb, var(--ll-slate) 55%, var(--ll-purple));
+}
+
+/* The light up top, on after dark */
+.elevator__light {
+  fill: var(--ll-clay);
+  opacity: 0;
+  transition: opacity 600ms var(--ease);
+}
+
+:root[data-theme="dark"] .elevator__light {
+  opacity: 1;
+  filter: drop-shadow(0 0 2px rgba(217, 119, 87, 0.9));
+}
+
+/* Its shadow, on the ground strip (--shadow: 0..1 from main.js) */
+.horizon__shadow {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  top: calc(var(--sky-height) + 3.5px);
+  height: var(--ground-height);
+  overflow: hidden;
+  opacity: calc(var(--shadow, 0) * 0.4);
+  transition: opacity 1200ms var(--ease);
+  pointer-events: none;
+}
+
+.horizon__shadow polygon {
+  fill: var(--ll-slate);
+}
+
+/* Wheat: a fringe of stalks along the horizon (an SVG pattern used as a
+   mask, like the rain). Pale and short while it's young, taller with
+   heads and gold from August. */
+.horizon__wheat {
+  --wheat-h: 6px;
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  top: calc(var(--sky-height) - var(--wheat-h) + 0.5px);
+  height: var(--wheat-h);
+  display: none;
+  background: color-mix(in srgb, var(--ll-lilac) 60%, var(--ll-ivory));
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='6'%3E%3Cpath d='M1 6Q2 3 3.5 1.5M5 6Q5 3 4 1M8 6Q9 3.5 11 2.5M12 6Q12.5 3 14.5 1.5' fill='none' stroke='%23000' stroke-width='1' stroke-linecap='round'/%3E%3C/svg%3E") 0 0 / auto 100% repeat-x;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='6'%3E%3Cpath d='M1 6Q2 3 3.5 1.5M5 6Q5 3 4 1M8 6Q9 3.5 11 2.5M12 6Q12.5 3 14.5 1.5' fill='none' stroke='%23000' stroke-width='1' stroke-linecap='round'/%3E%3C/svg%3E") 0 0 / auto 100% repeat-x;
+  transform-origin: 50% 100%;
+  pointer-events: none;
+}
+
+.horizon--wheat .horizon__wheat {
+  display: block;
+}
+
+.horizon--gold .horizon__wheat {
+  --wheat-h: 10px;
+  background: color-mix(in srgb, var(--ll-clay) 70%, var(--ll-ivory));
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='10'%3E%3Cpath d='M2 10V4.5M6 10V2.8M10 10V5' stroke='%23000' stroke-width='0.8'/%3E%3Cellipse cx='2' cy='3.2' rx='1.1' ry='2'/%3E%3Cellipse cx='6' cy='1.9' rx='1.1' ry='1.9'/%3E%3Cellipse cx='10' cy='3.8' rx='1.1' ry='2'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='10'%3E%3Cpath d='M2 10V4.5M6 10V2.8M10 10V5' stroke='%23000' stroke-width='0.8'/%3E%3Cellipse cx='2' cy='3.2' rx='1.1' ry='2'/%3E%3Cellipse cx='6' cy='1.9' rx='1.1' ry='1.9'/%3E%3Cellipse cx='10' cy='3.8' rx='1.1' ry='2'/%3E%3C/svg%3E");
+}
+
+.page-head .horizon__wheat {
+  --wheat-h: 4px;
+}
+
+.page-head .horizon--gold .horizon__wheat {
+  --wheat-h: 7px;
+}
+
+:root[data-theme="dark"] .horizon__wheat {
+  opacity: 0.35;
+}
+
+/* Prairie crocuses: clumps of pale purple cups with gold hearts */
+.horizon__crocuses {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  top: calc(var(--sky-height) - 11px + 0.5px);
+  height: 11px;
+  display: none;
+  pointer-events: none;
+}
+
+.page-head .horizon__crocuses {
+  top: calc(var(--sky-height) - 8px + 0.5px);
+  height: 8px;
+}
+
+.horizon--crocus .horizon__crocuses {
+  display: block;
+}
+
+.horizon__crocuses svg {
+  position: absolute;
+  bottom: 0;
+  height: 100%;
+  overflow: visible;
+}
+
+.crocus__cup {
+  fill: var(--ll-lilac);
+}
+
+.crocus__heart {
+  fill: color-mix(in srgb, var(--ll-clay) 45%, var(--ll-ivory));
+}
+
+:root[data-theme="dark"] .horizon__crocuses {
+  opacity: 0.45;
 }
 
 /* The label from tapping a star, planet, the moon or the sun (or a wish).
@@ -2227,6 +2603,94 @@ img {
   @keyframes firefly-drift {
     from { translate: 0 0; }
     to { translate: 14px -10px; }
+  }
+
+  /* The kite sways about the hand holding it, tilts, and flicks its tail */
+  .kite {
+    animation: kite-sway 3.6s ease-in-out infinite alternate;
+  }
+
+  @keyframes kite-sway {
+    from { transform: rotate(-2.5deg); }
+    to { transform: rotate(2.5deg); }
+  }
+
+  .kite__wobble {
+    transform-box: fill-box;
+    transform-origin: 50% 17%; /* the middle of the kite */
+    animation: kite-tilt 1.9s ease-in-out infinite alternate;
+  }
+
+  @keyframes kite-tilt {
+    from { transform: rotate(-6deg); }
+    to { transform: rotate(6deg); }
+  }
+
+  .kite__tail {
+    transform-box: fill-box;
+    transform-origin: 50% 0; /* where it's tied on */
+    animation: kite-tail 0.8s ease-in-out infinite alternate;
+  }
+
+  @keyframes kite-tail {
+    from { transform: rotate(-10deg); }
+    to { transform: rotate(10deg); }
+  }
+
+  /* Wheat sways, quicker in a stronger wind (--wind, 0..1 from main.js) */
+  .horizon__wheat {
+    animation: wheat-sway calc(4.5s - var(--wind, 0.25) * 3s) ease-in-out infinite alternate;
+  }
+
+  @keyframes wheat-sway {
+    from { transform: skewX(-7deg); }
+    to { transform: skewX(5deg); }
+  }
+
+  /* Heat shimmer on a hot day (.horizon--hot from main.js): the horizon
+     line turns wavy and the waves run along it, the air just above it
+     ripples, and the elevator wavers */
+  .horizon--hot .horizon__line {
+    top: calc(var(--sky-height) - 1.75px);
+    height: 7px;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='7'%3E%3Cpath d='M-24 3.5Q-12 5.8 0 3.5T24 3.5T48 3.5T72 3.5' fill='none' stroke='%23000' stroke-width='3.5'/%3E%3C/svg%3E") 0 0 / 48px 7px repeat-x;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='7'%3E%3Cpath d='M-24 3.5Q-12 5.8 0 3.5T24 3.5T48 3.5T72 3.5' fill='none' stroke='%23000' stroke-width='3.5'/%3E%3C/svg%3E") 0 0 / 48px 7px repeat-x;
+    animation: shimmer-run 1.4s linear infinite, shimmer-jitter 0.31s ease-in-out infinite alternate;
+  }
+
+  @keyframes shimmer-run {
+    to { -webkit-mask-position: 48px 0; mask-position: 48px 0; }
+  }
+
+  @keyframes shimmer-jitter {
+    to { translate: 0 0.6px; }
+  }
+
+  .horizon--hot .horizon__ground::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: calc(100% + 3.5px);
+    height: 12px;
+    background: linear-gradient(to top, rgba(250, 249, 245, 0.25), rgba(250, 249, 245, 0));
+    filter: blur(1px);
+    transform-origin: 50% 100%;
+    animation: shimmer-air 0.55s ease-in-out infinite alternate;
+  }
+
+  @keyframes shimmer-air {
+    from { opacity: 0.5; transform: scaleY(0.8); }
+    to { opacity: 1; transform: scaleY(1.15); }
+  }
+
+  .horizon--hot .horizon__elevator {
+    animation: shimmer-waver 0.42s ease-in-out infinite alternate;
+  }
+
+  @keyframes shimmer-waver {
+    from { transform: skewX(-0.8deg); }
+    to { transform: skewX(0.8deg) scaleY(1.015); }
   }
 
   .horizon__tip.is-new {
