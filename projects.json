@@ -49,11 +49,11 @@
   },
   {
     "title": "Outpost",
-    "status": "Early stages",
+    "status": "Building",
     "category": "Game",
     "summary": "A first-person survival mystery. Keep an arctic weather station running for five nights: the generator, battery and heater fail on their own, the weather needs logging every two hours, and the last keeper's logbook slowly reveals what happened to them.",
     "version": "0.3.0",
-    "latest": "Nights 1 and 2 are playable",
+    "latest": "All five nights are playable",
     "link": "https://jxstrr0.github.io/Outpost-/",
     "code": "https://github.com/Jxstrr0/Outpost-",
     "image": "assets/covers/outpost.jpg",
