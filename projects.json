@@ -9,7 +9,25 @@
     "link": "https://jxstrr0.github.io/350Chev/",
     "code": "https://github.com/Jxstrr0/350Chev",
     "image": "assets/covers/prairie-engine-works.jpg",
-    "featured": true
+    "featured": true,
+    "shots": [
+      {
+        "src": "assets/shots/prairie-engine-works-1.jpg",
+        "alt": "The build screen: a custom inline-4 with its power, torque, weight and cost"
+      },
+      {
+        "src": "assets/shots/prairie-engine-works-2.jpg",
+        "alt": "The test screen with the dyno chart ready to run"
+      },
+      {
+        "src": "assets/shots/prairie-engine-works-3.jpg",
+        "alt": "A finished engine certified as Marginal, with its stress report"
+      },
+      {
+        "src": "assets/shots/prairie-engine-works-4.jpg",
+        "alt": "The analysis screen listing how the parts you picked interact"
+      }
+    ]
   },
   {
     "title": "Red Skies",
@@ -21,7 +39,25 @@
     "link": "https://jxstrr0.github.io/RedSkies/",
     "code": "https://github.com/Jxstrr0/RedSkies",
     "image": "assets/covers/red-skies.jpg",
-    "featured": true
+    "featured": true,
+    "shots": [
+      {
+        "src": "assets/shots/red-skies-1.jpg",
+        "alt": "The Red Skies title screen over a dusk sky"
+      },
+      {
+        "src": "assets/shots/red-skies-2.jpg",
+        "alt": "The free watch setup screen with seed, difficulty and random events"
+      },
+      {
+        "src": "assets/shots/red-skies-3.jpg",
+        "alt": "The fire-control console with the radar sweeping and a contact on the scope"
+      },
+      {
+        "src": "assets/shots/red-skies-4.jpg",
+        "alt": "The same console a moment later, with the contact closer"
+      }
+    ]
   },
   {
     "title": "Penthouse Baccarat",
@@ -33,7 +69,25 @@
     "link": "https://jxstrr0.github.io/BaccaratTable/",
     "code": "https://github.com/Jxstrr0/BaccaratTable",
     "image": "assets/covers/penthouse-baccarat.jpg",
-    "featured": false
+    "featured": false,
+    "shots": [
+      {
+        "src": "assets/shots/penthouse-baccarat-1.jpg",
+        "alt": "The penthouse room with the baccarat table and a $100,000 bankroll"
+      },
+      {
+        "src": "assets/shots/penthouse-baccarat-2.jpg",
+        "alt": "Close up of the table with bets placed and the dealer waiting"
+      },
+      {
+        "src": "assets/shots/penthouse-baccarat-3.jpg",
+        "alt": "The dealer announcing that the Player draws on a 5"
+      },
+      {
+        "src": "assets/shots/penthouse-baccarat-4.jpg",
+        "alt": "A finished hand, Player 1 against Banker 7"
+      }
+    ]
   },
   {
     "title": "Garage to Glory",
@@ -45,7 +99,25 @@
     "link": "https://jxstrr0.github.io/GarageToGlory/",
     "code": "https://github.com/Jxstrr0/GarageToGlory",
     "image": "assets/covers/garage-to-glory.jpg",
-    "featured": false
+    "featured": false,
+    "shots": [
+      {
+        "src": "assets/shots/garage-to-glory-1.jpg",
+        "alt": "The garage hub with the week ready to plan"
+      },
+      {
+        "src": "assets/shots/garage-to-glory-2.jpg",
+        "alt": "An event result: Marcel arrives as Lord Abyssus"
+      },
+      {
+        "src": "assets/shots/garage-to-glory-3.jpg",
+        "alt": "Picking a logo for the band, Hail Damage"
+      },
+      {
+        "src": "assets/shots/garage-to-glory-4.jpg",
+        "alt": "Picking your seat in the band: drums, bass, rhythm or lead guitar"
+      }
+    ]
   },
   {
     "title": "Outpost",
@@ -57,7 +129,25 @@
     "link": "https://jxstrr0.github.io/Outpost-/",
     "code": "https://github.com/Jxstrr0/Outpost-",
     "image": "assets/covers/outpost.jpg",
-    "featured": true
+    "featured": true,
+    "shots": [
+      {
+        "src": "assets/shots/outpost-1.jpg",
+        "alt": "The Outpost title screen at Station Kestrel-4"
+      },
+      {
+        "src": "assets/shots/outpost-2.jpg",
+        "alt": "The met console at the desk, waiting for the first reading"
+      },
+      {
+        "src": "assets/shots/outpost-3.jpg",
+        "alt": "The station with a glowing heater and the weather map on the wall"
+      },
+      {
+        "src": "assets/shots/outpost-4.jpg",
+        "alt": "The west door taped shut, with a shelf of logbooks beside it"
+      }
+    ]
   },
   {
     "title": "Season Ticket",
@@ -69,7 +159,25 @@
     "link": "https://jxstrr0.github.io/SeasonTicket/",
     "code": "https://github.com/Jxstrr0/SeasonTicket",
     "image": "assets/covers/season-ticket.jpg",
-    "featured": true
+    "featured": true,
+    "shots": [
+      {
+        "src": "assets/shots/season-ticket-1.jpg",
+        "alt": "The manager office with the laptop, league table and trophies"
+      },
+      {
+        "src": "assets/shots/season-ticket-2.jpg",
+        "alt": "The home ground by day, a green pitch with stands on all sides"
+      },
+      {
+        "src": "assets/shots/season-ticket-3.jpg",
+        "alt": "The Stadium tab with the 3D ground and the stand upgrade options"
+      },
+      {
+        "src": "assets/shots/season-ticket-4.jpg",
+        "alt": "The same ground at night under the floodlights"
+      }
+    ]
   },
   {
     "title": "AI Trading Journal",

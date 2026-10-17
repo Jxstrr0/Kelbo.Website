@@ -23,7 +23,7 @@ you save on the `main` branch goes live within a minute or two.
 | `now.json` | **The "Now building" strip** on the home page. Edit this to say what you're working on |
 | `style.css` | Colours, fonts, and layout for every page |
 | `main.js` | Reads `projects.json` and puts the projects on the page, and runs the live sun, the ☀/☾ button, and the "Continue?" card |
-| `assets/` | Images, game cover screenshots (`assets/covers/`), the link preview picture, the browser-tab icon, and the home-screen icon |
+| `assets/` | Images, game cover screenshots (`assets/covers/`), the screenshot strips (`assets/shots/`), the link preview picture, the browser-tab icon, and the home-screen icon |
 | `site.webmanifest` | The site's name, colours and icon for phones that add it to the home screen |
 | `robots.txt`, `sitemap.xml` | Tell search engines they're welcome and which pages exist. Add a line to the sitemap when you add a page |
 | `agent-fleet.html` | The Agent Fleet page. All plain text except the weekly scan, so edit the words directly |
@@ -114,6 +114,14 @@ Paste it after the last one and change the values:
   Covers are shown 4:3 (640 × 480 is perfect) and should stay under 100 KB.
 - **featured**: `true` shows it as a big card under "Pick a game" on the home
   page (the first four only).
+- **shots** (optional): screenshots for the card's "Screenshots (4)" drawer.
+  Add a list under the project, each with a picture and a short
+  description for screen readers:
+  `"shots": [{ "src": "assets/shots/my-game-1.jpg", "alt": "The title screen" }]`.
+  Put the pictures in `assets/shots/`, about 360 pixels tall as JPGs (under
+  40 KB each); portrait and landscape can mix, since they all show at the
+  same height. The drawer shows on the Games and Projects pages, not on the
+  home page's short cards, and the pictures only download when it's opened.
 
 **Adding a game:** use `"category": "Game"` and it shows up on the Games
 page automatically, with a big clay "Play it" button. Each game lives in its
