@@ -269,6 +269,10 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
 - Sections: `games.html`, `trading.html`, and `ai.html` each list the
   projects whose `category` matches the list's `data-category` (Game,
   Trading, AI). The home page tiles link to them and show counts.
+- `whats-new.html` is a `data-projects="news"` list: `setUpNews` in
+  `main.js` shows every project with a `version` or `latest`, in
+  `projects.json` order, with no dates (the file has none). Linked from
+  every footer ("What's new") and listed in `sitemap.xml`.
 - Games each live in their own repo with their own GitHub Pages site
   (GarageToGlory, RedSkies, BaccaratTable, 350Chev, Outpost-, SeasonTicket). This site only links to
   them via `link` (the pink Play it button) and `code` (the repo). The home
