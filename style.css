@@ -1531,7 +1531,9 @@ img {
   fill: color-mix(in srgb, var(--ll-slate) 55%, var(--ll-purple));
 }
 
-.train .elevator__light {
+/* The headlight (named twice so it beats the dark-theme fill above) */
+.train .elevator__light,
+:root[data-theme="dark"] .train .elevator__light {
   fill: var(--ll-clay);
 }
 
