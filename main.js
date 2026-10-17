@@ -1496,6 +1496,9 @@ function setUpSkyTaps(scene, timeNow) {
       const r = node.getBoundingClientRect();
       return { x: r.left + r.width / 2, y: r.top + r.height / 2, r: r.width / 2 };
     };
+    if (scene.elevator && scene.elevator.getBoundingClientRect().width) {
+      list.push({ ...centre(scene.elevator), title: "Grain elevator", detail: elevatorFact(t) });
+    }
     const sun = scene.querySelector(".horizon__sun");
     if (sun && sunAltitude(t) > -1) {
       const au = sunDistanceAU(t);
@@ -1593,8 +1596,11 @@ function setUpSkyTaps(scene, timeNow) {
    smoky red sun), and the weather also brings high cloud, wind,
    dampness and recent rain for the day sky below (sun dogs, rainbows,
    heat shimmer, contrails, leaves in the wind, a hawk or a kite).
+   Winter ground: frost glitter on the snow on a clear, bitter morning,
+   and snow blowing along the ground on a windy day.
    Preview with ?weather=clear|cloudy|overcast|rain|snow|storm|fog,
-   ?weather=sundogs|smoke|rainbow|hot|windy and ?kp=6 (any number 0..9). */
+   ?weather=sundogs|smoke|rainbow|hot|windy|frost|drift and ?kp=6 (any
+   number 0..9). Frost wants a morning time too: &at=2026-12-15T09:30 */
 const WEATHER_KEY = "kelbo.weather";
 const WEATHER_MS = 15 * 60000;
 const KP_KEY = "kelbo.kp";
@@ -1624,6 +1630,7 @@ const WEATHER_PREVIEWS = {
   sundogs: [1, 30, true, { temp: -24, high: 40, damp: 80 }], smoke: [0, 5, false, { temp: 24, pm: 120 }],
   rainbow: [2, 45, false, { temp: 17, wet: true }], hot: [0, 5, false, { temp: 33, damp: 30 }],
   windy: [1, 25, false, { temp: 16, wind: 38, windFrom: 290 }],
+  frost: [0, 5, true, { temp: -22 }], drift: [1, 25, true, { temp: -12, wind: 42, windFrom: 290 }],
 };
 
 // The ?weather= preview asked for, or null
@@ -1759,6 +1766,32 @@ function snowOnGround(t) {
   return day >= 1125 || day <= 325;
 }
 
+// Frost glitter: on a bitter, clear morning the snow is full of tiny ice
+// crystals that flash as the low sun catches them. Needs snow lying,
+// -10°C or colder, little cloud, the sun up but low, and before noon.
+function frostSparkle(t) {
+  if (!weather || !Number.isFinite(weather.temp) || weather.temp > -10 || weather.cloud >= 40) return false;
+  if (!snowOnGround(t) || sunHidden() || localParts(t).h >= 12) return false;
+  const alt = sunAltitude(t);
+  return alt > 0 && alt < 25;
+}
+
+function frostLine(t) {
+  return frostSparkle(t) ? "Frost glitter on the snow" : "";
+}
+
+// Drifting snow: a real wind of 25 km/h or more blows loose snow along
+// the ground. Needs snow lying and it not above freezing.
+function snowDrift(t) {
+  const { wind, known } = breeze();
+  if (!known || wind < 25 || !snowOnGround(t)) return false;
+  return !Number.isFinite(weather.temp) || weather.temp <= 0;
+}
+
+function driftLine(t) {
+  return snowDrift(t) ? "Snow blowing across the ground" : "";
+}
+
 /* ---------- The day sky ----------
    What the weather does to the daytime sky. Sun dogs and the rainbow
    are 0 (not happening) up to 1 (in full), worked out from the weather
@@ -1825,8 +1858,13 @@ function rainbowLine(t) {
   if (!rainbowStrength(t)) return "";
   const p = sunPosition(t);
   const away = (altAz(p.ra * R2D, p.dec * R2D, t).az + 180) % 360;
+  return `Rainbow weather · look ${compassName(away)}`;
+}
+
+// "north", "southwest" and so on for a compass bearing in degrees
+function compassName(deg) {
   const names = ["north", "northeast", "east", "southeast", "south", "southwest", "west", "northwest"];
-  return `Rainbow weather · look ${names[Math.round(away / 45) % 8]}`;
+  return names[Math.round((((deg % 360) + 360) % 360) / 45) % 8];
 }
 
 // Heat shimmer over the horizon on a hot afternoon.
@@ -2035,6 +2073,19 @@ function shadowLine(t) {
   return `Your shadow is ${long < 10 ? long.toFixed(1) : Math.round(long)}× your height`;
 }
 
+// What the elevator says when it's tapped: how long its shadow is and
+// where it points, or why there isn't one.
+function elevatorFact(t) {
+  const alt = seenAltitude(sunAltitude(t));
+  if (shadowStrength(alt)) {
+    const long = Math.min(99, Math.round(10 / Math.tan(alt * D2R)) / 10);
+    const away = (sunAltAz(t).az + 180) % 360; // shadows point away from the sun
+    return `Shadow ${long < 10 ? long.toFixed(1) : Math.round(long)}× its height, pointing ${compassName(away)}`;
+  }
+  if (document.documentElement.dataset.theme === "dark") return "Its light stays on until the sun's back";
+  return alt > 0 ? "No shadow while the sun's hidden" : "No shadow with the sun down";
+}
+
 // Builds the weather layers once, then paintWeather switches them.
 function setUpWeather(scene) {
   const sky = scene.querySelector(".horizon__stars");
@@ -2051,6 +2102,10 @@ function setUpWeather(scene) {
   scene.optics.append(el("div", "horizon__rainbow"), el("div", "horizon__sundogs"));
   scene.snowline = el("div", "horizon__snowline");
   scene.querySelector(".horizon__ground").after(scene.snowline);
+  // Winter ground: frost glitter over the snow, and snow blowing along the line
+  scene.frost = el("div", "horizon__frost");
+  scene.drift = el("div", "horizon__drift");
+  scene.snowline.after(scene.frost, scene.drift);
   const refresh = () => Promise.all([loadWeather(), loadKp(), loadAir()]);
   refresh();
   setInterval(() => { if (!document.hidden) refresh(); }, WEATHER_MS);
@@ -2077,6 +2132,9 @@ function paintWeather(scene, t) {
   scene.style.setProperty("--smoke", smokeStrength().toFixed(2));
   scene.style.setProperty("--wind", Math.min(1, breeze().wind / 50).toFixed(2)); // sways the wheat
   scene.classList.toggle("horizon--hot", heatShimmer(t));
+  scene.classList.toggle("horizon--frost", frostSparkle(t));
+  scene.classList.toggle("horizon--drift", snowDrift(t));
+  scene.style.setProperty("--drift-dir", String(breeze().dir)); // 1 blows right, -1 left
   const field = groundSeason(t);
   scene.classList.toggle("horizon--crocus", field === "crocus");
   scene.classList.toggle("horizon--wheat", field === "young" || field === "gold");
@@ -2972,17 +3030,17 @@ function setUpHorizon() {
       } else if (isDay && day.set) {
         l = takeTurns([
           eclipseLine(t), rainbowLine(t), sunDogLine(t), lightHourLine(t) || `Sun's up ${overHere()}`,
-          shadowLine(t), dayLengthLine(t), weatherLine(), smokeLine(t),
+          shadowLine(t), dayLengthLine(t), weatherLine(), frostLine(t), driftLine(t), smokeLine(t),
         ]);
         r = `Sets ${clock(new Date(day.set))} · ${hoursMins(day.set - t)} of light left`;
       } else if (!isDay && day.rise && t < day.rise) {
         // Night: tonight's moon, and when the sun comes back
-        l = takeTurns([eclipseLine(t), moonLine(t), lightHourLine(t), showerLine(t), auroraLine(t), weatherLine(), smokeLine(t)]);
+        l = takeTurns([eclipseLine(t), moonLine(t), lightHourLine(t), showerLine(t), auroraLine(t), weatherLine(), driftLine(t), smokeLine(t)]);
         r = `Sun's up at ${clock(new Date(day.rise))}`;
       } else {
         // After sunset: tomorrow's sunrise
         const tomorrow = sunDay(new Date(day.end + 60000));
-        l = takeTurns([eclipseLine(t), moonLine(t), lightHourLine(t), showerLine(t), auroraLine(t), weatherLine(), smokeLine(t)]);
+        l = takeTurns([eclipseLine(t), moonLine(t), lightHourLine(t), showerLine(t), auroraLine(t), weatherLine(), driftLine(t), smokeLine(t)]);
         r = tomorrow.rise ? `Sun's back at ${clock(new Date(tomorrow.rise))}` : "Sun's back tomorrow";
       }
       setLine(left, l, swiped);
