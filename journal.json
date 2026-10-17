@@ -18,13 +18,13 @@
       { "sector": "Tech / Semis", "etf": "XLK, SMH", "direction": "Weakest", "trend": "down", "why": "Hot CPI, CXMT, AI capex funding fears" }
     ],
     "calls": [
-      { "call": "TSMC gives semis a bounce Thursday morning, and it fades by the afternoon", "wrongIf": "SOX closes green Thursday and holds above about 12,200 (Tuesday's close).", "grade": null },
-      { "call": "PPI lands around +0.5% and doesn't make things worse", "wrongIf": "PPI or core PPI comes in hot and hike odds go over 60%.", "grade": null },
-      { "call": "S&P stays above 7,663 and pins 7,700 to 7,725 into Friday's close", "wrongIf": "It closes under 7,663 (the gamma flip) on either day.", "grade": null },
-      { "call": "MU tests $950-955, gets rejected, and holds above $900", "wrongIf": "It closes over $955 with SOX green, or loses $900.", "grade": null },
-      { "call": "NVDA outperforms MU over the two days", "wrongIf": "MU's two-day % move beats NVDA's.", "grade": null },
-      { "call": "Staples and Health Care beat Tech over Thursday and Friday", "wrongIf": "XLK beats both XLP and XLV over the two days.", "grade": null },
-      { "call": "VIX stays under 20", "wrongIf": "VIX closes over 20 on either day.", "grade": null }
+      { "call": "TSMC gives semis a bounce Thursday morning, and it fades by the afternoon", "wrongIf": "SOX closes green Thursday and holds above about 12,200 (Tuesday's close).", "grade": "partial" },
+      { "call": "PPI lands around +0.5% and doesn't make things worse", "wrongIf": "PPI or core PPI comes in hot and hike odds go over 60%.", "grade": "miss" },
+      { "call": "S&P stays above 7,663 and pins 7,700 to 7,725 into Friday's close", "wrongIf": "It closes under 7,663 (the gamma flip) on either day.", "grade": "miss" },
+      { "call": "MU tests $950-955, gets rejected, and holds above $900", "wrongIf": "It closes over $955 with SOX green, or loses $900.", "grade": "miss" },
+      { "call": "NVDA outperforms MU over the two days", "wrongIf": "MU's two-day % move beats NVDA's.", "grade": "hit" },
+      { "call": "Staples and Health Care beat Tech over Thursday and Friday", "wrongIf": "XLK beats both XLP and XLV over the two days.", "grade": "hit" },
+      { "call": "VIX stays under 20", "wrongIf": "VIX closes over 20 on either day.", "grade": "hit" }
     ],
     "scenarios": [
       { "odds": 50, "name": "Base: choppy and pinned", "text": "TSMC is solid but nothing special and PPI is in line. Semis try to bounce Thursday and fade into MU $950s and NVDA $228-230. S&P bounces between 7,663 and 7,750 and pins near 7,700 Friday. Defensives and energy stay firm." },
@@ -53,8 +53,8 @@
       "If the S&P closes under 7,663, I stop looking for longs."
     ],
     "trades": [],
-    "recap": "",
-    "ai": "What's good: every call states exactly what would prove it wrong, so Friday's grading can't be fudged. There's one clear line in the sand (7,663) and a set plan for if it breaks.\n\nWhat to watch: calls 3, 6 and 7 are mostly the same bet, a calm, range-bound, defensive market. If the bear case shows up they'll probably all miss together, so seven calls is really closer to four or five separate tests. Calls 1 and 4 both hang on the TSMC reaction too.\n\nThe two biggest catalysts, TSMC at midnight and PPI at 6:30 a.m., both land before the open, so the first move could be a gap rather than a test of the levels. A plan for MU or NVDA opening straight through a level, instead of trading up into it, is worth having before the bell.",
+    "recap": "Thursday played out like the base case. The S&P closed at 7,744.06 (+0.33%), above the 7,725 call wall, and the VIX was 16.46. PPI was the surprise: September came in at +1.3% m/m (6.3% y/y) against about 0.5-0.6% expected, and core was +0.7% against 0.3%. October hike odds went to roughly 27-29% after the print, with a December hike priced near 78%. SOX closed down 0.88% at 11,581.22, and MU rose 1.87% to $931.24 without trading above $931.65.\n\nFriday played out like the bear case. The S&P fell 1.09% to 7,659.44, closing 3.56 points under the 7,663 flip. The VIX jumped 21.45% to 19.99, a penny under the line. SOX fell 3.83% to 11,137.29, its eighth straight decline, and MU dropped 5.63% to $878.84, under $900. October hike odds eased to about 15% after Warsh gave no hike signal.\n\nOver the two days NVDA (-3.24%) beat MU (-3.86%), and Staples (+1.81%) and Health Care (+1.58%) beat Tech (XLK about -3.6%, with Friday's close estimated).\n\nCall 1 is graded partial: SOX closed red and far under 12,200, so its wrong-if line held, but the closes don't show a morning bounce. Call 2 is a miss because PPI came in at more than double the forecast and a December hike was priced near 78%. Call 7 is a hit by one penny. Score: 3 hits, 1 partial, 3 misses, or 3.5 out of 7.",
+    "ai": "What's good: the wrong-if lines made this easy to grade. Most calls settled on one number, and the 7,663 line is clear, since the S&P closed 3.56 points under it. The two relative calls, NVDA over MU and Staples and Health Care over Tech, both held in a falling market, because they only needed a ranking and no price level had to hold.\n\nWhat missed: the level calls. The S&P pin range and the MU range both assumed a calm market, and Friday's 1.09% drop broke both. The PPI call used the consensus figure as the forecast, so it carried no view of its own. A print of +1.3% against 0.5-0.6% expected misses for anyone who sat on consensus. A call on a data release only helps if it says which way the surprise leans and why.\n\nWhat to watch: the warning that calls 3, 6 and 7 would miss together was half right. Call 3 missed with call 4 on Friday, but 6 and 7 held. The VIX hit is the thinnest grade here, since 19.99 sits a penny under the line after a 21% jump. The bear scenario had 25% odds and most of its markers (S&P under 7,663, VIX at 19-20, MU through $900) showed up Friday. A quarter looks light for a market that had just printed a hot CPI with semis already sliding. Seven calls is a small sample, so 3.5 out of 7 says little about skill yet.",
     "lesson": ""
   }
 ]
