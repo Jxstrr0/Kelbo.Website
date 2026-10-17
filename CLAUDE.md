@@ -195,6 +195,20 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   line, rippling air on `.horizon__ground::before`, wavering elevator)
   is motion-only. Readout extras: `rainbowLine`, `sunDogLine`,
   `shadowLine`, `smokeLine`.
+  Winter ground: `frostSparkle` (snow lying, ≤ −10°C, cloud < 40, not
+  `sunHidden`, sun 0..25°, before noon) shows `.horizon__frost` (two masked
+  tiles of ivory glints over the ground, twinkling) via `horizon--frost`;
+  `snowDrift` (snow lying, known wind ≥ 25 km/h, ≤ 0°C or temp unknown)
+  shows `.horizon__drift` (a masked strip of ivory streaks across the
+  horizon line, sliding along `--drift-dir` = `breeze().dir`, faster with
+  `--wind`) via `horizon--drift`. Both toggle in `paintWeather` before the
+  unchanged-weather early return, motion only in the no-preference block.
+  `frostLine` and `driftLine` join the readout turns. Preview with
+  `?weather=frost&at=2026-12-15T09:30` or `?weather=drift&at=2026-12-15T13:00`.
+  Tapping the elevator (`targets` in `setUpSkyTaps`) names it and says
+  what its shadow is doing (`elevatorFact`; `compassName` is shared with
+  `rainbowLine`). The aurora is lilac and purple with a thin ivory glow in
+  each curtain: the palette has no green, so don't add it without Kelbo's say.
   The land (`setUpLand`, every sky): `.horizon__elevator` (SVG from
   `ELEVATOR` outline, z1, standing at the sun's noon x, 0.38; clay
   `.elevator__light` in the dark theme) and `.horizon__shadow` (a

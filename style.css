@@ -928,15 +928,17 @@ img {
    classes on .horizon: --rain, --snow, --storm, --fog, --overcast and
    --snowy (snow lying on the ground), plus --aurora (0..1). */
 
-/* Northern lights: soft lilac curtains across the top of the night sky */
+/* Northern lights: soft lilac and purple curtains across the top of the
+   night sky, each with a thin ivory glow at its brightest. The palette has
+   no green, so these stay in the brand colours. */
 .horizon__aurora {
   position: absolute;
   inset: 0 0 auto 0;
   height: calc(var(--sky-height) * 0.85);
   background:
     repeating-linear-gradient(90deg,
-      rgba(180, 140, 232, 0) 0 4%, rgba(180, 140, 232, 0.75) 7%, rgba(180, 140, 232, 0) 10%,
-      rgba(180, 140, 232, 0) 13%, rgba(180, 140, 232, 0.45) 15%, rgba(180, 140, 232, 0) 18%,
+      rgba(180, 140, 232, 0) 0 4%, rgba(180, 140, 232, 0.75) 6%, rgba(250, 249, 245, 0.7) 7%, rgba(180, 140, 232, 0.75) 8%, rgba(180, 140, 232, 0) 10%,
+      rgba(180, 140, 232, 0) 13%, rgba(180, 140, 232, 0.45) 14.5%, rgba(250, 249, 245, 0.4) 15%, rgba(180, 140, 232, 0.45) 15.5%, rgba(180, 140, 232, 0) 18%,
       rgba(123, 63, 196, 0.8) 22%, rgba(123, 63, 196, 0) 27%),
     linear-gradient(to bottom, rgba(123, 63, 196, 0), rgba(180, 140, 232, 0.35) 65%, rgba(180, 140, 232, 0));
   background-size: 180% 100%, 100% 100%;
@@ -1075,6 +1077,72 @@ img {
 }
 
 .horizon--snowy .horizon__snowline {
+  display: block;
+}
+
+/* Frost glitter: on a bitter clear morning the snow flashes with ice
+   crystals. Two layers of tiny ivory glints (an SVG tile used as a mask)
+   over the ground, twinkling out of step (style.css motion block). */
+.horizon__frost {
+  position: absolute;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  top: calc(var(--sky-height) + 3.5px);
+  bottom: -1px;
+  z-index: 2;
+  display: none;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.horizon--frost .horizon__frost {
+  display: block;
+}
+
+.horizon__frost::before,
+.horizon__frost::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--ll-ivory);
+  -webkit-mask: var(--glints) 0 0 / var(--tile) repeat;
+  mask: var(--glints) 0 0 / var(--tile) repeat;
+  opacity: 0.7;
+}
+
+.horizon__frost::before {
+  --tile: 90px 70px;
+  --glints: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='70'%3E%3Cg fill='%23000'%3E%3Ccircle cx='8' cy='12' r='0.9'/%3E%3Ccircle cx='47' cy='6' r='0.8'/%3E%3Ccircle cx='76' cy='30' r='1'/%3E%3Ccircle cx='28' cy='44' r='0.9'/%3E%3Ccircle cx='62' cy='60' r='0.8'/%3E%3C/g%3E%3Cpath d='M38 28v6M35 31h6' stroke='%23000' stroke-width='0.8'/%3E%3C/svg%3E");
+}
+
+.horizon__frost::after {
+  --tile: 130px 100px;
+  --glints: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='130' height='100'%3E%3Cg fill='%23000'%3E%3Ccircle cx='20' cy='30' r='0.9'/%3E%3Ccircle cx='97' cy='18' r='0.8'/%3E%3Ccircle cx='60' cy='72' r='1'/%3E%3Ccircle cx='118' cy='84' r='0.8'/%3E%3C/g%3E%3Cpath d='M84 52v7M80.5 55.5h7' stroke='%23000' stroke-width='0.8'/%3E%3C/svg%3E");
+  opacity: 0.55;
+}
+
+/* Drifting snow: pale streaks of loose snow sliding along the ground
+   across the horizon line. Streaks are an SVG tile used as a mask and
+   they slide the way the wind blows (--drift-dir, 1 right and -1 left;
+   style.css motion block). */
+.horizon__drift {
+  position: absolute;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  top: calc(var(--sky-height) - 5px);
+  height: 16px;
+  z-index: 2;
+  display: none;
+  background: var(--ll-ivory);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='16'%3E%3Cg stroke='%23000' stroke-width='1.2' stroke-linecap='round'%3E%3Cpath d='M6 11h26M70 6h18M110 13h34M168 8h22M204 12h30M140 4h12' opacity='0.9'/%3E%3C/g%3E%3C/svg%3E") 0 0 / 240px 16px repeat-x;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='16'%3E%3Cg stroke='%23000' stroke-width='1.2' stroke-linecap='round'%3E%3Cpath d='M6 11h26M70 6h18M110 13h34M168 8h22M204 12h30M140 4h12' opacity='0.9'/%3E%3C/g%3E%3C/svg%3E") 0 0 / 240px 16px repeat-x;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.horizon--drift .horizon__drift {
   display: block;
 }
 
@@ -2664,6 +2732,27 @@ img {
 
   @keyframes aurora-shimmer {
     to { background-position: 180% 0, 0 0; }
+  }
+
+  /* Frost glitter twinkles; drifting snow slides with the wind (faster
+     in a stronger one) */
+  .horizon__frost::before { animation: frost-glint 2.8s ease-in-out infinite; }
+  .horizon__frost::after { animation: frost-glint 3.9s ease-in-out -1.6s infinite; }
+
+  @keyframes frost-glint {
+    0%, 100% { opacity: 0.15; }
+    50% { opacity: 0.85; }
+  }
+
+  .horizon__drift {
+    animation: snow-drift calc(11s - var(--wind, 0.5) * 7s) linear infinite;
+  }
+
+  @keyframes snow-drift {
+    to {
+      -webkit-mask-position: calc(var(--drift-dir, -1) * 240px) 0;
+      mask-position: calc(var(--drift-dir, -1) * 240px) 0;
+    }
   }
 
   @keyframes aurora-sway {
