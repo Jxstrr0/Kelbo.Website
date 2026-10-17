@@ -2462,6 +2462,7 @@ function setUpCritters(scene, timeNow) {
     for (let wx = 3; wx < x; wx += 6.5) wheels.push(svgNode("circle", { cx: wx, cy: 10, r: 1.2 }));
     const len = x;
     const rig = svgNode("svg", { class: "train", viewBox: `0 0 ${len} 12` });
+    rig.style.width = `calc(var(--elevator-h) * 0.2 * ${len} / 12)`; // set outright so no browser falls back to a 300px-wide box
     rig.append(svgNode("path", { d }), ...wheels, svgNode("circle", { class: "elevator__light", cx: 0.6, cy: 6, r: 1.1 })); // headlight after dark
     const right = Math.random() < 0.5; // the locomotive is drawn at the left end, so it heads left unless flipped
     const wrap = el("div", "train-path");
