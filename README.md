@@ -359,7 +359,9 @@ from the optional weather, air quality and northern lights, below).
 - **Northern lights:** when NOAA's space weather feed (free, no key,
   checked at most every 20 minutes) says the lights are likely this far
   south (a Kp index of 4 or more), soft lilac and purple curtains ripple
-  across the top of the night sky, stronger the bigger the storm, and the
+  across the top of the night sky, each with a thin ivory glow, stronger
+  the bigger the storm (real lights are often green, but the site's five
+  colours have none, so they stay lilac), and the
   readout says "Northern lights likely · Kp 5". Only on dark, clear nights.
   Preview with `?kp=6&at=night`.
 - **Prairie seasons:** from mid September to mid November (heading south)
@@ -412,6 +414,15 @@ from the optional weather, air quality and northern lights, below).
   - Preview any of them with `?critter=` plus `leaves`, `jet`, `hawk`,
     `kite`, `geese` or `fireflies` (add `&weather=windy` for a strong
     wind). `JET_EVERY_S` and `HAWK_EVERY_S` in `main.js` set how often.
+- **Winter ground** (needs snow lying, so it uses the real weather):
+  - **Frost glitter:** on a clear morning of -10°C or colder, the snow
+    flashes with tiny sparkles while the low sun is up.
+  - **Drifting snow:** when the wind is 25 km/h or more, pale streaks of
+    loose snow slide along the ground the way the wind blows.
+  - Preview with `?weather=frost&at=2026-12-15T09:30` or
+    `?weather=drift&at=2026-12-15T13:00`.
+- **Tap the grain elevator** and it says how long its shadow is and which
+  way it points (or why there's no shadow right now).
 - **Tap a cloud** and it puffs apart and drifts off. A new cloud drifts in
   from the left a while later.
 - Weather, the air quality and the northern lights are the only parts of
