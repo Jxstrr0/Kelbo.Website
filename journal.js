@@ -27,7 +27,8 @@
      lesson     one thing to keep doing or fix
    A trade's "result" is its gain or loss in percent: 1.2 means +1.2%,
    -0.8 means -0.8%. Leave it out (or use null) while the trade is open.
-   A call with no grade yet doesn't count in the record.
+   A call with no grade yet doesn't count in the record. The newest entry's
+   graded calls also show as a one-line "Week of Oct 14" tally at the top.
 
    options.json holds the options trades (see "Options trades" in
    README.md):
@@ -139,9 +140,33 @@ function statGroup(parent, title, stats, notes, pair) {
   if (notes.length) parent.append(el("p", "record__note", notes.join(" ")));
 }
 
+// One glance at the newest entry's graded calls: "Week of Oct 14: 3 Hits,
+// 1 Partial, 3 Misses". Only graded calls count, so nothing shows until
+// Kelbo reports a grade. The entries are newest first.
+function renderWeek(box, entries) {
+  const entry = entries.find((e) => listOf(e, "calls").some(gradeOf));
+  if (!entry) return;
+  const calls = listOf(entry, "calls");
+  const graded = calls.filter(gradeOf);
+  const line = el("p", "week");
+  line.append(el("span", "week__when", "Week of " + shortDay(entry.date)));
+  Object.keys(GRADES).forEach((key) => {
+    const n = graded.filter((c) => gradeOf(c) === key).length;
+    if (!n) return;
+    // "1 Hit", "3 Hits", "2 Misses": the word is always there, so colour is never the only clue.
+    const label = GRADES[key].label + (n === 1 ? "" : key === "miss" ? "es" : "s");
+    line.append(el("span", "call__grade call__grade--" + key, n + " " + label));
+  });
+  if (graded.length < calls.length) {
+    line.append(el("span", "week__open", `${graded.length} of ${calls.length} graded`));
+  }
+  box.append(line);
+}
+
 function renderRecord(entries, options) {
   const box = document.querySelector("[data-record]");
   box.replaceChildren();
+  renderWeek(box, entries);
 
   // Calls: hits count 1, partials count half.
   const calls = entries.flatMap((e) => listOf(e, "calls"));
