@@ -95,8 +95,9 @@
          sunset. Without JavaScript the sun just sits mid-sky. -->
     <section class="hero" aria-labelledby="hero-name">
       <div class="wrap hero__top">
-        <!-- main.js shows the switch so visitors can see their own sky -->
-        <p class="eyebrow"><span data-sky-place>Saskatoon, SK</span> <button type="button" class="eyebrow__switch" data-sky-switch hidden>See your sky</button></p>
+        <!-- main.js shows the switches: see your own sky, and (on phones)
+             let the sky follow the phone's tilt and compass -->
+        <p class="eyebrow"><span data-sky-place>Saskatoon, SK</span> <button type="button" class="eyebrow__switch" data-sky-switch hidden>See your sky</button> <button type="button" class="eyebrow__switch" data-motion-switch aria-pressed="false" hidden>Tilt sky</button></p>
         <h1 id="hero-name" class="hero__name">Longlight Interactive</h1>
         <p class="hero__by">by <a href="about.html">Kelbo</a></p>
         <p class="hero__line">Browser games, tools, and AI projects.</p>
@@ -134,6 +135,16 @@
       <h2 id="now-heading" class="now__label">Now building</h2>
       <ul class="now__list" data-now-list></ul>
       <p class="now__updated" data-now-updated></p>
+    </section>
+
+    <!-- Sky this week: what's coming up in the sky, worked out by main.js
+         (no internet), plus the shooting-star wish counter. Hidden
+         without JavaScript. -->
+    <section class="sky-week wrap" aria-labelledby="sky-week-heading" data-sky-week hidden>
+      <h2 id="sky-week-heading" class="now__label">Sky this week</h2>
+      <ol class="sky-week__list" data-sky-week-list></ol>
+      <p class="sky-week__wishes" data-wishes></p>
+      <p class="sky-week__note" data-sky-week-note></p>
     </section>
 
     <!-- 3. Games: big cards for every project with "featured": true in
