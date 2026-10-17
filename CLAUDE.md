@@ -304,6 +304,8 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   with entries in `journal.json` (a list, newest first by `date`). The
   record is calculated from each call's `grade` (hit/partial/miss, null =
   not graded) and each trade's `result` (percent; missing = open). The
+  top of the record also has `renderWeek`, a one-line hit/partial/miss tally
+  of the newest entry that has graded calls (graded only, never invented). The
   field list is at the top of `journal.js`. Entries can be long forecasts
   (calls, scenarios, levels, sectors, schedule, plan); copy their content
   faithfully and only fill in grades and the recap when Kelbo reports them.

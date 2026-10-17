@@ -542,7 +542,9 @@ is optional except `date`.
   record updates itself.
 - **The record** at the top is worked out for you: the call score from
   your graded calls, and the options numbers from `options.json` (see
-  below). You never type it.
+  below). You never type it. Above it, a one-line "Week of Oct 14: 3 hits,
+  1 partial, 3 misses" tally shows the newest entry's graded calls (nothing
+  shows until a call has a grade).
 - **ai**: the AI coach's notes. Easiest way: send Claude your views and
   trades, and ask it to write the entry with a coach note. Or paste in
   feedback from any AI chat. Use `""` to leave it out, same for `lesson`.
