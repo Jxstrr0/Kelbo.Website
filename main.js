@@ -1975,13 +1975,29 @@ function placeOptics(scene, t, sunX) {
    and straight toward you at noon, long and off to the left (northeast)
    before sunset. Heavy cloud takes it away. The readout says how long
    your own shadow is: 1 ÷ tan(the sun's height) times your height. */
-// The elevator's outline: [x, y] in a 52 × 72 box, the ground at y = 72.
-// A driveway shed on the left, the tall main house with its cupola on
-// top, and the shorter annex on the right.
-const ELEVATOR = [[2, 72], [2, 58], [16, 52], [17, 20], [21, 15], [21, 6], [26, 1], [31, 6], [31, 15], [35, 20], [36, 28], [50, 31], [50, 72]];
-const ELEVATOR_W = 52;
+// The elevator's outline: [x, y] in an 86 × 72 box, the ground at y = 72,
+// modelled on a real wooden prairie elevator. From the left: a loading
+// spout hanging off the side, the tall main house with its steep gable, a
+// taller narrow leg house behind it with a low roof, a long annex roof
+// sloping down to the right, and a cyclone dust collector at the end.
+// (A driveway scale shed sits at the foot of the left wall.)
+const ELEVATOR = [
+  [0, 72], [0, 62], [17, 62], [17, 46], [9.5, 55], [8, 53.5], [17, 43], [17, 30], // shed roof, spout
+  [30, 11], [36, 19.8], [36, 3.5], [42, 1], [48, 3.5], [48, 27], // main house gable, leg house
+  [71, 43], [71, 22], [72.5, 19.5], [76.5, 19.5], [78, 22], [78, 72], // annex roof, cyclone
+];
+const ELEVATOR_W = 86;
 const ELEVATOR_H = 72;
-const ELEVATOR_MID = 26; // the middle of the main house, which stands on the noon spot
+const ELEVATOR_MID = 30; // the peak of the main house, which stands on the noon spot
+// Extra pieces drawn with the same silhouette colour but left out of the
+// shadow (thin things): the pipe from the leg house to the cyclone with
+// its prop, and a utility pole at the far right.
+const ELEVATOR_BITS = [
+  "M47 20.5H72V22.5H47Z", // dust pipe
+  "M59.5 22.5H60.8V36H59.5Z", // its prop
+  "M82.4 28H83.8V72H82.4Z", // pole
+  "M80 30H86.2V31.3H80Z", // crossarm
+];
 // The little station depot beside it, in a 40 × 22 box: a pitched roof with
 // a chimney, and a low platform canopy on the right.
 const DEPOT = [[0, 22], [0, 12], [12, 4], [16, 7], [16, 2], [19, 2], [19, 9], [24, 12], [40, 12], [40, 22]];
@@ -2003,7 +2019,12 @@ function setUpLand(scene) {
   const elevator = svgNode("svg", { class: "horizon__elevator", viewBox: `0 0 ${ELEVATOR_W} ${ELEVATOR_H}` });
   elevator.append(
     svgNode("path", { d: `M${ELEVATOR.map((p) => p.join(" ")).join("L")}Z` }),
-    svgNode("circle", { class: "elevator__light", cx: 26, cy: 10, r: 1.6 }) // a light up top after dark
+    ...ELEVATOR_BITS.map((d) => svgNode("path", { d })),
+    svgNode("rect", { class: "elevator__door", x: 52, y: 52, width: 9, height: 20 }), // the annex's barn door
+    // little windows that glow after dark: high in the gable, the leg house, the annex
+    svgNode("rect", { class: "elevator__light", x: 28.5, y: 15.5, width: 3, height: 4 }),
+    svgNode("rect", { class: "elevator__light", x: 40.5, y: 7, width: 3, height: 4 }),
+    svgNode("rect", { class: "elevator__light", x: 64, y: 51, width: 3, height: 3 })
   );
   // The station depot to the right of it, and the rail line they stand beside
   const depot = svgNode("svg", { class: "horizon__depot", viewBox: `0 0 ${DEPOT_W} ${DEPOT_H}` });

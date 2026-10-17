@@ -397,13 +397,18 @@ from the optional weather, air quality and northern lights, below).
     `?at=2026-09-10T17:30&weather=rainbow`.
   - **Heat shimmer:** from 28°C (`HOT_C`), the horizon line wobbles and
     the air above it ripples. Preview `?at=2027-07-15T15:00&weather=hot`.
-- **The grain elevator:** a prairie grain elevator stands on the horizon
-  where the sun is at noon. Its shadow on the ground follows the real sun:
+- **The grain elevator:** a wooden prairie grain elevator stands on the
+  horizon where the sun is at noon. It is drawn like a real one: a tall
+  main house with a steep gabled front, a taller narrow leg house behind
+  it, a long sloping annex with a barn door, a cyclone dust collector
+  with its pipe, a loading spout, a little scale shed and a utility pole.
+  The shape is the `ELEVATOR` list at the top of the grain elevator
+  section in `main.js`. Its shadow on the ground follows the real sun:
   long and off to the right in the morning, short and pointing at you at
   noon, long and off to the left before sunset. The readout tells you how
   long your own shadow is right now ("Your shadow is 2.4× your
-  height"). Heavy cloud takes the shadow away. At night a little light
-  glows at the top.
+  height"). Heavy cloud takes the shadow away. After dark
+  little windows glow in the gable, the leg house and the annex.
 - **The railway:** a little station depot (Longlight Station) stands just
   to the right of the elevator, with a line of track running across the
   ground in front of both. The depot casts its own shadow like the
