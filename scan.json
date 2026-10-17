@@ -1,11 +1,46 @@
 {
-  "week": "",
-  "updated": "",
-  "summary": "",
-  "indexes": [],
-  "up": [],
-  "down": [],
-  "earnings": [],
-  "economy": [],
-  "sources": []
+  "week": "2026-10-16",
+  "updated": "2026-10-17",
+  "summary": "A sell-off in AI and chip stocks pulled the Nasdaq down 4.5%, its worst week since June, and ended its four-week winning streak. Hotter inflation reports pushed Treasury yields higher, and oil jumped on Middle East risks. The Dow was the only major index to finish up.",
+  "indexes": [
+    { "name": "S&P 500", "change": -1.9 },
+    { "name": "Nasdaq Composite", "change": -4.5 },
+    { "name": "Dow", "change": 0.7 }
+  ],
+  "up": [
+    { "symbol": "FICO", "name": "Fair Isaac", "change": 15.5 },
+    { "symbol": "CTSH", "name": "Cognizant", "change": 11.5 },
+    { "symbol": "ACN", "name": "Accenture", "change": 10.7 },
+    { "symbol": "EFX", "name": "Equifax", "change": 10.6 },
+    { "symbol": "BRO", "name": "Brown & Brown", "change": 10.4 }
+  ],
+  "down": [
+    { "symbol": "CIEN", "name": "Ciena", "change": -26.0, "why": "Part of the AI and chip stock sell-off this week." },
+    { "symbol": "COHR", "name": "Coherent", "change": -25.5, "why": "Part of the AI and chip stock sell-off this week." },
+    { "symbol": "LITE", "name": "Lumentum", "change": -25.3, "why": "Part of the AI and chip stock sell-off this week." },
+    { "symbol": "HPE", "name": "Hewlett Packard Enterprise", "change": -25.0, "why": "Part of the AI and chip stock sell-off this week." },
+    { "symbol": "FLEX", "name": "Flex", "change": -24.5, "why": "Part of the AI and chip stock sell-off this week." }
+  ],
+  "earnings": [
+    { "when": "Tue Oct 20", "what": "GE Aerospace (GE), RTX and General Motors (GM), before the open" },
+    { "when": "Tue Oct 20", "what": "Netflix (NFLX) and Intuitive Surgical (ISRG), after the close" },
+    { "when": "Wed Oct 21", "what": "AT&T (T), Abbott (ABT) and Thermo Fisher (TMO), before the open" },
+    { "when": "Wed Oct 21", "what": "Tesla (TSLA), Meta (META), IBM and Lam Research (LRCX), after the close" },
+    { "when": "Thu Oct 22", "what": "Procter & Gamble (PG), Comcast (CMCSA) and Union Pacific (UNP), before the open" },
+    { "when": "Fri Oct 23", "what": "American Express (AXP), before the open" }
+  ],
+  "economy": [
+    { "when": "Mon Oct 19", "what": "NAHB housing market index, 10:00 AM ET" },
+    { "when": "Tue Oct 20", "what": "Housing starts and building permits (September), 8:30 AM ET" },
+    { "when": "Thu Oct 22", "what": "Weekly jobless claims, 8:30 AM ET, and the Leading Index (September), 10:00 AM ET" },
+    { "when": "Fri Oct 23", "what": "S&P Global flash PMIs (October), 9:45 AM ET, and University of Michigan consumer sentiment (final), 10:00 AM ET" },
+    { "when": "Oct 27-28", "what": "Fed meeting (FOMC), the week after next. The Fed calendar lists no Fed speeches next week" }
+  ],
+  "sources": [
+    { "name": "Yahoo Finance, Markets News Oct 16, 2026", "url": "https://finance.yahoo.com/markets/stocks/articles/markets-news-oct-16-2026-103800633.html" },
+    { "name": "Trefis, S&P 500 movers (5-day)", "url": "https://www.trefis.com/stock/spy/articles/619125/sp-500-movers-winners-trgp-fang-eog-losers-twlo-smci-flex/2026-10-17" },
+    { "name": "StockTitan, earnings calendar for the week of Oct 19", "url": "https://www.stocktitan.net/articles/earnings-calendar-week-of-october-19-2026" },
+    { "name": "Investrade, weekly event calendar Oct 19-23", "url": "https://investrade.com/weekly-event-calendar-10-19-2026-10-23-2026/" },
+    { "name": "Federal Reserve Board, October 2026 calendar", "url": "https://www.federalreserve.gov/newsevents/2026-october.htm" }
+  ]
 }
