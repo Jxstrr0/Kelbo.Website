@@ -33,7 +33,7 @@
     "link": "https://jxstrr0.github.io/BaccaratTable/",
     "code": "https://github.com/Jxstrr0/BaccaratTable",
     "image": "assets/covers/penthouse-baccarat.jpg",
-    "featured": true
+    "featured": false
   },
   {
     "title": "Garage to Glory",
@@ -57,7 +57,7 @@
     "link": "https://jxstrr0.github.io/Outpost-/",
     "code": "https://github.com/Jxstrr0/Outpost-",
     "image": "assets/covers/outpost.jpg",
-    "featured": false
+    "featured": true
   },
   {
     "title": "Season Ticket",
