@@ -1453,9 +1453,9 @@ img {
 .horizon__elevator {
   position: absolute;
   z-index: 1;
-  left: calc(0.38 * (100% - var(--sun-size)) + var(--sun-size) / 2 - var(--elevator-h) * 26 / 72);
+  left: calc(0.38 * (100% - var(--sun-size)) + var(--sun-size) / 2 - var(--elevator-h) * 30 / 72);
   top: calc(var(--sky-height) - var(--elevator-h) + 0.5px);
-  width: calc(var(--elevator-h) * 52 / 72);
+  width: calc(var(--elevator-h) * 86 / 72);
   height: var(--elevator-h);
   overflow: visible;
   transform-origin: 50% 100%;
@@ -1467,7 +1467,7 @@ img {
 .horizon__depot {
   position: absolute;
   z-index: 1;
-  left: calc(0.38 * (100% - var(--sun-size)) + var(--sun-size) / 2 + var(--elevator-h) * 26 / 72 + var(--elevator-h) * 0.06);
+  left: calc(0.38 * (100% - var(--sun-size)) + var(--sun-size) / 2 + var(--elevator-h) * 56 / 72 + var(--elevator-h) * 0.06);
   top: calc(var(--sky-height) - var(--elevator-h) * 0.31 + 0.5px);
   width: calc(var(--elevator-h) * 0.31 * 40 / 22);
   height: calc(var(--elevator-h) * 0.31);
@@ -1547,7 +1547,13 @@ img {
   fill: color-mix(in srgb, var(--ll-slate) 55%, var(--ll-purple));
 }
 
-/* The light up top, on after dark */
+/* The annex's barn door: a darker panel in the silhouette */
+.elevator__door {
+  fill: var(--ll-slate);
+  opacity: 0.55;
+}
+
+/* The little windows, on after dark */
 .elevator__light {
   fill: var(--ll-clay);
   opacity: 0;
