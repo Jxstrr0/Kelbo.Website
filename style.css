@@ -541,7 +541,7 @@ img {
   --moon-alt: -1; /* below the ground until main.js says it's night */
   --moon-size: calc(var(--sun-size) * 0.62);
   --sky-height: clamp(170px, 40vw, 240px);
-  --ground-height: 3.9rem;
+  --ground-height: 4.5rem;
   position: relative;
   height: calc(var(--sky-height) + var(--ground-height));
   margin-top: 1rem;
@@ -878,12 +878,14 @@ img {
   transition: background-color 600ms var(--ease);
 }
 
-/* The readout: "Sun's up over Saskatoon · sets 6:41 PM" */
+/* The readout: "Sun's up over Saskatoon · sets 6:41 PM". It starts below
+   the railway (the line, the 5px gap and the 5px track, plus a little
+   breathing room) so the words never crowd the rails. */
 .horizon__readout {
   position: absolute;
   left: 0;
   right: 0;
-  top: calc(var(--sky-height) + 3.5px);
+  top: calc(var(--sky-height) + 3.5px + 10px + 0.35rem);
   bottom: 0;
   z-index: 3;
   display: flex;
