@@ -83,8 +83,8 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   it's shot at 600px wide mid-shift with a jet on the TV camera, cropped 4:3;
   Prairie Engine Works is the GM LT4 6.2 from the game's own studio render,
   `ENGINE_VIS.photoShot(1280, 960)`, so no stray parts show; Season Ticket is
-  the 3D Office at a wide view, cropped 4:3 from the left to keep the sunset
-  window).
+  the Stadium tab's 3D ground by day, zoomed in one step, with its canvas
+  stretched to a 1024×768 window and the buttons and top bar hidden).
 - The live horizon (`[data-horizon]` in the home hero, every page head and
   the 404) puts the sun where the real sun is over Saskatoon (`YXE` in
   `main.js`, no network; only the optional weather and aurora fetch), switches to the dark theme at real sunset, and
