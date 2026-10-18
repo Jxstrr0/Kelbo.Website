@@ -39,7 +39,7 @@
     "link": "https://jxstrr0.github.io/RedSkies/",
     "code": "https://github.com/Jxstrr0/RedSkies",
     "image": "assets/covers/red-skies.jpg",
-    "featured": true,
+    "featured": false,
     "shots": [
       {
         "src": "assets/shots/red-skies-1.jpg",
@@ -129,7 +129,7 @@
     "link": "https://jxstrr0.github.io/Outpost-/",
     "code": "https://github.com/Jxstrr0/Outpost-",
     "image": "assets/covers/outpost.jpg",
-    "featured": true,
+    "featured": false,
     "shots": [
       {
         "src": "assets/shots/outpost-1.jpg",
@@ -189,7 +189,7 @@
     "link": "https://jxstrr0.github.io/Scratch/",
     "code": "https://github.com/Jxstrr0/Scratch",
     "image": "assets/covers/scratch.jpg",
-    "featured": false,
+    "featured": true,
     "shots": [
       {
         "src": "assets/shots/scratch-1.jpg",

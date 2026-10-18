@@ -48,8 +48,8 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   links load. Keep that script first in the `<head>`.
 - The link preview image is `assets/social-preview.jpg` (1200×630, the
   Longlight sky, the sun with its glow and halo on the horizon line,
-  "Longlight Interactive", plus the four featured game covers: Prairie Engine Works, Red Skies, Outpost, Season Ticket). Every `og:image`
-  ends `?v=5` so apps refetch it; bump it on every page when the picture
+  "Longlight Interactive", plus the three featured game covers: Scratch, Season Ticket, Prairie Engine Works). Every `og:image`
+  ends `?v=6` so apps refetch it; bump it on every page when the picture
   changes. Regenerate it if the covers change a lot. The favicon and
   home-screen icons are the logo's sun (glow, halo, sun) on an ivory line
   on a purple tile (the favicon turns slate in dark mode):
