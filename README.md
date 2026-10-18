@@ -96,7 +96,7 @@ Paste it after the last one and change the values:
   }
 ```
 
-- **status**: use one of `Finished - Final Form` (complete, won't change), `Finished - For Now` (done, but may get more updates), `Mostly done`, `Building`, `Early stages`, or `Planned`. Both Finished ones get a full bar.
+- **status**: use one of `Finished - Final Form` (complete, won't change), `Finished - For Now` (done, but may get more updates), `Ongoing` (keeps running with regular updates, like the journal), `Mostly done`, `Building`, `Early stages`, or `Planned`. Both Finished ones and Ongoing get a full bar.
   This sets how far along the progress bar the little sun sits.
 - **category**: which section it shows up in: `Game`, `Trading`, or `AI`.
   Anything else still shows on the Projects page, just not in a section.
