@@ -2429,6 +2429,77 @@ img {
   color: var(--accent-ink);
 }
 
+/* ---------- One game's own page (game.html) ---------- */
+.game {
+  display: grid;
+  gap: 1.75rem;
+  margin-top: 1.5rem;
+  min-width: 0;
+}
+
+.game__top {
+  display: grid;
+  gap: 1.1rem;
+}
+
+.game__cover {
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.game__info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  min-width: 0;
+}
+
+.game__summary {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.game__note {
+  color: var(--muted);
+}
+
+.game h2 {
+  margin: 0 0 0.6rem;
+  font-size: 1.25rem;
+}
+
+.game__story p {
+  max-width: 40rem;
+}
+
+.game__more-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.game__more-list a {
+  font-weight: 700;
+  color: var(--secondary);
+  text-decoration: none;
+}
+
+.game__more-list a:hover {
+  color: var(--accent-ink);
+}
+
+@media (min-width: 48rem) {
+  .game__top {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+    gap: 1.75rem;
+  }
+}
+
 /* ---------- Mode tiles (Games / Trading / AI) ---------- */
 .tiles {
   display: grid;

@@ -326,6 +326,58 @@ function renderBars(trades) {
   box.append(figure);
 }
 
+// A line that adds up each closed trade's return in order, so the slope
+// shows the trend. It adds percentages, so it's a shape to read and not an
+// account balance. Built only from the trades in options.json.
+function renderTrend(trades) {
+  const closed = trades.filter((t) => optionReturn(t) !== null);
+  const box = document.querySelector("[data-options-chart]");
+  if (closed.length < 3) return;
+
+  const NS = "http://www.w3.org/2000/svg";
+  const svgEl = (tag, attrs) => {
+    const node = document.createElementNS(NS, tag);
+    Object.entries(attrs).forEach(([k, v]) => node.setAttribute(k, v));
+    return node;
+  };
+
+  // Running total after each trade, starting from zero.
+  let total = 0;
+  const totals = [0, ...closed.map((t) => (total += optionReturn(t)))];
+  const low = Math.min(...totals, 0);
+  const high = Math.max(...totals, 0);
+  const span = high - low || 1;
+  const x = (i) => (i / (totals.length - 1)) * 100;
+  const y = (v) => 6 + (1 - (v - low) / span) * 88;
+
+  const svg = svgEl("svg", {
+    class: "trend__svg",
+    viewBox: "0 0 100 100",
+    preserveAspectRatio: "none",
+    role: "img",
+    "aria-label": `Running total of trade returns, oldest to newest. It ends at ${signedPercent(total)} after ${closed.length} trades.`,
+  });
+  svg.append(
+    svgEl("line", { class: "trend__zero", x1: 0, x2: 100, y1: y(0), y2: y(0), "vector-effect": "non-scaling-stroke" }),
+    svgEl("polyline", {
+      class: "trend__line",
+      points: totals.map((v, i) => `${x(i).toFixed(2)},${y(v).toFixed(2)}`).join(" "),
+      "vector-effect": "non-scaling-stroke",
+    })
+  );
+
+  const figure = el("figure", "bars trend");
+  figure.append(
+    svg,
+    el(
+      "figcaption",
+      "bars__caption",
+      `Running total of every trade's return, oldest on the left. It ends at ${signedPercent(total)} after ${closed.length} trades. Percentages add up here, so read the slope and not the number.`
+    )
+  );
+  box.append(figure);
+}
+
 // How many trades show before the rest fold away.
 const RECENT_TRADES = 6;
 
@@ -383,6 +435,7 @@ function renderOptions(options) {
     if (t.closed) count.push(`${t.wins}–${t.losses}–${t.scratches}`, `${signedPercent(t.average)} on average`);
     document.querySelector("[data-options-count]").textContent = count.join(" · ");
     renderBars(shown);
+    renderTrend(shown);
     renderOptionList(shown, choice === "all" ? "" : choice + " ");
   }
 

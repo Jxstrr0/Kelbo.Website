@@ -21,6 +21,8 @@
     12. fills the "Now building" strip on the home page from now.json
     13. stretches the hero's ray with the season, and shows a badge on the
         longest and shortest days of the year
+    14. fills game.html (one game's own page, game.html?g=scratch) from
+        projects.json
 
    To preview a time of day, add ?at= to the address, e.g.
    index.html?at=noon, ?at=sunset, ?at=night, or ?at=2026-06-21T22:30
@@ -88,6 +90,15 @@ function initials(title) {
     .slice(0, 2)
     .map((word) => word[0].toUpperCase())
     .join("");
+}
+
+// "Prairie Engine Works" -> "prairie-engine-works". A game's own page is
+// game.html?g=<this>, so it needs no extra file when a project is added.
+function projectSlug(title) {
+  return String(title || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 }
 
 // Build the card for one project.
@@ -166,6 +177,12 @@ function renderProject(project) {
     // The arrow is decoration; give screen readers a clear name.
     link.setAttribute("aria-label", (isGame(project) ? "Play " : "Take a look at ") + title);
     links.append(link);
+  }
+  if (isGame(project)) {
+    const more = el("a", "project__link", "About this game →");
+    more.href = "game.html?g=" + projectSlug(title);
+    more.setAttribute("aria-label", "About " + title);
+    links.append(more);
   }
   if (project.code) {
     const code = el("a", "project__link", "See the code →");
@@ -329,6 +346,146 @@ function sortByProgress(projects) {
 }
 
 // Home page: featured projects only.
+// A game's own page (game.html?g=scratch): the cover, the story, every
+// screenshot open in a strip, the buttons, and links to the other games.
+// Everything comes from projects.json. Optional "story" in a project is a
+// longer write-up; a blank line (\n\n) starts a new paragraph.
+function setUpGame(box, projects) {
+  const games = projects.filter(isGame);
+  const wanted = new URLSearchParams(location.search).get("g") || "";
+  const project = games.find((p) => projectSlug(p.title) === projectSlug(wanted));
+  const heading = document.querySelector("[data-game-title]");
+
+  if (!project) {
+    if (heading) heading.textContent = "Game not found";
+    box.replaceChildren(
+      el("p", "game__note", "That game isn't in the list. It may have moved or been renamed.")
+    );
+    const back = el("a", "button button--ghost", "See all games");
+    back.href = "games.html";
+    box.append(back);
+    return;
+  }
+
+  const title = project.title || "Untitled";
+  const status = findStatus(project.status);
+  if (heading) heading.textContent = title;
+  document.title = title + " · Longlight Interactive";
+  // Handy for in-page tools; link-preview crawlers don't run scripts, so
+  // shared links still show the studio card from the HTML.
+  const setMeta = (sel, value) => {
+    const node = document.querySelector(sel);
+    if (node && value) node.setAttribute("content", value);
+  };
+  setMeta('meta[name="description"]', project.summary);
+  setMeta('meta[property="og:title"]', title + " · Longlight Interactive");
+  setMeta('meta[property="og:description"]', project.summary);
+
+  box.replaceChildren();
+  const top = el("div", "game__top");
+
+  // Cover (a coloured tile with initials if there's no picture)
+  const cover = el("div", "project__cover game__cover");
+  cover.dataset.cat = String(project.category || "").trim().toLowerCase();
+  if (project.image) {
+    const img = el("img");
+    img.src = project.image;
+    img.alt = "Cover of " + title;
+    img.width = 640;
+    img.height = 480;
+    cover.append(img);
+  } else {
+    cover.append(el("span", "project__initials", initials(title)));
+  }
+  top.append(cover);
+
+  const info = el("div", "game__info");
+  const meta = el("p", "project__meta");
+  meta.append(el("span", "project__status", status.label));
+  if (project.category) meta.append(el("span", "project__category", project.category));
+  info.append(meta);
+  if (project.summary) info.append(el("p", "game__summary", project.summary));
+
+  const version = String(project.version || "").trim().replace(/^v/i, "");
+  const latest = String(project.latest || "").trim();
+  if (version || latest) {
+    const note = el("p", "project__version");
+    if (version) note.append(el("strong", null, "v" + version));
+    if (version && latest) note.append(" · ");
+    if (latest) note.append(latest);
+    info.append(note);
+  }
+
+  const field = el("div", "field is-waiting");
+  field.setAttribute("aria-hidden", "true");
+  field.style.setProperty("--progress", status.spot);
+  field.append(el("span", "field__drive"), el("span", "field__ball"));
+  info.append(field);
+
+  const links = el("p", "project__links");
+  if (project.link) {
+    const play = el("a", "button button--play", "Play it");
+    play.href = project.link;
+    play.setAttribute("aria-label", "Play " + title);
+    links.append(play);
+  }
+  if (project.code) {
+    const code = el("a", "project__link", "See the code →");
+    code.href = project.code;
+    code.setAttribute("aria-label", "See the code for " + title);
+    links.append(code);
+  }
+  if (links.children.length) info.append(links);
+  top.append(info);
+  box.append(top);
+
+  // The longer write-up, if projects.json has a "story" for this game
+  const story = String(project.story || "").trim();
+  if (story) {
+    const section = el("section", "game__story");
+    section.append(el("h2", null, "The story"));
+    story.split(/\n\s*\n/).forEach((para) => section.append(el("p", null, para.trim())));
+    box.append(section);
+  }
+
+  // Every screenshot, open in a swipe strip
+  if (Array.isArray(project.shots) && project.shots.length) {
+    const section = el("section", "game__shots");
+    section.append(el("h2", null, "Screenshots"));
+    const strip = el("div", "shots__strip");
+    strip.tabIndex = 0;
+    strip.setAttribute("role", "region");
+    strip.setAttribute("aria-label", title + " screenshots");
+    project.shots.forEach((shot) => {
+      const img = el("img");
+      img.src = shot.src;
+      img.alt = shot.alt || "";
+      img.loading = "lazy";
+      img.decoding = "async";
+      strip.append(img);
+    });
+    section.append(strip);
+    box.append(section);
+  }
+
+  // The other games, as plain links
+  const others = games.filter((g) => g !== project);
+  if (others.length) {
+    const section = el("section", "game__more");
+    section.append(el("h2", null, "More Longlight games"));
+    const list = el("ul", "game__more-list");
+    others.forEach((g) => {
+      const item = el("li");
+      const link = el("a", null, g.title);
+      link.href = "game.html?g=" + projectSlug(g.title);
+      item.append(link);
+      list.append(item);
+    });
+    section.append(list);
+    box.append(section);
+  }
+}
+
 function setUpFeatured(listEl, projects) {
   const featured = projects.filter((p) => p.featured === true).slice(0, MAX_FEATURED);
   fillList(listEl, featured, "No featured projects yet.");
@@ -3788,6 +3945,7 @@ async function init() {
     if (listEl.dataset.projects === "featured") setUpFeatured(listEl, projects);
     else if (listEl.dataset.projects === "category") setUpCategory(listEl, projects);
     else if (listEl.dataset.projects === "news") setUpNews(listEl, projects);
+    else if (listEl.dataset.projects === "game") setUpGame(listEl, projects);
     else setUpAll(listEl, projects);
   });
 }
