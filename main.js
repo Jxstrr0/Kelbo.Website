@@ -33,10 +33,12 @@
 // "spot" is how full the progress bar is, from 0 to 100.
 // To add a new status, add a line here.
 // "For Now" means done but may get more updates; "Final Form" means
-// it's complete and won't change.
+// it's complete and won't change; "Ongoing" is something that keeps
+// running with regular updates (like the trading journal).
 const STATUSES = [
   { label: "Finished - Final Form", spot: 100 },
   { label: "Finished - For Now", spot: 100 },
+  { label: "Ongoing", spot: 100 },
   { label: "Mostly done", spot: 78 },
   { label: "Building", spot: 50 },
   { label: "Early stages", spot: 32 },
