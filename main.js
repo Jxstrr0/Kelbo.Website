@@ -28,8 +28,8 @@
    index.html?at=noon, ?at=sunset, ?at=night, or ?at=2026-06-21T22:30
    ========================================================================== */
 
-// Status labels, from "done" down to "just an idea". Projects are
-// sorted in this order, furthest along first.
+// Status labels, from "done" down to "just an idea". The Projects page's
+// filter buttons run in this order, furthest along first.
 // "spot" is how full the progress bar is, from 0 to 100.
 // To add a new status, add a line here.
 // "For Now" means done but may get more updates; "Final Form" means
@@ -343,6 +343,8 @@ function statusRank(statusText) {
 
 // Sort projects so the furthest-along come first (in STATUSES order).
 // Projects with the same status keep the order they have in projects.json.
+// Only the Projects page's filter buttons use this now; the lists
+// themselves show projects.json order (Kelbo's own ranking).
 function sortByProgress(projects) {
   return projects
     .map((p, i) => ({ p, i }))
@@ -496,12 +498,13 @@ function setUpFeatured(listEl, projects) {
   fillList(listEl, featured, "No featured projects yet.");
 }
 
-// Section pages (Games, Trading, AI): every project in one category,
-// furthest-along first. The category comes from data-category in the HTML.
+// Section pages (Games, Trading, AI): every project in one category, in
+// projects.json order (Kelbo's ranking, top to bottom). The category comes
+// from data-category in the HTML.
 function setUpCategory(listEl, projects) {
   const category = listEl.dataset.category;
   const inThis = projects.filter((p) => inCategory(p, category));
-  fillList(listEl, sortByProgress(inThis), "Nothing here yet. Check back soon.");
+  fillList(listEl, inThis, "Nothing here yet. Check back soon.");
 }
 
 // What's new page: every project that has a "version" or a "latest" line,
@@ -595,12 +598,14 @@ function fillCategoryCounts(projects) {
 function setUpAll(listEl, projects) {
   const filtersEl = document.querySelector("[data-filters]");
   const countEl = document.querySelector("[data-count]");
-  const sorted = sortByProgress(projects);
+  // Cards stay in projects.json order; only the filter buttons run in
+  // STATUSES order.
+  const sorted = projects;
 
   // One button for "All", then one per status that has projects
   // (in the STATUSES order, then any unknown statuses).
   const labels = [];
-  sorted.forEach((p) => {
+  sortByProgress(projects).forEach((p) => {
     const label = findStatus(p.status).label;
     if (!labels.includes(label)) labels.push(label);
   });
