@@ -20,6 +20,7 @@ you save on the `main` branch goes live within a minute or two.
 | `trading.html` | The Trading section: every project with `"category": "Trading"` |
 | `ai.html` | The AI section: every project with `"category": "AI"` |
 | `projects.json` | **The list of projects.** Edit this to add or change one |
+| `game.html` | **One game's own page** (`game.html?g=scratch`). It fills itself from `projects.json`, so a new game needs no new file |
 | `now.json` | **The "Now building" strip** on the home page. Edit this to say what you're working on |
 | `style.css` | Colours, fonts, and layout for every page |
 | `main.js` | Reads `projects.json` and puts the projects on the page, and runs the live sun, the ☀/☾ button, and the "Continue?" card |
@@ -123,6 +124,12 @@ Paste it after the last one and change the values:
   40 KB each); portrait and landscape can mix, since they all show at the
   same height. The drawer shows on the Games and Projects pages, not on the
   home page's short cards, and the pictures only download when it's opened.
+
+- **story** (optional): a longer write-up for the game's own page
+  (`game.html?g=<name>`, where the name is the title in lowercase with dashes,
+  like `prairie-engine-works`). A blank line starts a new paragraph. The page
+  works without it, and shows the summary, cover, every screenshot, the
+  buttons and links to the other games.
 
 **Adding a game:** use `"category": "Game"` and it shows up on the Games
 page automatically, with a big clay "Play it" button. Each game lives in its
@@ -622,7 +629,9 @@ percentages are safer than dollar amounts or account sizes.
 ### Options trades
 
 Your options trades live in `options.json`, not in the entries. The page
-shows them newest first, with a bar for each trade's return, V2/V3 filter
+shows them newest first, with a bar for each trade's return, a running-total
+line under the bars (it adds each trade's return in order, so read the slope
+and not the number; it follows the V2/V3 filter too), V2/V3 filter
 buttons, and the options numbers in the record (closed trades; win rate without
 scratches, with the rate counting scratches as not a win in small print
 under it; average return; and wins–losses–scratches).
