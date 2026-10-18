@@ -2500,6 +2500,37 @@ img {
   }
 }
 
+/* The whole card is one big tap target. The main button ("Play it" or
+   "Take a look") stretches an invisible layer over the card; the other
+   links, the screenshots drawer and the strip sit above it so they still
+   work on their own. */
+.project,
+.news {
+  position: relative;
+}
+
+.project__main::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.project__main:hover {
+  transform: none; /* a transform would shrink the stretched layer to the button */
+}
+
+.project:has(.project__main),
+.news:has(.project__main) {
+  cursor: pointer;
+}
+
+.project__links a:not(.project__main),
+.shots {
+  position: relative;
+  z-index: 2;
+}
+
 /* ---------- Mode tiles (Games / Trading / AI) ---------- */
 .tiles {
   display: grid;

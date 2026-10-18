@@ -72,6 +72,10 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   `<details class="shots">` "Screenshots (N)" with a scroll-snap strip of
   lazy images, all `12rem` tall so portrait and landscape mix. Hidden on
   the home featured list by CSS; the What's new rows don't show it.
+- Whole cards are tappable: the main button (`.project__main`, "Play it" or
+  "Take a look") stretches an invisible `::after` over its `.project` or
+  `.news` card; the other links and `.shots` sit above it (`z-index: 2`).
+  Don't put a `transform` on `.project__main`, it would shrink that layer.
 - `game.html?g=<slug>` is one game's own page (`setUpGame` in `main.js`,
   slug from `projectSlug(title)`, e.g. `prairie-engine-works`). Games' cards
   link to it ("About this game →"). It shows the cover, status, summary,
