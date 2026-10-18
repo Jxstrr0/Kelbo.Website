@@ -173,8 +173,8 @@ function renderProject(project) {
   if (project.link) {
     // Games get a big clay "Play it" button; everything else a plain link.
     const link = isGame(project)
-      ? el("a", "button button--play", "Play it")
-      : el("a", "project__link", "Take a look →");
+      ? el("a", "button button--play project__main", "Play it")
+      : el("a", "project__link project__main", "Take a look →");
     link.href = project.link;
     // The arrow is decoration; give screen readers a clear name.
     link.setAttribute("aria-label", (isGame(project) ? "Play " : "Take a look at ") + title);
@@ -556,7 +556,7 @@ function renderNews(project) {
 
   const links = el("p", "project__links");
   if (project.link) {
-    const link = el("a", isGame(project) ? "button button--play" : "project__link",
+    const link = el("a", (isGame(project) ? "button button--play" : "project__link") + " project__main",
       isGame(project) ? "Play it" : "Take a look →");
     link.href = project.link;
     link.setAttribute("aria-label", (isGame(project) ? "Play " : "Take a look at ") + title);
