@@ -110,8 +110,10 @@ Paste it after the last one and change the values:
   file, so updating these two fields updates that page too.
 - **link**: a web address, or leave it as `""` for no link. A link can
   also point to a page in this repo later, like `tools/prediction-tracker/`.
-  Tapping anywhere on a card opens this link, not only the big button (the
-  code link, "About this game" and the screenshots still work on their own).
+  Tapping anywhere on a project card opens this link. On a game card,
+  tapping the card opens the game's info page instead, and only the "Play it"
+  button goes straight to the game (the code link and the screenshots still
+  work on their own).
 - **code**: the GitHub repo address, or `""`. Shows a "See the code" link.
 - **image**: a cover picture, like `assets/covers/my-game.jpg`, or `""`.
   Without one, the card gets a coloured cover with the project's initials.
