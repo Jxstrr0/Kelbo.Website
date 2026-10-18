@@ -180,6 +180,36 @@
     ]
   },
   {
+    "title": "Scratch",
+    "status": "Building",
+    "category": "Game",
+    "summary": "A roguelike scratch-ticket engine builder. You're the night clerk at a lonely prairie gas station, owing the owner money by sunrise. Scratch tickets whose symbols interact, bolt charms onto the lotto terminal and trade for strange relics, while the night gets stranger. Fictional lottery, no real money.",
+    "version": "0.1.0",
+    "latest": "Look around the gas station from the clerk's stool",
+    "link": "https://jxstrr0.github.io/Scratch/",
+    "code": "https://github.com/Jxstrr0/Scratch",
+    "image": "assets/covers/scratch.jpg",
+    "featured": false,
+    "shots": [
+      {
+        "src": "assets/shots/scratch-1.jpg",
+        "alt": "The gas station from the clerk's stool at night, with a glowing OPEN sign in the window and the front door"
+      },
+      {
+        "src": "assets/shots/scratch-2.jpg",
+        "alt": "The counter with the green scratch mat, the shelves and the window behind it"
+      },
+      {
+        "src": "assets/shots/scratch-3.jpg",
+        "alt": "The lotto terminal on the counter, glowing warm in the dark corner"
+      },
+      {
+        "src": "assets/shots/scratch-4.jpg",
+        "alt": "A wooden cabinet with a few odd items on its shelves"
+      }
+    ]
+  },
+  {
     "title": "AI Trading Journal",
     "status": "Building",
     "category": "Trading",
