@@ -1,13 +1,17 @@
 {
-  "updated": "2026-10-17",
+  "updated": "2026-10-18",
   "items": [
+    {
+      "text": "Scratch, in the build phase",
+      "link": "https://jxstrr0.github.io/Scratch/"
+    },
     {
       "text": "Season Ticket, in the build phase",
       "link": "https://jxstrr0.github.io/SeasonTicket/"
     },
     {
-      "text": "Outpost, all five nights now playable",
-      "link": "https://jxstrr0.github.io/Outpost-/"
+      "text": "Prairie Engine Works, tweaks and polish",
+      "link": "https://jxstrr0.github.io/350Chev/"
     }
   ]
 }
