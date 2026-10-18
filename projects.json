@@ -30,62 +30,62 @@
     ]
   },
   {
-    "title": "Red Skies",
-    "status": "Finished - For Now",
+    "title": "Season Ticket",
+    "status": "Building",
     "category": "Game",
-    "summary": "A phone game where you run an air-defence battery. Watch the radar, sort friendly jets from enemies, and hold your fire until you're sure, because shooting down a friendly ends the shift.",
-    "version": "1.4.5",
-    "latest": "Save codes to back up and restore your progress",
-    "link": "https://jxstrr0.github.io/RedSkies/",
-    "code": "https://github.com/Jxstrr0/RedSkies",
-    "image": "assets/covers/red-skies.jpg",
-    "featured": false,
+    "summary": "A soccer club management game set in Valmere, a made-up northern country. Own a club in the 16-team Kestrel Football League: run the business, build the squad and change tactics mid-match. For now you can sim a full season and the playoffs.",
+    "version": "0.1.0",
+    "latest": "The league plays a full season",
+    "link": "https://jxstrr0.github.io/SeasonTicket/",
+    "code": "https://github.com/Jxstrr0/SeasonTicket",
+    "image": "assets/covers/season-ticket.jpg",
+    "featured": true,
     "shots": [
       {
-        "src": "assets/shots/red-skies-1.jpg",
-        "alt": "The Red Skies title screen over a dusk sky"
+        "src": "assets/shots/season-ticket-1.jpg",
+        "alt": "The manager office with the laptop, league table and trophies"
       },
       {
-        "src": "assets/shots/red-skies-2.jpg",
-        "alt": "The free watch setup screen with seed, difficulty and random events"
+        "src": "assets/shots/season-ticket-2.jpg",
+        "alt": "The home ground by day, a green pitch with stands on all sides"
       },
       {
-        "src": "assets/shots/red-skies-3.jpg",
-        "alt": "The fire-control console with the radar sweeping and a contact on the scope"
+        "src": "assets/shots/season-ticket-3.jpg",
+        "alt": "The Stadium tab with the 3D ground and the stand upgrade options"
       },
       {
-        "src": "assets/shots/red-skies-4.jpg",
-        "alt": "The same console a moment later, with the contact closer"
+        "src": "assets/shots/season-ticket-4.jpg",
+        "alt": "The same ground at night under the floodlights"
       }
     ]
   },
   {
-    "title": "Penthouse Baccarat",
-    "status": "Finished - For Now",
+    "title": "Scratch",
+    "status": "Building",
     "category": "Game",
-    "summary": "A 3D baccarat table in a penthouse overlooking the Shanghai skyline. Place your chips and an android croupier deals the cards, explains each draw, and pays out the winners.",
-    "version": "1.0.0",
-    "latest": "Save codes to back up and restore your bankroll",
-    "link": "https://jxstrr0.github.io/BaccaratTable/",
-    "code": "https://github.com/Jxstrr0/BaccaratTable",
-    "image": "assets/covers/penthouse-baccarat.jpg",
-    "featured": false,
+    "summary": "A roguelike scratch-ticket engine builder. You're the night clerk at a lonely prairie gas station, owing the owner money by sunrise. Scratch tickets whose symbols interact, bolt charms onto the lotto terminal and trade for strange relics, while the night gets stranger. Fictional lottery, no real money.",
+    "version": "0.1.0",
+    "latest": "Look around the gas station from the clerk's stool",
+    "link": "https://jxstrr0.github.io/Scratch/",
+    "code": "https://github.com/Jxstrr0/Scratch",
+    "image": "assets/covers/scratch.jpg",
+    "featured": true,
     "shots": [
       {
-        "src": "assets/shots/penthouse-baccarat-1.jpg",
-        "alt": "The penthouse room with the baccarat table and a $100,000 bankroll"
+        "src": "assets/shots/scratch-1.jpg",
+        "alt": "The gas station from the clerk's stool at night, with a glowing OPEN sign in the window and the front door"
       },
       {
-        "src": "assets/shots/penthouse-baccarat-2.jpg",
-        "alt": "Close up of the table with bets placed and the dealer waiting"
+        "src": "assets/shots/scratch-2.jpg",
+        "alt": "The counter with the green scratch mat, the shelves and the window behind it"
       },
       {
-        "src": "assets/shots/penthouse-baccarat-3.jpg",
-        "alt": "The dealer announcing that the Player draws on a 5"
+        "src": "assets/shots/scratch-3.jpg",
+        "alt": "The lotto terminal on the counter, glowing warm in the dark corner"
       },
       {
-        "src": "assets/shots/penthouse-baccarat-4.jpg",
-        "alt": "A finished hand, Player 1 against Banker 7"
+        "src": "assets/shots/scratch-4.jpg",
+        "alt": "A wooden cabinet with a few odd items on its shelves"
       }
     ]
   },
@@ -150,62 +150,62 @@
     ]
   },
   {
-    "title": "Season Ticket",
-    "status": "Building",
+    "title": "Red Skies",
+    "status": "Finished - For Now",
     "category": "Game",
-    "summary": "A soccer club management game set in Valmere, a made-up northern country. Own a club in the 16-team Kestrel Football League: run the business, build the squad and change tactics mid-match. For now you can sim a full season and the playoffs.",
-    "version": "0.1.0",
-    "latest": "The league plays a full season",
-    "link": "https://jxstrr0.github.io/SeasonTicket/",
-    "code": "https://github.com/Jxstrr0/SeasonTicket",
-    "image": "assets/covers/season-ticket.jpg",
-    "featured": true,
+    "summary": "A phone game where you run an air-defence battery. Watch the radar, sort friendly jets from enemies, and hold your fire until you're sure, because shooting down a friendly ends the shift.",
+    "version": "1.4.5",
+    "latest": "Save codes to back up and restore your progress",
+    "link": "https://jxstrr0.github.io/RedSkies/",
+    "code": "https://github.com/Jxstrr0/RedSkies",
+    "image": "assets/covers/red-skies.jpg",
+    "featured": false,
     "shots": [
       {
-        "src": "assets/shots/season-ticket-1.jpg",
-        "alt": "The manager office with the laptop, league table and trophies"
+        "src": "assets/shots/red-skies-1.jpg",
+        "alt": "The Red Skies title screen over a dusk sky"
       },
       {
-        "src": "assets/shots/season-ticket-2.jpg",
-        "alt": "The home ground by day, a green pitch with stands on all sides"
+        "src": "assets/shots/red-skies-2.jpg",
+        "alt": "The free watch setup screen with seed, difficulty and random events"
       },
       {
-        "src": "assets/shots/season-ticket-3.jpg",
-        "alt": "The Stadium tab with the 3D ground and the stand upgrade options"
+        "src": "assets/shots/red-skies-3.jpg",
+        "alt": "The fire-control console with the radar sweeping and a contact on the scope"
       },
       {
-        "src": "assets/shots/season-ticket-4.jpg",
-        "alt": "The same ground at night under the floodlights"
+        "src": "assets/shots/red-skies-4.jpg",
+        "alt": "The same console a moment later, with the contact closer"
       }
     ]
   },
   {
-    "title": "Scratch",
-    "status": "Building",
+    "title": "Penthouse Baccarat",
+    "status": "Finished - For Now",
     "category": "Game",
-    "summary": "A roguelike scratch-ticket engine builder. You're the night clerk at a lonely prairie gas station, owing the owner money by sunrise. Scratch tickets whose symbols interact, bolt charms onto the lotto terminal and trade for strange relics, while the night gets stranger. Fictional lottery, no real money.",
-    "version": "0.1.0",
-    "latest": "Look around the gas station from the clerk's stool",
-    "link": "https://jxstrr0.github.io/Scratch/",
-    "code": "https://github.com/Jxstrr0/Scratch",
-    "image": "assets/covers/scratch.jpg",
-    "featured": true,
+    "summary": "A 3D baccarat table in a penthouse overlooking the Shanghai skyline. Place your chips and an android croupier deals the cards, explains each draw, and pays out the winners.",
+    "version": "1.0.0",
+    "latest": "Save codes to back up and restore your bankroll",
+    "link": "https://jxstrr0.github.io/BaccaratTable/",
+    "code": "https://github.com/Jxstrr0/BaccaratTable",
+    "image": "assets/covers/penthouse-baccarat.jpg",
+    "featured": false,
     "shots": [
       {
-        "src": "assets/shots/scratch-1.jpg",
-        "alt": "The gas station from the clerk's stool at night, with a glowing OPEN sign in the window and the front door"
+        "src": "assets/shots/penthouse-baccarat-1.jpg",
+        "alt": "The penthouse room with the baccarat table and a $100,000 bankroll"
       },
       {
-        "src": "assets/shots/scratch-2.jpg",
-        "alt": "The counter with the green scratch mat, the shelves and the window behind it"
+        "src": "assets/shots/penthouse-baccarat-2.jpg",
+        "alt": "Close up of the table with bets placed and the dealer waiting"
       },
       {
-        "src": "assets/shots/scratch-3.jpg",
-        "alt": "The lotto terminal on the counter, glowing warm in the dark corner"
+        "src": "assets/shots/penthouse-baccarat-3.jpg",
+        "alt": "The dealer announcing that the Player draws on a 5"
       },
       {
-        "src": "assets/shots/scratch-4.jpg",
-        "alt": "A wooden cabinet with a few odd items on its shelves"
+        "src": "assets/shots/penthouse-baccarat-4.jpg",
+        "alt": "A finished hand, Player 1 against Banker 7"
       }
     ]
   },
