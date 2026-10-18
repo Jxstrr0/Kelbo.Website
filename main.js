@@ -169,11 +169,14 @@ function renderProject(project) {
 
   // Links: "link" is where to try the project ("Play it" for games),
   // "code" is where its code lives on GitHub. Both are optional.
+  // Tapping the card opens the main link (project__main, see style.css):
+  // a game's own info page, or "Take a look" for everything else. The
+  // "Play it" button still goes straight to the game.
   const links = el("p", "project__links");
   if (project.link) {
     // Games get a big clay "Play it" button; everything else a plain link.
     const link = isGame(project)
-      ? el("a", "button button--play project__main", "Play it")
+      ? el("a", "button button--play", "Play it")
       : el("a", "project__link project__main", "Take a look →");
     link.href = project.link;
     // The arrow is decoration; give screen readers a clear name.
@@ -181,7 +184,7 @@ function renderProject(project) {
     links.append(link);
   }
   if (isGame(project)) {
-    const more = el("a", "project__link", "About this game →");
+    const more = el("a", "project__link project__main", "About this game →");
     more.href = "game.html?g=" + projectSlug(title);
     more.setAttribute("aria-label", "About " + title);
     links.append(more);
@@ -556,11 +559,18 @@ function renderNews(project) {
 
   const links = el("p", "project__links");
   if (project.link) {
-    const link = el("a", (isGame(project) ? "button button--play" : "project__link") + " project__main",
+    // A game row opens its info page when tapped; "Play it" goes to the game.
+    const link = el("a", (isGame(project) ? "button button--play" : "project__link project__main"),
       isGame(project) ? "Play it" : "Take a look →");
     link.href = project.link;
     link.setAttribute("aria-label", (isGame(project) ? "Play " : "Take a look at ") + title);
     links.append(link);
+  }
+  if (isGame(project)) {
+    const more = el("a", "project__link project__main", "About this game →");
+    more.href = "game.html?g=" + projectSlug(title);
+    more.setAttribute("aria-label", "About " + title);
+    links.append(more);
   }
   if (project.code) {
     const code = el("a", "project__link", "See the code →");
