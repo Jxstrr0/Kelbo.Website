@@ -48,8 +48,8 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   links load. Keep that script first in the `<head>`.
 - The link preview image is `assets/social-preview.jpg` (1200×630, the
   Longlight sky, the sun with its glow and halo on the horizon line,
-  "Longlight Interactive", plus the three featured game covers: Scratch, Season Ticket, Prairie Engine Works). Every `og:image`
-  ends `?v=6` so apps refetch it; bump it on every page when the picture
+  "Longlight Interactive", plus the three featured game covers: Prairie Engine Works, Season Ticket, Scratch). Every `og:image`
+  ends `?v=7` so apps refetch it; bump it on every page when the picture
   changes. Regenerate it if the covers change a lot. The favicon and
   home-screen icons are the logo's sun (glow, halo, sun) on an ivory line
   on a purple tile (the favicon turns slate in dark mode):
@@ -64,7 +64,11 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
 ## Where things live
 
 - `projects.json` is the single source of truth for projects. `main.js`
-  renders it. Adding a project should never need an HTML edit. Each project
+  renders it. Its order is the display order everywhere (Games, Projects,
+  What's new, home featured, "More games"): Kelbo's own ranking, games
+  first: Prairie Engine Works, Season Ticket, Scratch, Garage to Glory,
+  Outpost, Red Skies, Baccarat. Nothing sorts by progress except the
+  Projects page's filter buttons (`sortByProgress`). Adding a project should never need an HTML edit. Each project
   can carry a `version` ("1.4", no "v") and `latest` (what changed), shown
   as "v1.4 · Added night mode" under the summary; either may be "".
   It can also carry `shots` (`[{src, alt}]`, files in `assets/shots/`,
