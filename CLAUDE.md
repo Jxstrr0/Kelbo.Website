@@ -72,6 +72,14 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   `<details class="shots">` "Screenshots (N)" with a scroll-snap strip of
   lazy images, all `12rem` tall so portrait and landscape mix. Hidden on
   the home featured list by CSS; the What's new rows don't show it.
+- `game.html?g=<slug>` is one game's own page (`setUpGame` in `main.js`,
+  slug from `projectSlug(title)`, e.g. `prairie-engine-works`). Games' cards
+  link to it ("About this game →"). It shows the cover, status, summary,
+  version, the Play and code buttons, an optional `story` (paragraphs split
+  on blank lines), all `shots` open in a strip, and the other games. It sets
+  the tab title and description in JS; link-preview crawlers don't run JS, so
+  a shared link still shows the studio card. Not in `sitemap.xml` (the
+  address needs a `?g=`); it is in `sw.js` `CORE`.
 - `now.json` feeds the "Now building" strip under the home hero (`updated`
   date plus `items`, each `text` with an optional `link`). Empty items hide
   the strip. Refresh it when Kelbo says what he's working on.
@@ -382,6 +390,7 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   trade or idea ("winners averaged +21.5%", "holding overnight without a
   planned exit was the mistake"), never "you" or "your". Same honesty, same
   specifics.
+- `renderTrend` (journal.js) draws a running total of the closed options trades' returns under the bars (percentages added in order, captioned as a shape and not a balance; only from `options.json`, follows the V2/V3 filter).
 - Options trades live in `options.json` (fields at the top of `journal.js`),
   copied from Kelbo's own options ledger. The page works out each return
   from `paid`/`sold` premiums and feeds the record's options group. Leave

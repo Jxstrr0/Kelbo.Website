@@ -22,6 +22,7 @@ const CORE = [
   "./",
   "index.html",
   "games.html",
+  "game.html",
   "trading.html",
   "ai.html",
   "projects.html",
