@@ -1,5 +1,50 @@
 [
   {
+    "date": "2026-10-19",
+    "title": "Forecast for the week of Oct 19",
+    "bias": "Neutral",
+    "gradeBy": "2026-10-23",
+    "summary": "I think this week is a bounce, then chop. Monday's tech rally looks like an oversold bounce, not a bottom, so I'm not chasing it. Defensives and energy should stay the stronger trend unless Meta's capex update on Wednesday reassures the market about AI spending. The S&P has a ceiling around 7,712 to 7,739, and a close under 7,567 would mean a deeper AI unwind.",
+    "view": "Writing this Monday afternoon. Last week was a rotation more than a crash. The S&P fell 1.95% to 7,659.44 and the Nasdaq fell 4.48%, while the Dow rose 0.67%. Staples (XLP +5.02%), energy (XLE +4.86%) and health care (XLV +3.45%) led, and tech (XLK -7.70%) and small caps (Russell 2000 about -3.0%) took the hit. The SOX fell 8 sessions in a row, about 15.7%.\n\nMonday's rally is the bounce. The S&P is up about 0.65% near 7,709, the Nasdaq about 1.4%, and the VIX is down to about 18. But the S&P is still sitting on its 50-day (about 7,706 to 7,712), and sentiment was fearful but not panicked on Friday (VIX 19.99, Fear & Greed 30). I read that as a reflex rally, with a likely ceiling at 7,712 to 7,739.\n\nThis week is earnings, not the Fed. The Fed is in its blackout before the Oct 27-28 meeting, with about a 15% chance of an October hike priced and about 89% by December. The swing event is Meta and Tesla after the close Wednesday. Meta's 2026 capex guide is $130 to $145 billion and the options market is pricing a move of about 6%. IBM and Lam Research also report Wednesday.\n\nMy lean is neutral. Health care, staples and energy stay the higher-conviction leaders, small caps keep lagging while the 10-year sits near 5.1%, and Brent stays in the $100 to $110 range. If Meta reassures, tech can keep bouncing. If it doesn't, 7,567 is the line.",
+    "note": "These numbers come from a third-party market outlook for Oct 19 to 23, not official closes. Monday's levels are mid-afternoon reads. Weekly figures differ a little by source (one release had the S&P at -1.43% and the Russell 2000 at -2.43% for last week).",
+    "sectors": [
+      { "sector": "Energy", "etf": "XLE", "direction": "Leading", "trend": "up", "why": "Brent about $107.6 after a $109.86 settle Friday, Hormuz supply risk still alive" },
+      { "sector": "Staples", "etf": "XLP", "direction": "Leading", "trend": "up", "why": "Best sector last week (+5.02%), defensive money" },
+      { "sector": "Health Care", "etf": "XLV", "direction": "Leading", "trend": "up", "why": "Record high last week, +3.45%" },
+      { "sector": "Financials", "etf": "XLF", "direction": "Lukewarm", "trend": "down", "why": "Banks reported fine, but the ETF flows don't back it" },
+      { "sector": "Small Caps", "etf": "IWM", "direction": "Lagging", "trend": "down", "why": "Floating-rate debt, so they need yields to fall first" },
+      { "sector": "Tech / Semis", "etf": "XLK, SMH", "direction": "Bouncing, unproven", "trend": "down", "why": "Leads on bounce days (memory names jumped Monday), but it hangs on Meta" }
+    ],
+    "calls": [
+      { "call": "Energy keeps leading: XLE beats XLK on the week", "wrongIf": "XLK finishes the week (Oct 23 close vs Oct 16 close) ahead of XLE.", "grade": null },
+      { "call": "Small caps keep lagging: the Russell 2000 underperforms the S&P 500 on the week", "wrongIf": "The Russell 2000 beats the S&P 500 for the week (Oct 23 close vs Oct 16 close).", "grade": null },
+      { "call": "Meta moves less than the roughly 6% the options market is pricing after Wednesday's report", "wrongIf": "Meta moves more than 6% either way on Thursday.", "grade": null },
+      { "call": "Brent holds over $100 every day this week", "wrongIf": "Brent settles under $100 on any day.", "grade": null }
+    ],
+    "scenarios": [
+      { "odds": 40, "name": "Base: bounce, then chop", "text": "The reflex rally runs into 7,712 to 7,739 and stalls. Meta is fine but nothing special. Defensives and energy stay the stronger trend, small caps lag, Brent stays in the $100 to $110 range." },
+      { "odds": 35, "name": "Bear: AI unwind resumes", "text": "Meta's capex or tone brings the AI spending doubts back. Tech and semis roll over again and the S&P goes back to test 7,567. A close under it opens 7,500, with the 200-day near 7,276 below that." },
+      { "odds": 25, "name": "Bull: Meta reassures", "text": "Meta calms the AI spending worries and tech keeps bouncing. The S&P pushes through 7,739 and the VIX stays under 20. Defensives still hold their gains but stop leading." }
+    ],
+    "levels": [
+      { "symbol": "SPX", "resistance": "7,706-7,712 (50-day), 7,739", "support": "7,567 (Sept 16 low), 7,500, 7,276 (200-day)", "tell": "Close under 7,567 = deeper AI unwind, cut risk" },
+      { "symbol": "Brent", "resistance": "$109.86 (Friday's settle), $110", "support": "$100", "tell": "A settle under $100 breaks the energy story" }
+    ],
+    "schedule": [
+      { "when": "Tue", "what": "GE Aerospace, RTX, Northrop, 3M, GM, Capital One, Intuitive Surgical, United, Halliburton report. Housing starts. Netflix after the close" },
+      { "when": "Wed", "what": "20-year Treasury auction (the last one priced at 5.42%) and EIA crude inventories" },
+      { "when": "Wed after close", "what": "Meta (2026 capex guide $130-145B, about a 6% move priced) and Tesla. IBM and Lam Research also report" },
+      { "when": "Thu", "what": "Jobless claims (about 200K expected), Procter & Gamble, Lockheed Martin" },
+      { "when": "Fri", "what": "Flash PMIs (services 58.0, manufacturing 55.5 expected), Michigan 1-year inflation expectations, American Express" },
+      { "when": "All week", "what": "Fed blackout before the Oct 27-28 meeting, so no Fed speakers" }
+    ],
+    "plan": [],
+    "trades": [],
+    "recap": "",
+    "ai": "What's good: three of the four calls are ranking or threshold calls with a clear wrong-if, which fits last week's lesson of fewer exact price pins. The two relative calls (energy over tech, small caps under the S&P) only need an order, so no price level has to hold.\n\nWhat to watch: the energy call has an easy trap, because a single big tech bounce day can flip a weekly ranking, and last week's tech drop of 7.7% makes a snap-back more likely than usual. The Meta call is symmetric, so a calm reaction wins and a big move either way loses, and that is a coin-flip-sized bet. The Brent call has about a 7% cushion from the $107.6 Monday level to $100, so it is a lower bar than the others. No trades are listed, so this entry is a pure forecast.",
+    "lesson": ""
+  },
+  {
     "date": "2026-10-14",
     "title": "Forecast for Thursday and Friday",
     "bias": "Neutral",
