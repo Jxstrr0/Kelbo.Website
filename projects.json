@@ -43,19 +43,23 @@
     "shots": [
       {
         "src": "assets/shots/season-ticket-1.jpg",
-        "alt": "The manager office with the laptop, league table and trophies"
+        "alt": "The manager's office with the laptop showing finances, the desk lamp and the trophy shelf"
       },
       {
         "src": "assets/shots/season-ticket-2.jpg",
-        "alt": "The home ground by day, a green pitch with stands on all sides"
+        "alt": "The lineup screen with a formation on the pitch and the tactics settings beside it"
       },
       {
         "src": "assets/shots/season-ticket-3.jpg",
-        "alt": "The Stadium tab with the 3D ground and the stand upgrade options"
+        "alt": "A live 3D match with players around the centre circle and the match stats beside it"
       },
       {
         "src": "assets/shots/season-ticket-4.jpg",
-        "alt": "The same ground at night under the floodlights"
+        "alt": "The Stadium tab with the 3D ground and the stand upgrade options"
+      },
+      {
+        "src": "assets/shots/season-ticket-5.jpg",
+        "alt": "The same ground at night"
       }
     ]
   },
