@@ -49,7 +49,7 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
 - The link preview image is `assets/social-preview.jpg` (1200×630, the
   Longlight sky, the sun with its glow and halo on the horizon line,
   "Longlight Interactive", plus the three featured game covers: Prairie Engine Works, Season Ticket, Scratch). Every `og:image`
-  ends `?v=8` so apps refetch it; bump it on every page when the picture
+  ends `?v=9` so apps refetch it; bump it on every page when the picture
   changes. Regenerate it if the covers change a lot. The favicon and
   home-screen icons are the logo's sun (glow, halo, sun) on an ivory line
   on a purple tile (the favicon turns slate in dark mode):
@@ -106,8 +106,8 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   it's shot at 600px wide mid-shift with a jet on the TV camera, cropped 4:3;
   Prairie Engine Works is the GM LT4 6.2 from the game's own studio render,
   `ENGINE_VIS.photoShot(1280, 960)`, so no stray parts show; Season Ticket is
-  the Stadium tab's 3D ground by day, zoomed in one step, with its canvas
-  stretched to a 1024×768 window and the buttons and top bar hidden).
+  the game's dusk title scene at 1024×768, with every element except the 3D
+  canvas hidden, cropped 4:3).
 - The live horizon (`[data-horizon]` in the home hero, every page head and
   the 404) puts the sun where the real sun is over Saskatoon (`YXE` in
   `main.js`, no network; only the optional weather, air quality and aurora fetch), switches to the dark theme at real sunset, and
