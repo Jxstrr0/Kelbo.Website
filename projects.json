@@ -73,7 +73,7 @@
     "link": "https://jxstrr0.github.io/Quorum/",
     "code": "https://github.com/Jxstrr0/Quorum",
     "image": "assets/covers/quorum.jpg",
-    "featured": false,
+    "featured": true,
     "shots": [
       {
         "src": "assets/shots/quorum-1.jpg",
