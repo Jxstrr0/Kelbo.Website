@@ -3,8 +3,10 @@
 My personal site: who I am, plus a list of what I'm building.
 
 It's plain HTML, CSS, and JavaScript. There's no build step and nothing to
-install. GitHub Pages serves these files exactly as they are, so any change
-you save on the `main` branch goes live within a minute or two.
+install. Any change you save on the `main` branch goes live within a minute
+or two: a GitHub Action checks the site for mistakes, fills in game versions
+from their releases, then publishes the files as they are (see
+**Automatic checks and game versions** below).
 
 **Live at:** https://jxstrr0.github.io/Kelbo.Website/
 
@@ -38,6 +40,8 @@ you save on the `main` branch goes live within a minute or two.
 | `tools/prediction-tracker/` | The Prediction Tracker tool, parked for now (not linked from the site) |
 | `404.html` | The "page not found" screen GitHub shows for any address that doesn't exist |
 | `.nojekyll` | Tells GitHub Pages to serve the files as-is. Leave it alone |
+| `.github/workflows/` | The two robots: `site-check.yml` (checks every pull request) and `deploy.yml` (checks again, then puts the site live) |
+| `.github/scripts/` | What they run: `check-site.mjs` (the mistake finder) and `sync-releases.mjs` (fills in game versions from their releases) |
 
 ## Editing on your phone
 
@@ -45,6 +49,36 @@ you save on the `main` branch goes live within a minute or two.
 2. Tap the file you want to change, then the pencil icon (✏️).
 3. Make your change and tap **Commit changes**.
 4. Wait a minute or two, then refresh the site.
+
+If the site doesn't change, open the **Actions** tab: a red ❌ on
+**Deploy site** means the check found a mistake (tap it to see what in plain
+English). The live site keeps the last version that worked until it's fixed.
+
+## Automatic checks and game versions
+
+**The site check** (`.github/scripts/check-site.mjs`) looks for anything
+that would break the live site: a JSON file that won't load, a JavaScript
+typo, a cover, screenshot or page that a link points at but doesn't exist.
+It runs on every pull request (a red ❌ means fix before merging) and again
+before every deploy (a problem stops the deploy). It also lists things
+worth a look, like the "Now building" strip naming a game that's marked
+finished; those never block anything.
+
+**Game versions** come from each game's own GitHub Releases. When a game
+ships, publish a release in that game's repo:
+
+1. In the game's repo, tap **Releases** → **Draft a new release**.
+2. Tag: the version with a `v`, like `v1.2.0`. Title: what changed, like
+   `Night mode and a new garage`. (**Generate release notes** fills in the
+   description from the merged PRs.)
+3. Tap **Publish release**.
+
+Within the hour the site shows "v1.2.0 · Night mode and a new garage"
+for that game. For it right away, open **Actions** → **Deploy site** →
+**Run workflow**. Games with no releases yet just show what's in
+`projects.json`. If `projects.json` has a newer version than the newest
+release, the site keeps the `projects.json` one and the deploy notes remind
+you to publish a release.
 
 ## Change the text
 
@@ -736,9 +770,10 @@ It runs entirely in the visitor's browser:
 - **More tools:** copy the `tools/prediction-tracker/` folder setup: a new
   folder with its own `index.html`, then set that project's `link` to the
   folder, like `tools/my-tool/`. Pages in there link back with `../../`.
-- **Custom domain:** add a file named `CNAME` containing just the domain (for
-  example `kelbo.ca`), then point the domain at GitHub Pages in your
-  domain provider's settings. All links on the site are relative, so they'll
+- **Custom domain:** type the domain (for example `kelbo.ca`) in
+  Settings → Pages → Custom domain, then point the domain at GitHub Pages in
+  your domain provider's settings. (Because the site deploys through an
+  Action, a `CNAME` file isn't needed.) All links on the site are relative, so they'll
   keep working. The only full addresses to update are the `og:` and
   `canonical` tags in each page's `<head>`, `robots.txt` and `sitemap.xml`.
 - **Home screen icon:** on a phone, "Add to Home Screen" in the browser
