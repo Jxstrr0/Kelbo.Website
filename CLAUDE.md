@@ -1,12 +1,18 @@
 # Notes for Claude
 
-Kelbo's personal site, hosted on GitHub Pages from the `main` branch root.
+Kelbo's personal site, hosted on GitHub Pages. `.github/workflows/deploy.yml`
+publishes it on every push to `main` (and hourly, to pick up game releases).
 Live at https://jxstrr0.github.io/Kelbo.Website/
 
 ## Working on this repo
 
 - **Auto-merge is allowed.** Once a change is pushed, the PR is open, and
-  nothing is failing, merge it yourself without asking first.
+  the **Site check** has passed (green), merge it yourself without asking
+  first. If it's red, read the run's summary, fix the problems on the same
+  branch, and wait for green. Run `node .github/scripts/check-site.mjs`
+  before pushing to catch them early.
+- After merging, the **Deploy site** run must go green before the live site
+  changes. If it fails, the live site keeps the last good version; fix it.
 - **Every change must end up on `main`**, because that's what goes live.
   Work on a branch, open a PR, merge it into `main`, then check the live
   site updated.
@@ -29,7 +35,10 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
 ## Hard rules
 
 - **Static only:** plain HTML, CSS, and vanilla JS. No frameworks, npm,
-  bundlers, or build step.
+  bundlers, or build step. The deploy workflow publishes the files as-is;
+  the only thing it changes is each game's `version` and `latest`, filled
+  in from that game's newest GitHub Release (see below). The two scripts in
+  `.github/scripts/` are plain Node with no packages; keep them that way.
 - **No secrets.** The repo is public. Never commit API keys, tokens, or
   passwords. If a tool needs a key, talk through options with Kelbo first.
 - Mobile first (works down to 360px wide), light and dark themes with
@@ -71,6 +80,11 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   Projects page's filter buttons (`sortByProgress`). Adding a project should never need an HTML edit. Each project
   can carry a `version` ("1.4", no "v") and `latest` (what changed), shown
   as "v1.4 · Added night mode" under the summary; either may be "".
+  For games whose `code` repo has GitHub Releases, the deploy fills these
+  in from the newest release (tag `v1.4` → `"1.4"`, release title →
+  `latest`), so the live values can be newer than this file. Don't "fix"
+  that by hand. Prefer publishing a release in the game's repo; editing
+  them here is the fallback for games without releases.
   It can also carry `shots` (`[{src, alt}]`, files in `assets/shots/`,
   about 360px tall JPG, under 40 KB): `renderProject` makes a closed
   `<details class="shots">` "Screenshots (N)" with a scroll-snap strip of
