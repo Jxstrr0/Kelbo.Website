@@ -1,0 +1,83 @@
+# Puts the site live on GitHub Pages.
+#
+# Runs on every change to main, plus once an hour to pick up new game
+# releases. Each run:
+#   1. copies the site's files into a folder called _site (as-is, no build),
+#   2. fills in each game's version from its newest GitHub Release,
+#   3. runs the site check, and STOPS if it finds a problem, so the live
+#      site keeps the last version that worked,
+#   4. publishes _site to Pages.
+#
+# For this to work, Settings → Pages → Source must be "GitHub Actions".
+name: Deploy site
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "23 * * * *" # every hour at :23 (UTC), to catch new game releases
+  workflow_dispatch: # "Run workflow" button, for when you want a release to show now
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never run two deploys at once.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Check and deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      - name: Copy the site into _site
+        run: |
+          mkdir _site
+          git archive HEAD | tar -x -C _site
+          rm -rf _site/.github
+
+      - name: Fill in game versions from their releases
+        run: node .github/scripts/sync-releases.mjs _site
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Check the site
+        run: node .github/scripts/check-site.mjs _site
+
+      # The hourly run only publishes if a game release changed something.
+      - name: Anything new? (hourly runs only)
+        id: compare
+        if: github.event_name == 'schedule'
+        run: |
+          if curl -fsSL "https://jxstrr0.github.io/Kelbo.Website/projects.json" -o live.json \
+              && cmp -s live.json _site/projects.json; then
+            echo "deploy=false" >> "$GITHUB_OUTPUT"
+            echo "No new game releases since the last deploy, so nothing to publish."
+          else
+            echo "deploy=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/configure-pages@v6
+        if: steps.compare.outputs.deploy != 'false'
+
+      - uses: actions/upload-pages-artifact@v5
+        if: steps.compare.outputs.deploy != 'false'
+        with:
+          path: _site
+
+      - id: deployment
+        if: steps.compare.outputs.deploy != 'false'
+        uses: actions/deploy-pages@v5

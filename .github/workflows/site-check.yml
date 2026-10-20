@@ -1,0 +1,24 @@
+# Runs the site check on every pull request, so a mistake shows up as a
+# red X on the PR before it's merged, instead of on the live site.
+# The check itself lives in .github/scripts/check-site.mjs.
+name: Site check
+
+on:
+  pull_request:
+  workflow_dispatch: # adds a "Run workflow" button on the Actions tab
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Site check # this name is what a branch rule would require
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+      - name: Check the site
+        run: node .github/scripts/check-site.mjs
