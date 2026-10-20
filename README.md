@@ -219,7 +219,7 @@ When someone shares a link to the site in a text, Discord, or X, the app
 shows a preview card. That card is `assets/social-preview.jpg` (1200×630).
 It shows the sun with the same glow and halo as the logo. To change it,
 upload a new picture with the same name and size, then bump the `?v=9` on
-the end of every page's `og:image` line (to `?v=9`) so apps fetch the new
+the end of every page's `og:image` line (to `?v=10`) so apps fetch the new
 one. Apps remember old previews for a while, so a change can still take a
 day or so to show up when you share the link.
 
