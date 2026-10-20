@@ -66,7 +66,7 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
 - `projects.json` is the single source of truth for projects. `main.js`
   renders it. Its order is the display order everywhere (Games, Projects,
   What's new, home featured, "More games"): Kelbo's own ranking, games
-  first: Prairie Engine Works, Season Ticket, Scratch, Garage to Glory,
+  first: Prairie Engine Works, Season Ticket, Quorum, Scratch, Garage to Glory,
   Outpost, Red Skies, Baccarat. Nothing sorts by progress except the
   Projects page's filter buttons (`sortByProgress`). Adding a project should never need an HTML edit. Each project
   can carry a `version` ("1.4", no "v") and `latest` (what changed), shown
@@ -357,7 +357,7 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   `projects.json` order, with no dates (the file has none). Linked from
   every footer ("What's new") and listed in `sitemap.xml`.
 - Games each live in their own repo with their own GitHub Pages site
-  (GarageToGlory, RedSkies, BaccaratTable, 350Chev, Outpost-, SeasonTicket, Scratch). This site only links to
+  (GarageToGlory, RedSkies, BaccaratTable, 350Chev, Outpost-, SeasonTicket, Scratch, Quorum). This site only links to
   them via `link` (the pink Play it button) and `code` (the repo). The home
   page "Pick a game" cards are the `featured` projects (max 4); on phones
   all but the first are shortened (16:9 picture, two-line summary).

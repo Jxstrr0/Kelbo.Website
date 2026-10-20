@@ -64,6 +64,28 @@
     ]
   },
   {
+    "title": "Quorum",
+    "status": "Early stages",
+    "category": "Game",
+    "summary": "A galactic council politics game, in the spirit of Stellaris diplomacy and power struggles but with no combat. You are a species delegate: grow a small empire on the galaxy map, send envoys, trade favours, then sit at the council table to argue, amend and vote on galactic law.",
+    "version": "0.4",
+    "latest": "The galaxy map, envoys, events and a yearly turn report",
+    "link": "https://jxstrr0.github.io/Quorum/",
+    "code": "https://github.com/Jxstrr0/Quorum",
+    "image": "assets/covers/quorum.jpg",
+    "featured": false,
+    "shots": [
+      {
+        "src": "assets/shots/quorum-1.jpg",
+        "alt": "The Quorum title screen with a choice of council size: 8, 14 or 25 seats"
+      },
+      {
+        "src": "assets/shots/quorum-2.jpg",
+        "alt": "The galaxy map: glowing species territories joined by hyperlanes, with a bar of Laws, Envoys, Modes and End year"
+      }
+    ]
+  },
+  {
     "title": "Scratch",
     "status": "Building",
     "category": "Game",
