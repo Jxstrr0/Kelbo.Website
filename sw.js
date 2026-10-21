@@ -12,9 +12,9 @@
 
    It must stay in the site's top folder: it can only look after pages in
    its own folder and below. If it ever gets stuck, change CACHE below
-   ("longlight-2") and the old copies are thrown away.
+   ("longlight-3") and the old copies are thrown away.
    ====================================================================== */
-const CACHE = "longlight-1";
+const CACHE = "longlight-2";
 
 // Saved as soon as the helper is installed, so these work offline even
 // if they haven't been opened yet.
@@ -46,11 +46,8 @@ const CORE = [
   "assets/favicon.svg",
   "assets/icon-180.png",
   "assets/icon-192.png",
+  "assets/fonts/space-grotesk-latin.woff2",
 ];
-
-// The font comes from Google Fonts, which never changes a file once it's
-// out, so a saved copy is always good.
-const FONT_HOSTS = ["fonts.googleapis.com", "fonts.gstatic.com"];
 
 self.addEventListener("install", (event) => {
   // One missing file shouldn't stop the rest being saved.
@@ -74,13 +71,6 @@ self.addEventListener("fetch", (event) => {
   const request = event.request;
   if (request.method !== "GET") return; // the contact form and the like go straight through
   const url = new URL(request.url);
-
-  if (FONT_HOSTS.includes(url.hostname)) {
-    event.respondWith(
-      caches.match(request).then((saved) => saved || fetch(request).then((response) => keep(request, response, true)))
-    );
-    return;
-  }
   if (url.origin !== location.origin) return; // weather and other sites: not ours to save
 
   event.respondWith(
@@ -98,11 +88,9 @@ self.addEventListener("fetch", (event) => {
   );
 });
 
-// Saves a good answer for later and passes it on. The font's stylesheet
-// comes back sealed ("opaque": the browser won't show us inside it), so
-// for the font only, a sealed answer is saved too.
-function keep(request, response, sealedOk) {
-  if (response.status === 200 || (sealedOk && response.type === "opaque")) {
+// Saves a good answer for later and passes it on.
+function keep(request, response) {
+  if (response.status === 200) {
     const copy = response.clone();
     caches.open(CACHE).then((cache) => cache.put(request, copy)).catch(() => {});
   }

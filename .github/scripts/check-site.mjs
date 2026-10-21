@@ -195,6 +195,32 @@ if (exists("sitemap.xml")) {
 }
 
 // ---------------------------------------------------------------------
+// 7. Every page shares the same header. The menu is copied into each
+//    page by hand, so an edit to one page can leave the others behind.
+//    The top-level pages' menus must match index.html's (ignoring which
+//    item is marked as the page you're on). And the logo's shared parts
+//    (the letters and the glow, kept once per page in the footer's
+//    <defs>) must be on every page that uses them, or the logo goes blank.
+// ---------------------------------------------------------------------
+const navOf = (html) => {
+  const m = html.match(/<ul class="nav">([\s\S]*?)<\/ul>/);
+  return m ? m[1].replace(/\s+aria-current="page"/g, "").replace(/\s+/g, " ").trim() : null;
+};
+const homeNav = exists("index.html") ? navOf(readFileSync(join(ROOT, "index.html"), "utf8").replace(/<!--[\s\S]*?-->/g, "")) : null;
+for (const f of files.filter((f) => extname(f) === ".html")) {
+  const html = readFileSync(f, "utf8").replace(/<!--[\s\S]*?-->/g, "");
+  if (homeNav && dirname(f) === ROOT) {
+    const nav = navOf(html);
+    if (!nav) warn(rel(f), "This page has no menu (<ul class=\"nav\">), unlike index.html.");
+    else if (nav !== homeNav) warn(rel(f), "This page's menu doesn't match index.html's. Copy the menu from index.html so every page shows the same links.");
+  }
+  const ids = new Set([...html.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]));
+  for (const m of html.matchAll(/(?:<use[^>]*\shref="#|url\(#)([^")]+)/g)) {
+    if (!ids.has(m[1])) error(rel(f), `The logo uses "#${m[1]}", but nothing on this page has that id, so part of the logo won't show. Copy the footer's <defs> block from index.html.`);
+  }
+}
+
+// ---------------------------------------------------------------------
 // Report. In GitHub, errors and warnings also show up as notes on the
 // files themselves, and as a plain-English summary on the run's page.
 // ---------------------------------------------------------------------
