@@ -65,7 +65,7 @@
   },
   {
     "title": "Quorum",
-    "status": "Prototype",
+    "status": "In development",
     "category": "Game",
     "summary": "A galactic council politics game, in the spirit of Stellaris diplomacy and power struggles but with no combat. You are a species delegate: grow a small empire on the galaxy map, send envoys, trade favours, then sit at the council table to argue, amend and vote on galactic law.",
     "version": "0.4",
@@ -177,7 +177,7 @@
   },
   {
     "title": "Red Skies",
-    "status": "Released",
+    "status": "Complete",
     "category": "Game",
     "summary": "A phone game where you run an air-defence battery. Watch the radar, sort friendly jets from enemies, and hold your fire until you're sure, because shooting down a friendly ends the shift.",
     "version": "1.4.5",
@@ -207,7 +207,7 @@
   },
   {
     "title": "Penthouse Baccarat",
-    "status": "Released",
+    "status": "Complete",
     "category": "Game",
     "summary": "A 3D baccarat table in a penthouse overlooking the Shanghai skyline. Place your chips and an android croupier deals the cards, explains each draw, and pays out the winners.",
     "version": "1.0.0",
