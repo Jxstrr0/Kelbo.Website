@@ -73,7 +73,7 @@ ships, publish a release in that game's repo:
    description from the merged PRs.)
 3. Tap **Publish release**.
 
-Within the hour the site shows "v1.2.0 · Night mode and a new garage"
+Within 6 hours the site shows "v1.2.0 · Night mode and a new garage"
 for that game. For it right away, open **Actions** → **Deploy site** →
 **Run workflow**. Games with no releases yet just show what's in
 `projects.json`. If `projects.json` has a newer version than the newest
@@ -258,15 +258,18 @@ opens, the sun rises up out of its line, then the halo and glow come in
 and the ray shoots out to the right, and it lifts a little when you hover over the logo. Anyone with "reduce
 motion" on just sees the finished logo. The glow's blur is set once per
 page, inside the footer logo (`<filter id="logo-glow">`), and the header
-borrows it, so leave that `<defs>` block in the footer.
+borrows it, so leave that `<defs>` block in the footer. The letters live
+in the same `<defs>` block (`ll-word` for LONGLIGHT, `ll-sub` for
+INTERACTIVE), and both logos show them with `<use href="#ll-word">`, so
+each page has just one copy of them.
 
 ### The link preview
 
 When someone shares a link to the site in a text, Discord, or X, the app
 shows a preview card. That card is `assets/social-preview.jpg` (1200×630).
 It shows the sun with the same glow and halo as the logo. To change it,
-upload a new picture with the same name and size, then bump the `?v=9` on
-the end of every page's `og:image` line (to `?v=11`) so apps fetch the new
+upload a new picture with the same name and size, then bump the `?v=12` on
+the end of every page's `og:image` line (to `?v=13`) so apps fetch the new
 one. Apps remember old previews for a while, so a change can still take a
 day or so to show up when you share the link.
 
@@ -296,7 +299,10 @@ brand colours are the `--ll-` lines at the very top. Under them are the
 light theme (daytime), then the dark theme (after sunset). Change a value
 like `#7B3FC4` (the purple) and every place that uses it updates.
 
-The font is loaded from Google Fonts in each page's `<head>`.
+The font file lives on the site itself, in `assets/fonts/` (its free
+licence, `OFL.txt`, sits beside it), and the `@font-face` lines at the top
+of `style.css` set it up. Each page's `<head>` asks for the file early
+(`rel="preload"`) so the text shows in it sooner.
 
 ## The live sun
 
