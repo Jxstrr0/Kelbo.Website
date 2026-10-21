@@ -31,18 +31,23 @@
 // Status labels, from "done" down to "just an idea". The Projects page's
 // filter buttons run in this order, furthest along first.
 // "spot" is how full the progress bar is, from 0 to 100.
-// To add a new status, add a line here.
-// "For Now" means done but may get more updates; "Final Form" means
-// it's complete and won't change; "Ongoing" is something that keeps
-// running with regular updates (like the trading journal).
+// "stage" picks the colour of the pill and bar (see .project__status in
+// style.css): "out" = finished (solid clay), "live" = keeps getting
+// updates (clay outline), "dev" = being built (purple), "idea" = not
+// started yet (lilac outline).
+// "old" lists names used before October 2026, so they still work.
+// To add a new status, add a line here (and in .github/scripts/check-site.mjs).
+//   Complete: done and won't change.
+//   Released: out, but may still get updates.
+//   Live: keeps running with regular updates (like the trading journal).
 const STATUSES = [
-  { label: "Finished - Final Form", spot: 100 },
-  { label: "Finished - For Now", spot: 100 },
-  { label: "Ongoing", spot: 100 },
-  { label: "Mostly done", spot: 78 },
-  { label: "Building", spot: 50 },
-  { label: "Early stages", spot: 32 },
-  { label: "Planned", spot: 18 },
+  { label: "Complete", spot: 100, stage: "out", old: ["Finished - Final Form"] },
+  { label: "Released", spot: 100, stage: "out", old: ["Finished - For Now"] },
+  { label: "Live", spot: 100, stage: "live", old: ["Ongoing"] },
+  { label: "Polishing", spot: 78, stage: "dev", old: ["Mostly done"] },
+  { label: "In development", spot: 50, stage: "dev", old: ["Building"] },
+  { label: "Prototype", spot: 32, stage: "dev", old: ["Early stages"] },
+  { label: "Concept", spot: 18, stage: "idea", old: ["Planned"] },
 ];
 
 const MAX_FEATURED = 4;
@@ -55,11 +60,21 @@ const REDUCE_MOTION = window.matchMedia("(prefers-reduced-motion: reduce)").matc
 function findStatus(statusText) {
   const wanted = String(statusText || "").trim().toLowerCase();
   return (
-    STATUSES.find((s) => s.label.toLowerCase() === wanted) || {
+    STATUSES.find(
+      (s) => s.label.toLowerCase() === wanted || s.old.some((o) => o.toLowerCase() === wanted)
+    ) || {
       label: statusText || "Unknown",
       spot: 0,
+      stage: "",
     }
   );
+}
+
+// The coloured status pill. data-stage picks its colour in style.css.
+function statusPill(status) {
+  const pill = el("span", "project__status", status.label);
+  pill.dataset.stage = status.stage;
+  return pill;
 }
 
 // Small helper: make an element with a class and optional text.
@@ -139,7 +154,7 @@ function renderProject(project) {
 
   // Status pill + category
   const meta = el("p", "project__meta");
-  meta.append(el("span", "project__status", status.label));
+  meta.append(statusPill(status));
   if (project.category) meta.append(el("span", "project__category", project.category));
   body.append(meta);
 
@@ -164,6 +179,7 @@ function renderProject(project) {
   const field = el("div", "field is-waiting");
   field.setAttribute("aria-hidden", "true");
   field.style.setProperty("--progress", status.spot);
+  field.dataset.stage = status.stage;
   field.append(el("span", "field__drive"), el("span", "field__ball"));
   body.append(field);
 
@@ -408,7 +424,7 @@ function setUpGame(box, projects) {
 
   const info = el("div", "game__info");
   const meta = el("p", "project__meta");
-  meta.append(el("span", "project__status", status.label));
+  meta.append(statusPill(status));
   if (project.category) meta.append(el("span", "project__category", project.category));
   info.append(meta);
   if (project.summary) info.append(el("p", "game__summary", project.summary));
@@ -426,6 +442,7 @@ function setUpGame(box, projects) {
   const field = el("div", "field is-waiting");
   field.setAttribute("aria-hidden", "true");
   field.style.setProperty("--progress", status.spot);
+  field.dataset.stage = status.stage;
   field.append(el("span", "field__drive"), el("span", "field__ball"));
   info.append(field);
 

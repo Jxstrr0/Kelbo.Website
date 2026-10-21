@@ -107,8 +107,11 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
 - `now.json` feeds the "Now building" strip under the home hero (`updated`
   date plus `items`, each `text` with an optional `link`). Empty items hide
   the strip. Refresh it when Kelbo says what he's working on.
-- The status labels and progress-bar fill amounts are in `STATUSES` at the
-  top of `main.js`.
+- The status labels, progress-bar fill amounts and colour stages are in
+  `STATUSES` at the top of `main.js`: Complete, Released (solid clay pill),
+  Live (clay outline), Polishing, In development, Prototype (purple),
+  Concept (lilac outline). Each has `old` names from before October 2026
+  that still work. Keep `KNOWN_STATUS` in `check-site.mjs` in step.
 - The look is the Longlight Interactive "Horizon" brand: a half-set clay
   sun on a long horizon line. Five colours only (Clay #D97757, Purple
   #7B3FC4, Slate #141413, Ivory #FAF9F5, Lilac #B48CE8) as `--ll-*` tokens at
