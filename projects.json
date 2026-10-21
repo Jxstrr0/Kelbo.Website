@@ -64,6 +64,36 @@
     ]
   },
   {
+    "title": "The Whip",
+    "status": "In development",
+    "category": "Game",
+    "summary": "A political career game for your phone. Start as a rookie backbench MP in the 120-seat House of Commons of the made-up Dominion of Caledor and climb to Chief Whip: the person who counts the votes, makes the deals and gets the caucus into the chamber when it matters. Every MP remembers what you promised.",
+    "version": "",
+    "latest": "Act 1 is playable: the chamber, your office, caucus and the riding",
+    "link": "https://jxstrr0.github.io/The-Whip/",
+    "code": "https://github.com/Jxstrr0/The-Whip",
+    "image": "assets/covers/the-whip.jpg",
+    "featured": true,
+    "shots": [
+      {
+        "src": "assets/shots/the-whip-1.jpg",
+        "alt": "The division bells ringing in the House, with the bill, the party line and the choice to vote with the party, break with it or be somewhere else"
+      },
+      {
+        "src": "assets/shots/the-whip-2.jpg",
+        "alt": "The deal table in the whip's office: what you give an MP on one side and what you get on the other"
+      },
+      {
+        "src": "assets/shots/the-whip-3.jpg",
+        "alt": "The caucus room, a long table lined with MPs, with the grievances and your moves beside it"
+      },
+      {
+        "src": "assets/shots/the-whip-4.jpg",
+        "alt": "A meeting in the whip's office, with an MP across the desk and four ways to answer"
+      }
+    ]
+  },
+  {
     "title": "Scratch",
     "status": "In development",
     "category": "Game",
