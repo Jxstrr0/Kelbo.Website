@@ -1,17 +1,13 @@
 {
-  "updated": "2026-10-18",
+  "updated": "2026-10-21",
   "items": [
+    {
+      "text": "Quorum, in the build phase",
+      "link": "https://jxstrr0.github.io/Quorum/"
+    },
     {
       "text": "Scratch, in the build phase",
       "link": "https://jxstrr0.github.io/Scratch/"
-    },
-    {
-      "text": "Season Ticket, in the build phase",
-      "link": "https://jxstrr0.github.io/SeasonTicket/"
-    },
-    {
-      "text": "Prairie Engine Works, tweaks and polish",
-      "link": "https://jxstrr0.github.io/350Chev/"
     }
   ]
 }
