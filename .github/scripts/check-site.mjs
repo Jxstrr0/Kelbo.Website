@@ -73,7 +73,11 @@ for (const f of files.filter((f) => extname(f) === ".js")) {
 // ---------------------------------------------------------------------
 // 3. projects.json: every project has what the site needs to show it.
 // ---------------------------------------------------------------------
-const KNOWN_STATUS = ["Early stages", "Building", "Ongoing", "Finished - For Now", "Finished", "Paused"];
+// Keep in step with STATUSES at the top of main.js (those get a progress bar).
+const KNOWN_STATUS = [
+  "Finished - Final Form", "Finished - For Now", "Ongoing", "Mostly done",
+  "Building", "Early stages", "Planned", "Finished", "Paused",
+];
 const KNOWN_CATEGORY = ["Game", "Trading", "AI"];
 const projects = json["projects.json"];
 
