@@ -1,7 +1,7 @@
 [
   {
     "title": "Prairie Engine Works",
-    "status": "Finished - For Now",
+    "status": "Released",
     "category": "Game",
     "summary": "Longlight's biggest game so far. Put an engine together on the test stand, fire it up and hear it run, then take it to the drag strip or a truck and tractor pull to earn cash and reputation.",
     "version": "1.65.1",
@@ -31,7 +31,7 @@
   },
   {
     "title": "Season Ticket",
-    "status": "Finished - For Now",
+    "status": "Released",
     "category": "Game",
     "summary": "A soccer club management game set in Valmere, a made-up northern country. Own a club in the 16-team Kestrel Football League: run the business from your own 3D office, build the squad and the stadium, and change tactics while you watch the match. Play a whole career, on your phone, even offline.",
     "version": "1.0.0",
@@ -65,7 +65,7 @@
   },
   {
     "title": "Quorum",
-    "status": "Early stages",
+    "status": "Prototype",
     "category": "Game",
     "summary": "A galactic council politics game, in the spirit of Stellaris diplomacy and power struggles but with no combat. You are a species delegate: grow a small empire on the galaxy map, send envoys, trade favours, then sit at the council table to argue, amend and vote on galactic law.",
     "version": "0.4",
@@ -87,7 +87,7 @@
   },
   {
     "title": "Scratch",
-    "status": "Building",
+    "status": "In development",
     "category": "Game",
     "summary": "A roguelike scratch-ticket engine builder. You're the night clerk at a lonely prairie gas station, owing the owner money by sunrise. Scratch tickets whose symbols interact, bolt charms onto the lotto terminal and trade for strange relics, while the night gets stranger. Fictional lottery, no real money.",
     "version": "0.1.0",
@@ -117,7 +117,7 @@
   },
   {
     "title": "Garage to Glory",
-    "status": "Building",
+    "status": "In development",
     "category": "Game",
     "summary": "A comedy band-career game. You're the drummer who started the band: play the gigs as rhythm games and steer the band through ten years, from your parents' garage in Saskatoon to arenas around the world, or a breakup in a parking lot.",
     "version": "1.6",
@@ -147,7 +147,7 @@
   },
   {
     "title": "Outpost",
-    "status": "Building",
+    "status": "In development",
     "category": "Game",
     "summary": "A first-person survival mystery. Keep an arctic weather station running for five nights: the generator, battery and heater fail on their own, the weather needs logging every two hours, and the last keeper's logbook slowly reveals what happened to them.",
     "version": "0.3.0",
@@ -177,7 +177,7 @@
   },
   {
     "title": "Red Skies",
-    "status": "Finished - For Now",
+    "status": "Released",
     "category": "Game",
     "summary": "A phone game where you run an air-defence battery. Watch the radar, sort friendly jets from enemies, and hold your fire until you're sure, because shooting down a friendly ends the shift.",
     "version": "1.4.5",
@@ -207,7 +207,7 @@
   },
   {
     "title": "Penthouse Baccarat",
-    "status": "Finished - For Now",
+    "status": "Released",
     "category": "Game",
     "summary": "A 3D baccarat table in a penthouse overlooking the Shanghai skyline. Place your chips and an android croupier deals the cards, explains each draw, and pays out the winners.",
     "version": "1.0.0",
@@ -237,7 +237,7 @@
   },
   {
     "title": "AI Trading Journal",
-    "status": "Ongoing",
+    "status": "Live",
     "category": "Trading",
     "summary": "My market views, the trades I take, and my running record, with notes from an AI coach on what to keep doing and what to fix.",
     "version": "",
@@ -249,7 +249,7 @@
   },
   {
     "title": "Agent Fleet",
-    "status": "Building",
+    "status": "In development",
     "category": "AI",
     "summary": "A set of small, single-purpose bots I can run from my phone, like news digests, trackers, and weekly scans.",
     "version": "",

@@ -2225,6 +2225,25 @@ img {
   font-weight: 700;
 }
 
+/* Status colours by stage (the "stage" in STATUSES at the top of main.js).
+   "dev" (being built) keeps the purple pill above. */
+.project__status[data-stage="out"] { /* Complete, Released */
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.project__status[data-stage="live"] { /* Live */
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px var(--accent);
+  color: var(--accent-ink);
+}
+
+.project__status[data-stage="idea"] { /* Concept */
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px var(--ll-lilac);
+  color: var(--secondary);
+}
+
 .project__category {
   padding: 0.2rem 0.65rem;
   border-radius: 999px;
@@ -2401,6 +2420,17 @@ img {
   border-radius: 50%;
   background: var(--accent);
   transition: left 900ms var(--ease);
+}
+
+/* The bar's fill follows the status colour too. It's a lighter clay
+   than the ball so the sun still stands out at the end of a full bar. */
+.field[data-stage="out"] .field__drive,
+.field[data-stage="live"] .field__drive {
+  background: color-mix(in srgb, var(--accent) 55%, var(--field));
+}
+
+.field[data-stage="idea"] .field__drive {
+  background: var(--ll-lilac);
 }
 
 .field.is-waiting .field__drive {
