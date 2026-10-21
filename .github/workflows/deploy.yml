@@ -1,6 +1,6 @@
 # Puts the site live on GitHub Pages.
 #
-# Runs on every change to main, plus once an hour to pick up new game
+# Runs on every change to main, plus every 6 hours to pick up new game
 # releases. Each run:
 #   1. copies the site's files into a folder called _site (as-is, no build),
 #   2. fills in each game's version from its newest GitHub Release,
@@ -15,7 +15,7 @@ on:
   push:
     branches: [main]
   schedule:
-    - cron: "23 * * * *" # every hour at :23 (UTC), to catch new game releases
+    - cron: "23 */6 * * *" # every 6 hours at :23 (UTC), to catch new game releases
   workflow_dispatch: # "Run workflow" button, for when you want a release to show now
 
 permissions:
@@ -57,8 +57,8 @@ jobs:
       - name: Check the site
         run: node .github/scripts/check-site.mjs _site
 
-      # The hourly run only publishes if a game release changed something.
-      - name: Anything new? (hourly runs only)
+      # The scheduled run only publishes if a game release changed something.
+      - name: Anything new? (scheduled runs only)
         id: compare
         if: github.event_name == 'schedule'
         run: |

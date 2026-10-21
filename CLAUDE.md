@@ -1,7 +1,8 @@
 # Notes for Claude
 
 Kelbo's personal site, hosted on GitHub Pages. `.github/workflows/deploy.yml`
-publishes it on every push to `main` (and hourly, to pick up game releases).
+publishes it on every push to `main` (and every 6 hours, to pick up game
+releases).
 Live at https://jxstrr0.github.io/Kelbo.Website/
 
 ## Working on this repo
@@ -57,8 +58,9 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   links load. Keep that script first in the `<head>`.
 - The link preview image is `assets/social-preview.jpg` (1200×630, the
   Longlight sky, the sun with its glow and halo on the horizon line,
-  "Longlight Interactive", plus the three featured game covers: Prairie Engine Works, Season Ticket, Scratch). Every `og:image`
-  ends `?v=11` so apps refetch it; bump it on every page when the picture
+  "Longlight Interactive", plus the four featured game covers in a 2×2
+  grid: Prairie Engine Works, Season Ticket, The Whip, Scratch). Every `og:image`
+  ends `?v=12` so apps refetch it; bump it on every page when the picture
   changes. Regenerate it if the covers change a lot. The favicon and
   home-screen icons are the logo's sun (glow, halo, sun) on an ivory line
   on a purple tile (the favicon turns slate in dark mode):
@@ -115,7 +117,10 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
 - The look is the Longlight Interactive "Horizon" brand: a half-set clay
   sun on a long horizon line. Five colours only (Clay #D97757, Purple
   #7B3FC4, Slate #141413, Ivory #FAF9F5, Lilac #B48CE8) as `--ll-*` tokens at
-  the top of `style.css`; one font, Space Grotesk 500/700. Light theme =
+  the top of `style.css`; one font, Space Grotesk 500/700, self-hosted (the
+  variable woff2 files in `assets/fonts/`, `@font-face` at the top of
+  `style.css`, the latin file preloaded in every page's `<head>`; no Google
+  Fonts, no other font host). Light theme =
   purple sky (hero, page heads, header, footer) with ivory body; dark theme
   = slate. Clay text on the purple sky is too faint, so keep clay for the
   sun, buttons and underlines there. Game covers live in `assets/covers/`
@@ -354,7 +359,7 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   count and `WISH_BADGES` (a badge also shows in the tap tip).
 - Offline: `sw.js` (root, registered in `init`) precaches `CORE` and is
   network-first for same-origin GETs (saved copy on failure, `index.html`
-  for unknown pages offline) and cache-first for Google Fonts. Bump `CACHE`
+  for unknown pages offline). Bump `CACHE`
   if it ever serves stale files; add new top-level pages to `CORE`.
 - Page changes: cross-document view transitions (`@view-transition`)
   with `.site-header` and `.page-head .horizon` named so they stay put;
@@ -384,7 +389,10 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   coloured by `.logo__sun/line/word/sub` and `--logo-line` (ivory light,
   purple dark), plus `.logo__glow` (a blurred sun copy using the
   `#logo-glow` filter, defined once per page in the footer lockup's
-  `<defs>` because the footer is never hidden) and `.logo__halo` (a thin
+  `<defs>` because the footer is never hidden; the letter paths live there
+  too as `#ll-word`/`#ll-sub`, and both lockups draw them with
+  `<use class="logo__word" href="#ll-word">`, the fill inheriting from the
+  `use`) and `.logo__halo` (a thin
   clay ring). On load the sun, halo and glow rise out of the line
   (`logo-rise`/`logo-fade`/`logo-ray`, in the reduced-motion-safe block); hover lifts
   the sun. Sizes: compact 3.4rem, header lockup 13.8rem, footer
