@@ -126,7 +126,7 @@ progress order.
 ```json
   {
     "title": "My new thing",
-    "status": "Building",
+    "status": "In development",
     "category": "Tool",
     "summary": "One or two sentences on what it is.",
     "version": "",
@@ -138,7 +138,20 @@ progress order.
   }
 ```
 
-- **status**: use one of `Finished - Final Form` (complete, won't change), `Finished - For Now` (done, but may get more updates), `Ongoing` (keeps running with regular updates, like the journal), `Mostly done`, `Building`, `Early stages`, or `Planned`. Both Finished ones and Ongoing get a full bar.
+- **status**: use one of these, from most to least done:
+
+  | Status | Means | Pill |
+  |---|---|---|
+  | `Complete` | Done and won't change | solid clay |
+  | `Released` | Out, but may still get updates | solid clay |
+  | `Live` | Keeps running with regular updates, like the journal | clay outline |
+  | `Polishing` | Nearly there | purple |
+  | `In development` | Being built | purple |
+  | `Prototype` | Early, rough version | purple |
+  | `Concept` | Just an idea, not started | lilac outline |
+
+  The old names (`Finished - For Now`, `Building` and so on) still work,
+  but the site check will suggest the new one.
   This sets how far along the progress bar the little sun sits.
 - **category**: which section it shows up in: `Game`, `Trading`, or `AI`.
   Anything else still shows on the Projects page, just not in a section.
@@ -745,7 +758,7 @@ It's taken off the site for now, but its files are still in
 ```json
   {
     "title": "Prediction Tracker",
-    "status": "Finished - For Now",
+    "status": "Released",
     "category": "Trading",
     "summary": "Log predictions with a confidence level, then see how well-calibrated those calls turn out to be over time.",
     "link": "tools/prediction-tracker/",
