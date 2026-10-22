@@ -1524,10 +1524,12 @@ img {
 }
 
 /* The freight train: same silhouette colour as the elevator, sitting on
-   the rails, running in from one edge (main.js; motion only) */
+   the rails, running in from one edge (main.js; motion only). The cars are
+   taller than the gap between the rails and the horizon line, so the train
+   sits in front of the line (z-index 3, the line is 2) to stay whole. */
 .train-path {
   position: absolute;
-  z-index: 1;
+  z-index: 3;
   left: 50%;
   width: 100vw;
   margin-left: -50vw;
