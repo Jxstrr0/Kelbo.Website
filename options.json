@@ -1,11 +1,11 @@
 {
-  "updated": "2026-10-16",
+  "updated": "2026-10-22",
   "since": "2026-09-15",
   "systems": {
     "V2": "my earlier hold-or-flip rules",
     "V3": "same-day flips on the stocks moving most that day (started Oct 14, 2026)"
   },
-  "ai": "What worked: 15 wins, 8 losses and 3 scratches, up 6.1% per trade on average. Winners averaged +20.1% and losers −17.8%, so the wins are still bigger than the losses, which is the right shape. Losers were cut instead of held in hope, like the RGTI put closed to free up buying power, the SOFI call closed when the fade kept going, and the MARA 8 put stopped out at its planned level. Scaling out worked on the F 12.50 call: selling most of it at +23% and moving the rest to break-even locked in the gain with no stress.\n\nWhat didn't: the first 10 trades (through Oct 8) went 9–1 and averaged +21%. The 9 after that (Oct 9 to 13) went 2–4 with 3 scratches and averaged −7%. Those were also the busier days, and the notes show why: a wide spread at entry, paying over the ask, thin volume, a market order by mistake. On options that cost under $1, a few cents of spread is 5–10% of the trade before the stock even moves. Limit orders near the middle of the bid and ask, and skipping contracts with wide spreads or little volume, would have saved most of that.\n\nThe biggest loss was the IREN 40 call (−32%), held overnight on a stock that had gapped and then faded. Holding overnight without a planned exit was the mistake there. V3 is 4–3 after three days and up 1.3% per trade on average (winners +17.4%, losers −20.1%), a thinner edge than V2 had so far. The two weakest V3 entries share a cause: the SOFI 15.50 call was bought before its breakout trigger printed, and the RIVN 13 call was a third entry taken after the entry window closed (a small win, but off-rule). Waiting for the level to actually print is the fix. The SOFI 14.50 call shows the cut working as intended: closing it on Oct 14 kept the loss to 17%, and the same contract made +20% when bought again the next day. About 20 trades should show whether V3 beats V2.",
+  "ai": "What worked: 17 wins, 8 losses and 3 scratches, up 6.8% per trade on average. Winners averaged +19.5% and losers −17.8%, so the wins are still bigger than the losses, which is the right shape. Losers were cut instead of held in hope, like the RGTI put closed to free up buying power, the SOFI call closed when the fade kept going, and the MARA 8 put stopped out at its planned level. Scaling out worked on the F 12.50 call: selling most of it at +23% and moving the rest to break-even locked in the gain with no stress.\n\nWhat didn't: the first 10 trades (through Oct 8) went 9–1 and averaged +21%. The 9 after that (Oct 9 to 13) went 2–4 with 3 scratches and averaged −7%. Those were also the busier days, and the notes show why: a wide spread at entry, paying over the ask, thin volume, a market order by mistake. On options that cost under $1, a few cents of spread is 5–10% of the trade before the stock even moves. Limit orders near the middle of the bid and ask, and skipping contracts with wide spreads or little volume, would have saved most of that.\n\nThe biggest loss was the IREN 40 call (−32%), held overnight on a stock that had gapped and then faded. Holding overnight without a planned exit was the mistake there. V3 is 5–3 after four days and up 2.4% per trade on average (winners +15.9%, losers −20.1%), a thinner edge than V2 had so far. The two weakest V3 entries share a cause: the SOFI 15.50 call was bought before its breakout trigger printed, and the RIVN 13 call was a third entry taken after the entry window closed (a small win, but off-rule). Waiting for the level to actually print is the fix. The SOFI 14.50 call shows the cut working as intended: closing it on Oct 14 kept the loss to 17%, and the same contract made +20% when bought again the next day. The two newest trades, the KWEB 24 put (+22%) and the PFE 30 call (+10%), both used contracts a month from expiry instead of the weekly ones. The KWEB put was held overnight and worked, where the IREN call did not; a longer-dated contract loses less to time decay while it sits, which may be part of why, but two trades are too few to tell. About 20 trades should show whether V3 beats V2.",
   "trades": [
     {
       "opened": "2026-09-15",
@@ -318,6 +318,30 @@
       "sold": 0.353,
       "system": "V3",
       "note": "Broke out to new highs. Sold most at +23%, moved the rest to break-even, then sold it for a small gain. The exit price is the average of both sales."
+    },
+    {
+      "opened": "2026-10-21",
+      "closed": "2026-10-22",
+      "symbol": "KWEB",
+      "strike": 24,
+      "type": "put",
+      "expiry": "2026-11-20",
+      "paid": 0.97,
+      "sold": 1.18,
+      "system": "V2",
+      "note": "Held overnight and sold the next afternoon for a gain. About a month to expiry, much longer than the weekly contracts used lately."
+    },
+    {
+      "opened": "2026-10-22",
+      "closed": "2026-10-22",
+      "symbol": "PFE",
+      "strike": 30,
+      "type": "call",
+      "expiry": "2026-11-20",
+      "paid": 0.94,
+      "sold": 1.03,
+      "system": "V3",
+      "note": "Same-day flip, bought before noon and sold mid-afternoon for a small gain. Also about a month to expiry."
     }
   ]
 }
