@@ -13,7 +13,8 @@
       { "sector": "Health Care", "etf": "XLV", "direction": "Leading", "trend": "up", "why": "Record high last week, +3.45%" },
       { "sector": "Financials", "etf": "XLF", "direction": "Lukewarm", "trend": "down", "why": "Banks reported fine, but the ETF flows don't back it" },
       { "sector": "Small Caps", "etf": "IWM", "direction": "Lagging", "trend": "down", "why": "Floating-rate debt, so they need yields to fall first" },
-      { "sector": "Tech / Semis", "etf": "XLK, SMH", "direction": "Bouncing, unproven", "trend": "down", "why": "Leads on bounce days (memory names jumped Monday), but it hangs on Meta" }
+      { "sector": "Tech / Semis", "etf": "XLK, SMH", "direction": "Bouncing, unproven", "trend": "down", "why": "Leads on bounce days (memory names jumped Monday), but it hangs on Meta" },
+      { "sector": "AI", "direction": "Bearish", "trend": "down", "why": "A general bearish lean on AI names, with no single trigger or level set" }
     ],
     "calls": [
       { "call": "Energy keeps leading: XLE beats XLK on the week", "wrongIf": "XLK finishes the week (Oct 23 close vs Oct 16 close) ahead of XLE.", "grade": null },
@@ -41,7 +42,7 @@
     "plan": [],
     "trades": [],
     "recap": "",
-    "ai": "What's good: three of the four calls are ranking or threshold calls with a clear wrong-if, which fits last week's lesson of fewer exact price pins. The two relative calls (energy over tech, small caps under the S&P) only need an order, so no price level has to hold.\n\nWhat to watch: the energy call has an easy trap, because a single big tech bounce day can flip a weekly ranking, and last week's tech drop of 7.7% makes a snap-back more likely than usual. The Meta call is symmetric, so a calm reaction wins and a big move either way loses, and that is a coin-flip-sized bet. The Brent call has about a 7% cushion from the $107.6 Monday level to $100, so it is a lower bar than the others. No trades are listed, so this entry is a pure forecast.",
+    "ai": "What's good: three of the four calls are ranking or threshold calls with a clear wrong-if, which fits last week's lesson of fewer exact price pins. The two relative calls (energy over tech, small caps under the S&P) only need an order, so no price level has to hold.\n\nWhat to watch: the energy call has an easy trap, because a single big tech bounce day can flip a weekly ranking, and last week's tech drop of 7.7% makes a snap-back more likely than usual. The Meta call is symmetric, so a calm reaction wins and a big move either way loses, and that is a coin-flip-sized bet. The Brent call has about a 7% cushion from the $107.6 Monday level to $100, so it is a lower bar than the others. No trades are listed, so this entry is a pure forecast.\n\nThe bearish AI row is a general lean with no level and no wrong-if, so it can't be graded as written. Turning it into a call with a wrong-if, such as an AI basket finishing the week behind the S&P, would let it count in the record.",
     "lesson": ""
   },
   {
