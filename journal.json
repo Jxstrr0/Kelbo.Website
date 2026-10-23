@@ -17,10 +17,10 @@
       { "sector": "AI", "direction": "Bearish", "trend": "down", "why": "A general bearish lean on AI names, with no single trigger or level set" }
     ],
     "calls": [
-      { "call": "Energy keeps leading: XLE beats XLK on the week", "wrongIf": "XLK finishes the week (Oct 23 close vs Oct 16 close) ahead of XLE.", "grade": null },
-      { "call": "Small caps keep lagging: the Russell 2000 underperforms the S&P 500 on the week", "wrongIf": "The Russell 2000 beats the S&P 500 for the week (Oct 23 close vs Oct 16 close).", "grade": null },
+      { "call": "Energy keeps leading: XLE beats XLK on the week", "wrongIf": "XLK finishes the week (Oct 23 close vs Oct 16 close) ahead of XLE.", "grade": "hit" },
+      { "call": "Small caps keep lagging: the Russell 2000 underperforms the S&P 500 on the week", "wrongIf": "The Russell 2000 beats the S&P 500 for the week (Oct 23 close vs Oct 16 close).", "grade": "miss" },
       { "call": "Meta moves less than the roughly 6% the options market is pricing after Wednesday's report", "wrongIf": "Meta moves more than 6% either way on Thursday.", "grade": "miss" },
-      { "call": "Brent holds over $100 every day this week", "wrongIf": "Brent settles under $100 on any day.", "grade": null }
+      { "call": "Brent holds over $100 every day this week", "wrongIf": "Brent settles under $100 on any day.", "grade": "hit" }
     ],
     "scenarios": [
       { "odds": 40, "name": "Base: bounce, then chop", "text": "The reflex rally runs into 7,712 to 7,739 and stalls. Meta is fine but nothing special. Defensives and energy stay the stronger trend, small caps lag, Brent stays in the $100 to $110 range." },
@@ -41,9 +41,9 @@
     ],
     "plan": [],
     "trades": [],
-    "recap": "",
+    "recap": "The bounce came first, as expected. The S&P rose Monday through Wednesday to 7,757.17, then the AI sell-off took over. Thursday it fell 1.21% to 7,663.43 with the Nasdaq down 2.6% and semis down more than 6%, and Friday it slipped again to 7,623.68. That left the S&P down about 0.5% on the week (7,659.44 on Oct 16).\n\nEnergy beat tech: XLE went from 68.24 to 69.33 (+1.6%) while XLK went from 183.47 to 183.23 (-0.1%). XLK was ahead midweek after Wednesday's jump to 188.54, then gave it all back on Thursday. Small caps did not lag. The Russell 2000 rose from 2,721.37 to about 2,776 (+2.0%) and held up through Thursday's sell-off, beating the S&P by about 2.5 points. Meta fell about 7% on Thursday after its report, more than the 6% move the call allowed. Brent never came close to $100: it settled near $108.8 to $109.6 Monday to Wednesday, $113.17 Thursday, and ran higher Friday on Middle East tensions.\n\nCalls 1 and 4 are hits. Call 2 is a miss because the Russell beat the S&P by a wide margin. Call 3 is a miss by about a point. The general bearish AI row had no wrong-if, so it isn't scored, though AI names did lead the drop on Thursday. Score: 2 hits, 2 misses, or 2 out of 4.",
     "ai": "What's good: three of the four calls are ranking or threshold calls with a clear wrong-if, which fits last week's lesson of fewer exact price pins. The two relative calls (energy over tech, small caps under the S&P) only need an order, so no price level has to hold.\n\nWhat to watch: the energy call has an easy trap, because a single big tech bounce day can flip a weekly ranking, and last week's tech drop of 7.7% makes a snap-back more likely than usual. The Meta call is symmetric, so a calm reaction wins and a big move either way loses, and that is a coin-flip-sized bet. The Brent call has about a 7% cushion from the $107.6 Monday level to $100, so it is a lower bar than the others. No trades are listed, so this entry is a pure forecast.\n\nThe bearish AI row is a general lean with no level and no wrong-if, so it can't be graded as written. Turning it into a call with a wrong-if, such as an AI basket finishing the week behind the S&P, would let it count in the record.",
-    "lesson": ""
+    "lesson": "The two calls that followed the strongest trend (energy over tech, oil over $100) both hit, and the two that bet on a size or a lag missed. Small caps had already turned before the week started, so a lagging call needed a fresh reason, not last week's pattern. For earnings, the options market's implied move is a typical size, not a cap; with AI names already under pressure, Meta's move ran past it."
   },
   {
     "date": "2026-10-14",
