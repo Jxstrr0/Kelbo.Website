@@ -19,7 +19,7 @@
     "calls": [
       { "call": "Energy keeps leading: XLE beats XLK on the week", "wrongIf": "XLK finishes the week (Oct 23 close vs Oct 16 close) ahead of XLE.", "grade": null },
       { "call": "Small caps keep lagging: the Russell 2000 underperforms the S&P 500 on the week", "wrongIf": "The Russell 2000 beats the S&P 500 for the week (Oct 23 close vs Oct 16 close).", "grade": null },
-      { "call": "Meta moves less than the roughly 6% the options market is pricing after Wednesday's report", "wrongIf": "Meta moves more than 6% either way on Thursday.", "grade": null },
+      { "call": "Meta moves less than the roughly 6% the options market is pricing after Wednesday's report", "wrongIf": "Meta moves more than 6% either way on Thursday.", "grade": "miss" },
       { "call": "Brent holds over $100 every day this week", "wrongIf": "Brent settles under $100 on any day.", "grade": null }
     ],
     "scenarios": [
