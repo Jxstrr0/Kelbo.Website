@@ -21,7 +21,7 @@
     12. fills the "Now building" strip on the home page from now.json
     13. stretches the hero's ray with the season, and shows a badge on the
         longest and shortest days of the year
-    14. fills game.html (one game's own page, game.html?g=scratch) from
+    14. fills game.html (one game's own page, game.html?g=the-whip) from
         projects.json
 
    To preview a time of day, add ?at= to the address, e.g.
@@ -369,7 +369,7 @@ function sortByProgress(projects) {
 }
 
 // Home page: featured projects only.
-// A game's own page (game.html?g=scratch): the cover, the story, every
+// A game's own page (game.html?g=the-whip): the cover, the story, every
 // screenshot open in a strip, the buttons, and links to the other games.
 // Everything comes from projects.json. Optional "story" in a project is a
 // longer write-up; a blank line (\n\n) starts a new paragraph.
