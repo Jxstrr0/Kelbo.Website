@@ -214,6 +214,36 @@
     ]
   },
   {
+    "title": "Vault Street",
+    "status": "In development",
+    "category": "Game",
+    "summary": "A banking-empire tycoon. Lease a storefront, build your first branch, set your rates and fees and hire your tellers, then gather deposits and lend them out carefully. Ride the interest-rate cycle, build a headquarters and grow toward a global bank, all on an engraved, banknote-style city map.",
+    "version": "0.0.1",
+    "latest": "Headquarters and operations are switched on",
+    "link": "https://jxstrr0.github.io/VaultStreet/",
+    "code": "https://github.com/Jxstrr0/VaultStreet",
+    "image": "assets/covers/vault-street.jpg",
+    "featured": false,
+    "shots": [
+      {
+        "src": "assets/shots/vault-street-1.jpg",
+        "alt": "The engraved city map of Calgary with the player's first branch and storefronts for lease"
+      },
+      {
+        "src": "assets/shots/vault-street-2.jpg",
+        "alt": "A branch's Products tab: the chequing account's rating, balance, margin ring and monthly fee"
+      },
+      {
+        "src": "assets/shots/vault-street-3.jpg",
+        "alt": "A branch's Finance tab: weekly revenue and income bars and the income statement"
+      },
+      {
+        "src": "assets/shots/vault-street-4.jpg",
+        "alt": "A branch's Service tab: customer reviews for rates, products, service and the branch"
+      }
+    ]
+  },
+  {
     "title": "AI Trading Journal",
     "status": "Live",
     "category": "Trading",
