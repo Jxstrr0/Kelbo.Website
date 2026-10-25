@@ -33,6 +33,13 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   Projects) speak as Longlight; Trading, the journal and Agent Fleet stay in
   his own first-person voice.
 
+## Commits
+
+Author commits as the owner so they count on their GitHub profile. At the
+start of a session, run `git config user.name "Jxstrr0"` and
+`git config user.email "322161611+Jxstrr0@users.noreply.github.com"`, and
+keep the Co-Authored-By trailer for Claude in each message.
+
 ## Hard rules
 
 - **Static only:** plain HTML, CSS, and vanilla JS. No frameworks, npm,
@@ -59,8 +66,8 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
 - The link preview image is `assets/social-preview.jpg` (1200×630, the
   Longlight sky, the sun with its glow and halo on the horizon line,
   "Longlight Interactive", plus the four featured game covers in a 2×2
-  grid: Prairie Engine Works, Season Ticket, The Whip, Garage to Glory). Every `og:image`
-  ends `?v=13` so apps refetch it; bump it on every page when the picture
+  grid: Prairie Engine Works, Season Ticket, The Whip, Vault Street). Every `og:image`
+  ends `?v=14` so apps refetch it; bump it on every page when the picture
   changes. Regenerate it if the covers change a lot. The favicon and
   home-screen icons are the logo's sun (glow, halo, sun) on an ivory line
   on a purple tile (the favicon turns slate in dark mode):
@@ -77,8 +84,8 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
 - `projects.json` is the single source of truth for projects. `main.js`
   renders it. Its order is the display order everywhere (Games, Projects,
   What's new, home featured, "More games"): Kelbo's own ranking, games
-  first: Prairie Engine Works, Season Ticket, The Whip, Garage to Glory,
-  Outpost, Red Skies, Baccarat, Vault Street. Nothing sorts by progress except the
+  first: Prairie Engine Works, Season Ticket, The Whip, Vault Street, Garage to Glory,
+  Outpost, Red Skies, Baccarat. Nothing sorts by progress except the
   Projects page's filter buttons (`sortByProgress`). Adding a project should never need an HTML edit. Each project
   can carry a `version` ("1.4", no "v") and `latest` (what changed), shown
   as "v1.4 · Added night mode" under the summary; either may be "".
