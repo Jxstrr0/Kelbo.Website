@@ -28,6 +28,7 @@ const CORE = [
   "projects.html",
   "about.html",
   "whats-new.html",
+  "press.html",
   "journal.html",
   "agent-fleet.html",
   "404.html",

@@ -393,6 +393,14 @@ keep the Co-Authored-By trailer for Claude in each message.
 - Sections: `games.html`, `trading.html`, and `ai.html` each list the
   projects whose `category` matches the list's `data-category` (Game,
   Trading, AI). The home page tiles link to them and show counts.
+- `press.html` is the press kit: a fact sheet (`.facts`, the game count
+  filled by `setUpPress` into `[data-press-count]`), the logo files in
+  `assets/press/` (`longlight-logo-dark/light`, SVG with the letters as
+  paths and fixed colours, plus 2× PNG; remake both if the logo changes)
+  and the sun icon, the five colours, and a `data-projects="press"` list
+  where `setUpPress` shows every game (cover, status, version, summary,
+  game page and Play links, each screenshot as a link to the file).
+  Linked from every footer ("Press kit"), in `sitemap.xml` and `sw.js` `CORE`.
 - `whats-new.html` is a `data-projects="news"` list: `setUpNews` in
   `main.js` shows every project with a `version` or `latest`, in
   `projects.json` order, with no dates (the file has none). Linked from
