@@ -118,7 +118,7 @@ Paste it after the last one and change the values:
 **The order in this file is the order on the site.** The Games page,
 Projects page, What's new and the home cards all follow it from top to
 bottom, so it's your own ranking (games are Prairie Engine Works, Season
-Ticket, The Whip, Garage to Glory, Outpost, Red Skies, Penthouse Baccarat, Vault Street).
+Ticket, The Whip, Vault Street, Garage to Glory, Outpost, Red Skies, Penthouse Baccarat).
 To move something up, cut its block and paste it higher. A new block pasted
 at the bottom shows up last. Only the Projects page's filter buttons run in
 progress order.
@@ -268,8 +268,8 @@ each page has just one copy of them.
 When someone shares a link to the site in a text, Discord, or X, the app
 shows a preview card. That card is `assets/social-preview.jpg` (1200×630).
 It shows the sun with the same glow and halo as the logo. To change it,
-upload a new picture with the same name and size, then bump the `?v=13` on
-the end of every page's `og:image` line (to `?v=14`) so apps fetch the new
+upload a new picture with the same name and size, then bump the `?v=14` on
+the end of every page's `og:image` line (to `?v=15`) so apps fetch the new
 one. Apps remember old previews for a while, so a change can still take a
 day or so to show up when you share the link.
 
