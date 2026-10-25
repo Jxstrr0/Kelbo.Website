@@ -641,6 +641,82 @@ function setUpNews(listEl, projects) {
   });
 }
 
+// Press kit (press.html): every game with its cover, summary, version,
+// links, and each picture as a file to open or save. Also fills in the
+// game count in the fact sheet. Order is projects.json's, like Games.
+function setUpPress(listEl, projects) {
+  const games = projects.filter(isGame);
+  const count = document.querySelector("[data-press-count]");
+  if (count) count.textContent = games.length + " browser game" + (games.length === 1 ? "" : "s");
+  listEl.replaceChildren();
+  if (games.length === 0) {
+    listEl.append(el("li", "project-list__note", "No games yet. Check back soon."));
+    return;
+  }
+  games.forEach((project) => {
+    const title = project.title || "Untitled";
+    const item = el("li", "press-game");
+
+    if (project.image) {
+      const cover = el("a", "press-game__cover");
+      cover.href = project.image;
+      const img = el("img");
+      img.src = project.image;
+      img.alt = "Cover of " + title;
+      img.width = 640;
+      img.height = 480;
+      img.loading = "lazy";
+      cover.append(img);
+      item.append(cover);
+    }
+
+    const body = el("div", "press-game__body");
+    body.append(el("h3", "press-game__title", title));
+    const meta = el("p", "project__meta");
+    meta.append(statusPill(findStatus(project.status)));
+    const version = String(project.version || "").trim().replace(/^v/i, "");
+    if (version) meta.append(el("span", "project__category", "v" + version));
+    body.append(meta);
+    if (project.summary) body.append(el("p", "press-game__summary", project.summary));
+
+    const links = el("p", "project__links");
+    const page = el("a", "project__link", "Game page →");
+    page.href = gamePage(title);
+    page.setAttribute("aria-label", title + " game page");
+    links.append(page);
+    if (project.link) {
+      const play = el("a", "project__link", "Play it →");
+      play.href = project.link;
+      play.setAttribute("aria-label", "Play " + title);
+      links.append(play);
+    }
+    body.append(links);
+
+    // Every screenshot as a small picture that opens the full file.
+    if (Array.isArray(project.shots) && project.shots.length) {
+      const shots = el("ul", "press-game__shots");
+      shots.setAttribute("aria-label", title + " screenshots");
+      project.shots.forEach((shot, i) => {
+        const li = el("li");
+        const a = el("a");
+        a.href = shot.src;
+        const img = el("img");
+        img.src = shot.src;
+        img.alt = shot.alt || title + " screenshot " + (i + 1);
+        img.loading = "lazy";
+        img.decoding = "async";
+        a.append(img);
+        li.append(a);
+        shots.append(li);
+      });
+      body.append(shots);
+    }
+    item.append(body);
+    listEl.append(item);
+    reveal(item);
+  });
+}
+
 // One row on the What's new page: small cover, name, "v1.4 · Added night
 // mode", and the same Play / code links as the project card.
 function renderNews(project) {
@@ -4076,6 +4152,7 @@ async function init() {
     if (listEl.dataset.projects === "featured") setUpFeatured(listEl, projects);
     else if (listEl.dataset.projects === "category") setUpCategory(listEl, projects);
     else if (listEl.dataset.projects === "news") setUpNews(listEl, projects);
+    else if (listEl.dataset.projects === "press") setUpPress(listEl, projects);
     else if (listEl.dataset.projects === "game") setUpGame(listEl, projects);
     else setUpAll(listEl, projects);
   });
