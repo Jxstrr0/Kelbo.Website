@@ -393,6 +393,15 @@ keep the Co-Authored-By trailer for Claude in each message.
 - Sections: `games.html`, `trading.html`, and `ai.html` each list the
   projects whose `category` matches the list's `data-category` (Game,
   Trading, AI). The home page tiles link to them and show counts.
+- `devlog.html` is the devlog: `setUpDevlog` renders `devlog.json`
+  (`{"posts": [...]}`, newest first; `date` YYYY-MM-DD, `title`, `body`
+  split on blank lines, optional `game` = a projects.json title) as dated
+  `.post` cards with ids from `devlogId` (date + title slug) so posts can
+  be linked; `addGameDevlog` lists a game's posts on its page above "More
+  Longlight games". Posts speak as Longlight and report only real changes.
+  `check-site.mjs` checks the fields, the order and the `game` titles.
+  Linked from every footer ("Devlog") and the What's new intro; in
+  `sitemap.xml` and `sw.js` `CORE`.
 - `press.html` is the press kit: a fact sheet (`.facts`, the game count
   filled by `setUpPress` into `[data-press-count]`), the logo files in
   `assets/press/` (`longlight-logo-dark/light`, SVG with the letters as

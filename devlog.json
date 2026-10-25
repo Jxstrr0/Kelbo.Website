@@ -1,0 +1,45 @@
+{
+  "posts": [
+    {
+      "date": "2026-10-25",
+      "title": "Play here, game pages and a press kit",
+      "body": "Three new things on the site this week.\n\nEvery game page now has a Play here button. It opens the game right inside the page, over the whole screen, with a Close button on top. The phone's Back button closes it too.\n\nEach game also has its own address now, like game-vault-street.html. Share one of those in a text or on Discord and the preview shows that game's cover and summary.\n\nAnd there's a press kit, with our logo, colours, and every game's cover and screenshots, for anyone writing, filming or streaming about our games. It's linked at the bottom of every page."
+    },
+    {
+      "date": "2026-10-24",
+      "title": "Vault Street opens its doors",
+      "game": "Vault Street",
+      "body": "Our newest game is a banking-empire tycoon. Lease a storefront, build your first branch, set your rates and fees, hire your tellers, then gather deposits and lend them out carefully.\n\nIt's early, but it's playable now, and it goes straight to the top of our games list."
+    },
+    {
+      "date": "2026-10-23",
+      "title": "Red Skies 1.5: save codes",
+      "game": "Red Skies",
+      "body": "Red Skies now has save codes. Back up your campaign as a short code and restore it on another phone or browser. The code is checked before anything is replaced, and nothing is ever sent anywhere.\n\nSave codes first arrived on October 15. Version 1.5 gives them their own number."
+    },
+    {
+      "date": "2026-10-21",
+      "title": "The Whip joins the lineup",
+      "game": "The Whip",
+      "body": "The Whip is a political career game for your phone. You start as a rookie backbench MP in the House of Commons of the made-up Dominion of Caledor and work your way up to Chief Whip, the person who counts the votes and keeps the caucus in line.\n\nIt's in development. Every MP remembers what you promised them."
+    },
+    {
+      "date": "2026-10-19",
+      "title": "Season Ticket hits 1.0",
+      "game": "Season Ticket",
+      "body": "Season Ticket, our soccer club management game, is out as version 1.0. Own a club in the 16-team Kestrel Football League, run the business from your own 3D office, build the squad and the stadium, and change tactics while you watch the match.\n\nIt plays a whole career on your phone, even offline."
+    },
+    {
+      "date": "2026-10-17",
+      "title": "Outpost: all five nights playable",
+      "game": "Outpost",
+      "body": "All five nights of Outpost can be played from start to finish now. Keep an arctic weather station running while the generator, battery and heater fail on their own, log the weather every two hours, and find out what happened to the last keeper."
+    },
+    {
+      "date": "2026-10-16",
+      "title": "Prairie Engine Works is out",
+      "game": "Prairie Engine Works",
+      "body": "Our biggest game so far is released. Put an engine together on the test stand, fire it up and hear it run, then take it to the drag strip or a truck and tractor pull to earn cash and reputation."
+    }
+  ]
+}
