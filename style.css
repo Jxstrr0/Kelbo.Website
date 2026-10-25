@@ -2094,6 +2094,82 @@ img {
   margin: 0.5rem 0 0;
 }
 
+/* ---------- Your badges (home page) and the "Badge earned" note ---------- */
+.badges__count {
+  margin: 0.4rem 0 0.7rem;
+  font-weight: 700;
+}
+
+.badges__list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.badge {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: 0.55rem 0.75rem;
+  border: 1px dashed var(--rule);
+  border-radius: 12px;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.badge strong {
+  font-size: 0.9rem;
+  color: var(--ink);
+}
+
+.badge--earned {
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.badge--earned strong {
+  color: var(--on-accent);
+}
+
+.badge--earned strong::before {
+  content: "\2726  "; /* a four-point star */
+}
+
+.badge-toast {
+  position: fixed;
+  left: 50%;
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  z-index: 110; /* above the Play here frame, so a badge for playing shows */
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  max-width: min(22rem, calc(100vw - 2rem));
+  padding: 0.7rem 1.1rem;
+  border: 2px solid var(--ll-clay);
+  border-radius: 14px;
+  background: var(--ll-slate);
+  color: var(--ll-ivory);
+  box-shadow: var(--shadow);
+  font-size: 0.9rem;
+  text-align: center;
+  transform: translate(-50%, 0);
+  visibility: hidden;
+  opacity: 0;
+}
+
+.badge-toast.is-shown {
+  visibility: visible;
+  opacity: 1;
+}
+
+.badge-toast strong {
+  color: var(--ll-clay);
+}
+
 /* ---------- Memory card ("Continue?") ----------
    main.js shows this on the home page when the phone remembers a game
    you opened before. Hidden otherwise. */
@@ -3377,6 +3453,16 @@ img {
 
 /* ---------- Motion ---------- */
 @media (prefers-reduced-motion: no-preference) {
+  /* The "Badge earned" note slides up and fades. */
+  .badge-toast {
+    transform: translate(-50%, 1rem);
+    transition: opacity 300ms var(--ease), transform 300ms var(--ease), visibility 300ms;
+  }
+
+  .badge-toast.is-shown {
+    transform: translate(-50%, 0);
+  }
+
   html {
     scroll-behavior: smooth;
   }
