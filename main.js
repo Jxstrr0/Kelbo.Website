@@ -451,7 +451,15 @@ function setUpGame(box, projects) {
     const play = el("a", "button button--play", "Play it");
     play.href = project.link;
     play.setAttribute("aria-label", "Play " + title);
+    play.dataset.title = title;
+    play.dataset.image = project.image || "";
     links.append(play);
+    // "Play here" opens the game inside this page (see openPlayer).
+    const here = el("button", "button button--ghost button--here", "Play here");
+    here.type = "button";
+    here.setAttribute("aria-label", "Play " + title + " here on this page");
+    here.addEventListener("click", () => openPlayer(project, here));
+    links.append(here);
   }
   if (project.code) {
     const code = el("a", "project__link", "See the code →");
@@ -508,6 +516,85 @@ function setUpGame(box, projects) {
     section.append(list);
     box.append(section);
   }
+}
+
+/* ----------------------------------------------------------------------
+   PLAY HERE
+   ----------------------------------------------------------------------
+   "Play here" on a game's page opens the game in a frame that covers the
+   whole screen, with a bar on top: the game's name, Full screen (where
+   the phone allows it; iPhones don't for pages), Open in a new tab, and
+   Close. The phone's Back button closes it too, because opening it adds
+   a step to the history. Closing it stops the game (the frame is removed).
+   ---------------------------------------------------------------------- */
+function openPlayer(project, opener) {
+  if (document.querySelector(".player")) return;
+  const title = project.title || "Game";
+
+  // Remember it for the home page's "Continue?" card, like Play it does.
+  writeJSON(LAST_KEY, { title, link: project.link, image: project.image || "", at: Date.now() });
+
+  const player = el("div", "player");
+  player.setAttribute("role", "dialog");
+  player.setAttribute("aria-modal", "true");
+  player.setAttribute("aria-label", title);
+
+  const bar = el("div", "player__bar");
+  bar.append(el("p", "player__title", title));
+  const tools = el("div", "player__tools");
+
+  const frame = el("iframe", "player__frame");
+  frame.src = project.link;
+  frame.title = title;
+  frame.allow = "fullscreen; autoplay; gamepad; screen-wake-lock";
+  frame.setAttribute("allowfullscreen", "");
+
+  if (player.requestFullscreen) {
+    const full = el("button", "player__tool", "Full screen");
+    full.type = "button";
+    full.addEventListener("click", () => {
+      if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+      else player.requestFullscreen().catch(() => {});
+    });
+    tools.append(full);
+  }
+  const tab = el("a", "player__tool", "New tab");
+  tab.href = project.link;
+  tab.target = "_blank";
+  tab.rel = "noopener";
+  tab.setAttribute("aria-label", "Open " + title + " in a new tab");
+  const close = el("button", "player__tool player__close", "Close");
+  close.type = "button";
+  close.setAttribute("aria-label", "Close " + title);
+  tools.append(tab, close);
+  bar.append(tools);
+  player.append(bar, frame);
+
+  // Tidy up: remove the frame (which stops the game and its sound), give
+  // the page its scroll back, and put focus back on the button.
+  let open = true;
+  const shut = () => {
+    if (!open) return;
+    open = false;
+    if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+    player.remove();
+    document.documentElement.classList.remove("has-player");
+    document.removeEventListener("keydown", onKey);
+    window.removeEventListener("popstate", onBack);
+    if (opener) opener.focus();
+  };
+  const onKey = (event) => {
+    if (event.key === "Escape" && !document.fullscreenElement) history.back();
+  };
+  const onBack = () => shut();
+  close.addEventListener("click", () => history.back());
+
+  history.pushState({ player: true }, "");
+  window.addEventListener("popstate", onBack);
+  document.addEventListener("keydown", onKey);
+  document.documentElement.classList.add("has-player");
+  document.body.append(player);
+  frame.focus();
 }
 
 function setUpFeatured(listEl, projects) {

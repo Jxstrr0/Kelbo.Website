@@ -188,7 +188,9 @@ progress order.
   (`game.html?g=<name>`, where the name is the title in lowercase with dashes,
   like `prairie-engine-works`). A blank line starts a new paragraph. The page
   works without it, and shows the summary, cover, every screenshot, the
-  buttons and links to the other games.
+  buttons and links to the other games. Its **Play here** button opens the
+  game inside the page, over the whole screen, with Full screen, New tab
+  and Close on a bar at the top (the phone's Back button closes it too).
 
 **Adding a game:** use `"category": "Game"` and it shows up on the Games
 page automatically, with a big clay "Play it" button. Each game lives in its
