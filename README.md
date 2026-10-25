@@ -18,6 +18,7 @@ from their releases, then publishes the files as they are (see
 | `about.html` | The About page: your bio and the "player card" facts |
 | `projects.html` | The full projects page with status filters |
 | `whats-new.html` | The newest version and latest change for each project, built from `projects.json` (no dates, since the file has none) |
+| `press.html` | **Press kit**: the fact sheet, logo downloads (`assets/press/`), brand colours, and every game's cover, summary and screenshots, built from `projects.json`. Linked from every footer |
 | `games.html` | The Games section: every project with `"category": "Game"` |
 | `trading.html` | The Trading section: every project with `"category": "Trading"` |
 | `ai.html` | The AI section: every project with `"category": "AI"` |
