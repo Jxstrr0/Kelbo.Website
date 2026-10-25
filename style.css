@@ -2882,6 +2882,77 @@ img {
   margin-top: 0.15rem;
 }
 
+/* ---------- Devlog (devlog.html, and "From the devlog" on a game page) ---------- */
+.devlog {
+  display: grid;
+  gap: 1.25rem;
+  max-width: 44rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.post {
+  padding: 1.25rem;
+  border: 1px solid var(--rule);
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radius);
+  background: var(--card);
+  scroll-margin-top: 5rem;
+}
+
+.post__meta {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--secondary);
+}
+
+/* No section-heading underline on each post's title */
+.section .post__title::after {
+  display: none;
+}
+
+.post__meta a {
+  color: inherit;
+}
+
+.post__title {
+  margin: 0.3rem 0 0.6rem;
+  font-size: 1.35rem;
+}
+
+.post p:last-child {
+  margin-bottom: 0;
+}
+
+.game__devlog-list {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.game__devlog-list li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.1rem 0.75rem;
+  align-items: baseline;
+}
+
+.game__devlog-list time {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.game__devlog-list a {
+  font-weight: 700;
+  color: var(--secondary);
+}
+
 /* ---------- Press kit (press.html) ---------- */
 .press-logos {
   display: grid;
