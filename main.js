@@ -512,6 +512,7 @@ function setUpGame(box, projects) {
 
   // The other games, as plain links
   const others = games.filter((g) => g !== project);
+  let moreSection = null;
   if (others.length) {
     const section = el("section", "game__more");
     section.append(el("h2", null, "More Longlight games"));
@@ -525,7 +526,116 @@ function setUpGame(box, projects) {
     });
     section.append(list);
     box.append(section);
+    moreSection = section;
   }
+
+  // Devlog posts about this game go just above "More Longlight games".
+  addGameDevlog(box, title, moreSection);
+}
+
+/* ----------------------------------------------------------------------
+   DEVLOG
+   ----------------------------------------------------------------------
+   Posts live in devlog.json: {"posts": [...]}, newest first. Each post
+   has a "date" (2026-10-24), a "title", a "body" (a blank line starts a
+   new paragraph) and, if it's about one game, that game's "game" title
+   from projects.json. devlog.html shows them all; a game's page shows
+   the ones about it.
+   ---------------------------------------------------------------------- */
+let devlogPosts = null;
+async function loadDevlog() {
+  if (!devlogPosts) {
+    devlogPosts = fetch("devlog.json", { cache: "no-cache" })
+      .then((r) => (r.ok ? r.json() : { posts: [] }))
+      .then((data) => (Array.isArray(data.posts) ? data.posts : []))
+      .catch((err) => {
+        console.error("Couldn't load devlog.json:", err);
+        return [];
+      });
+  }
+  return devlogPosts;
+}
+
+// "2026-10-24" -> "October 24, 2026" (read as a calendar date, so the
+// visitor's time zone can't shift it a day).
+function devlogDate(date) {
+  const [y, m, d] = String(date).split("-").map(Number);
+  if (!y || !m || !d) return String(date || "");
+  return new Date(y, m - 1, d).toLocaleDateString("en-CA", { year: "numeric", month: "long", day: "numeric" });
+}
+
+// The address of one post on devlog.html, e.g. devlog.html#2026-10-24-vault-street-opens-its-doors
+function devlogId(post) {
+  return post.date + "-" + projectSlug(post.title);
+}
+
+function renderPost(post, games) {
+  const item = el("li", "post");
+  item.id = devlogId(post);
+  const head = el("p", "post__meta");
+  const time = el("time", null, devlogDate(post.date));
+  time.dateTime = post.date;
+  head.append(time);
+  const game = post.game && games.find((g) => g.title === post.game);
+  if (game) {
+    head.append(" · ");
+    const link = el("a", null, game.title);
+    link.href = gamePage(game.title);
+    head.append(link);
+  }
+  item.append(head, el("h2", "post__title", post.title || "Update"));
+  String(post.body || "")
+    .split(/\n\s*\n/)
+    .filter((para) => para.trim())
+    .forEach((para) => item.append(el("p", null, para.trim())));
+  return item;
+}
+
+async function setUpDevlog() {
+  const list = document.querySelector("[data-devlog]");
+  if (!list) return;
+  const posts = await loadDevlog();
+  let games = [];
+  try {
+    const response = await fetch("projects.json", { cache: "no-cache" });
+    if (response.ok) games = (await response.json()).filter(isGame);
+  } catch (e) {}
+  list.replaceChildren();
+  if (posts.length === 0) {
+    list.append(el("li", "project-list__note", "No posts yet. Check back soon."));
+    return;
+  }
+  posts.forEach((post) => {
+    const item = renderPost(post, games);
+    list.append(item);
+    reveal(item);
+  });
+  // Opened from a link to one post: bring it into view now that it exists.
+  if (location.hash) {
+    const target = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+    if (target) target.scrollIntoView();
+  }
+}
+
+// On a game's page: the devlog posts about that game, as dated links.
+async function addGameDevlog(box, title, before) {
+  const posts = (await loadDevlog()).filter((post) => post.game === title);
+  if (posts.length === 0) return;
+  const section = el("section", "game__devlog");
+  section.append(el("h2", null, "From the devlog"));
+  const list = el("ul", "game__devlog-list");
+  posts.forEach((post) => {
+    const item = el("li");
+    const time = el("time", null, devlogDate(post.date));
+    time.dateTime = post.date;
+    const link = el("a", null, post.title);
+    link.href = "devlog.html#" + devlogId(post);
+    item.append(time, link);
+    list.append(item);
+  });
+  section.append(list);
+  if (before && before.parentNode === box) box.insertBefore(section, before);
+  else box.append(section);
 }
 
 /* ----------------------------------------------------------------------
@@ -4110,6 +4220,7 @@ async function init() {
   setUpMarketLight();
   setUpContactForm();
   setUpNow();
+  setUpDevlog();
 
   // The offline helper (sw.js): keeps a copy of the site on this phone so
   // it still opens with no signal.

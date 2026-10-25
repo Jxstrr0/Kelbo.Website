@@ -149,6 +149,29 @@ if (now !== undefined) {
 }
 
 // ---------------------------------------------------------------------
+// 4b. devlog.json: the devlog posts, newest first.
+// ---------------------------------------------------------------------
+const devlog = json["devlog.json"];
+if (devlog !== undefined) {
+  if (!Array.isArray(devlog.posts)) error("devlog.json", 'Needs a "posts" list.');
+  else {
+    const titles = Array.isArray(projects) ? projects.map((p) => p.title) : [];
+    let last = "9999-99-99";
+    devlog.posts.forEach((post, i) => {
+      const name = post && post.title ? `"${post.title}"` : `post #${i + 1}`;
+      if (!post || !post.title) error("devlog.json", `Post #${i + 1} has no "title".`);
+      if (!post || !post.body) error("devlog.json", `${name} has no "body".`);
+      if (!post || !/^\d{4}-\d{2}-\d{2}$/.test(post.date || "")) error("devlog.json", `${name}: "date" should look like 2026-10-24.`);
+      else {
+        if (post.date > last) warn("devlog.json", `${name} is out of order. Newest posts go at the top.`);
+        last = post.date;
+      }
+      if (post && post.game && !titles.includes(post.game)) warn("devlog.json", `${name} is about "${post.game}", which isn't a title in projects.json, so it won't show on a game page.`);
+    });
+  }
+}
+
+// ---------------------------------------------------------------------
 // 5. Every local link and picture in the HTML pages must exist.
 //    (Web addresses like https://... are skipped; this only checks
 //    files inside the site.)
