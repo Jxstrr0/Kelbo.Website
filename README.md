@@ -41,7 +41,7 @@ from their releases, then publishes the files as they are (see
 | `404.html` | The "page not found" screen GitHub shows for any address that doesn't exist |
 | `.nojekyll` | Tells GitHub Pages to serve the files as-is. Leave it alone |
 | `.github/workflows/` | The two robots: `site-check.yml` (checks every pull request) and `deploy.yml` (checks again, then puts the site live) |
-| `.github/scripts/` | What they run: `check-site.mjs` (the mistake finder) and `sync-releases.mjs` (fills in game versions from their releases) |
+| `.github/scripts/` | What they run: `check-site.mjs` (the mistake finder), `sync-releases.mjs` (fills in game versions from their releases) and `make-game-pages.mjs` (makes each game's own page, below) |
 
 ## Editing on your phone
 
@@ -188,7 +188,11 @@ progress order.
   (`game.html?g=<name>`, where the name is the title in lowercase with dashes,
   like `prairie-engine-works`). A blank line starts a new paragraph. The page
   works without it, and shows the summary, cover, every screenshot, the
-  buttons and links to the other games. Its **Play here** button opens the
+  buttons and links to the other games. On the live site each game also
+  gets its own address, like `game-vault-street.html`, made by the deploy:
+  share that one and the link preview shows the game's cover and summary
+  instead of the studio card. You never edit those files (they aren't in
+  the repo); a new game gets one on the next deploy. Its **Play here** button opens the
   game inside the page, over the whole screen, with Full screen, New tab
   and Close on a bar at the top (the phone's Back button closes it too).
 

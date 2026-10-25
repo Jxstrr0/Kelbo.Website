@@ -22,3 +22,12 @@ jobs:
           node-version: 22
       - name: Check the site
         run: node .github/scripts/check-site.mjs
+      # The deploy makes a page for each game (make-game-pages.mjs). Try it
+      # on a throwaway copy, so a change that breaks it shows up here too.
+      - name: Check the game pages the deploy will make
+        run: |
+          mkdir _site
+          git archive HEAD | tar -x -C _site
+          rm -rf _site/.github
+          node .github/scripts/make-game-pages.mjs _site
+          node .github/scripts/check-site.mjs _site
