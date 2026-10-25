@@ -4,9 +4,10 @@
 # releases. Each run:
 #   1. copies the site's files into a folder called _site (as-is, no build),
 #   2. fills in each game's version from its newest GitHub Release,
-#   3. runs the site check, and STOPS if it finds a problem, so the live
+#   3. makes game-<slug>.html for each game, so shared links show its cover,
+#   4. runs the site check, and STOPS if it finds a problem, so the live
 #      site keeps the last version that worked,
-#   4. publishes _site to Pages.
+#   5. publishes _site to Pages.
 #
 # For this to work, Settings → Pages → Source must be "GitHub Actions".
 name: Deploy site
@@ -53,6 +54,9 @@ jobs:
         run: node .github/scripts/sync-releases.mjs _site
         env:
           GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Make each game's own page (with its own link preview)
+        run: node .github/scripts/make-game-pages.mjs _site
 
       - name: Check the site
         run: node .github/scripts/check-site.mjs _site
