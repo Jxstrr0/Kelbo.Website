@@ -653,6 +653,7 @@ function openPlayer(project, opener) {
 
   // Remember it for the home page's "Continue?" card, like Play it does.
   writeJSON(LAST_KEY, { title, link: project.link, image: project.image || "", at: Date.now() });
+  notePlayed(title);
 
   const player = el("div", "player");
   player.setAttribute("role", "dialog");
@@ -667,7 +668,6 @@ function openPlayer(project, opener) {
   frame.src = project.link;
   frame.title = title;
   frame.allow = "fullscreen; autoplay; gamepad; screen-wake-lock";
-  frame.setAttribute("allowfullscreen", "");
 
   if (player.requestFullscreen) {
     const full = el("button", "player__tool", "Full screen");
@@ -1999,6 +1999,7 @@ function setUpSkyTaps(scene, timeNow) {
     if (badge) show(x, y, 0, `Badge: ${badge[1]}`, `${count} wishes on this device`);
     else show(x, y, 0, "Wish made", count === 1 ? "Your first one on this device" : `That's ${count} on this device`);
     showWishes(document.querySelector("[data-wishes]"));
+    checkBadges();
   }
 
   // Everything that could be tapped right now, with where it is on screen.
@@ -4100,6 +4101,7 @@ function rememberPlays() {
       image: img ? img.getAttribute("src") : (link.dataset.image || (previous && previous.image) || ""),
       at: Date.now(),
     });
+    notePlayed(titleEl ? titleEl.textContent : link.dataset.title);
   });
 }
 
@@ -4210,6 +4212,137 @@ function setUpMarketLight() {
   setInterval(tick, 60000);
 }
 
+/* ======================================================================
+   BADGES
+   ----------------------------------------------------------------------
+   Little goals for visitors, earned by using the site: playing games,
+   visiting at sunset or after dark, coming back, catching a shooting
+   star. Each one is saved in this browser only (localStorage), and a
+   small note pops up when one is earned. The home page lists them all
+   ("Your badges"); the ones still to get show how to earn them.
+   To add one, add a line to BADGES and a check in badgeChecks.
+   ====================================================================== */
+const BADGES = [
+  { id: "first-game", name: "First game", hint: "Play any game" },
+  { id: "three-games", name: "Arcade regular", hint: "Play 3 different games" },
+  { id: "every-game", name: "Completionist", hint: "Play every Longlight game" },
+  { id: "golden-hour", name: "Golden hour", hint: "Visit within half an hour of sunset" },
+  { id: "early-riser", name: "Early riser", hint: "Visit in the hour after sunrise" },
+  { id: "after-dark", name: "After dark", hint: "Visit once the sky is fully dark" },
+  { id: "solstice", name: "Solstice", hint: "Visit on the longest or shortest day of the year" },
+  { id: "regular", name: "Regular", hint: "Visit on 3 different days" },
+  { id: "explorer", name: "Explorer", hint: "Open Games, Trading, AI, Projects and About" },
+  { id: "wishmaker", name: "Wishmaker", hint: "Tap a shooting star on a dark night" },
+  { id: "insider", name: "Insider", hint: "Read the devlog" },
+];
+const BADGES_KEY = "kelbo.badges";     // { "first-game": time earned, ... }
+const PLAYED_KEY = "kelbo.played";     // titles of the games opened
+const DAYS_KEY = "kelbo.days";         // the last few days visited, "2026-10-24"
+const PAGES_KEY = "kelbo.pages";       // which section pages were opened
+const GAME_COUNT_KEY = "kelbo.gameCount"; // how many games there are, for Completionist
+const EXPLORER_PAGES = ["games.html", "trading.html", "ai.html", "projects.html", "about.html"];
+
+// Note a game as played (from Play it or Play here).
+function notePlayed(title) {
+  if (!title) return;
+  const played = readJSON(PLAYED_KEY) || [];
+  if (!played.includes(title)) writeJSON(PLAYED_KEY, played.concat(title));
+  checkBadges();
+}
+
+// Is each badge earned right now? Sun badges use the real time (never a
+// ?at= preview) and the sky the visitor is looking at (YXE).
+function badgeChecks() {
+  const played = (readJSON(PLAYED_KEY) || []).length;
+  const games = Number(readJSON(GAME_COUNT_KEY)) || 0;
+  const days = (readJSON(DAYS_KEY) || []).length;
+  const pages = readJSON(PAGES_KEY) || [];
+  const real = !new URLSearchParams(location.search).get("at");
+  const now = new Date();
+  const day = real ? sunDay(now) : {};
+  const t = now.getTime();
+  return {
+    "first-game": played >= 1,
+    "three-games": played >= 3,
+    "every-game": games > 0 && played >= games,
+    "golden-hour": real && !!day.set && Math.abs(t - day.set) <= 30 * 60000,
+    "early-riser": real && !!day.rise && t >= day.rise && t <= day.rise + 60 * 60000,
+    "after-dark": real && sunAltitude(now) < -12,
+    "solstice": real && !!solsticeToday(now),
+    "regular": days >= 3,
+    "explorer": EXPLORER_PAGES.every((page) => pages.includes(page)),
+    "wishmaker": wishCount() >= 1,
+    "insider": pages.includes("devlog.html"),
+  };
+}
+
+// Award anything newly earned, pop up a note, and refresh the home list.
+function checkBadges() {
+  const earned = readJSON(BADGES_KEY) || {};
+  const checks = badgeChecks();
+  const fresh = BADGES.filter((b) => checks[b.id] && !earned[b.id]);
+  if (fresh.length) {
+    fresh.forEach((b) => { earned[b.id] = Date.now(); });
+    writeJSON(BADGES_KEY, earned);
+    toastBadges(fresh);
+  }
+  showBadges();
+}
+
+// The pop-up note at the bottom of the screen, for a few seconds.
+function toastBadges(fresh) {
+  let toast = document.querySelector(".badge-toast");
+  if (!toast) {
+    toast = el("div", "badge-toast");
+    toast.setAttribute("role", "status");
+    document.body.append(toast);
+  }
+  const label = fresh.length === 1 ? "Badge earned" : `${fresh.length} badges earned`;
+  toast.replaceChildren(el("strong", null, label), el("span", null, fresh.map((b) => b.name).join(", ")));
+  toast.classList.remove("is-shown");
+  void toast.offsetWidth; // restart the slide-in
+  toast.classList.add("is-shown");
+  clearTimeout(toastBadges.timer);
+  toastBadges.timer = setTimeout(() => toast.classList.remove("is-shown"), 4500);
+}
+
+// The "Your badges" list on the home page.
+function showBadges() {
+  const box = document.querySelector("[data-badges]");
+  if (!box) return;
+  const earned = readJSON(BADGES_KEY) || {};
+  const got = BADGES.filter((b) => earned[b.id]).length;
+  box.querySelector("[data-badges-count]").textContent =
+    got === 0 ? "Earn badges by exploring the site. Here's how:" : `${got} of ${BADGES.length} earned`;
+  const list = box.querySelector("[data-badges-list]");
+  list.replaceChildren();
+  // Earned ones first, then the rest in order.
+  const sorted = BADGES.filter((b) => earned[b.id]).concat(BADGES.filter((b) => !earned[b.id]));
+  sorted.forEach((b) => {
+    const item = el("li", earned[b.id] ? "badge badge--earned" : "badge");
+    const when = earned[b.id] && new Date(earned[b.id]).toLocaleDateString("en-CA", { month: "short", day: "numeric" });
+    item.append(el("strong", null, b.name), el("span", null, when ? "Earned " + when : b.hint));
+    list.append(item);
+  });
+  box.hidden = false;
+}
+
+// Once per page: note today and this page, then check.
+function setUpBadges() {
+  const days = readJSON(DAYS_KEY) || [];
+  const p = localParts(new Date());
+  const today = `${p.y}-${String(p.m).padStart(2, "0")}-${String(p.d).padStart(2, "0")}`;
+  if (!days.includes(today)) writeJSON(DAYS_KEY, days.concat(today).slice(-10));
+  const page = location.pathname.split("/").pop() || "index.html";
+  const pages = readJSON(PAGES_KEY) || [];
+  if (!pages.includes(page) && (EXPLORER_PAGES.includes(page) || page === "devlog.html")) {
+    writeJSON(PAGES_KEY, pages.concat(page));
+  }
+  checkBadges();
+  // Golden hour, sunrise and dark can arrive while the page is open.
+  setInterval(checkBadges, 60000);
+}
+
 // Start here once the page has loaded.
 async function init() {
   setUpHorizon();
@@ -4221,6 +4354,7 @@ async function init() {
   setUpContactForm();
   setUpNow();
   setUpDevlog();
+  setUpBadges();
 
   // The offline helper (sw.js): keeps a copy of the site on this phone so
   // it still opens with no signal.
@@ -4259,6 +4393,9 @@ async function init() {
   }
 
   fillCategoryCounts(projects);
+  // For the Completionist badge: how many games there are to play.
+  writeJSON(GAME_COUNT_KEY, projects.filter(isGame).length);
+  checkBadges();
   lists.forEach((listEl) => {
     if (listEl.dataset.projects === "featured") setUpFeatured(listEl, projects);
     else if (listEl.dataset.projects === "category") setUpCategory(listEl, projects);

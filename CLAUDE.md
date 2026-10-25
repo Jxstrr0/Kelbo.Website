@@ -355,7 +355,15 @@ keep the Co-Authored-By trailer for Claude in each message.
   saved in `localStorage["kelbo.theme"]`; a tiny inline script in every
   page's `<head>` applies it before paint. The home page also has the
   "Continue?" memory card (`kelbo.lastPlayed`, `kelbo.visits`, set when any
-  Play button is tapped) and the NYSE market light on the Trading tile.
+  Play button is tapped), the "Your badges" box (`[data-badges]`, under Sky
+  this week; `BADGES` + `badgeChecks` in `main.js`: games played from
+  `kelbo.played` (Play it and Play here call `notePlayed`), Completionist
+  against `kelbo.gameCount`, sun badges from the real time in `YXE`'s sky,
+  never with `?at=`, days in `kelbo.days`, Explorer/Insider from
+  `kelbo.pages`, Wishmaker from `wishCount`; earned times in
+  `kelbo.badges`; `checkBadges` runs on every page, every minute, after a
+  play and after a wish, and `toastBadges` shows the "Badge earned" note,
+  above the Play here frame) and the NYSE market light on the Trading tile.
 - Tilt sky: `setUpMotion` (home hero `[data-motion-switch]`, shown only
   with `pointer: coarse` and DeviceOrientationEvent; iPhone
   `requestPermission` after the tap; choice in `localStorage["kelbo.motion"]`,
