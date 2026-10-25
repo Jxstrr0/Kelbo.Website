@@ -44,8 +44,10 @@ keep the Co-Authored-By trailer for Claude in each message.
 
 - **Static only:** plain HTML, CSS, and vanilla JS. No frameworks, npm,
   bundlers, or build step. The deploy workflow publishes the files as-is;
-  the only thing it changes is each game's `version` and `latest`, filled
-  in from that game's newest GitHub Release (see below). The two scripts in
+  the only things it changes are each game's `version` and `latest`, filled
+  in from that game's newest GitHub Release (see below), and the
+  `game-<slug>.html` copies of `game.html` it adds (`make-game-pages.mjs`,
+  see below). The three scripts in
   `.github/scripts/` are plain Node with no packages; keep them that way.
 - **No secrets.** The repo is public. Never commit API keys, tokens, or
   passwords. If a tool needs a key, talk through options with Kelbo first.
@@ -107,6 +109,13 @@ keep the Co-Authored-By trailer for Claude in each message.
   Don't put a `transform` on `.project__main`, it would shrink that layer.
 - `game.html?g=<slug>` is one game's own page (`setUpGame` in `main.js`,
   slug from `projectSlug(title)`, e.g. `prairie-engine-works`). Games' cards
+  link to `gamePage(title)`, `game-<slug>.html`: the deploy writes one per
+  game into `_site` (`.github/scripts/make-game-pages.mjs`, after
+  `sync-releases.mjs`), a copy of `game.html` with that game's title,
+  summary, cover (640×480) and address in the `<head>` and `data-game` on
+  the box, and adds them to the deployed `sitemap.xml`. They never exist
+  in the repo, so test them with a `_site` copy; the Site check makes them
+  too. `404.html` sends a missing `game-<slug>.html` to `game.html?g=`. Cards
   link to it ("About this game →"). It shows the cover, status, summary,
   version, the Play and code buttons, "Play here" (`openPlayer`: the game's
   `link` in a full-screen `.player` iframe with a slate bar of Full screen
@@ -114,8 +123,8 @@ keep the Co-Authored-By trailer for Claude in each message.
   step so Back closes it, and removing the frame stops the game), an optional `story` (paragraphs split
   on blank lines), all `shots` open in a strip, and the other games. It sets
   the tab title and description in JS; link-preview crawlers don't run JS, so
-  a shared link still shows the studio card. Not in `sitemap.xml` (the
-  address needs a `?g=`); it is in `sw.js` `CORE`.
+  only the `game-<slug>.html` copies show the game's own link preview.
+  `game.html` itself is not in `sitemap.xml`; it is in `sw.js` `CORE`.
 - `now.json` feeds the "Now building" strip under the home hero (`updated`
   date plus `items`, each `text` with an optional `link`). Empty items hide
   the strip. Refresh it when Kelbo says what he's working on.
