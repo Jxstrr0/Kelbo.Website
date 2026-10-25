@@ -110,12 +110,21 @@ function initials(title) {
 }
 
 // "Prairie Engine Works" -> "prairie-engine-works". A game's own page is
-// game.html?g=<this>, so it needs no extra file when a project is added.
+// game-<this>.html (see gamePage), so it needs no extra file when a project is added.
 function projectSlug(title) {
   return String(title || "")
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
+}
+
+// A game's own page. The deploy makes game-<slug>.html for every game (a
+// copy of game.html with that game's link preview, see
+// .github/scripts/make-game-pages.mjs), so shared links show the game's
+// cover. game.html?g=<slug> still works too, and 404.html sends a
+// game-<slug>.html that doesn't exist yet to it.
+function gamePage(title) {
+  return "game-" + projectSlug(title) + ".html";
 }
 
 // Build the card for one project.
@@ -201,7 +210,7 @@ function renderProject(project) {
   }
   if (isGame(project)) {
     const more = el("a", "project__link project__main", "About this game →");
-    more.href = "game.html?g=" + projectSlug(title);
+    more.href = gamePage(title);
     more.setAttribute("aria-label", "About " + title);
     links.append(more);
   }
@@ -375,7 +384,8 @@ function sortByProgress(projects) {
 // longer write-up; a blank line (\n\n) starts a new paragraph.
 function setUpGame(box, projects) {
   const games = projects.filter(isGame);
-  const wanted = new URLSearchParams(location.search).get("g") || "";
+  // game-<slug>.html says which game in data-game; game.html?g=<slug> in the address.
+  const wanted = box.dataset.game || new URLSearchParams(location.search).get("g") || "";
   const project = games.find((p) => projectSlug(p.title) === projectSlug(wanted));
   const heading = document.querySelector("[data-game-title]");
 
@@ -394,8 +404,8 @@ function setUpGame(box, projects) {
   const status = findStatus(project.status);
   if (heading) heading.textContent = title;
   document.title = title + " · Longlight Interactive";
-  // Handy for in-page tools; link-preview crawlers don't run scripts, so
-  // shared links still show the studio card from the HTML.
+  // Handy for game.html?g=; link-preview crawlers don't run scripts, so
+  // only the game-<slug>.html copies show the game's own card when shared.
   const setMeta = (sel, value) => {
     const node = document.querySelector(sel);
     if (node && value) node.setAttribute("content", value);
@@ -509,7 +519,7 @@ function setUpGame(box, projects) {
     others.forEach((g) => {
       const item = el("li");
       const link = el("a", null, g.title);
-      link.href = "game.html?g=" + projectSlug(g.title);
+      link.href = gamePage(g.title);
       item.append(link);
       list.append(item);
     });
@@ -675,7 +685,7 @@ function renderNews(project) {
   }
   if (isGame(project)) {
     const more = el("a", "project__link project__main", "About this game →");
-    more.href = "game.html?g=" + projectSlug(title);
+    more.href = gamePage(title);
     more.setAttribute("aria-label", "About " + title);
     links.append(more);
   }
