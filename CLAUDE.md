@@ -66,8 +66,8 @@ keep the Co-Authored-By trailer for Claude in each message.
 - The link preview image is `assets/social-preview.jpg` (1200×630, the
   Longlight sky, the sun with its glow and halo on the horizon line,
   "Longlight Interactive", plus the four featured game covers in a 2×2
-  grid: Prairie Engine Works, Season Ticket, The Whip, Vault Street). Every `og:image`
-  ends `?v=14` so apps refetch it; bump it on every page when the picture
+  grid: Vault Street, Prairie Engine Works, Season Ticket, The Whip). Every `og:image`
+  ends `?v=15` so apps refetch it; bump it on every page when the picture
   changes. Regenerate it if the covers change a lot. The favicon and
   home-screen icons are the logo's sun (glow, halo, sun) on an ivory line
   on a purple tile (the favicon turns slate in dark mode):
@@ -84,7 +84,7 @@ keep the Co-Authored-By trailer for Claude in each message.
 - `projects.json` is the single source of truth for projects. `main.js`
   renders it. Its order is the display order everywhere (Games, Projects,
   What's new, home featured, "More games"): Kelbo's own ranking, games
-  first: Prairie Engine Works, Season Ticket, The Whip, Vault Street, Garage to Glory,
+  first: Vault Street, Prairie Engine Works, Season Ticket, The Whip, Garage to Glory,
   Outpost, Red Skies, Baccarat. Nothing sorts by progress except the
   Projects page's filter buttons (`sortByProgress`). Adding a project should never need an HTML edit. Each project
   can carry a `version` ("1.4", no "v") and `latest` (what changed), shown
