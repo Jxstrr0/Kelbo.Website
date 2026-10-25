@@ -108,7 +108,10 @@ keep the Co-Authored-By trailer for Claude in each message.
 - `game.html?g=<slug>` is one game's own page (`setUpGame` in `main.js`,
   slug from `projectSlug(title)`, e.g. `prairie-engine-works`). Games' cards
   link to it ("About this game →"). It shows the cover, status, summary,
-  version, the Play and code buttons, an optional `story` (paragraphs split
+  version, the Play and code buttons, "Play here" (`openPlayer`: the game's
+  `link` in a full-screen `.player` iframe with a slate bar of Full screen
+  where `requestFullscreen` exists, New tab and Close; it pushes a history
+  step so Back closes it, and removing the frame stops the game), an optional `story` (paragraphs split
   on blank lines), all `shots` open in a strip, and the other games. It sets
   the tab title and description in JS; link-preview crawlers don't run JS, so
   a shared link still shows the studio card. Not in `sitemap.xml` (the

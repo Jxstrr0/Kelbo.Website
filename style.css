@@ -2547,6 +2547,87 @@ img {
   color: var(--accent-ink);
 }
 
+/* "Play here": the game in a frame over the whole screen (openPlayer in
+   main.js). The bar stays slate in both themes so it reads as part of
+   the player, not the page. */
+.has-player,
+.has-player body {
+  overflow: hidden;
+}
+
+.player {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  background: var(--ll-slate);
+}
+
+.player__bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: max(0.4rem, env(safe-area-inset-top)) max(0.75rem, env(safe-area-inset-right)) 0.4rem max(0.75rem, env(safe-area-inset-left));
+  border-bottom: 2px solid var(--ll-clay);
+  color: var(--ll-ivory);
+}
+
+.player__title {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  font-family: var(--font-display);
+  font-weight: 700;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.player__tools {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.player__tool {
+  min-height: 2.5rem;
+  padding: 0.3rem 0.8rem;
+  border: 1px solid rgba(250, 249, 245, 0.35);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ll-ivory);
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+}
+
+.player__tool:hover {
+  border-color: var(--ll-ivory);
+  color: var(--ll-ivory);
+}
+
+.player__close {
+  background: var(--ll-clay);
+  border-color: var(--ll-clay);
+  color: var(--ll-slate);
+}
+
+.player__close:hover {
+  color: var(--ll-slate);
+  background: #E88A6A;
+}
+
+.player__frame {
+  flex: 1;
+  width: 100%;
+  border: 0;
+  background: #000;
+}
+
 @media (min-width: 48rem) {
   .game__top {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
