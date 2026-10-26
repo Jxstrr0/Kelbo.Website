@@ -120,7 +120,7 @@ Paste it after the last one and change the values:
 
 **The order in this file is the order on the site.** The Games page,
 Projects page, What's new and the home cards all follow it from top to
-bottom, so it's your own ranking (games are Vault Street, Prairie Engine Works, The
+bottom, so it's your own ranking (games are Frontier Lab, Vault Street, Prairie Engine Works, The
 Whip, Season Ticket, Outpost, Red Skies, Garage to Glory, Penthouse Baccarat).
 To move something up, cut its block and paste it higher. A new block pasted
 at the bottom shows up last. Only the Projects page's filter buttons run in
