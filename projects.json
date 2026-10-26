@@ -64,40 +64,6 @@
     ]
   },
   {
-    "title": "Season Ticket",
-    "status": "Released",
-    "category": "Game",
-    "summary": "A soccer club management game set in Valmere, a made-up northern country. Own a club in the 16-team Kestrel Football League: run the business from your own 3D office, build the squad and the stadium, and change tactics while you watch the match. Play a whole career, on your phone, even offline.",
-    "version": "1.0.0",
-    "latest": "Out now: the first public release, with safer save codes",
-    "link": "https://jxstrr0.github.io/SeasonTicket/",
-    "code": "https://github.com/Jxstrr0/SeasonTicket",
-    "image": "assets/covers/season-ticket.jpg",
-    "featured": true,
-    "shots": [
-      {
-        "src": "assets/shots/season-ticket-1.jpg",
-        "alt": "The manager's office with the laptop showing finances, the desk lamp and the trophy shelf"
-      },
-      {
-        "src": "assets/shots/season-ticket-2.jpg",
-        "alt": "The lineup screen with a formation on the pitch and the tactics settings beside it"
-      },
-      {
-        "src": "assets/shots/season-ticket-3.jpg",
-        "alt": "A live 3D match with players around the centre circle and the match stats beside it"
-      },
-      {
-        "src": "assets/shots/season-ticket-4.jpg",
-        "alt": "The Stadium tab with the 3D ground and the stand upgrade options"
-      },
-      {
-        "src": "assets/shots/season-ticket-5.jpg",
-        "alt": "The same ground at night"
-      }
-    ]
-  },
-  {
     "title": "The Whip",
     "status": "In development",
     "category": "Game",
@@ -128,32 +94,36 @@
     ]
   },
   {
-    "title": "Garage to Glory",
-    "status": "In development",
+    "title": "Season Ticket",
+    "status": "Released",
     "category": "Game",
-    "summary": "A comedy band-career game. You're the drummer who started the band: play the gigs as rhythm games and steer the band through ten years, from your parents' garage in Saskatoon to arenas around the world, or a breakup in a parking lot.",
-    "version": "1.6",
-    "latest": "Animated gig highway and a Less motion setting",
-    "link": "https://jxstrr0.github.io/GarageToGlory/",
-    "code": "https://github.com/Jxstrr0/GarageToGlory",
-    "image": "assets/covers/garage-to-glory.jpg",
-    "featured": false,
+    "summary": "A soccer club management game set in Valmere, a made-up northern country. Own a club in the 16-team Kestrel Football League: run the business from your own 3D office, build the squad and the stadium, and change tactics while you watch the match. Play a whole career, on your phone, even offline.",
+    "version": "1.0.0",
+    "latest": "Out now: the first public release, with safer save codes",
+    "link": "https://jxstrr0.github.io/SeasonTicket/",
+    "code": "https://github.com/Jxstrr0/SeasonTicket",
+    "image": "assets/covers/season-ticket.jpg",
+    "featured": true,
     "shots": [
       {
-        "src": "assets/shots/garage-to-glory-1.jpg",
-        "alt": "The garage hub with the week ready to plan"
+        "src": "assets/shots/season-ticket-1.jpg",
+        "alt": "The manager's office with the laptop showing finances, the desk lamp and the trophy shelf"
       },
       {
-        "src": "assets/shots/garage-to-glory-2.jpg",
-        "alt": "An event result: Marcel arrives as Lord Abyssus"
+        "src": "assets/shots/season-ticket-2.jpg",
+        "alt": "The lineup screen with a formation on the pitch and the tactics settings beside it"
       },
       {
-        "src": "assets/shots/garage-to-glory-3.jpg",
-        "alt": "Picking a logo for the band, Hail Damage"
+        "src": "assets/shots/season-ticket-3.jpg",
+        "alt": "A live 3D match with players around the centre circle and the match stats beside it"
       },
       {
-        "src": "assets/shots/garage-to-glory-4.jpg",
-        "alt": "Picking your seat in the band: drums, bass, rhythm or lead guitar"
+        "src": "assets/shots/season-ticket-4.jpg",
+        "alt": "The Stadium tab with the 3D ground and the stand upgrade options"
+      },
+      {
+        "src": "assets/shots/season-ticket-5.jpg",
+        "alt": "The same ground at night"
       }
     ]
   },
@@ -214,6 +184,36 @@
       {
         "src": "assets/shots/red-skies-4.jpg",
         "alt": "The same console a moment later, with the contact closer"
+      }
+    ]
+  },
+  {
+    "title": "Garage to Glory",
+    "status": "In development",
+    "category": "Game",
+    "summary": "A comedy band-career game. You're the drummer who started the band: play the gigs as rhythm games and steer the band through ten years, from your parents' garage in Saskatoon to arenas around the world, or a breakup in a parking lot.",
+    "version": "1.6",
+    "latest": "Animated gig highway and a Less motion setting",
+    "link": "https://jxstrr0.github.io/GarageToGlory/",
+    "code": "https://github.com/Jxstrr0/GarageToGlory",
+    "image": "assets/covers/garage-to-glory.jpg",
+    "featured": false,
+    "shots": [
+      {
+        "src": "assets/shots/garage-to-glory-1.jpg",
+        "alt": "The garage hub with the week ready to plan"
+      },
+      {
+        "src": "assets/shots/garage-to-glory-2.jpg",
+        "alt": "An event result: Marcel arrives as Lord Abyssus"
+      },
+      {
+        "src": "assets/shots/garage-to-glory-3.jpg",
+        "alt": "Picking a logo for the band, Hail Damage"
+      },
+      {
+        "src": "assets/shots/garage-to-glory-4.jpg",
+        "alt": "Picking your seat in the band: drums, bass, rhythm or lead guitar"
       }
     ]
   },
