@@ -13,19 +13,23 @@
     "shots": [
       {
         "src": "assets/shots/vault-street-1.jpg",
-        "alt": "The engraved city map of Calgary with the player's first branch and storefronts for lease"
+        "alt": "The engraved city map of Calgary, with the Vault Street Bank shield among rival banks and storefronts for lease"
       },
       {
         "src": "assets/shots/vault-street-2.jpg",
-        "alt": "A branch's Products tab: the chequing account's rating, balance, margin ring and monthly fee"
+        "alt": "Inside a branch: customers queue at the teller windows, above the branch credit-scoring model"
       },
       {
         "src": "assets/shots/vault-street-3.jpg",
-        "alt": "A branch's Finance tab: weekly revenue and income bars and the income statement"
+        "alt": "A branch's Products tab: Everyday Chequing and High-Interest Savings with new accounts, balance, margin ring and fee"
       },
       {
         "src": "assets/shots/vault-street-4.jpg",
-        "alt": "A branch's Service tab: customer reviews for rates, products, service and the branch"
+        "alt": "A branch's Finance tab: weekly revenue and income bars climbing over five weeks"
+      },
+      {
+        "src": "assets/shots/vault-street-5.jpg",
+        "alt": "The Weekly results card: revenue, net income and cash flow, above The Weekly Ledger newspaper"
       }
     ]
   },
