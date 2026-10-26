@@ -1,5 +1,17 @@
 [
   {
+    "title": "Frontier Lab",
+    "status": "Prototype",
+    "category": "Game",
+    "summary": "An AI-lab tycoon. Found a small lab, hire your researchers, train your models and ship products, then grow it into a global company, all on an engraved isometric city map. Early days: the map and title screen are up and the lab itself is being built.",
+    "version": "0.1.3",
+    "latest": "",
+    "link": "https://jxstrr0.github.io/FrontierLab/",
+    "code": "https://github.com/Jxstrr0/FrontierLab",
+    "image": "assets/covers/frontier-lab.jpg",
+    "featured": true
+  },
+  {
     "title": "Vault Street",
     "status": "In development",
     "category": "Game",
@@ -103,7 +115,6 @@
     "link": "https://jxstrr0.github.io/SeasonTicket/",
     "code": "https://github.com/Jxstrr0/SeasonTicket",
     "image": "assets/covers/season-ticket.jpg",
-    "featured": true,
     "shots": [
       {
         "src": "assets/shots/season-ticket-1.jpg",
