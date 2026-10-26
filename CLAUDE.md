@@ -69,7 +69,7 @@ keep the Co-Authored-By trailer for Claude in each message.
   Longlight sky, the sun with its glow and halo on the horizon line,
   "Longlight Interactive", plus the four featured game covers in a 2×2
   grid: Vault Street, Prairie Engine Works, Season Ticket, The Whip). Every `og:image`
-  ends `?v=15` so apps refetch it; bump it on every page when the picture
+  ends `?v=16` so apps refetch it; bump it on every page when the picture
   changes. Regenerate it if the covers change a lot. The favicon and
   home-screen icons are the logo's sun (glow, halo, sun) on an ivory line
   on a purple tile (the favicon turns slate in dark mode):
