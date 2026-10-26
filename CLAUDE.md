@@ -86,8 +86,8 @@ keep the Co-Authored-By trailer for Claude in each message.
 - `projects.json` is the single source of truth for projects. `main.js`
   renders it. Its order is the display order everywhere (Games, Projects,
   What's new, home featured, "More games"): Kelbo's own ranking, games
-  first: Vault Street, Prairie Engine Works, Season Ticket, The Whip, Garage to Glory,
-  Outpost, Red Skies, Baccarat. Nothing sorts by progress except the
+  first: Vault Street, Prairie Engine Works, The Whip, Season Ticket, Outpost,
+  Red Skies, Garage to Glory, Baccarat. Nothing sorts by progress except the
   Projects page's filter buttons (`sortByProgress`). Adding a project should never need an HTML edit. Each project
   can carry a `version` ("1.4", no "v") and `latest` (what changed), shown
   as "v1.4 · Added night mode" under the summary; either may be "".
