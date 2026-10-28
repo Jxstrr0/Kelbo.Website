@@ -564,7 +564,7 @@ function devlogDate(date) {
   return new Date(y, m - 1, d).toLocaleDateString("en-CA", { year: "numeric", month: "long", day: "numeric" });
 }
 
-// The address of one post on devlog.html, e.g. devlog.html#2026-10-24-vault-street-opens-its-doors
+// The address of one post on devlog.html, e.g. devlog.html#2026-10-23-red-skies-1-5-save-codes
 function devlogId(post) {
   return post.date + "-" + projectSlug(post.title);
 }
