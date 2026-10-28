@@ -68,8 +68,8 @@ keep the Co-Authored-By trailer for Claude in each message.
 - The link preview image is `assets/social-preview.jpg` (1200×630, the
   Longlight sky, the sun with its glow and halo on the horizon line,
   "Longlight Interactive", plus the four featured game covers in a 2×2
-  grid: Frontier Lab, Vault Street, Prairie Engine Works, The Whip). Every `og:image`
-  ends `?v=17` so apps refetch it; bump it on every page when the picture
+  grid: Frontier Lab, Prairie Engine Works, The Whip, Season Ticket). Every `og:image`
+  ends `?v=18` so apps refetch it; bump it on every page when the picture
   changes. Regenerate it if the covers change a lot. The favicon and
   home-screen icons are the logo's sun (glow, halo, sun) on an ivory line
   on a purple tile (the favicon turns slate in dark mode):
@@ -86,7 +86,7 @@ keep the Co-Authored-By trailer for Claude in each message.
 - `projects.json` is the single source of truth for projects. `main.js`
   renders it. Its order is the display order everywhere (Games, Projects,
   What's new, home featured, "More games"): Kelbo's own ranking, games
-  first: Frontier Lab, Vault Street, Prairie Engine Works, The Whip, Season Ticket,
+  first: Frontier Lab, Prairie Engine Works, The Whip, Season Ticket,
   Outpost, Red Skies, Garage to Glory, Baccarat. Nothing sorts by progress except the
   Projects page's filter buttons (`sortByProgress`). Adding a project should never need an HTML edit. Each project
   can carry a `version` ("1.4", no "v") and `latest` (what changed), shown
@@ -423,7 +423,7 @@ keep the Co-Authored-By trailer for Claude in each message.
   `projects.json` order, with no dates (the file has none). Linked from
   every footer ("What's new") and listed in `sitemap.xml`.
 - Games each live in their own repo with their own GitHub Pages site
-  (GarageToGlory, RedSkies, BaccaratTable, 350Chev, Outpost-, SeasonTicket, The-Whip, VaultStreet, FrontierLab). This site only links to
+  (GarageToGlory, RedSkies, BaccaratTable, 350Chev, Outpost-, SeasonTicket, The-Whip, FrontierLab). This site only links to
   them via `link` (the pink Play it button) and `code` (the repo). The home
   page "Pick a game" cards are the `featured` projects (max 4); on phones
   all but the first are shortened (16:9 picture, two-line summary).
