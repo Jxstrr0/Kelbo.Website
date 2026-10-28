@@ -12,40 +12,6 @@
     "featured": true
   },
   {
-    "title": "Vault Street",
-    "status": "In development",
-    "category": "Game",
-    "summary": "A banking-empire tycoon. Lease a storefront, build your first branch, set your rates and fees and hire your tellers, then gather deposits and lend them out carefully. Ride the interest-rate cycle, build a headquarters and grow toward a global bank, all on an engraved, banknote-style city map.",
-    "version": "0.0.1",
-    "latest": "Headquarters and operations are switched on",
-    "link": "https://jxstrr0.github.io/VaultStreet/",
-    "code": "https://github.com/Jxstrr0/VaultStreet",
-    "image": "assets/covers/vault-street.jpg",
-    "featured": true,
-    "shots": [
-      {
-        "src": "assets/shots/vault-street-1.jpg",
-        "alt": "The engraved city map of Calgary, with the Vault Street Bank shield among rival banks and storefronts for lease"
-      },
-      {
-        "src": "assets/shots/vault-street-2.jpg",
-        "alt": "Inside a branch: customers queue at the teller windows, above the branch credit-scoring model"
-      },
-      {
-        "src": "assets/shots/vault-street-3.jpg",
-        "alt": "A branch's Products tab: Everyday Chequing and High-Interest Savings with new accounts, balance, margin ring and fee"
-      },
-      {
-        "src": "assets/shots/vault-street-4.jpg",
-        "alt": "A branch's Finance tab: weekly revenue and income bars climbing over five weeks"
-      },
-      {
-        "src": "assets/shots/vault-street-5.jpg",
-        "alt": "The Weekly results card: revenue, net income and cash flow, above The Weekly Ledger newspaper"
-      }
-    ]
-  },
-  {
     "title": "Prairie Engine Works",
     "status": "Released",
     "category": "Game",
@@ -136,7 +102,8 @@
         "src": "assets/shots/season-ticket-5.jpg",
         "alt": "The same ground at night"
       }
-    ]
+    ],
+    "featured": true
   },
   {
     "title": "Outpost",

@@ -2,11 +2,11 @@
 // MAKE GAME PAGES
 // ---------------------------------------------------------------------
 // Gives every game its own page with its own link preview, so a shared
-// link to Vault Street shows Vault Street's cover and summary instead of
+// link to Frontier Lab shows Frontier Lab's cover and summary instead of
 // the general studio card.
 //
 // Why a script: link-preview crawlers (Messages, Discord, X...) don't run
-// JavaScript, so game.html?g=vault-street can only ever show the studio
+// JavaScript, so game.html?g=frontier-lab can only ever show the studio
 // card. This copies game.html once per game, as game-<slug>.html, with
 // the title, description, picture and address written into the <head>.
 // The page body is unchanged; main.js fills it in exactly as on
