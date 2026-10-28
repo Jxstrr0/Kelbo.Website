@@ -15,7 +15,7 @@
       var base = document.createElement("base");
       base.href = onGitHub && first ? "/" + first + "/" : "/";
       document.head.appendChild(base);
-      // A game's page (game-vault-street.html) that hasn't been made yet:
+      // A game's page (game-frontier-lab.html) that hasn't been made yet:
       // show the same game on game.html instead.
       var game = location.pathname.match(/\/game-([a-z0-9-]+)\.html$/);
       if (game) location.replace(base.href + "game.html?g=" + game[1]);

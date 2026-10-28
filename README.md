@@ -120,7 +120,7 @@ Paste it after the last one and change the values:
 
 **The order in this file is the order on the site.** The Games page,
 Projects page, What's new and the home cards all follow it from top to
-bottom, so it's your own ranking (games are Frontier Lab, Vault Street, Prairie Engine Works, The
+bottom, so it's your own ranking (games are Frontier Lab, Prairie Engine Works, The
 Whip, Season Ticket, Outpost, Red Skies, Garage to Glory, Penthouse Baccarat).
 To move something up, cut its block and paste it higher. A new block pasted
 at the bottom shows up last. Only the Projects page's filter buttons run in
@@ -192,7 +192,7 @@ progress order.
   like `prairie-engine-works`). A blank line starts a new paragraph. The page
   works without it, and shows the summary, cover, every screenshot, the
   buttons and links to the other games. On the live site each game also
-  gets its own address, like `game-vault-street.html`, made by the deploy:
+  gets its own address, like `game-frontier-lab.html`, made by the deploy:
   share that one and the link preview shows the game's cover and summary
   instead of the studio card. You never edit those files (they aren't in
   the repo); a new game gets one on the next deploy. Its **Play here** button opens the
@@ -277,8 +277,8 @@ each page has just one copy of them.
 When someone shares a link to the site in a text, Discord, or X, the app
 shows a preview card. That card is `assets/social-preview.jpg` (1200×630).
 It shows the sun with the same glow and halo as the logo. To change it,
-upload a new picture with the same name and size, then bump the `?v=17` on
-the end of every page's `og:image` line (to `?v=17`) so apps fetch the new
+upload a new picture with the same name and size, then bump the `?v=18` on
+the end of every page's `og:image` line (to `?v=19`) so apps fetch the new
 one. Apps remember old previews for a while, so a change can still take a
 day or so to show up when you share the link.
 
