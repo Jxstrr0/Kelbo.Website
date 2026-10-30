@@ -1976,14 +1976,18 @@ function setUpSkyTaps(scene, timeNow) {
   let hideTimer = 0;
 
   // Shows the label just above a spot (x, y on the page) that's r big,
-  // or just below it if there's no room above inside the sky.
+  // or just below it if there's no room above. Room is measured inside the
+  // hero or page head, because those cut off anything past their edges
+  // (a page-head sky is short, so its sun sits right on the bottom edge).
   function show(x, y, r, title, detail) {
     const box = scene.getBoundingClientRect();
+    const frame = (scene.closest(".hero, .page-head") || scene).getBoundingClientRect();
     tip.replaceChildren(el("strong", "", title), el("span", "", detail));
     tip.hidden = false;
     const half = tip.offsetWidth / 2;
     const left = Math.max(half, Math.min(box.width - half, x - box.left)); // kept inside the sky's width
-    const below = y - r - box.top < tip.offsetHeight + 10;
+    const need = tip.offsetHeight + 10;
+    const below = y - r - frame.top < need && frame.bottom - (y + r) >= need;
     tip.classList.toggle("horizon__tip--below", below);
     tip.style.left = `${left}px`;
     tip.style.top = `${y - box.top + (below ? r : -r)}px`;
