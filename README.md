@@ -313,6 +313,18 @@ licence, `OFL.txt`, sits beside it), and the `@font-face` lines at the top
 of `style.css` set it up. Each page's `<head>` asks for the file early
 (`rel="preload"`) so the text shows in it sooner.
 
+### The glass look
+
+The header, cards, buttons and pop-ups are frosted glass, like the newer
+iPhone screens: see-through panes that blur what's behind them, with a
+bright edge where the light catches. Three soft blobs of lilac, clay and
+purple sit behind the page so the glass has something to show as you
+scroll. It's all in the **Glass** section of `style.css`, near the bottom:
+`--glass` is how see-through a card is (raise the last number, like
+`0.55`, to make it more solid), and `--glass-blob-1/2/3` are the blobs.
+Phones with **Reduce transparency** turned on (Settings, Accessibility,
+Display & Text Size) get plain solid cards instead.
+
 ## The live sun
 
 The sun in the top band of every page is the real sun over Saskatoon. It
