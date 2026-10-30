@@ -149,13 +149,17 @@
 
     <!-- Your badges: little goals for visitors (play games, visit at
          sunset, catch a shooting star...), saved on this phone only.
-         main.js fills it in (setUpBadges); hidden without JavaScript. -->
-    <section class="sky-week badges wrap" aria-labelledby="badges-heading" data-badges hidden>
-      <h2 id="badges-heading" class="now__label">Your badges</h2>
-      <p class="badges__count" data-badges-count></p>
+         main.js fills it in (setUpBadges); hidden without JavaScript. It's
+         folded to its "2 of 12 earned" line until tapped; the choice is
+         remembered. -->
+    <details class="sky-week badges wrap" data-badges hidden>
+      <summary class="badges__summary">
+        <h2 id="badges-heading" class="now__label">Your badges</h2>
+        <p class="badges__count" data-badges-count></p>
+      </summary>
       <ul class="badges__list" data-badges-list></ul>
       <p class="sky-week__note">Saved on this phone only. Nothing is sent anywhere.</p>
-    </section>
+    </details>
 
     <!-- 3. Games: big cards for every project with "featured": true in
          projects.json (up to four). main.js fills this list. -->
