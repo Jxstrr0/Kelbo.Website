@@ -1,50 +1,53 @@
 {
-  "week": "2026-10-23",
+  "week": "2026-10-30",
   "updated": "2026-10-30",
-  "summary": "A sharp sell-off in chip and AI stocks on Thursday wiped out early gains: the Philadelphia chip index fell 6.7% and the Nasdaq had its worst day since early June, as doubts about AI spending came back after Meta's results. On Friday, rising oil prices weighed on stocks after attacks in Saudi Arabia, while energy shares hit a record. Money moved out of tech and into energy, health care and small companies, so the Dow finished up for a third straight week.",
+  "summary": "Big tech earnings set the tone. Amazon and Alphabet both missed, which brought back worries about how much Big Tech is spending on AI, and Intel crashed on a weak outlook, so Friday was the worst day of the week (Nasdaq down 2.9%). The Fed held rates steady in a split vote while inflation rose, and higher oil prices from Middle East tension added to the pressure. The Nasdaq finished October down about 5%, its worst month since March 2025, while small companies (Russell 2000) gained 1.3% for the week.",
   "indexes": [
-    { "name": "S&P 500", "change": -0.5 },
-    { "name": "Nasdaq Composite", "change": -0.7 },
-    { "name": "Dow", "change": 0.4 }
+    { "name": "S&P 500", "change": -0.6 },
+    { "name": "Nasdaq Composite", "change": -2.0 },
+    { "name": "Dow", "change": -0.9 }
   ],
   "up": [
-    { "symbol": "HAS", "name": "Hasbro", "change": 18.9 },
-    { "symbol": "CRL", "name": "Charles River Laboratories", "change": 15.1 },
-    { "symbol": "ROP", "name": "Roper Technologies", "change": 14.5 },
-    { "symbol": "ALLE", "name": "Allegion", "change": 14.3 },
-    { "symbol": "CRWD", "name": "CrowdStrike", "change": 13.3 }
+    { "symbol": "PNR", "name": "Pentair", "change": 19.8 },
+    { "symbol": "VRT", "name": "Vertiv Holdings", "change": 19.6 },
+    { "symbol": "CVNA", "name": "Carvana", "change": 18.1 },
+    { "symbol": "GEN", "name": "Gen Digital", "change": 17.1 },
+    { "symbol": "GPN", "name": "Global Payments", "change": 16.9 }
   ],
   "down": [
-    { "symbol": "FIX", "name": "Comfort Systems USA", "change": -19.3 },
-    { "symbol": "HWM", "name": "Howmet Aerospace", "change": -15.9 },
-    { "symbol": "FLEX", "name": "Flex", "change": -15.4 },
-    { "symbol": "PWR", "name": "Quanta Services", "change": -13.5 },
-    { "symbol": "LRCX", "name": "Lam Research", "change": -12.8, "why": "Chip stocks sold off on Thursday as doubts about AI spending came back." }
+    { "symbol": "RDDT", "name": "Reddit", "change": -36.4 },
+    { "symbol": "NOW", "name": "ServiceNow", "change": -33.9 },
+    { "symbol": "FFIV", "name": "F5", "change": -25.7 },
+    { "symbol": "INTC", "name": "Intel", "change": -24.4, "why": "A disappointing outlook for the fourth quarter after its earnings." },
+    { "symbol": "FTNT", "name": "Fortinet", "change": -24.4 }
   ],
   "earnings": [
-    { "when": "Mon Oct 26", "what": "Verizon (VZ), before the open" },
-    { "when": "Mon Oct 26", "what": "Nucor (NUE), Brown & Brown (BRO) and Principal Financial (PFG), after the close" },
-    { "when": "Tue Oct 27", "what": "Boeing (BA), Coca-Cola (KO), UPS, HCA Healthcare (HCA), S&P Global (SPGI), Royal Caribbean (RCL) and Hilton (HLT), before the open" },
-    { "when": "Tue Oct 27", "what": "Visa (V), Robinhood (HOOD) and NXP Semiconductors (NXPI), after the close" },
-    { "when": "Wed Oct 28", "what": "Boston Scientific (BSX) and Phillips 66 (PSX), before the open" },
-    { "when": "Wed Oct 28", "what": "Alphabet (GOOGL), Microsoft (MSFT), ServiceNow (NOW), FedEx (FDX), Fortinet (FTNT), Ford (F) and Chipotle (CMG), after the close" },
-    { "when": "Thu Oct 29", "what": "Caterpillar (CAT), Mastercard (MA) and Linde (LIN), before the open" },
-    { "when": "Thu Oct 29", "what": "Amazon (AMZN), Intel (INTC), Starbucks (SBUX) and Coinbase (COIN), after the close" },
-    { "when": "Fri Oct 30", "what": "Chevron (CVX), Colgate-Palmolive (CL), Dominion Energy (D) and Exelon (EXC), before the open" }
+    { "when": "Mon Nov 2", "what": "Marriott (MAR), Estée Lauder (EL), Fox (FOXA) and IDEXX (IDXX), before the open" },
+    { "when": "Mon Nov 2", "what": "Vertex (VRTX), Onsemi (ON), Roku (ROKU) and Clorox (CLX), after the close" },
+    { "when": "Tue Nov 3", "what": "Shopify (SHOP), Pfizer (PFE), Eaton (ETN), Apollo (APO) and Yum! Brands (YUM), before the open" },
+    { "when": "Tue Nov 3", "what": "AMD, Booking (BKNG), Arista (ANET), Amgen (AMGN) and Super Micro (SMCI), after the close" },
+    { "when": "Wed Nov 4", "what": "Uber (UBER), Novo Nordisk (NVO), McDonald's (MCD), CVS and Datadog (DDOG), before the open" },
+    { "when": "Wed Nov 4", "what": "Qualcomm (QCOM), AppLovin (APP), Arm (ARM), MercadoLibre (MELI) and DoorDash (DASH), after the close" },
+    { "when": "Thu Nov 5", "what": "ConocoPhillips (COP), Toyota (TM), Sony (SONY), Cigna (CI) and Duke Energy (DUK), before the open" },
+    { "when": "Thu Nov 5", "what": "Airbnb (ABNB), Cloudflare (NET), Atlassian (TEAM), DraftKings (DKNG) and Lyft (LYFT), after the close" },
+    { "when": "Fri Nov 6", "what": "Moderna (MRNA), Charter (CHTR), Vistra (VST) and Humana (HUM), before the open" }
   ],
   "economy": [
-    { "when": "Mon Oct 26", "what": "Chicago Fed National Activity Index (September), 8:30 AM ET, and Dallas Fed manufacturing index (October), 10:30 AM ET" },
-    { "when": "Tue Oct 27", "what": "Durable goods orders (September), 8:30 AM ET; Case-Shiller home prices (August), 9:00 AM ET; consumer confidence (October) and new home sales (September), 10:00 AM ET. The Fed's two-day meeting (FOMC) starts" },
-    { "when": "Wed Oct 28", "what": "Advance goods trade balance (September), 8:30 AM ET, and the Fed's interest rate decision, 2:00 PM ET" },
-    { "when": "Thu Oct 29", "what": "Third-quarter GDP (first estimate), PCE inflation, personal income and spending (September), and weekly jobless claims, all 8:30 AM ET" },
-    { "when": "Fri Oct 30", "what": "Employment Cost Index (Q3), 8:30 AM ET, and Chicago PMI (October), 9:45 AM ET" }
+    { "when": "Mon Nov 2", "what": "Construction spending (September), 10:00 AM ET, and the Fed's Senior Loan Officer Survey, 2:00 PM ET" },
+    { "when": "Tue Nov 3", "what": "Job openings (JOLTS, September) and factory orders (September), 10:00 AM ET" },
+    { "when": "Wed Nov 4", "what": "Trade balance (September), 8:30 AM ET" },
+    { "when": "Thu Nov 5", "what": "Productivity and labour costs (Q3, first estimate), 8:30 AM ET" },
+    { "when": "Fri Nov 6", "what": "October jobs report, 8:30 AM ET; consumer sentiment (early November), 10:00 AM ET; consumer credit (September), 3:00 PM ET. No Fed meeting this week; the next is Dec 8-9" }
   ],
   "sources": [
-    { "name": "If You Spent, Week in markets Oct 19, 2026 (AP figures)", "url": "https://news.ifyouspent.com/en/news/week-in-markets-oct-19-2026" },
-    { "name": "Tapeboard, weekly recap Oct 19-23, 2026", "url": "https://tapeboard.com/blog/weekly-recap-2026-10-23" },
-    { "name": "Trefis, S&P 500 movers (5-day)", "url": "https://www.trefis.com/stock/spy/articles/620297/sp-500-movers-winners-cci-crwd-panw-losers-be-fix-gl/2026-10-24" },
-    { "name": "Investrade, weekly event calendar Oct 26-30", "url": "https://investrade.com/weekly-event-calendar-10-26-2026-10-30-2026/" },
-    { "name": "Stockti, earnings calendar Oct 26-30, 2026", "url": "https://stockti.com/earnings-calendar/oct-26-30-2026" },
-    { "name": "Alphabet Q3 2026 earnings release (SEC 8-K)", "url": "https://www.sec.gov/Archives/edgar/data/0001652044/000165204426000080/googexhibit991q32026.htm" }
+    { "name": "AP, How major US stock indexes fared Friday 10/30/2026 (on AOL)", "url": "https://www.aol.com/articles/major-us-stock-indexes-fared-202111000.html" },
+    { "name": "My Weekly Stock, Weekly market recap Oct 26-30 (weekly movers)", "url": "https://myweeklystock.substack.com/p/weekly-market-recap-oct-26-30-tech" },
+    { "name": "Trefis, S&P 500 movers to Oct 29 (cross-check)", "url": "https://www.trefis.com/stock/spy/articles/621470/sp-500-movers-winners-gen-cvna-nclh-losers-now-ftnt-mrvl/2026-10-30" },
+    { "name": "Yahoo Finance, Stock market today Oct 30", "url": "https://finance.yahoo.com/markets/live/stock-market-today-friday-october-30-dow-sp-500-nasdaq-amazon-intel-131609630.html" },
+    { "name": "Earnings Whispers, earnings calendar Nov 2-6", "url": "https://www.earningswhispers.com/calendar/20261102" },
+    { "name": "BLS release schedule, November 2026", "url": "https://www.bls.gov/schedule/2026/11_sched.htm" },
+    { "name": "Census economic indicator calendar 2026", "url": "https://www.census.gov/economic-indicators/calendar-listview-2026.html" },
+    { "name": "Federal Reserve calendar, November 2026", "url": "https://www.federalreserve.gov/newsevents/2026-november.htm" },
+    { "name": "University of Michigan, Surveys of Consumers", "url": "https://www.sca.isr.umich.edu/" }
   ]
 }
