@@ -4804,6 +4804,7 @@ const BADGES = [
   { id: "parade", name: "Parade marshal", hint: "A secret: something in the sky is hiding a party", secret: true },
 ];
 const BADGES_KEY = "kelbo.badges";     // { "first-game": time earned, ... }
+const BADGES_OPEN_KEY = "kelbo.badgesOpen"; // whether the badges box was left open
 const PLAYED_KEY = "kelbo.played";     // titles of the games opened
 const DAYS_KEY = "kelbo.days";         // the last few days visited, "2026-10-24"
 const PAGES_KEY = "kelbo.pages";       // which section pages were opened
@@ -4909,7 +4910,7 @@ function showBadges() {
   const earned = readJSON(BADGES_KEY) || {};
   const got = BADGES.filter((b) => earned[b.id]).length;
   box.querySelector("[data-badges-count]").textContent =
-    got === 0 ? "Earn badges by exploring the site. Here's how:" : `${got} of ${BADGES.length} earned`;
+    `${got} of ${BADGES.length} earned` + (got === 0 ? " · open to see how" : "");
   const list = box.querySelector("[data-badges-list]");
   list.replaceChildren();
   // Earned ones first, then the rest in order.
@@ -4934,6 +4935,12 @@ function setUpBadges() {
   const pages = readJSON(PAGES_KEY) || [];
   if (!pages.includes(page) && (EXPLORER_PAGES.includes(page) || page === "devlog.html")) {
     writeJSON(PAGES_KEY, pages.concat(page));
+  }
+  // The box folds to its count line; remember whether it was left open.
+  const box = document.querySelector("[data-badges]");
+  if (box) {
+    box.open = localStorage.getItem(BADGES_OPEN_KEY) === "1";
+    box.addEventListener("toggle", () => localStorage.setItem(BADGES_OPEN_KEY, box.open ? "1" : "0"));
   }
   checkBadges();
   // Golden hour, sunrise and dark can arrive while the page is open.
