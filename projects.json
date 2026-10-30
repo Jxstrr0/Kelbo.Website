@@ -106,36 +106,6 @@
     "featured": true
   },
   {
-    "title": "Outpost",
-    "status": "In development",
-    "category": "Game",
-    "summary": "A first-person survival mystery. Keep an arctic weather station running for five nights: the generator, battery and heater fail on their own, the weather needs logging every two hours, and the last keeper's logbook slowly reveals what happened to them.",
-    "version": "0.3.0",
-    "latest": "All five nights are playable",
-    "link": "https://jxstrr0.github.io/Outpost-/",
-    "code": "https://github.com/Jxstrr0/Outpost-",
-    "image": "assets/covers/outpost.jpg",
-    "featured": false,
-    "shots": [
-      {
-        "src": "assets/shots/outpost-1.jpg",
-        "alt": "The Outpost title screen at Station Kestrel-4"
-      },
-      {
-        "src": "assets/shots/outpost-2.jpg",
-        "alt": "The met console at the desk, waiting for the first reading"
-      },
-      {
-        "src": "assets/shots/outpost-3.jpg",
-        "alt": "The station with a glowing heater and the weather map on the wall"
-      },
-      {
-        "src": "assets/shots/outpost-4.jpg",
-        "alt": "The west door taped shut, with a shelf of logbooks beside it"
-      }
-    ]
-  },
-  {
     "title": "Red Skies",
     "status": "Complete",
     "category": "Game",
