@@ -442,6 +442,7 @@ img {
 }
 
 .hero__top {
+  z-index: 2; /* above the cloud veil reaching up from the sky */
   padding-block: clamp(2rem, 7vw, 4rem) 0;
 }
 
@@ -540,6 +541,12 @@ img {
   padding-block: 2.5rem 0;
 }
 
+/* The page-head words sit above the cloud veil reaching up from the sky */
+.page-head .wrap > :not(.horizon) {
+  position: relative;
+  z-index: 2;
+}
+
 .page-head h1 {
   font-size: clamp(2.75rem, 12vw, 5rem);
   margin-bottom: 0.75rem;
@@ -565,6 +572,7 @@ img {
   --moon-size: calc(var(--sun-size) * 0.62);
   --sky-height: clamp(170px, 40vw, 240px);
   --ground-height: 4.5rem;
+  --cloud-reach: 14rem; /* how far the cloud veil fades up above the sky */
   position: relative;
   height: calc(var(--sky-height) + var(--ground-height));
   margin-top: 1rem;
@@ -684,6 +692,7 @@ img {
   --sun-alt: 0.55;
   --sun-x: 0.12;
   --ground-height: 1.5rem;
+  --cloud-reach: 7rem;
 }
 
 .horizon__sun {
@@ -982,10 +991,18 @@ img {
 /* Clouds: soft ivory blobs drifting across, fainter at night. Each is a
    rounded bar with two bumps on top. */
 .horizon__clouds {
+  /* Full-bleed like the line and the ground, and reaching up past the
+     sky by --cloud-reach, where it fades out, so an overcast veil has
+     no box edges: it melts into the purple behind the words. */
   position: absolute;
-  inset: 0 0 auto 0;
-  height: var(--sky-height);
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  top: calc(-1 * var(--cloud-reach));
+  height: calc(var(--sky-height) + var(--cloud-reach));
   overflow: hidden;
+  -webkit-mask: linear-gradient(to bottom, transparent, #000 var(--cloud-reach));
+  mask: linear-gradient(to bottom, transparent, #000 var(--cloud-reach));
   opacity: 0.45;
   transition: opacity 1.2s var(--ease);
   pointer-events: none;
@@ -1035,7 +1052,7 @@ img {
 
 /* Fog sits low, thickest at the horizon */
 .horizon--fog .horizon__clouds::after {
-  top: 35%;
+  top: calc(var(--cloud-reach) + var(--sky-height) * 0.35);
   background: linear-gradient(to bottom, rgba(250, 249, 245, 0), var(--ll-ivory));
   opacity: 1;
 }
@@ -3607,8 +3624,8 @@ img {
   }
 
   @keyframes cloud-drift {
-    from { left: -40%; }
-    to { left: 105%; }
+    from { left: calc(var(--h) * -4); }
+    to { left: 100%; }
   }
 
   .horizon__precip::before {

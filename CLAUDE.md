@@ -239,7 +239,12 @@ keep the Co-Authored-By trailer for Claude in each message.
   `.horizon__optics` and `.horizon__snowline`; `paintWeather` (from `paint`) toggles
   `horizon--rain/snow/storm/fog/overcast/snowy/hot/crocus/wheat/gold`, sets `--aurora`
   (`auroraStrength`: Kp 4+ at night, not overcast), `--smoke` and `--wind`, and builds `.cloud`s
-  (only when the code or cover changes, so they don't jump).
+  (only when the code or cover changes, so they don't jump; more on
+  wide screens). `.horizon__clouds` is full-bleed and reaches
+  `--cloud-reach` above the sky, masked to fade out there, so the
+  overcast veil and fog have no box edges; the hero and page-head words
+  sit above it (`z-index: 2`), and cloud `top`s are measured from the
+  sky's top (`calc(var(--cloud-reach) + ...)`).
   Lightning toggles `horizon--flash`. `weatherLine` and `auroraLine` join
   the readout turns. `snowOnGround` falls back to the calendar.
   The day sky: `sunDogStrength` (0..1; ≤ −10°C, high cloud ≥ 10% or
