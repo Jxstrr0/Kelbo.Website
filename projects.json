@@ -1,5 +1,31 @@
 [
   {
+    "title": "61 - A Trivia Game",
+    "status": "Released",
+    "category": "Game",
+    "summary": "A phone-first quiz-show game. Two boards of clues, hidden doubles, a wagered final and two computer opponents who race you to the buzzer. Type your answers, or handwrite the final one. Easy, Normal and Hard pools, a practice buzzer mode, and career stats kept on your phone.",
+    "version": "1.0",
+    "latest": "Out now: the first release",
+    "link": "https://jxstrr0.github.io/61/",
+    "code": "https://github.com/Jxstrr0/61",
+    "image": "assets/covers/61-trivia.jpg",
+    "shots": [
+      {
+        "src": "assets/shots/61-trivia-1.jpg",
+        "alt": "The home screen with the 61 mark and the Quick Play button"
+      },
+      {
+        "src": "assets/shots/61-trivia-2.jpg",
+        "alt": "The round one board: six categories, five values each, with the three podiums below"
+      },
+      {
+        "src": "assets/shots/61-trivia-3.jpg",
+        "alt": "A clue open on the stage with the buzz prompt and the three podiums"
+      }
+    ],
+    "featured": true
+  },
+  {
     "title": "Frontier Lab",
     "status": "Prototype",
     "category": "Game",
