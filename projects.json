@@ -166,36 +166,6 @@
     ]
   },
   {
-    "title": "Penthouse Baccarat",
-    "status": "Complete",
-    "category": "Game",
-    "summary": "A 3D baccarat table in a penthouse overlooking the Shanghai skyline. Place your chips and an android croupier deals the cards, explains each draw, and pays out the winners.",
-    "version": "1.0.0",
-    "latest": "Save codes to back up and restore your bankroll",
-    "link": "https://jxstrr0.github.io/BaccaratTable/",
-    "code": "https://github.com/Jxstrr0/BaccaratTable",
-    "image": "assets/covers/penthouse-baccarat.jpg",
-    "featured": false,
-    "shots": [
-      {
-        "src": "assets/shots/penthouse-baccarat-1.jpg",
-        "alt": "The penthouse room with the baccarat table and a $100,000 bankroll"
-      },
-      {
-        "src": "assets/shots/penthouse-baccarat-2.jpg",
-        "alt": "Close up of the table with bets placed and the dealer waiting"
-      },
-      {
-        "src": "assets/shots/penthouse-baccarat-3.jpg",
-        "alt": "The dealer announcing that the Player draws on a 5"
-      },
-      {
-        "src": "assets/shots/penthouse-baccarat-4.jpg",
-        "alt": "A finished hand, Player 1 against Banker 7"
-      }
-    ]
-  },
-  {
     "title": "AI Trading Journal",
     "status": "Live",
     "category": "Trading",
