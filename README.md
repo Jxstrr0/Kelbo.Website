@@ -530,6 +530,46 @@ from the optional weather, air quality and northern lights, below).
   and it says whether a train is passing.
 - **Tap a cloud** and it puffs apart and drifts off. A new cloud drifts in
   from the left a while later.
+- **The farm** (the moving parts are off with "reduce motion"):
+  - **A windmill** stands left of the elevator. Its wheel spins at the
+    real wind speed (still on a calm day) and its tail points downwind.
+    Tap it for the wind. Preview a calm day with `?weather=calm`.
+  - **Tumbleweeds** roll along the ground on dry days with a wind of
+    25 km/h or more (`?weather=windy&critter=tumbleweed`).
+  - **The harvest:** while the wheat is gold (August to mid September), a
+    combine and its grain truck crawl along the horizon now and then,
+    cutting the field to stubble as they go. It grows back a minute later.
+    Preview `?critter=combine&at=2026-08-20T14:00`.
+- **Holidays**, from the calendar: on **Halloween** bats flutter across
+  after dusk, a jack-o'-lantern sits at the elevator's foot and the
+  windows flicker like candles. Through **December** the elevator wears a
+  string of lights that twinkle after dark. **Canada Day** (after dark)
+  and **New Year's** (11 PM to 1 AM) get fireworks. Preview with
+  `?holiday=halloween`, `christmas`, `canada` or `newyear`, plus
+  `&at=night` for the dark.
+- **Thunderstorms:** a bolt of lightning comes down every so often, and
+  tapping the sky calls one down where you tapped. A few seconds later
+  the thunder: the label says how far away that was (3 seconds a
+  kilometre). Android phones buzz with it; iPhones don't let websites
+  vibrate. Preview `?weather=storm`.
+- **Hold the sun** to play a whole year in 10 seconds: the same time of
+  day, a day at a time, so the sun climbs to summer and sinks to winter,
+  the moon runs through its phases and the ground goes snow, crocuses,
+  wheat, gold. Let go and it rewinds to today. (Holding anywhere else
+  still winds on to sunset or sunrise.)
+- **The secret parade:** tap the sun 7 times in a row (or type
+  "longlight" on a keyboard) and everything comes out at once for 20
+  seconds: geese, a jet, the train, a hawk, a kite, bats, tumbleweeds,
+  leaves, shooting stars, the northern lights and fireworks. It earns the
+  hidden "Parade marshal" badge, which shows as "Secret badge" until then.
+- **Badge confetti:** earning a badge throws a burst of confetti from the
+  note at the bottom.
+- **The tab icon** in a browser is a tiny live copy of the sky: purple
+  with the sun where it really is by day, slate with the moon and stars
+  at night, and a cloud on a cloudy day.
+- **On a computer:** moving the mouse shifts the stars, moon and clouds a
+  little against the land (like tilting a phone), and game cards tip
+  toward the mouse with a glint on the cover.
 - Weather, the air quality and the northern lights are the only parts of
   the site that fetch anything. They send no personal details, just a
   request for Saskatoon's weather and air and the latest space weather.

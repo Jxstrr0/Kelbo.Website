@@ -369,6 +369,34 @@ keep the Co-Authored-By trailer for Claude in each message.
   `kelbo.badges`; `checkBadges` runs on every page, every minute, after a
   play and after a wish, and `toastBadges` shows the "Badge earned" note,
   above the Play here frame) and the NYSE market light on the Trading tile.
+- Fun extras (2026-10-30): `setUpLand` adds `.horizon__windmill` (SVG,
+  `WINDMILL_TOWER`/`WINDMILL_TAIL`, at 16% across; `.windmill__wheel`
+  spins at `--mill-s` from `breeze()`, paused by `horizon--calm` under
+  3 km/h, flipped downwind by `--mill-flip`; tap: `windmillFact`),
+  `.horizon__pumpkin` and `.elevator__xmas` (lights sampled along
+  `ELEVATOR`). `holidayAt` (`?holiday=halloween|christmas|canada|newyear`)
+  toggles `horizon--halloween/christmas` in `paintWeather`; `setUpCritters`
+  adds `bats()` (`batsTime`), `firework()` (`fireworksTime`, Canada Day
+  after dark and 11 PM to 1 AM at New Year), `tumbleweed()` (`tumbleTime`:
+  known wind ≥ 25, dry, no snow; `.tumble-path`) and `combine()`
+  (`combineTime`: gold wheat by day; `.harvest-path`, and `--cut`/`--cut-dir`
+  on the scene drive a second mask layer on `.horizon__wheat` and the
+  inverse on `.horizon__stubble`; regrows after 60 s). `?critter=` also
+  takes `bats|fireworks|tumbleweed|combine` (combine forces gold wheat).
+  Storms: `strike(scene, x)` draws a `.bolt` in `.horizon__bolts` (after
+  the clouds) and flashes; tapping the sky in `horizon--storm` strikes there
+  and shows the thunder distance; `buzz` vibrates only where supported and
+  after user activation. Parade: `PARADE_TAPS` taps on the sun or typing
+  "longlight" calls `startParade` → `scene.parade()` (and
+  `scene.meteorBurst`), sets `kelbo.parade` for the secret `parade` badge
+  (`secret: true` shows "Secret badge" until earned). `confetti` runs from
+  `toastBadges`. Holding the sun (`onSun`) runs `startYear` (whole days for
+  `YEAR_MS`, `swipeLine` shows the date past 2 days) and `rewindYear` on
+  release; `snowOnGround` uses the calendar more than 2 days from now.
+  `skyIcon` redraws the favicon `<link>` as an SVG data URL on live paints
+  (cached by `iconKey`). `setUpMouseSky` sets `--tilt-x/y` from the mouse
+  on fine pointers; `setUpCoverTilt` adds `.is-tilting` with `--rx/--ry`
+  and a `--mx/--my` glint on `.project` cards.
 - Tilt sky: `setUpMotion` (home hero `[data-motion-switch]`, shown only
   with `pointer: coarse` and DeviceOrientationEvent; iPhone
   `requestPermission` after the tap; choice in `localStorage["kelbo.motion"]`,
