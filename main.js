@@ -2710,14 +2710,17 @@ function paintWeather(scene, t) {
   scene.classList.toggle("horizon--overcast", cloud >= 85);
   // A few clouds for every 20% of cover, each a different size, height
   // and speed, starting spread across the sky.
-  const count = cloud < 15 ? 0 : Math.min(6, Math.round(cloud / 17));
+  // The cloud layer spans the whole screen, so wide screens get more.
+  const wide = Math.max(1, Math.min(2.5, innerWidth / 600));
+  const count = cloud < 15 ? 0 : Math.round(Math.min(6, Math.round(cloud / 17)) * wide);
   const size = scene.closest(".page-head") ? 0.6 : 1; // smaller on the short page-head skies
   const clouds = [];
   for (let i = 0; i < count; i++) {
     const c = el("i", "cloud");
     const slow = 140 + Math.random() * 120; // seconds to cross
     c.style.setProperty("--h", `${((14 + Math.random() * 18) * size).toFixed(0)}px`);
-    c.style.top = `${(4 + Math.random() * 50).toFixed(0)}%`;
+    // measured down from the top of the sky (the layer starts --cloud-reach above it)
+    c.style.top = `calc(var(--cloud-reach) + var(--sky-height) * ${(0.04 + Math.random() * 0.5).toFixed(2)})`;
     c.style.left = `${((i + Math.random() * 0.6) / count * 100).toFixed(0)}%`;
     c.style.animationDuration = `${slow.toFixed(0)}s`;
     c.style.animationDelay = `${(-slow * ((i + 0.5) / count)).toFixed(0)}s`; // already partway across
