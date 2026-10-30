@@ -2411,9 +2411,60 @@ img {
 }
 
 /* ---------- Your badges (home page) and the "Badge earned" note ---------- */
+/* The badges box folds: its summary line is the label, the "2 of 12
+   earned" count and a chevron at the right; tapping anywhere on it opens
+   the list below. */
+.badges__summary {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  column-gap: 1rem;
+  cursor: pointer;
+  list-style: none;
+}
+
+.badges__summary::-webkit-details-marker {
+  display: none;
+}
+
+.badges__summary > * {
+  grid-column: 1;
+}
+
+/* The chevron: a square's two sides, turned to point down (up when open) */
+.badges__summary::after {
+  content: "";
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  width: 0.65rem;
+  height: 0.65rem;
+  margin: 0 0.3rem 0.3rem 0;
+  border-right: 2px solid var(--secondary);
+  border-bottom: 2px solid var(--secondary);
+  transform: rotate(45deg);
+  transition: transform 220ms var(--ease);
+}
+
+.badges[open] .badges__summary::after {
+  margin: 0.3rem 0.3rem 0 0;
+  transform: rotate(225deg);
+}
+
+.badges__summary:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+
 .badges__count {
-  margin: 0.4rem 0 0.7rem;
+  margin: 0.35rem 0 0;
+  font-size: 1.25rem;
   font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.badges[open] .badges__list {
+  margin-top: 0.9rem;
 }
 
 .badges__list {
