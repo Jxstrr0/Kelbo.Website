@@ -322,6 +322,12 @@ purple sit behind the page so the glass has something to show as you
 scroll. It's all in the **Glass** section of `style.css`, near the bottom:
 `--glass` is how see-through a card is (raise the last number, like
 `0.55`, to make it more solid), and `--glass-blob-1/2/3` are the blobs.
+Each pane also has a lens edge: a thin ring of light, a clay fringe on
+one side and a lilac one on the other, like light splitting at the rim of
+thick glass. The ring moves with the Tilt sky setting on a phone, or the
+mouse on a computer. On Chrome (computers and Android) the edge really
+bends what's behind it, like Apple's glass; Safari on iPhone can't do
+that part yet, so there you get the ring and fringes only.
 Phones with **Reduce transparency** turned on (Settings, Accessibility,
 Display & Text Size) get plain solid cards instead.
 
