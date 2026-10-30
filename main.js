@@ -4101,6 +4101,7 @@ function setUpMotion(scene, timeNow) {
     tilt.y += (aim.y - tilt.y) * 0.2;
     scene.style.setProperty("--tilt-x", tilt.x.toFixed(3));
     scene.style.setProperty("--tilt-y", tilt.y.toFixed(3));
+    setPageTilt(tilt);
     if (heading != null) {
       if (shownHeading == null) shownHeading = heading;
       const turn = ((heading - shownHeading + 540) % 360) - 180; // the short way round
@@ -4250,6 +4251,7 @@ function setUpMouseSky(scene) {
     tilt.y += (aim.y - tilt.y) * 0.08;
     scene.style.setProperty("--tilt-x", tilt.x.toFixed(3));
     scene.style.setProperty("--tilt-y", tilt.y.toFixed(3));
+    setPageTilt(tilt);
     if (Math.abs(aim.x - tilt.x) > 0.002 || Math.abs(aim.y - tilt.y) > 0.002) frame = requestAnimationFrame(draw);
   }
   window.addEventListener("pointermove", (e) => {
@@ -4939,7 +4941,55 @@ function setUpBadges() {
 }
 
 // Start here once the page has loaded.
+/* The glass panes' edge light (style.css --pane-edge) follows the same
+   tilt as the sky, so the whole page needs the numbers, not just the
+   horizon. */
+function setPageTilt(tilt) {
+  const root = document.documentElement.style;
+  root.setProperty("--tilt-x", tilt.x.toFixed(3));
+  root.setProperty("--tilt-y", tilt.y.toFixed(3));
+}
+
+/* The real lens bend on the glass panes (style.css, "Glass"). Only Chrome
+   (computers and Android) can run an SVG filter behind an element, so
+   the filter is added here and the page gets data-lens; Safari and
+   Firefox keep the plain frost. The filter finds each pane's edges from
+   its own outline (SourceAlpha: solid inside the pane, empty outside),
+   blurs that into a soft ramp, and turns the ramp's slope into a
+   left/right (red) and up/down (green) push, so whatever is behind the
+   rim is pulled inward and stretched like light through thick glass.
+   Then the usual frost and colour boost. */
+function setUpLens() {
+  if (REDUCE_MOTION) return;
+  if (!(CSS && CSS.supports && CSS.supports("backdrop-filter", "url(#glass-lens)"))) return;
+  // Firefox accepts the words but doesn't draw it; Safari fails the test above.
+  if ("MozAppearance" in document.documentElement.style) return;
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("aria-hidden", "true");
+  svg.setAttribute("focusable", "false");
+  svg.style.cssText = "position:absolute;width:0;height:0;overflow:hidden";
+  svg.innerHTML = `<filter id="glass-lens" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 1 0  0 0 0 1 0  0 0 0 1 0  0 0 0 0 1" result="solid"/>
+    <feGaussianBlur in="solid" stdDeviation="9" result="soft"/>
+    <feOffset in="soft" dx="5" dy="0" result="xr"/>
+    <feOffset in="soft" dx="-5" dy="0" result="xl"/>
+    <feComposite in="xr" in2="xl" operator="arithmetic" k2="1" k3="-1" k4="0.5" result="gx"/>
+    <feOffset in="soft" dx="0" dy="5" result="yd"/>
+    <feOffset in="soft" dx="0" dy="-5" result="yu"/>
+    <feComposite in="yd" in2="yu" operator="arithmetic" k2="1" k3="-1" k4="0.5" result="gy"/>
+    <feColorMatrix in="gx" type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0 1" result="r"/>
+    <feColorMatrix in="gy" type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 0 1" result="g"/>
+    <feComposite in="r" in2="g" operator="arithmetic" k2="1" k3="1" result="map"/>
+    <feDisplacementMap in="SourceGraphic" in2="map" scale="34" xChannelSelector="R" yChannelSelector="G" result="bent"/>
+    <feGaussianBlur in="bent" stdDeviation="11" result="frost"/>
+    <feColorMatrix in="frost" type="saturate" values="1.7"/>
+  </filter>`;
+  document.body.append(svg);
+  document.documentElement.dataset.lens = "";
+}
+
 async function init() {
+  setUpLens();
   setUpHorizon();
   setUpSkySwitch();
   setUpSkyWeek();
