@@ -1886,6 +1886,11 @@ function setUpMeteors(scene, timeNow) {
     while (meteorsFlying.length && born - meteorsFlying[0].born > 3000) meteorsFlying.shift();
   }
 
+  // A burst of n meteors over `over` ms (for the parade), dark or not.
+  scene.meteorBurst = (n, over) => {
+    for (let i = 0; i < n; i++) setTimeout(() => launch(timeNow(), null), Math.random() * over);
+  };
+
   // Every half second, roll the dice for each kind of meteor.
   setInterval(() => {
     if (document.hidden || spinning) return;
@@ -2012,6 +2017,13 @@ function setUpSkyTaps(scene, timeNow) {
     if (scene.elevator && scene.elevator.getBoundingClientRect().width) {
       list.push({ ...centre(scene.elevator), title: "Grain elevator", detail: elevatorFact(t) });
     }
+    if (scene.windmill && scene.windmill.getBoundingClientRect().width) {
+      list.push({ ...centre(scene.windmill), title: "Windmill", detail: windmillFact() });
+    }
+    const pumpkin = scene.querySelector(".horizon__pumpkin");
+    if (pumpkin && pumpkin.getBoundingClientRect().width) {
+      list.push({ ...centre(pumpkin), r: 8, title: "Jack-o'-lantern", detail: "Happy Halloween from Longlight" });
+    }
     if (scene.depot && scene.depot.getBoundingClientRect().width) {
       list.push({ ...centre(scene.depot), title: "Longlight Station", detail: scene.trainRunning ? "A freight train is rolling through" : "A freight train rolls through every few minutes" });
     }
@@ -2089,14 +2101,113 @@ function setUpSkyTaps(scene, timeNow) {
       const gap = Math.max(0, Math.hypot(e.clientX - item.x, e.clientY - item.y) - item.r);
       if (gap < bestGap) { best = item; bestGap = gap; }
     }
+    // In a thunderstorm, tapping the sky calls down a bolt of lightning
+    // where you tapped, and a moment later the thunder: the gap between
+    // the two says how far away it was (3 seconds for every kilometre).
+    if (bestGap > 0 && scene.classList.contains("horizon--storm") && !REDUCE_MOTION) {
+      tip.hidden = true;
+      const gap = 1 + Math.floor(Math.random() * 6);
+      strike(scene, e.clientX);
+      const x = e.clientX, y = e.clientY;
+      setTimeout(() => {
+        buzz([90, 40, 160, 60, 80]);
+        show(x, y, 0, "Boom", `Thunder ${gap} s after the flash: about ${(gap / 3).toFixed(1)} km away`);
+      }, gap * 1000);
+      return;
+    }
     // A tap right on the sun or moon still names it, even behind a cloud
     if (bestGap > 0 && puffCloud(e.clientX, e.clientY)) {
       tip.hidden = true;
       return;
     }
+    // Seven quick taps on the sun start the secret parade
+    if (best && best.title === "The Sun") {
+      const at = performance.now();
+      sunTaps = sunTaps.filter((s) => at - s < 5000).concat(at);
+      if (sunTaps.length >= PARADE_TAPS) {
+        sunTaps = [];
+        return startParade(scene, (title, detail) => show(best.x, best.y, best.r, title, detail));
+      }
+      if (sunTaps.length >= 4) return show(best.x, best.y, best.r, "The Sun", `Keep going… ${PARADE_TAPS - sunTaps.length} more`);
+    }
     if (best) show(best.x, best.y, best.r, best.title, best.detail);
     else tip.hidden = true;
   });
+
+  // Typing "longlight" anywhere on the page (not in a form) starts it too
+  let typed = "";
+  document.addEventListener("keydown", (e) => {
+    if (e.target.closest && e.target.closest("input, textarea, select, [contenteditable]")) return;
+    if (e.key.length !== 1) return;
+    typed = (typed + e.key.toLowerCase()).slice(-9);
+    if (typed === "longlight") {
+      typed = "";
+      const box = scene.getBoundingClientRect();
+      startParade(scene, (title, detail) => show(box.left + box.width / 2, box.top + box.height * 0.4, 0, title, detail));
+    }
+  });
+}
+
+/* ---------- The secret parade ----------
+   Tap the sun seven times in a row (or type "longlight" on a keyboard)
+   and everything comes out at once: geese, a jet, the train, a hawk, a
+   kite, bats, tumbleweeds, leaves, shooting stars, the northern lights
+   and fireworks. It earns the hidden Parade marshal badge. */
+const PARADE_TAPS = 7;
+const PARADE_KEY = "kelbo.parade";
+let sunTaps = [];
+
+function startParade(scene, say) {
+  writeJSON(PARADE_KEY, Date.now());
+  if (!scene.parade) {
+    // No critters with "reduce motion": the badge still counts
+    say("Parade!", "It's off while your phone asks for less motion, but the badge is yours");
+  } else {
+    say("Parade!", "Everything in the sky, all at once");
+    scene.parade();
+  }
+  checkBadges();
+}
+
+// A short buzz on phones that can (Android; iPhones don't let websites
+// vibrate). Only after the visitor has tapped the page, which phones require.
+function buzz(pattern) {
+  if (!navigator.vibrate || REDUCE_MOTION) return;
+  if (navigator.userActivation && !navigator.userActivation.hasBeenActive) return;
+  try {
+    navigator.vibrate(pattern);
+  } catch (e) {}
+}
+
+// A bolt of lightning from the clouds down to the horizon at page x
+// (anywhere across the sky if x is missing), with the sky flash.
+function strike(scene, x) {
+  const layer = scene.bolts;
+  if (!layer) return;
+  const box = layer.getBoundingClientRect();
+  const w = box.width, h = scene.querySelector(".horizon__stars").clientHeight;
+  if (!w || !h) return;
+  const bx = x == null ? w * (0.1 + Math.random() * 0.8) : x - box.left;
+  // A jagged path from the top of the sky to the ground, with one fork
+  let px = bx + (Math.random() - 0.5) * 40, py = 0;
+  let d = `M${px.toFixed(1)} 0`, fork = "";
+  const steps = 9;
+  for (let i = 1; i <= steps; i++) {
+    px += (Math.random() - 0.5) * 22;
+    py = (h * i) / steps;
+    if (i === steps) px = bx;
+    d += `L${px.toFixed(1)} ${py.toFixed(1)}`;
+    if (i === 3) fork = `M${px.toFixed(1)} ${py.toFixed(1)}l${((Math.random() < 0.5 ? -1 : 1) * (14 + Math.random() * 16)).toFixed(1)} ${(h * 0.18).toFixed(1)}l${((Math.random() - 0.5) * 12).toFixed(1)} ${(h * 0.12).toFixed(1)}`;
+  }
+  const svg = svgNode("svg", { class: "bolt", viewBox: `0 0 ${w.toFixed(0)} ${h.toFixed(0)}`, width: w.toFixed(0), height: h.toFixed(0) });
+  svg.append(svgNode("path", { d: d + fork }));
+  layer.append(svg);
+  svg.animate([{ opacity: 1 }, { opacity: 0.2, offset: 0.25 }, { opacity: 1, offset: 0.4 }, { opacity: 0 }], { duration: 650, easing: "ease-out" })
+    .onfinish = () => svg.remove();
+  scene.classList.remove("horizon--flash");
+  void scene.offsetWidth;
+  scene.classList.add("horizon--flash");
+  buzz(40);
 }
 
 /* ---------- Real weather and the northern lights ----------
@@ -2147,6 +2258,7 @@ const WEATHER_PREVIEWS = {
   rainbow: [2, 45, false, { temp: 17, wet: true }], hot: [0, 5, false, { temp: 33, damp: 30 }],
   windy: [1, 25, false, { temp: 16, wind: 38, windFrom: 290 }],
   frost: [0, 5, true, { temp: -22 }], drift: [1, 25, true, { temp: -12, wind: 42, windFrom: 290 }],
+  calm: [0, 5, false, { temp: 18, wind: 0, windFrom: 290 }],
 };
 
 // The ?weather= preview asked for, or null
@@ -2275,7 +2387,8 @@ function auroraLine(t) {
 // Snow lying on the ground: the real snow depth when the weather is
 // known, otherwise the usual Saskatoon winter (late November to late March).
 function snowOnGround(t) {
-  if (weather) return weather.snow;
+  // Real snow for today; the calendar further off (holding the sun plays the year)
+  if (weather && Math.abs(t - now()) < 2 * 86400000) return weather.snow;
   if (!YXE.home) return false; // the calendar guess only fits Saskatoon
   const p = localParts(t);
   const day = p.m * 100 + p.d;
@@ -2413,6 +2526,7 @@ function contrailLinger() {
 // May, "young" wheat in June and July, "gold" wheat from August until
 // harvest in mid September, otherwise "".
 function groundSeason(t) {
+  if (CRITTER === "combine") return "gold"; // the ?critter=combine preview needs a field to cut
   if (!YXE.home || snowOnGround(t)) return "";
   const p = localParts(t);
   const day = p.m * 100 + p.d;
@@ -2420,6 +2534,59 @@ function groundSeason(t) {
   if (day >= 601 && day <= 731) return "young";
   if (day >= 801 && day <= 915) return "gold";
   return "";
+}
+
+/* ---------- Holidays and the farm ----------
+   From the calendar: bats and a jack-o'-lantern on Halloween, lights on
+   the elevator through December, fireworks after dark on Canada Day and
+   around midnight on New Year's. Preview with
+   ?holiday=halloween|christmas|canada|newyear (fireworks want the dark
+   too: add &at=night). The windmill and the tumbleweed follow the real
+   wind, and the combine comes out for the harvest. */
+const HOLIDAY = new URLSearchParams(location.search).get("holiday");
+
+function holidayAt(t) {
+  if (HOLIDAY) return HOLIDAY;
+  const p = localParts(t);
+  const day = p.m * 100 + p.d;
+  if (day === 1031) return "halloween";
+  if (day >= 1201 && day <= 1226) return "christmas";
+  if (day === 701 || (day === 702 && p.h < 1)) return "canada";
+  if ((day === 1231 && p.h >= 23) || (day === 101 && p.h < 1)) return "newyear";
+  return "";
+}
+
+// Fireworks need a properly dark sky.
+function fireworksTime(t) {
+  const h = holidayAt(t);
+  return (h === "canada" || h === "newyear") && sunAltitude(t) < -6;
+}
+
+// Bats come out at dusk on Halloween and stay out all night.
+function batsTime(t) {
+  return holidayAt(t) === "halloween" && sunAltitude(t) < 4;
+}
+
+// Tumbleweed: a real wind of 25 km/h or more on a dry day with no snow.
+function tumbleTime(t) {
+  const { wind, known } = breeze();
+  if (!known || wind < 25 || snowOnGround(t) || weather.wet) return false;
+  return !["rain", "storm", "snow"].includes(weatherKind(weather.code));
+}
+
+// The combine: gold wheat, by day, not in the rain.
+function combineTime(t) {
+  const wet = weather && ["rain", "storm", "snow"].includes(weatherKind(weather.code));
+  return groundSeason(t) === "gold" && sunAltitude(t) > 3 && !wet;
+}
+
+// What the windmill's up to, for its tap label.
+function windmillFact() {
+  const { wind, known } = breeze();
+  if (!known) return "Pumping water for the cattle";
+  if (wind < 3) return "Not a breath of wind, so it's standing still";
+  const from = Number.isFinite(weather.windFrom) ? ` from the ${compassName(weather.windFrom)}` : "";
+  return `Spinning in a ${Math.round(wind)} km/h wind${from}`;
 }
 
 // Sun dogs, the rainbow and the smoky sun for moment t. placeSun calls
@@ -2491,6 +2658,16 @@ const ELEVATOR_BITS = [
 // The little station depot beside it, in a 40 × 22 box: a pitched roof with
 // a chimney, and a low platform canopy on the right.
 const DEPOT = [[0, 22], [0, 12], [12, 4], [16, 7], [16, 2], [19, 2], [19, 9], [24, 12], [40, 12], [40, 22]];
+// A prairie water-pump windmill to the left of the elevator, in a 30 × 50
+// box: a lattice tower, and on top a wheel of twelve blades (it spins at
+// the real wind speed, style.css) with the tail vane trailing downwind.
+const WINDMILL_TOWER = "M14 13H16L22 50H20.6L15 16.5L9.4 50H8Z" + // the two legs
+  "M10.6 40H19.4V41H10.6ZM11.9 30H18.1V31H11.9ZM13.1 21.5H16.9V22.4H13.1Z" + // cross braces
+  "M10.6 40L18.1 31L18.7 31.7L11.2 40.7ZM19.4 40L11.9 31L11.3 31.7L18.8 40.7Z"; // and an X
+const WINDMILL_TAIL = "M15 10.4H26V11.6H15ZM22 6.5L28.5 8.5V13.5L22 12.5Z";
+// Halloween: a jack-o'-lantern by the elevator's foot (16 × 13 box)
+const PUMPKIN = "M8 3.2C11.5 1.8 15.5 4 15.5 8C15.5 11.5 12 13 8 13C4 13 0.5 11.5 0.5 8C0.5 4 4.5 1.8 8 3.2Z";
+const PUMPKIN_FACE = "M3.6 6.6L5.6 5.4L6 7.6ZM12.4 6.6L10.4 5.4L10 7.6ZM3.5 9.2L5 10L6.5 9.4L8 10.4L9.5 9.4L11 10L12.5 9.2L11.6 11.4H4.4Z";
 const DEPOT_W = 40;
 const DEPOT_H = 22;
 const DEPOT_MID = 12; // under the ridge of the roof
@@ -2516,6 +2693,39 @@ function setUpLand(scene) {
     svgNode("rect", { class: "elevator__light", x: 40.5, y: 7, width: 3, height: 4 }),
     svgNode("rect", { class: "elevator__light", x: 64, y: 51, width: 3, height: 3 })
   );
+  // December: a string of lights along its rooflines, in the three
+  // light colours, every few units round the outline (shown by style.css)
+  const lights = svgNode("g", { class: "elevator__xmas" });
+  let n = 0;
+  for (let i = 1; i < ELEVATOR.length; i++) {
+    const [x1, y1] = ELEVATOR[i - 1], [x2, y2] = ELEVATOR[i];
+    const len = Math.hypot(x2 - x1, y2 - y1);
+    for (let s = 0; s < len; s += 3.6) {
+      const x = x1 + ((x2 - x1) * s) / len, y = y1 + ((y2 - y1) * s) / len;
+      if (y > 64) continue; // not down at ground level
+      lights.append(svgNode("circle", { class: `xmas xmas--${n++ % 3}`, cx: x.toFixed(1), cy: y.toFixed(1), r: 1.1 }));
+    }
+  }
+  elevator.append(lights);
+  // Halloween: a jack-o'-lantern at the elevator's foot, its face lit after dark
+  const pumpkin = svgNode("svg", { class: "horizon__pumpkin", viewBox: "0 0 16 13" });
+  pumpkin.append(
+    svgNode("path", { class: "pumpkin__stalk", d: "M7.4 3.4L7.8 0.6H9L8.8 3.4Z" }),
+    svgNode("path", { class: "pumpkin__body", d: PUMPKIN }),
+    svgNode("path", { class: "pumpkin__face", d: PUMPKIN_FACE })
+  );
+  // The windmill, to the left (its wheel spins at the real wind speed)
+  const windmill = svgNode("svg", { class: "horizon__windmill", viewBox: "0 0 30 50" });
+  const wheel = svgNode("g", { class: "windmill__wheel" });
+  for (let i = 0; i < 12; i++) {
+    // Each blade a thin wedge from near the hub to the rim
+    wheel.append(svgNode("path", { d: "M-0.5 -2.6L-1.3 -9.2L1.3 -9.2L0.5 -2.6Z", transform: `rotate(${i * 30})` }));
+  }
+  wheel.append(svgNode("circle", { class: "windmill__rim", r: 9.2 }), svgNode("circle", { r: 1.6 }));
+  const hub = svgNode("g", { transform: "translate(15 11)" });
+  hub.append(wheel);
+  windmill.append(svgNode("path", { d: WINDMILL_TOWER }), svgNode("path", { class: "windmill__tail", d: WINDMILL_TAIL }), hub);
+  scene.windmill = windmill;
   // The station depot to the right of it, and the rail line they stand beside
   const depot = svgNode("svg", { class: "horizon__depot", viewBox: `0 0 ${DEPOT_W} ${DEPOT_H}` });
   depot.append(
@@ -2549,7 +2759,7 @@ function setUpLand(scene) {
     clump.style.left = `${(i + 0.2 + Math.random() * 0.6) * (100 / 18)}%`;
     crocuses.append(clump);
   }
-  ground.after(shadow, elevator, depot, track, el("div", "horizon__wheat"), crocuses);
+  ground.after(shadow, windmill, elevator, depot, pumpkin, track, el("div", "horizon__wheat"), el("div", "horizon__stubble"), crocuses);
   scene.land = null; // measured on the first paint, and again whenever the sky or window changes size
   const remeasure = () => { scene.land = null; scene.sky = null; };
   if ("ResizeObserver" in window) new ResizeObserver(remeasure).observe(scene);
@@ -2669,14 +2879,17 @@ function setUpWeather(scene) {
   const refresh = () => Promise.all([loadWeather(), loadKp(), loadAir()]);
   refresh();
   setInterval(() => { if (!document.hidden) refresh(); }, WEATHER_MS);
-  // Lightning in a thunderstorm: a quick flash every 5 to 20 seconds
+  // Lightning bolts are drawn here (under the critters, over the clouds)
+  scene.bolts = el("div", "horizon__bolts");
+  scene.clouds.after(scene.bolts);
+  // Lightning in a thunderstorm: a bolt every 5 to 20 seconds, then the
+  // rumble (a buzz on phones that can) a few seconds after
   if (!REDUCE_MOTION) {
     (function flash() {
       setTimeout(() => {
         if (scene.classList.contains("horizon--storm") && !document.hidden) {
-          scene.classList.remove("horizon--flash");
-          void scene.offsetWidth;
-          scene.classList.add("horizon--flash");
+          strike(scene);
+          setTimeout(() => buzz([80, 40, 140]), 1000 + Math.random() * 4000);
         }
         flash();
       }, 5000 + Math.random() * 15000);
@@ -2699,6 +2912,15 @@ function paintWeather(scene, t) {
   scene.classList.toggle("horizon--crocus", field === "crocus");
   scene.classList.toggle("horizon--wheat", field === "young" || field === "gold");
   scene.classList.toggle("horizon--gold", field === "gold");
+  const holiday = holidayAt(t);
+  scene.classList.toggle("horizon--halloween", holiday === "halloween");
+  scene.classList.toggle("horizon--christmas", holiday === "christmas");
+  // The windmill: one turn of the wheel takes 2 s in a 12 km/h breeze,
+  // quicker as it blows harder; still when it's calm. Its tail trails downwind.
+  const air = breeze();
+  scene.style.setProperty("--mill-s", `${Math.max(0.5, 24 / Math.max(1, air.wind)).toFixed(2)}s`);
+  scene.classList.toggle("horizon--calm", air.wind < 3);
+  scene.style.setProperty("--mill-flip", String(air.dir));
   const code = weather ? weather.code : -1;
   const cloud = weather ? weather.cloud : 0;
   if (scene.weatherCode === `${code}/${cloud}`) return; // nothing new
@@ -2743,6 +2965,9 @@ const GEESE_EVERY_S = 40; // a flock every 40 seconds on average, in season
 const JET_EVERY_S = 90; // a jet every minute and a half on average, by day
 const TRAIN_EVERY_S = 150; // a freight train along the rails every couple of minutes, any hour
 const HAWK_EVERY_S = 60; // how often a hawk turns up on a windy afternoon
+const BATS_EVERY_S = 6; // a few bats every few seconds on Halloween night
+const TUMBLE_EVERY_S = 12; // how often a tumbleweed rolls by on a dry, windy day
+const COMBINE_EVERY_S = 120; // how often the combine comes out in the harvest
 const CRITTER = new URLSearchParams(location.search).get("critter"); // a ?critter= preview
 
 // Is it goose season (mid September to mid November, and late March to
@@ -3058,6 +3283,178 @@ function setUpCritters(scene, timeNow) {
     }
   }
 
+  // A few bats fluttering across on Halloween: quick, jerky wingbeats
+  // and a wobbly, dipping flight.
+  function bats() {
+    const w = box.clientWidth, h = box.clientHeight;
+    if (!w || !h) return;
+    const small = h < 140;
+    const n = 1 + Math.floor(Math.random() * 3);
+    const dir = Math.random() < 0.5 ? 1 : -1;
+    for (let i = 0; i < n; i++) {
+      const bat = svgNode("svg", { class: "bat", viewBox: "-8 -4 16 8" });
+      bat.append(svgNode("path", { d: "M0 -1.2L1 -2.4L1.4 -0.8C3 -2.6 5.6 -3 8 -1.6C6.6 -1 6.4 0.2 6.6 1.2C5.4 0.4 4.2 0.6 3.6 1.6C2.8 0.8 1.8 0.8 1 2L0 1L-1 2C-1.8 0.8 -2.8 0.8 -3.6 1.6C-4.2 0.6 -5.4 0.4 -6.6 1.2C-6.4 0.2 -6.6 -1 -8 -1.6C-5.6 -3 -3 -2.6 -1.4 -0.8L-1 -2.4Z" }));
+      bat.style.width = `${small ? 11 : 16}px`;
+      bat.firstChild.style.animationDuration = `${(0.16 + Math.random() * 0.08).toFixed(2)}s`;
+      box.append(bat);
+      const y0 = h * (0.15 + Math.random() * 0.55);
+      const x0 = dir > 0 ? -20 : w + 20;
+      const frames = [];
+      const wobble = 2 + Math.random() * 3;
+      for (let k = 0; k <= 20; k++) {
+        const p = k / 20;
+        const y = y0 + Math.sin(p * wobble * 2 * Math.PI) * h * 0.08 + (Math.random() - 0.5) * 10;
+        frames.push({ translate: `${(x0 + dir * (w + 40) * p).toFixed(0)}px ${y.toFixed(0)}px` });
+      }
+      bat.animate(frames, { duration: (small ? 5000 : 7000) + Math.random() * 3000, delay: i * (300 + Math.random() * 500), easing: "linear", fill: "backwards" })
+        .onfinish = () => bat.remove();
+    }
+  }
+
+  // One firework: a spark climbs from the ground, then bursts into a
+  // ring of sparks that fall and fade. The palette's light colours.
+  function firework() {
+    const w = box.clientWidth, h = box.clientHeight;
+    if (!w || !h) return;
+    const small = h < 140;
+    const x = w * (0.1 + Math.random() * 0.8);
+    const y = h * (0.15 + Math.random() * 0.35);
+    const colour = ["clay", "lilac", "ivory"][Math.floor(Math.random() * 3)];
+    const rise = el("i", `spark spark--${colour}`);
+    rise.style.left = `${x}px`;
+    rise.style.top = `${h}px`;
+    box.append(rise);
+    const up = 700 + Math.random() * 400;
+    rise.animate(
+      [{ translate: "0 0", opacity: 1 }, { translate: `${((Math.random() - 0.5) * 30).toFixed(0)}px ${-(h - y)}px`, opacity: 0.8 }],
+      { duration: up, easing: "cubic-bezier(0.2, 0.6, 0.4, 1)" }
+    ).onfinish = () => {
+      rise.remove();
+      const n = small ? 16 : 28;
+      const radius = (small ? 26 : 55) + Math.random() * (small ? 14 : 35);
+      for (let i = 0; i < n; i++) {
+        const a = (i / n) * 2 * Math.PI + Math.random() * 0.2;
+        const s = el("i", `spark spark--${Math.random() < 0.8 ? colour : "ivory"}`);
+        s.style.left = `${x}px`;
+        s.style.top = `${y}px`;
+        box.append(s);
+        const dx = Math.cos(a) * radius, dy = Math.sin(a) * radius;
+        s.animate(
+          [
+            { translate: "0 0", opacity: 1, scale: 1.4 },
+            { translate: `${dx.toFixed(1)}px ${dy.toFixed(1)}px`, opacity: 1, scale: 1, offset: 0.45 },
+            { translate: `${(dx * 1.1).toFixed(1)}px ${(dy * 1.1 + radius * 0.6).toFixed(1)}px`, opacity: 0, scale: 0.6 },
+          ],
+          { duration: 1600 + Math.random() * 600, easing: "cubic-bezier(0.1, 0.7, 0.3, 1)" }
+        ).onfinish = () => s.remove();
+      }
+    };
+  }
+
+  // A tumbleweed rolling along the ground on a dry, windy day: bouncing
+  // over the bumps, spinning as it goes, faster in a harder wind.
+  function tumbleweed() {
+    if (!scene.track || !scene.track.clientWidth) return;
+    const { wind, dir } = breeze();
+    const lane = el("div", "tumble-path");
+    const weed = svgNode("svg", { class: "tumbleweed", viewBox: "-10 -10 20 20" });
+    weed.append(svgNode("path", { d: "M-8 0A8 8 0 1 0 8 0A8 8 0 1 0 -8 0ZM-6 -3Q0 4 6 -4M-7 3Q-1 -6 5 6M-3 -7Q4 -1 -2 7M2 -7Q-5 0 3 7M-6 5Q0 1 7 2M-7 -2Q1 -1 6 -6" }));
+    lane.append(weed);
+    scene.track.after(lane);
+    const w = scene.track.clientWidth;
+    const size = weed.getBoundingClientRect().width || 14;
+    const across = w + size * 2;
+    const dur = Math.max(4500, (across / (wind * 0.9)) * 1000); // px per second grows with the wind
+    const x0 = dir > 0 ? -size : w + size;
+    const turns = across / (Math.PI * size);
+    const frames = [];
+    for (let i = 0; i <= 24; i++) {
+      const p = i / 24;
+      const hop = Math.abs(Math.sin(p * Math.PI * (4 + Math.random()))) * size * (0.4 + Math.random() * 0.5);
+      frames.push({ transform: `translate(${(x0 + dir * across * p).toFixed(1)}px, ${(-hop).toFixed(1)}px) rotate(${(dir * turns * 360 * p).toFixed(0)}deg)` });
+    }
+    weed.animate(frames, { duration: dur, easing: "linear" }).onfinish = () => lane.remove();
+  }
+
+  // Harvest: a combine crawls along the gold wheat with a grain truck
+  // behind it, cutting the field as it goes (style.css masks the cut
+  // part of the wheat away using --cut, and short stubble shows instead).
+  // The field grows back a while after.
+  let harvesting = false;
+  function combine() {
+    const wheat = scene.querySelector(".horizon__wheat");
+    if (!wheat || !wheat.clientWidth) return;
+    harvesting = true;
+    const left = Math.random() < 0.5; // heading left, or the right
+    const rig = svgNode("svg", { class: "combine", viewBox: "0 0 70 21" });
+    rig.append(
+      svgNode("path", { d: "M0 18V14H9V18ZM8 15.5L14 12.5V14.5L9 17.5Z" }), // the header out front and its arm
+      svgNode("path", { class: "combine__reel", d: "M1.5 12a3.5 3 0 1 0 7 0a3.5 3 0 1 0 -7 0Z" }), // the reel
+      svgNode("path", { d: "M12 18V8H18V3H25V8H27V4H37V8H38V18Z" }), // body, cab and grain tank
+      svgNode("path", { d: "M36 5H58V6.2H36ZM57 6.2H58.5V8.4H57Z" }), // the unloading auger, over the truck
+      svgNode("rect", { class: "combine__glass", x: 19.2, y: 4.2, width: 4.6, height: 3 }),
+      svgNode("circle", { cx: 16, cy: 17.2, r: 3.6 }), svgNode("circle", { cx: 34, cy: 18.4, r: 2.4 }),
+      svgNode("path", { d: "M46 20.5V13.5H48L50 10.5H54V20.5ZM55 20.5V11H70V20.5Z" }), // the grain truck
+      svgNode("circle", { cx: 50, cy: 20.2, r: 1.7 }), svgNode("circle", { cx: 63.5, cy: 20.2, r: 1.7 }), svgNode("circle", { cx: 67.5, cy: 20.2, r: 1.7 })
+    );
+    const lane = el("div", "harvest-path");
+    lane.style.transform = left ? "" : "scaleX(-1)"; // drawn heading left
+    lane.append(rig);
+    wheat.after(lane);
+    const w = wheat.clientWidth;
+    const own = rig.getBoundingClientRect().width || 70;
+    const dur = 42000 + Math.random() * 18000;
+    scene.style.setProperty("--cut-dir", left ? "to left" : "to right");
+    scene.classList.add("horizon--harvest");
+    const run = rig.animate([{ translate: `${w}px 0` }, { translate: `${-own}px 0` }], { duration: dur, easing: "linear" });
+    // Keep the edge of the cut field under the header as it goes
+    (function follow() {
+      if (!rig.isConnected) return;
+      const p = Math.min(1, (run.currentTime || 0) / dur);
+      scene.style.setProperty("--cut", `${(p * (w + own)).toFixed(1)}px`);
+      if (p < 1) requestAnimationFrame(follow);
+    })();
+    run.onfinish = () => {
+      lane.remove();
+      harvesting = false;
+      // The field grows back a minute later (fading in)
+      setTimeout(() => {
+        scene.classList.add("horizon--regrow");
+        scene.classList.remove("horizon--harvest");
+        scene.style.setProperty("--cut", "0px");
+        setTimeout(() => scene.classList.remove("horizon--regrow"), 2500);
+      }, 60000);
+    };
+  }
+
+  // The secret parade (tap the sun seven times, or type "longlight"):
+  // everything in the sky comes out at once for about 20 seconds.
+  let paradeOn = false;
+  scene.parade = () => {
+    if (paradeOn) return;
+    paradeOn = true;
+    scene.classList.add("horizon--parade");
+    const { wind, dir } = breeze();
+    flock();
+    setTimeout(flock, 1500);
+    if (!jetFlying) jet();
+    if (!trainRunning) train();
+    if (!hawkFlying) hawk(dir);
+    bats();
+    setTimeout(bats, 2500);
+    tumbleweed();
+    setTimeout(tumbleweed, 3500);
+    for (let i = 0; i < 8; i++) setTimeout(() => leaf(Math.max(wind, 20), dir), i * 400);
+    if (scene.meteorBurst) scene.meteorBurst(12, 6000);
+    for (let i = 0; i < 26; i++) setTimeout(firework, 2500 + i * 600 + Math.random() * 300);
+    kiteUp(true);
+    setTimeout(() => {
+      paradeOn = false;
+      scene.classList.remove("horizon--parade");
+      if (!kiteTime(timeNow()) && CRITTER !== "kite") kiteUp(false);
+    }, 21000);
+  };
+
   setInterval(() => {
     if (document.hidden) return;
     const t = timeNow();
@@ -3074,6 +3471,13 @@ function setUpCritters(scene, timeNow) {
     if (!jetFlying && (CRITTER === "jet" || (jetTime(t) && Math.random() < 1 / JET_EVERY_S))) jet();
     if (!trainRunning && (CRITTER === "train" || Math.random() < 1 / TRAIN_EVERY_S)) train();
     if (!hawkFlying && (CRITTER === "hawk" || (hawkTime(t) && Math.random() < 1 / HAWK_EVERY_S))) hawk(breeze().dir);
+    if (Math.random() < (CRITTER === "bats" ? 0.5 : batsTime(t) ? 1 / BATS_EVERY_S : 0)) bats();
+    if (CRITTER === "fireworks" || fireworksTime(t)) {
+      if (Math.random() < 0.7) firework();
+      if (Math.random() < 0.3) setTimeout(firework, 500);
+    }
+    if (Math.random() < (CRITTER === "tumbleweed" ? 0.3 : tumbleTime(t) ? 1 / TUMBLE_EVERY_S : 0)) tumbleweed();
+    if (!harvesting && (CRITTER === "combine" ? !scene.classList.contains("horizon--harvest") : combineTime(t) && Math.random() < 1 / COMBINE_EVERY_S)) combine();
   }, 1000);
 }
 
@@ -3266,6 +3670,7 @@ const SWIPE_BACK_MS = 8000; // how long the slide back to "now" takes (slow, so 
 const SWIPE_GLIDE_MS = 550; // how long a flick keeps coasting (bigger = longer glide)
 const HOLD_START_MS = 450; // press and hold this long (without moving) to wind on to sunset or sunrise
 const HOLD_RUN_MS = 2600; // how long winding on takes
+const YEAR_MS = 10000; // holding the sun plays a whole year in this long
 
 // Where holding the sky winds to: just after the next sunset (into dusk,
 // so the stars come out) by day, or just after the next sunrise at night.
@@ -3370,19 +3775,76 @@ function setUpSwipe(scene, paint) {
       if (p < 1) requestAnimationFrame(frame);
     });
   }
+  // Holding the sun itself plays a whole year instead: the same time of
+  // day, a day a frame, so the sun climbs toward summer and sinks toward
+  // winter, the moon runs through its phases and the ground changes with
+  // the seasons. Letting go rewinds to today.
+  function startYear() {
+    hideTip(scene);
+    hold.live = true;
+    drag = null;
+    const run = ++skyRun;
+    swiping = spinning = true;
+    scene.classList.add("horizon--spin");
+    try {
+      scene.setPointerCapture(hold.id);
+    } catch (err) {}
+    const from = Math.round(shown / 86400000);
+    let start = null;
+    requestAnimationFrame(function frame(ms) {
+      if (run !== skyRun) return;
+      if (start === null) start = ms;
+      const p = Math.min(1, (ms - start) / YEAR_MS);
+      // Whole days only, so it's always the same time of day
+      shown = (from + Math.round(p * 365)) * 86400000;
+      paint(new Date(now().getTime() + shown), shown);
+      if (p < 1) requestAnimationFrame(frame);
+    });
+  }
+  // Back from the year to today, quickly, still a whole day at a time
+  // (sliding smoothly would flick through 365 days and nights).
+  function rewindYear() {
+    const run = ++skyRun;
+    const days = Math.round(shown / 86400000);
+    let start = null;
+    requestAnimationFrame(function frame(ms) {
+      if (run !== skyRun) return;
+      if (start === null) start = ms;
+      const p = REDUCE_MOTION ? 1 : Math.min(1, (ms - start) / 1200);
+      shown = Math.round(days * (1 - p) * (1 - p)) * 86400000;
+      if (p < 1) {
+        paint(new Date(now().getTime() + shown), shown);
+        requestAnimationFrame(frame);
+      } else {
+        shown = 0;
+        swiping = spinning = false;
+        scene.classList.remove("horizon--spin");
+        paint(now(), null);
+      }
+    });
+  }
   function endHold(e) {
     if (!hold || e.pointerId !== hold.id) return;
     clearTimeout(hold.timer);
     if (hold.live) {
       lastSkyDrag = performance.now();
-      slideBack();
+      if (hold.year) rewindYear();
+      else slideBack();
     }
     hold = null;
   }
+  // Is a press at (x, y) on the sun (with a little room round it)?
+  function onSun(x, y) {
+    const sun = scene.querySelector(".horizon__sun");
+    if (!sun || sunAltitude(new Date(now().getTime() + shown)) < -1) return false;
+    const r = sun.getBoundingClientRect();
+    return Math.hypot(x - (r.left + r.width / 2), y - (r.top + r.height / 2)) < r.width / 2 + 14;
+  }
   scene.addEventListener("pointerdown", (e) => {
     if (hold || e.button > 0) return;
-    hold = { id: e.pointerId, x: e.clientX, y: e.clientY, live: false };
-    hold.timer = setTimeout(startHold, HOLD_START_MS);
+    const year = !REDUCE_MOTION && onSun(e.clientX, e.clientY);
+    hold = { id: e.pointerId, x: e.clientX, y: e.clientY, live: false, year };
+    hold.timer = setTimeout(year ? startYear : startHold, HOLD_START_MS);
   });
   scene.addEventListener("pointermove", (e) => {
     if (!hold || hold.live || e.pointerId !== hold.id) return;
@@ -3464,6 +3926,10 @@ function swipeLine(t, ahead) {
   const a = localParts(t);
   const b = localParts(now());
   const days = Math.round((Date.UTC(a.y, a.m - 1, a.d) - Date.UTC(b.y, b.m - 1, b.d)) / 86400000);
+  if (Math.abs(days) > 2) {
+    // Holding the sun: the date as the year plays
+    return [`${MONTHS[a.m - 1]} ${a.d} · ${clock(t)}`, "A year in 10 seconds · let go to come back"];
+  }
   const word = { "-1": "Yesterday", 0: "Today", 1: "Tomorrow" }[days] || a.weekday;
   return [`${word} ${clock(t)}`, `${ahead < 0 ? "−" : "+"}${hoursMins(Math.abs(ahead))} · back to now soon`];
 }
@@ -3729,6 +4195,100 @@ function setUpMotion(scene, timeNow) {
   });
 }
 
+/* ---------- The live tab icon ----------
+   The browser tab's icon redraws itself as a tiny copy of the sky right
+   now: purple by day with the sun where it really is, slate at night
+   with the moon and a few stars, and a cloud on a cloudy day. Phones
+   that don't show tab icons just ignore it, and the plain icon in each
+   page's <head> stays for anyone without JavaScript. */
+let iconKey = "";
+function skyIcon(scene) {
+  const link = document.querySelector('link[rel="icon"]');
+  if (!link || !scene) return;
+  const dark = document.documentElement.dataset.theme === "dark";
+  const css = (name) => parseFloat(scene.style.getPropertyValue(name)) || 0;
+  const sx = css("--sun-x"), sa = css("--sun-alt");
+  const mx = css("--moon-x"), ma = css("--moon-alt"), ms = css("--moon-show");
+  const cloud = weather ? weather.cloud : 0;
+  // Snap to whole pixels, so it only redraws when something visibly moves
+  const sun = { x: Math.round(6 + sx * 52), y: Math.round(40 - sa * 24) };
+  const moon = { x: Math.round(6 + mx * 52), y: Math.round(40 - ma * 24) };
+  const phase = moonPhase(now());
+  const key = [dark, sun.x, sun.y, moon.x, moon.y, ms > 0.5, cloud >= 50, cloud >= 85, Math.round(phase * 16)].join();
+  if (key === iconKey) return;
+  iconKey = key;
+  let art = "";
+  if (dark) {
+    art += '<g fill="#B48CE8"><circle cx="12" cy="12" r="1.3"/><circle cx="50" cy="9" r="1"/><circle cx="34" cy="17" r="0.9"/><circle cx="22" cy="26" r="0.8"/></g>';
+    if (ms > 0.5 && ma > 0) {
+      art += `<g transform="translate(${moon.x} ${moon.y}) scale(7)"><circle r="1" fill="#D97757" opacity="0.2"/><path d="${moonPath(phase)}" fill="#D97757"/></g>`;
+    }
+  } else if (sa > -0.3) {
+    art += `<circle cx="${sun.x}" cy="${sun.y}" r="15" fill="#D97757" opacity="0.3"/><circle cx="${sun.x}" cy="${sun.y}" r="10" fill="#D97757"/>`;
+  }
+  if (cloud >= 50) {
+    const puff = (x, y, k) => `<path transform="translate(${x} ${y}) scale(${k})" d="M-9 4H9A4 4 0 0 0 7 -3A6 6 0 0 0 -4 -4A5 5 0 0 0 -9 4Z" fill="#FAF9F5" opacity="${dark ? 0.35 : 0.92}"/>`;
+    art += puff(42, 20, 1.1) + (cloud >= 85 ? puff(20, 13, 0.9) : "");
+  }
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><clipPath id="c"><rect width="64" height="40"/></clipPath>` +
+    `<rect width="64" height="64" rx="16" fill="${dark ? "#141413" : "#7B3FC4"}"/><g clip-path="url(#c)">${art}</g>` +
+    `<rect x="8" y="40" width="48" height="4" fill="${dark ? "#7B3FC4" : "#FAF9F5"}"/></svg>`;
+  link.href = `data:image/svg+xml,${encodeURIComponent(svg)}`;
+}
+
+/* ---------- Mouse parallax and tilting covers ----------
+   On a computer (a mouse, no touch), moving the pointer shifts the
+   stars, moon, aurora and clouds a little against the land, the same
+   way tilting a phone does (it sets the same --tilt-x and --tilt-y).
+   Game cards tip toward the pointer in 3D with a glint on the cover. */
+function setUpMouseSky(scene) {
+  if (!scene || REDUCE_MOTION || !matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+  let aim = { x: 0, y: 0 }, tilt = { x: 0, y: 0 }, frame = 0;
+  function draw() {
+    frame = 0;
+    tilt.x += (aim.x - tilt.x) * 0.08;
+    tilt.y += (aim.y - tilt.y) * 0.08;
+    scene.style.setProperty("--tilt-x", tilt.x.toFixed(3));
+    scene.style.setProperty("--tilt-y", tilt.y.toFixed(3));
+    if (Math.abs(aim.x - tilt.x) > 0.002 || Math.abs(aim.y - tilt.y) > 0.002) frame = requestAnimationFrame(draw);
+  }
+  window.addEventListener("pointermove", (e) => {
+    if (e.pointerType !== "mouse") return;
+    const r = scene.getBoundingClientRect();
+    if (r.bottom < 0 || r.top > innerHeight) return; // scrolled out of sight
+    aim = { x: (e.clientX / innerWidth) * 2 - 1, y: Math.max(-1, Math.min(1, ((e.clientY - r.top) / r.height) * 2 - 1)) };
+    if (!frame) frame = requestAnimationFrame(draw);
+  });
+  document.documentElement.addEventListener("pointerleave", () => {
+    aim = { x: 0, y: 0 };
+    if (!frame) frame = requestAnimationFrame(draw);
+  });
+}
+
+function setUpCoverTilt() {
+  if (REDUCE_MOTION || !matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+  let card = null;
+  const settle = () => {
+    if (card) card.classList.remove("is-tilting");
+    card = null;
+  };
+  document.addEventListener("pointermove", (e) => {
+    if (e.pointerType !== "mouse") return;
+    const over = e.target.closest ? e.target.closest(".project") : null;
+    if (over !== card) settle();
+    if (!over || !over.querySelector(".project__cover img")) return;
+    card = over;
+    const r = card.getBoundingClientRect();
+    const px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
+    card.style.setProperty("--ry", `${((px - 0.5) * 9).toFixed(2)}deg`);
+    card.style.setProperty("--rx", `${((0.5 - py) * 7).toFixed(2)}deg`);
+    card.style.setProperty("--mx", `${(px * 100).toFixed(1)}%`);
+    card.style.setProperty("--my", `${(py * 100).toFixed(1)}%`);
+    card.classList.add("is-tilting");
+  });
+  document.documentElement.addEventListener("pointerleave", settle);
+}
+
 function setUpHorizon() {
   const scene = document.querySelector("[data-horizon]");
   const readout = document.querySelector("[data-horizon-readout]");
@@ -3770,6 +4330,7 @@ function setUpHorizon() {
     // While the opening spin is playing, it moves the sun instead.
     if (scene && (!spinning || swiped)) placeSun(scene, t);
     if (scene) paintWeather(scene, t);
+    if (!swiped && !spinning) skyIcon(scene);
 
     if (readout) {
       const left = readout.children[0];
@@ -3813,6 +4374,7 @@ function setUpHorizon() {
     setUpCritters(scene, shownTime);
     setUpSkyTaps(scene, shownTime);
     setUpMotion(scene, shownTime);
+    setUpMouseSky(scene);
   }
   tick();
   setUpThemeToggle(tick);
@@ -4237,6 +4799,7 @@ const BADGES = [
   { id: "explorer", name: "Explorer", hint: "Open Games, Trading, AI, Projects and About" },
   { id: "wishmaker", name: "Wishmaker", hint: "Tap a shooting star on a dark night" },
   { id: "insider", name: "Insider", hint: "Read the devlog" },
+  { id: "parade", name: "Parade marshal", hint: "A secret: something in the sky is hiding a party", secret: true },
 ];
 const BADGES_KEY = "kelbo.badges";     // { "first-game": time earned, ... }
 const PLAYED_KEY = "kelbo.played";     // titles of the games opened
@@ -4276,6 +4839,7 @@ function badgeChecks() {
     "explorer": EXPLORER_PAGES.every((page) => pages.includes(page)),
     "wishmaker": wishCount() >= 1,
     "insider": pages.includes("devlog.html"),
+    "parade": !!readJSON(PARADE_KEY),
   };
 }
 
@@ -4305,8 +4869,35 @@ function toastBadges(fresh) {
   toast.classList.remove("is-shown");
   void toast.offsetWidth; // restart the slide-in
   toast.classList.add("is-shown");
+  confetti(toast);
   clearTimeout(toastBadges.timer);
   toastBadges.timer = setTimeout(() => toast.classList.remove("is-shown"), 4500);
+}
+
+// A burst of confetti in the palette's colours from the badge note:
+// little bits fly up and out, then tumble down and fade.
+function confetti(from) {
+  if (REDUCE_MOTION) return;
+  const r = from.getBoundingClientRect();
+  const x = r.left + r.width / 2, y = r.top + 8;
+  for (let i = 0; i < 36; i++) {
+    const bit = el("i", `confetti confetti--${i % 4}`);
+    bit.style.left = `${x}px`;
+    bit.style.top = `${y}px`;
+    document.body.append(bit);
+    const a = -Math.PI / 2 + (Math.random() - 0.5) * Math.PI * 1.1; // mostly upward
+    const v = 90 + Math.random() * 150;
+    const dx = Math.cos(a) * v, dy = Math.sin(a) * v;
+    const spin = (Math.random() - 0.5) * 1080;
+    bit.animate(
+      [
+        { transform: "translate(0, 0) rotate(0deg)", opacity: 1 },
+        { transform: `translate(${dx.toFixed(0)}px, ${dy.toFixed(0)}px) rotate(${(spin / 2).toFixed(0)}deg)`, opacity: 1, offset: 0.35 },
+        { transform: `translate(${(dx * 1.4).toFixed(0)}px, ${(dy + 220).toFixed(0)}px) rotate(${spin.toFixed(0)}deg)`, opacity: 0 },
+      ],
+      { duration: 1600 + Math.random() * 600, easing: "cubic-bezier(0.15, 0.6, 0.4, 1)" }
+    ).onfinish = () => bit.remove();
+  }
 }
 
 // The "Your badges" list on the home page.
@@ -4324,7 +4915,8 @@ function showBadges() {
   sorted.forEach((b) => {
     const item = el("li", earned[b.id] ? "badge badge--earned" : "badge");
     const when = earned[b.id] && new Date(earned[b.id]).toLocaleDateString("en-CA", { month: "short", day: "numeric" });
-    item.append(el("strong", null, b.name), el("span", null, when ? "Earned " + when : b.hint));
+    const name = b.secret && !earned[b.id] ? "Secret badge" : b.name;
+    item.append(el("strong", null, name), el("span", null, when ? "Earned " + when : b.hint));
     list.append(item);
   });
   box.hidden = false;
@@ -4358,6 +4950,7 @@ async function init() {
   setUpNow();
   setUpDevlog();
   setUpBadges();
+  setUpCoverTilt();
 
   // The offline helper (sw.js): keeps a copy of the site on this phone so
   // it still opens with no signal.
