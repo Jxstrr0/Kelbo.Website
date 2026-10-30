@@ -1,11 +1,11 @@
 [
   {
     "title": "61 - A Trivia Game",
-    "status": "Released",
+    "status": "In development",
     "category": "Game",
     "summary": "A phone-first quiz-show game. Two boards of clues, hidden doubles, a wagered final and two computer opponents who race you to the buzzer. Type your answers, or handwrite the final one. Easy, Normal and Hard pools, a practice buzzer mode, and career stats kept on your phone.",
-    "version": "1.0",
-    "latest": "Out now: the first release",
+    "version": "",
+    "latest": "In the build stage",
     "link": "https://jxstrr0.github.io/61/",
     "code": "https://github.com/Jxstrr0/61",
     "image": "assets/covers/61-trivia.jpg",
@@ -69,11 +69,11 @@
   },
   {
     "title": "The Whip",
-    "status": "In development",
+    "status": "Released",
     "category": "Game",
     "summary": "A political career game for your phone. Start as a rookie backbench MP in the 120-seat House of Commons of the made-up Dominion of Caledor and climb to Chief Whip: the person who counts the votes, makes the deals and gets the caucus into the chamber when it matters. Every MP remembers what you promised.",
     "version": "",
-    "latest": "Act 1 is playable: the chamber, your office, caucus and the riding",
+    "latest": "Fully playable: the whole career, from rookie MP to Chief Whip",
     "link": "https://jxstrr0.github.io/The-Whip/",
     "code": "https://github.com/Jxstrr0/The-Whip",
     "image": "assets/covers/the-whip.jpg",
