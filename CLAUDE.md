@@ -397,6 +397,18 @@ keep the Co-Authored-By trailer for Claude in each message.
   (cached by `iconKey`). `setUpMouseSky` sets `--tilt-x/y` from the mouse
   on fine pointers; `setUpCoverTilt` adds `.is-tilting` with `--rx/--ry`
   and a `--mx/--my` glint on `.project` cards.
+- Glass (2026-10-30): the "Glass" section of `style.css` (just before
+  Motion) turns the header, cards (`.now`, `.sky-week`, `.continue__card`,
+  `.project`, `.news`, `.tile`, `.facts li`, `.post`, `.press-game`, the
+  contact fields), the filter buttons and the sky tip/badge toast into
+  frosted panes (`--glass`, `--glass-line`, `--glass-rim` light/dark tokens;
+  `backdrop-filter` blur + saturate; inset top-left rim). `body::before` is
+  a fixed layer of three palette blobs (`--glass-blob-1/2/3`), so `body` is
+  transparent there and `<html>` paints `--bg`. All inside
+  `@supports (backdrop-filter)`; `prefers-reduced-transparency: reduce`
+  restores solid cards. Clay buttons get a gloss and rim everywhere. Don't
+  give an element inside the glass header its own `backdrop-filter`: a
+  blur inside a blur is unreliable in Chrome.
 - Tilt sky: `setUpMotion` (home hero `[data-motion-switch]`, shown only
   with `pointer: coarse` and DeviceOrientationEvent; iPhone
   `requestPermission` after the tap; choice in `localStorage["kelbo.motion"]`,
