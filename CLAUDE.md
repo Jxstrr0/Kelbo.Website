@@ -408,7 +408,17 @@ keep the Co-Authored-By trailer for Claude in each message.
   `@supports (backdrop-filter)`; `prefers-reduced-transparency: reduce`
   restores solid cards. Clay buttons get a gloss and rim everywhere. Don't
   give an element inside the glass header its own `backdrop-filter`: a
-  blur inside a blur is unreliable in Chrome.
+  blur inside a blur is unreliable in Chrome. Lens edge: `--pane-edge`
+  (inset shadows: rim, clay and lilac fringes offset by `--tilt-x/y`,
+  dark band) and `--pane-ring` (a conic gradient drawn by a masked 1px
+  `::after` on the panes that have a free pseudo-element; the tiles use
+  both of theirs). `setPageTilt` copies the sky's `--tilt-x/y` onto
+  `<html>` so the edges follow tilt and mouse. `setUpLens` (main.js)
+  adds the `#glass-lens` SVG filter (SourceAlpha → blur → offset
+  differences → displacement map, then frost and saturate) and
+  `data-lens` on `<html>` only where `CSS.supports("backdrop-filter",
+  "url(#x)")` and not Firefox; `:root[data-lens]` panes use
+  `backdrop-filter: url(#glass-lens)`. Safari never gets it.
 - Tilt sky: `setUpMotion` (home hero `[data-motion-switch]`, shown only
   with `pointer: coarse` and DeviceOrientationEvent; iPhone
   `requestPermission` after the tap; choice in `localStorage["kelbo.motion"]`,
