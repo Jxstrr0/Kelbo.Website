@@ -1482,13 +1482,21 @@ img {
    July (.horizon--wheat) turning gold in August (.horizon--gold). */
 .horizon__elevator,
 .horizon__depot,
-.train-path {
+.horizon__windmill,
+.horizon__pumpkin,
+.train-path,
+.tumble-path,
+.harvest-path {
   --elevator-h: clamp(50px, 12.5vw, 72.5px);
 }
 
 .page-head .horizon__elevator,
 .page-head .horizon__depot,
-.page-head .train-path {
+.page-head .horizon__windmill,
+.page-head .horizon__pumpkin,
+.page-head .train-path,
+.page-head .tumble-path,
+.page-head .harvest-path {
   --elevator-h: 37.5px;
 }
 
@@ -1645,8 +1653,11 @@ img {
   height: var(--wheat-h);
   display: none;
   background: color-mix(in srgb, var(--ll-lilac) 60%, var(--ll-ivory));
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='6'%3E%3Cpath d='M1 6Q2 3 3.5 1.5M5 6Q5 3 4 1M8 6Q9 3.5 11 2.5M12 6Q12.5 3 14.5 1.5' fill='none' stroke='%23000' stroke-width='1' stroke-linecap='round'/%3E%3C/svg%3E") 0 0 / auto 100% repeat-x;
-  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='6'%3E%3Cpath d='M1 6Q2 3 3.5 1.5M5 6Q5 3 4 1M8 6Q9 3.5 11 2.5M12 6Q12.5 3 14.5 1.5' fill='none' stroke='%23000' stroke-width='1' stroke-linecap='round'/%3E%3C/svg%3E") 0 0 / auto 100% repeat-x;
+  /* the second layer hides the part of the field the combine has cut (main.js sets --cut) */
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='6'%3E%3Cpath d='M1 6Q2 3 3.5 1.5M5 6Q5 3 4 1M8 6Q9 3.5 11 2.5M12 6Q12.5 3 14.5 1.5' fill='none' stroke='%23000' stroke-width='1' stroke-linecap='round'/%3E%3C/svg%3E") 0 0 / auto 100% repeat-x, linear-gradient(var(--cut-dir, to right), transparent var(--cut, 0px), #000 var(--cut, 0px));
+  -webkit-mask-composite: source-in;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='6'%3E%3Cpath d='M1 6Q2 3 3.5 1.5M5 6Q5 3 4 1M8 6Q9 3.5 11 2.5M12 6Q12.5 3 14.5 1.5' fill='none' stroke='%23000' stroke-width='1' stroke-linecap='round'/%3E%3C/svg%3E") 0 0 / auto 100% repeat-x, linear-gradient(var(--cut-dir, to right), transparent var(--cut, 0px), #000 var(--cut, 0px));
+  mask-composite: intersect;
   transform-origin: 50% 100%;
   pointer-events: none;
 }
@@ -1658,8 +1669,8 @@ img {
 .horizon--gold .horizon__wheat {
   --wheat-h: 10px;
   background: color-mix(in srgb, var(--ll-clay) 70%, var(--ll-ivory));
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='10'%3E%3Cpath d='M2 10V4.5M6 10V2.8M10 10V5' stroke='%23000' stroke-width='0.8'/%3E%3Cellipse cx='2' cy='3.2' rx='1.1' ry='2'/%3E%3Cellipse cx='6' cy='1.9' rx='1.1' ry='1.9'/%3E%3Cellipse cx='10' cy='3.8' rx='1.1' ry='2'/%3E%3C/svg%3E");
-  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='10'%3E%3Cpath d='M2 10V4.5M6 10V2.8M10 10V5' stroke='%23000' stroke-width='0.8'/%3E%3Cellipse cx='2' cy='3.2' rx='1.1' ry='2'/%3E%3Cellipse cx='6' cy='1.9' rx='1.1' ry='1.9'/%3E%3Cellipse cx='10' cy='3.8' rx='1.1' ry='2'/%3E%3C/svg%3E");
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='10'%3E%3Cpath d='M2 10V4.5M6 10V2.8M10 10V5' stroke='%23000' stroke-width='0.8'/%3E%3Cellipse cx='2' cy='3.2' rx='1.1' ry='2'/%3E%3Cellipse cx='6' cy='1.9' rx='1.1' ry='1.9'/%3E%3Cellipse cx='10' cy='3.8' rx='1.1' ry='2'/%3E%3C/svg%3E"), linear-gradient(var(--cut-dir, to right), transparent var(--cut, 0px), #000 var(--cut, 0px));
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='10'%3E%3Cpath d='M2 10V4.5M6 10V2.8M10 10V5' stroke='%23000' stroke-width='0.8'/%3E%3Cellipse cx='2' cy='3.2' rx='1.1' ry='2'/%3E%3Cellipse cx='6' cy='1.9' rx='1.1' ry='1.9'/%3E%3Cellipse cx='10' cy='3.8' rx='1.1' ry='2'/%3E%3C/svg%3E"), linear-gradient(var(--cut-dir, to right), transparent var(--cut, 0px), #000 var(--cut, 0px));
 }
 
 .page-head .horizon__wheat {
@@ -1713,6 +1724,294 @@ img {
 
 :root[data-theme="dark"] .horizon__crocuses {
   opacity: 0.45;
+}
+
+/* Stubble where the combine has been: short gold stalks, only on the
+   cut part of the field (the opposite of the wheat's mask) */
+.horizon__stubble {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  top: calc(var(--sky-height) - 3px + 0.5px);
+  height: 3px;
+  display: none;
+  background: color-mix(in srgb, var(--ll-clay) 55%, var(--ll-ivory));
+  -webkit-mask:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='3'%3E%3Cpath d='M1 3V0.5M3 3V1.2' stroke='%23000' stroke-width='0.7'/%3E%3C/svg%3E") 0 0 / auto 100% repeat-x,
+    linear-gradient(var(--cut-dir, to right), #000 var(--cut, 0px), transparent var(--cut, 0px));
+  -webkit-mask-composite: source-in;
+  mask:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='3'%3E%3Cpath d='M1 3V0.5M3 3V1.2' stroke='%23000' stroke-width='0.7'/%3E%3C/svg%3E") 0 0 / auto 100% repeat-x,
+    linear-gradient(var(--cut-dir, to right), #000 var(--cut, 0px), transparent var(--cut, 0px));
+  mask-composite: intersect;
+  pointer-events: none;
+}
+
+.horizon--harvest.horizon--gold .horizon__stubble {
+  display: block;
+}
+
+:root[data-theme="dark"] .horizon__stubble {
+  opacity: 0.35;
+}
+
+/* The combine and its grain truck, on the horizon line in front of the
+   wheat (main.js drives it across; motion only) */
+.harvest-path {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  top: calc(var(--sky-height) - var(--elevator-h) * 0.32 + 1px);
+  height: calc(var(--elevator-h) * 0.32);
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.combine {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: calc(var(--elevator-h) * 0.32 * 70 / 21);
+  overflow: visible;
+}
+
+.combine path,
+.combine circle,
+.horizon__windmill path,
+.pumpkin__stalk {
+  fill: color-mix(in srgb, var(--ll-slate) 72%, var(--ll-purple));
+}
+
+.combine__glass {
+  fill: var(--ll-lilac);
+  opacity: 0.7;
+}
+
+:root[data-theme="dark"] .combine path,
+:root[data-theme="dark"] .combine circle,
+:root[data-theme="dark"] .horizon__windmill path,
+:root[data-theme="dark"] .pumpkin__stalk {
+  fill: color-mix(in srgb, var(--ll-slate) 55%, var(--ll-purple));
+}
+
+/* The windmill: a lattice tower and a wheel of blades, left of the
+   elevator (at 16% across, the elevator is at 38%). main.js sets
+   --mill-s (seconds per turn, from the real wind) and --mill-flip
+   (1 or -1, so the tail trails downwind). */
+.horizon__windmill {
+  position: absolute;
+  z-index: 1;
+  left: calc(0.16 * (100% - var(--sun-size)) + var(--sun-size) / 2 - var(--elevator-h) * 0.72 * 15 / 50);
+  top: calc(var(--sky-height) - var(--elevator-h) * 0.72 + 0.5px);
+  width: calc(var(--elevator-h) * 0.72 * 30 / 50);
+  height: calc(var(--elevator-h) * 0.72);
+  overflow: visible;
+  transform: scaleX(var(--mill-flip, 1));
+  pointer-events: none;
+}
+
+.horizon__windmill circle {
+  fill: color-mix(in srgb, var(--ll-slate) 72%, var(--ll-purple));
+}
+
+.horizon__windmill .windmill__rim {
+  fill: none;
+  stroke: color-mix(in srgb, var(--ll-slate) 72%, var(--ll-purple));
+  stroke-width: 0.8;
+}
+
+:root[data-theme="dark"] .horizon__windmill circle {
+  fill: color-mix(in srgb, var(--ll-slate) 55%, var(--ll-purple));
+}
+
+:root[data-theme="dark"] .horizon__windmill .windmill__rim {
+  fill: none;
+  stroke: color-mix(in srgb, var(--ll-slate) 55%, var(--ll-purple));
+}
+
+.windmill__wheel {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* Halloween: a jack-o'-lantern just left of the elevator's foot, its
+   carved face glowing after dark */
+.horizon__pumpkin {
+  position: absolute;
+  z-index: 1;
+  left: calc(0.38 * (100% - var(--sun-size)) + var(--sun-size) / 2 - var(--elevator-h) * 30 / 72 - var(--elevator-h) * 0.2);
+  top: calc(var(--sky-height) - var(--elevator-h) * 0.22 * 13 / 16 + 0.5px);
+  width: calc(var(--elevator-h) * 0.22);
+  height: calc(var(--elevator-h) * 0.22 * 13 / 16);
+  display: none;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.horizon--halloween .horizon__pumpkin {
+  display: block;
+}
+
+.pumpkin__body {
+  fill: var(--ll-clay);
+}
+
+.pumpkin__face {
+  fill: var(--ll-slate);
+  opacity: 0.75;
+}
+
+:root[data-theme="dark"] .pumpkin__body {
+  fill: color-mix(in srgb, var(--ll-clay) 60%, var(--ll-slate));
+}
+
+:root[data-theme="dark"] .pumpkin__face {
+  fill: color-mix(in srgb, var(--ll-clay) 40%, var(--ll-ivory));
+  opacity: 1;
+  filter: drop-shadow(0 0 1.5px rgba(217, 119, 87, 0.95));
+}
+
+/* December: lights along the elevator's rooflines, in clay, lilac and
+   ivory, glowing (and twinkling, below) after dark */
+.elevator__xmas {
+  display: none;
+}
+
+.horizon--christmas .elevator__xmas {
+  display: inline;
+}
+
+.xmas--0 { fill: var(--ll-clay); }
+.xmas--1 { fill: var(--ll-lilac); }
+.xmas--2 { fill: var(--ll-ivory); }
+
+:root:not([data-theme="dark"]) .elevator__xmas {
+  opacity: 0.75;
+}
+
+:root[data-theme="dark"] .xmas {
+  filter: drop-shadow(0 0 1.2px currentColor);
+}
+
+:root[data-theme="dark"] .xmas--0 { color: var(--ll-clay); }
+:root[data-theme="dark"] .xmas--1 { color: var(--ll-lilac); }
+:root[data-theme="dark"] .xmas--2 { color: var(--ll-ivory); }
+
+/* A tumbleweed rolling along the ground in front of the rails (main.js
+   bounces it across on a dry, windy day; motion only) */
+.tumble-path {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  top: calc(var(--sky-height) - 20px);
+  height: calc(var(--ground-height) + 20px);
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.tumbleweed {
+  position: absolute;
+  left: 0;
+  top: calc(20px + 17px - var(--elevator-h) * 0.22);
+  width: calc(var(--elevator-h) * 0.22);
+  height: calc(var(--elevator-h) * 0.22);
+  overflow: visible;
+}
+
+.page-head .tumbleweed {
+  top: calc(20px + 12px - var(--elevator-h) * 0.22);
+}
+
+.tumbleweed path {
+  fill: none;
+  stroke: color-mix(in srgb, var(--ll-clay) 45%, var(--ll-slate));
+  stroke-width: 1.1;
+  stroke-linecap: round;
+}
+
+:root[data-theme="dark"] .tumbleweed path {
+  stroke: color-mix(in srgb, var(--ll-lilac) 45%, var(--ll-slate));
+}
+
+/* Lightning bolts in a storm (main.js draws them from the clouds down
+   to the horizon, on its own or where the sky is tapped) */
+.horizon__bolts {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  height: var(--sky-height);
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.bolt {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: visible;
+}
+
+.bolt path {
+  fill: none;
+  stroke: var(--ll-ivory);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 4px var(--ll-lilac));
+}
+
+/* Halloween bats (the critters' colour: slate by day, lilac at night) */
+.bat {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: visible;
+}
+
+.bat path {
+  fill: currentColor;
+  transform-box: fill-box;
+  transform-origin: 50% 40%;
+}
+
+/* Fireworks: sparks in the palette's light colours */
+.spark {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  margin: -2px 0 0 -2px;
+  border-radius: 50%;
+  background: var(--ll-ivory);
+  box-shadow: 0 0 8px 2px rgba(250, 249, 245, 0.75);
+}
+
+.spark--clay {
+  background: var(--ll-clay);
+  box-shadow: 0 0 9px 2px rgba(217, 119, 87, 0.85);
+}
+
+.spark--lilac {
+  background: var(--ll-lilac);
+  box-shadow: 0 0 9px 2px rgba(180, 140, 232, 0.85);
+}
+
+.page-head .spark {
+  width: 3px;
+  height: 3px;
+  margin: -1.5px 0 0 -1.5px;
+}
+
+/* The secret parade turns the northern lights on, day or night */
+.horizon--parade {
+  --aurora: 1 !important;
 }
 
 /* Older browsers without color-mix() would drop the mixed colours above
@@ -2177,6 +2476,22 @@ img {
   visibility: hidden;
   opacity: 0;
 }
+
+/* Confetti from a new badge (main.js throws it; motion only) */
+.confetti {
+  position: fixed;
+  z-index: 111;
+  width: 8px;
+  height: 4px;
+  margin: -2px 0 0 -4px;
+  border-radius: 1px;
+  pointer-events: none;
+}
+
+.confetti--0 { background: var(--ll-clay); }
+.confetti--1 { background: var(--ll-purple); }
+.confetti--2 { background: var(--ll-lilac); }
+.confetti--3 { background: color-mix(in srgb, var(--ll-clay) 50%, var(--ll-ivory)); }
 
 .badge-toast.is-shown {
   visibility: visible;
@@ -3916,6 +4231,83 @@ img {
   .lockup:focus-visible .logo__halo {
     transform: scale(1.06);
     opacity: 0.95;
+  }
+
+  /* The windmill's wheel, at the real wind's speed (still when calm) */
+  .windmill__wheel {
+    animation: mill-spin var(--mill-s, 2s) linear infinite;
+  }
+
+  .horizon--calm .windmill__wheel {
+    animation-play-state: paused;
+  }
+
+  @keyframes mill-spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* Halloween: the elevator's windows and the pumpkin flicker like candles */
+  :root[data-theme="dark"] .horizon--halloween .elevator__light,
+  :root[data-theme="dark"] .pumpkin__face {
+    animation: candle 2.3s steps(1) infinite;
+  }
+
+  @keyframes candle {
+    0%, 100% { opacity: 1; }
+    20% { opacity: 0.7; }
+    35% { opacity: 0.95; }
+    55% { opacity: 0.6; }
+    70% { opacity: 1; }
+    85% { opacity: 0.8; }
+  }
+
+  .bat path {
+    animation: bat-flap 0.2s ease-in-out infinite alternate;
+  }
+
+  @keyframes bat-flap {
+    to { transform: scaleY(-0.5); }
+  }
+
+  /* December lights twinkle after dark, a few at a time */
+  :root[data-theme="dark"] .xmas {
+    animation: twinkle-light 2.4s ease-in-out infinite;
+  }
+
+  :root[data-theme="dark"] .xmas:nth-child(3n + 1) { animation-delay: -0.8s; }
+  :root[data-theme="dark"] .xmas:nth-child(4n + 2) { animation-delay: -1.6s; }
+
+  @keyframes twinkle-light {
+    50% { opacity: 0.35; }
+  }
+
+  /* The wheat grows back after the harvest */
+  .horizon--regrow .horizon__wheat {
+    animation: regrow 2.5s var(--ease);
+  }
+
+  @keyframes regrow {
+    from { opacity: 0; }
+  }
+
+  /* On a computer, game cards tip toward the mouse with a glint */
+  @media (hover: hover) and (pointer: fine) {
+    .project.is-tilting {
+      transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(-3px);
+      transition: transform 90ms linear, box-shadow 260ms var(--ease), border-color 260ms;
+    }
+
+    .project.is-tilting .project__cover {
+      position: relative;
+    }
+
+    .project.is-tilting .project__cover::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(250, 249, 245, 0.3), rgba(250, 249, 245, 0) 55%);
+      pointer-events: none;
+    }
   }
 }
 
