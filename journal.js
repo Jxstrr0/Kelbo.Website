@@ -34,7 +34,7 @@
    README.md):
      updated    "2026-10-14": the last time the list was brought up to date
      since      "2026-09-15": the first trade
-     systems    { "V2": "what V2 means", ... }: shown as filter buttons
+     systems    { "S1.0": "what S1.0 means", ... }: shown as filter buttons
      ai         the AI coach's notes on the options record
      trades     [{ opened, closed, symbol, strike, type: "call" or "put",
                    expiry, paid, sold, system, note }]
