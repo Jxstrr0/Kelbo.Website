@@ -524,7 +524,7 @@ keep the Co-Authored-By trailer for Claude in each message.
   trade or idea ("winners averaged +21.5%", "holding overnight without a
   planned exit was the mistake"), never "you" or "your". Same honesty, same
   specifics.
-- `renderTrend` (journal.js) draws a running total of the closed options trades' returns under the bars (percentages added in order, captioned as a shape and not a balance; only from `options.json`, follows the V2/V3 filter).
+- `renderTrend` (journal.js) draws a running total of the closed options trades' returns under the bars (percentages added in order, captioned as a shape and not a balance; only from `options.json`, follows the S1.0/F3.3 filter).
 - Options trades live in `options.json` (fields at the top of `journal.js`),
   copied from Kelbo's own options ledger. The page works out each return
   from `paid`/`sold` premiums and feeds the record's options group. Leave

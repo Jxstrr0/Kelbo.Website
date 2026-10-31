@@ -763,7 +763,7 @@ percentages are safer than dollar amounts or account sizes.
 Your options trades live in `options.json`, not in the entries. The page
 shows them newest first, with a bar for each trade's return, a running-total
 line under the bars (it adds each trade's return in order, so read the slope
-and not the number; it follows the V2/V3 filter too), V2/V3 filter
+and not the number; it follows the S1.0/F3.3 filter too), S1.0/F3.3 filter
 buttons, and the options numbers in the record (closed trades; win rate without
 scratches, with the rate counting scratches as not a win in small print
 under it; average return; and wins–losses–scratches).
@@ -782,7 +782,7 @@ top to today's date:
       "expiry": "2026-10-23",
       "paid": 0.425,
       "sold": 0.54,
-      "system": "V3",
+      "system": "F3.3",
       "note": "Short note about the trade."
     },
 ```
@@ -792,7 +792,7 @@ top to today's date:
   sold for what it cost counts as a scratch.
 - **Still open?** Leave out `"closed"` and `"sold"`. It shows as Open and
   isn't counted until you add them.
-- **type** is `"call"` or `"put"`. **system** is `"V2"` or `"V3"`; the
+- **type** is `"call"` or `"put"`. **system** is `"S1.0"` (Swing) or `"F3.3"` (Flip); the
   `"systems"` list at the top explains each one, and a new system there gets
   its own filter button.
 - **ai** at the top is the AI coach's note on the whole options record.
