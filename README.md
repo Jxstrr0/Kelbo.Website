@@ -950,14 +950,17 @@ you can see how good the calls really are over time.
   and `report-cards/index.json` (the totals). The brief files in `briefs/`
   are never touched.
 - **Skips:** weekends, US market holidays (worked out in the script, no
-  list to update) and days with no brief.
-- **Cost:** it uses a smaller, cheaper model than the brief (`MODEL` at the
+  list to update), days with no brief, and any run before the 4:00 pm New
+  York close (3:00 pm Saskatoon in winter, 2:00 pm in summer). A skipped
+  run stops before asking Claude, so it costs nothing.
+- **Cost:** it uses Sonnet 5.5, a smaller, cheaper model than the brief (`MODEL` at the
   top of the script), up to 8 web searches (`MAX_SEARCHES`) and 4 page
   reads (`MAX_FETCHES`). It uses the same `ANTHROPIC_API_KEY` secret as the
   brief. The last line of each run's log is "Estimated cost: US$0.xx".
 - **Run it now:** Actions tab → After-close report card → Run workflow
   (on a phone, switch to the desktop site if the button doesn't show).
-  Tick "Redo today's grade" to grade today again.
+  Tick "Redo today's grade" to grade today again. Before the close it just
+  says the market hasn't closed yet.
 - **Turn it off:** open it on the Actions tab, tap "..." at the top right,
   then "Disable workflow". "Enable workflow" in the same place turns it
   back on.
