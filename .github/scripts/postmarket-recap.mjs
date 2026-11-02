@@ -192,9 +192,12 @@ async function callClaude(messages, withTools = true, attempt = 1) {
     // max_tokens covers the model's thinking as well as the card. The cache
     // markers bill the re-reads of everything found so far at a tenth of
     // the price (see the brief's script for the longer explanation).
+    // effort "high" is Sonnet's default today; writing it here keeps it
+    // high even if that default ever changes.
     body: JSON.stringify({
       model: MODEL,
       max_tokens: 16000,
+      output_config: { effort: "high" },
       system: [{ type: "text", text: SYSTEM, cache_control: { type: "ephemeral" } }],
       messages,
       cache_control: { type: "ephemeral" },
