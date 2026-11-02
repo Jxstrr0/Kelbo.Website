@@ -91,7 +91,9 @@ async function callClaude(messages, attempt = 1) {
       "x-api-key": apiKey,
       "anthropic-version": "2023-06-01",
     },
-    body: JSON.stringify({ model: MODEL, max_tokens: 6000, system: SYSTEM, tools, messages }),
+    // max_tokens covers the model's thinking as well as the brief itself, so
+    // leave it roomy: a tight cap cuts the brief off mid-sentence.
+    body: JSON.stringify({ model: MODEL, max_tokens: 16000, system: SYSTEM, tools, messages }),
   });
   if ((res.status === 429 || res.status >= 500) && attempt < 4) {
     const wait = 15000 * attempt;
@@ -115,6 +117,7 @@ for (let i = 0; i < 6; i++) {
   allBlocks.push(...data.content);
   usage.input_tokens += data.usage?.input_tokens ?? 0;
   usage.output_tokens += data.usage?.output_tokens ?? 0;
+  if (data.stop_reason === "max_tokens") console.warn("Hit max_tokens: the brief may be cut short.");
   if (data.stop_reason !== "pause_turn") break;
   messages.push({ role: "assistant", content: data.content });
 }
