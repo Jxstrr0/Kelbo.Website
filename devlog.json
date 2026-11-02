@@ -1,6 +1,30 @@
 {
   "posts": [
     {
+      "date": "2026-11-02",
+      "title": "61 gets ten more boards",
+      "game": "61 - A Trivia Game",
+      "body": "61 now has 31 boards. The ten new ones add a second board to Science, History, Geography, Music, Screen, Words, Nature and Food & Drink, a third Sports board and an easy General #10.\n\nEvery board was checked against the others so answers and categories don't repeat, then fact-checked and proofread."
+    },
+    {
+      "date": "2026-11-01",
+      "title": "Prairie Engine Works: race teams and real engine sounds",
+      "game": "Prairie Engine Works",
+      "body": "The career now runs race teams instead of selling engines. Take on team offers, build three engines a season and run series in mud bog, boat drag, truck and tractor pull and hill climb, with Pikes Peak as the finale. Drivers remember you, rival shops build cars for your series, and from 300 rep you can run two teams at once. Watch it replays your team's race in 3D, and the off weeks bring a car show and a sound-off.\n\nReal recordings are now the default engine voice. Rotaries, V4s, singles, twins and inline 5s got their own recordings, plus a new V12 rev and recorded blow-off, backfire and anti-lag bangs.\n\nThe garage also got a glass look: floating tab bar, glass panels and popups, swipe between tabs, a live dyno curve on the workshop monitor and a full-screen results card you can share."
+    },
+    {
+      "date": "2026-10-31",
+      "title": "Frontier Lab: the whole lab is playable",
+      "game": "Frontier Lab",
+      "body": "Frontier Lab has grown from a map and a title screen into a full AI-lab tycoon. Raise a seed round, open a sales office in each city, buy compute or build data centers, train and launch your own models (open weights too), win public-sector tenders, and keep an eye on rival labs and the safety regulator.\n\nThe last week was audit and polish: pacing, popups and navigation, more incidents, news and tips for the late game, a rescaled rich list and a yearly annual report. It's at version 0.1.61 and still in development."
+    },
+    {
+      "date": "2026-10-30",
+      "title": "61 - A Trivia Game is out",
+      "game": "61 - A Trivia Game",
+      "body": "61 is our quiz-show game, out now as version 1.0. Two boards of clues, hidden doubles and a wagered final, against two computer contestants who race you to the buzzer. Type your answers, and handwrite the final one.\n\nIt's set in a night-time studio with a sun host who reads the clues and reacts to your answers, and an audience that applauds and groans. There's a practice buzzer mode and career stats kept on your phone."
+    },
+    {
       "date": "2026-10-25",
       "title": "Play here, game pages and a press kit",
       "body": "Three new things on the site this week.\n\nEvery game page now has a Play here button. It opens the game right inside the page, over the whole screen, with a Close button on top. The phone's Back button closes it too.\n\nEach game also has its own address now, like game-prairie-engine-works.html. Share one of those in a text or on Discord and the preview shows that game's cover and summary.\n\nAnd there's a press kit, with our logo, colours, and every game's cover and screenshots, for anyone writing, filming or streaming about our games. It's linked at the bottom of every page."
