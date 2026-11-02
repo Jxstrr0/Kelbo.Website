@@ -150,15 +150,16 @@
         <p class="project-list__note">Loading the latest brief&hellip;</p>
       </article>
       <noscript>
-        <p>Turn on JavaScript to read the brief, or <a href="briefs/index.json">see the list of briefs</a>.</p>
+        <p>Turn on JavaScript to read the brief.</p>
       </noscript>
     </section>
 
-    <!-- 3. Every brief so far, newest first. -->
+    <!-- 3. Every brief so far, newest first, folded by year and month.
+         briefs.js builds the folds from briefs/index.json and loads a
+         month's list (briefs/months/YYYY-MM.json) when it's opened. -->
     <section class="section wrap" aria-labelledby="archive-heading">
       <h2 id="archive-heading">Past briefs</h2>
-      <ul class="archive" data-archive></ul>
-      <button class="button archive__more" type="button" data-archive-more hidden>Show older briefs</button>
+      <div class="archive-folds" data-archive></div>
     </section>
   </main>
 

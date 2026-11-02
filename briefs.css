@@ -297,13 +297,77 @@
   color: var(--muted);
 }
 
-.archive__more {
-  margin-top: 1.25rem;
+.archive__note {
+  padding: 0.85rem 0;
 }
 
-/* .button sets its own display, so say it twice: hidden means hidden */
-.archive__more[hidden] {
+/* The folds: a year holds its months, a month holds its briefs. Each
+   summary line is the label, the count and a chevron (down, up when open). */
+.archive-folds {
+  max-width: 44rem;
+}
+
+.archive__year + .archive__year {
+  margin-top: 0.5rem;
+}
+
+.archive__fold {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid var(--rule);
+  cursor: pointer;
+  list-style: none;
+}
+
+.archive__fold::-webkit-details-marker {
   display: none;
+}
+
+.archive__fold::after {
+  content: "";
+  width: 0.55rem;
+  height: 0.55rem;
+  margin: 0 0.3rem 0.25rem 0;
+  border-right: 2px solid var(--muted);
+  border-bottom: 2px solid var(--muted);
+  transform: rotate(45deg);
+}
+
+details[open] > .archive__fold::after {
+  margin: 0.25rem 0.3rem 0 0;
+  transform: rotate(225deg);
+}
+
+.archive__fold:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+.archive__label {
+  font-weight: 700;
+}
+
+.archive__fold--year .archive__label {
+  font-size: 1.25rem;
+}
+
+.archive__count {
+  font-size: 0.9rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Months sit a step in from their year */
+.archive__month {
+  padding-left: 1rem;
+}
+
+.archive__month .archive {
+  margin-bottom: 0.5rem;
 }
 
 /* Narrow phones: the date sits above the headline */

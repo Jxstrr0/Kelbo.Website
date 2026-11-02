@@ -37,7 +37,7 @@ from their releases, then publishes the files as they are (see
 | `scan.json` | **The weekly scan.** Rewritten every Saturday by a Claude routine |
 | `scan.js` | Shows the weekly scan on the Agent Fleet page |
 | `briefs.html` | **The pre-market brief** page: the latest brief, where the US trading day is in Saskatoon time, and the archive |
-| `briefs/` | The briefs themselves, one `YYYY-MM-DD.md` per weekday, plus `index.json` (the list the page reads) and `latest.json` (the newest one's time, for the alert dot). Written by the robot below, so you never need to edit them |
+| `briefs/` | The briefs themselves, one `YYYY-MM-DD.md` per weekday, plus `index.json` (the list of months the page reads), `months/` (one small list per month, e.g. `months/2026-11.json`) and `latest.json` (the newest one's time, for the alert dot). Written by the robot below, so you never need to edit them |
 | `briefs.js`, `briefs.css` | Show the brief and the archive |
 | `journal.html` | The AI Trading Journal page |
 | `journal.json` | **Your journal entries.** Edit this to add an update |
@@ -833,7 +833,11 @@ economic reports. It lives in `scan.json` and `scan.js` puts it on the page.
 weekday morning: overnight and Asia, the gap call and key levels for MU,
 one line per watchlist name, and the day's calendar in Eastern and
 Saskatoon time. Each brief is a Markdown file in `briefs/`
-(`2026-11-02.md`), and `briefs/index.json` is the list the page reads.
+(`2026-11-02.md`). The archive list is split up so the page never loads
+all of it: `briefs/index.json` lists the months (and the latest brief),
+and `briefs/months/2026-11.json` holds one month's headlines. On the page,
+Past briefs folds by year, then month; a month's list only downloads when
+you open it.
 
 - **Who writes it:** the **Pre-market brief** robot
   (`.github/workflows/premarket-brief.yml`) runs every weekday at 6:30 am
@@ -872,7 +876,9 @@ Saskatoon time. Each brief is a Markdown file in `briefs/`
   years of briefs. When a new brief would push it over, the robot
   removes the oldest ones from the folder and the archive. They're still in
   the repo's history. The limit is `MAX_FOLDER_BYTES` at the top of
-  `.github/scripts/premarket-brief.mjs`.
+  `.github/scripts/brief-index.mjs`, the script that writes the archive
+  lists. Running `node .github/scripts/brief-index.mjs` on its own
+  rebuilds them from the briefs in the folder.
 - Prices and levels come from web reports, not live quotes, so every brief
   says they're estimates and lists its sources.
 
