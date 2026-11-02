@@ -550,7 +550,7 @@ keep the Co-Authored-By trailer for Claude in each message.
   today's" box) runs `.github/scripts/premarket-brief.mjs`: plain Node
   `fetch` to the Anthropic Messages API (`claude-opus-5-5`, server-side
   `web_search_20260209` with `MAX_SEARCHES` 25 and `web_fetch_20260209`
-  with `MAX_FETCHES` 10, no domain limits, a per-section research plan in
+  with `MAX_FETCHES` 15, no domain limits, a per-section research plan in
   `SYSTEM`, prompt caching (a marker on the system block plus top-level
   `cache_control`), the previous brief minus its Sources in the user
   message for the MU **Last call:** line, a usage and estimated-cost log
