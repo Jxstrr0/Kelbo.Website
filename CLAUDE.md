@@ -559,7 +559,7 @@ keep the Co-Authored-By trailer for Claude in each message.
   to `briefs/index.json`, writes `briefs/latest.json` (`{date, time}`, the
   only brief file every page fetches; index.json is its fallback), and
   removes the oldest briefs while the folder is over `MAX_FOLDER_BYTES`
-  (5 MB, about 2.5 years) (`time` is the ISO send time: `setUpBriefAlert`
+  (30 MB, about 15 years) (`time` is the ISO send time: `setUpBriefAlert`
   in main.js sets `data-brief-new` on `<html>` while `briefIsNew` (under
   `BRIEF_NEW_MS`, 1 h; rechecked every `BRIEF_CHECK_MS`), drawing a clay
   dot on the nav Trading link and a "New" badge on the brief's card in

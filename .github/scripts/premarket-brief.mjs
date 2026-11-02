@@ -11,9 +11,9 @@ const MAX_SEARCHES = 20;
 const BRIEFS_DIR = "briefs";
 const MARKER = "===BRIEF===";
 // The briefs folder's size limit. At about 8 KB a brief this keeps roughly
-// the last two and a half years; older ones are removed from the folder and
+// the last 15 years; older ones are removed from the folder and
 // the archive, but stay in the repo's git history.
-const MAX_FOLDER_BYTES = 5 * 1024 * 1024;
+const MAX_FOLDER_BYTES = 30 * 1024 * 1024;
 
 const apiKey = process.env.ANTHROPIC_API_KEY;
 if (!apiKey) {
