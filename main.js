@@ -4789,7 +4789,7 @@ function setUpMarketLight() {
    For an hour after the pre-market brief goes out each morning, every
    page shows a flashing dot on the Trading link in the header, and the
    brief's card gets a flashing "New" badge (both drawn in style.css from
-   data-brief-new on <html>). The time comes from briefs/index.json, which
+   data-brief-new on <html>). The time comes from briefs/latest.json, which
    the brief robot stamps when it writes a brief. A page left open checks
    again every few minutes, so it notices a brief that lands while you're
    looking at it, and the dot goes away by itself when the hour is up.
@@ -4826,10 +4826,13 @@ function setUpBriefAlert() {
   async function check() {
     if (document.visibilityState === "hidden") return;
     try {
-      const response = await fetch("briefs/index.json", { cache: "no-cache" });
+      // latest.json is a few bytes ({date, time}); index.json, the whole
+      // archive list, is only the fallback for before the robot writes it.
+      let response = await fetch("briefs/latest.json", { cache: "no-cache" });
+      if (!response.ok) response = await fetch("briefs/index.json", { cache: "no-cache" });
       if (!response.ok) return;
-      const list = await response.json();
-      const latest = Array.isArray(list) ? list[0] : null;
+      const data = await response.json();
+      const latest = Array.isArray(data) ? data[0] : data;
       show(briefIsNew(latest), latest);
     } catch {
       // Offline or no briefs yet: just no dot.
