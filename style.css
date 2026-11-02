@@ -592,6 +592,38 @@ img {
   color: var(--sky-muted);
 }
 
+/* USD/CAD under the Trading intro (main.js fills it in). It pulls up
+   into the intro's bottom gap so the page head keeps its height. */
+.fx {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.6rem;
+  max-width: 36rem;
+  margin: -1.25rem 0 2rem;
+  color: var(--sky-muted);
+  font-size: 0.95rem;
+}
+
+.fx[hidden] {
+  display: none;
+}
+
+.fx__pair {
+  font-weight: 700;
+  color: var(--sky-ink);
+}
+
+.fx__rate {
+  color: var(--sky-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.fx__note {
+  flex-basis: 100%;
+  font-size: 0.85rem;
+}
+
 /* ---------- The live horizon ----------
    A strip at the bottom of the hero: the sun, its ray, the horizon line
    and the ground. main.js moves the sun with the real sun over Saskatoon

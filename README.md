@@ -650,6 +650,16 @@ Two small extras ride along on the home page:
   Stock Exchange hours (9:30 to 4:00 Eastern, Monday to Friday). It doesn't
   know about holidays.
 
+And one on the Trading page:
+
+- **USD/CAD** under the Trading intro: how many Canadian dollars one US
+  dollar buys, with the move from the day before. It comes from the Bank of
+  Canada (free, no key), whose number is a **daily average** published once
+  each business day in the late afternoon, so it's never a live quote; the
+  line says that and shows which day it's for. The phone keeps it for 3
+  hours (`FX_MS` in `main.js`). If the bank can't be reached, the line just
+  doesn't show.
+
 ## Motion
 
 The animations are at the bottom of `style.css` under "Motion": pages fade
