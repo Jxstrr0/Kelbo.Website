@@ -544,7 +544,7 @@ keep the Co-Authored-By trailer for Claude in each message.
   **Pre-market brief** workflow (`.github/workflows/premarket-brief.yml`,
   weekdays 12:50 UTC = 6:50 am America/Regina, or by hand with a "rewrite
   today's" box) runs `.github/scripts/premarket-brief.mjs`: plain Node
-  `fetch` to the Anthropic Messages API (`claude-sonnet-5-5`, server-side
+  `fetch` to the Anthropic Messages API (`claude-opus-5-5`, server-side
   `web_search_20260209` with `MAX_SEARCHES` 20, `pause_turn` loop), which writes
   `briefs/YYYY-MM-DD.md` (fixed headings: `# headline`, `TLDR:`,
   `## Overnight and Asia`, `## MU`, `## Watchlist`, `## Calendar`, then

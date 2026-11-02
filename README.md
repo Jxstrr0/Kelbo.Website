@@ -854,7 +854,7 @@ Saskatoon time. Each brief is a Markdown file in `briefs/`
   The time is the `cron` line in the workflow (UTC; Saskatoon is UTC−6 all
   year, so 12:50 is 6:50 am).
   It can run up to 20 web searches a brief (`MAX_SEARCHES`), and it calls
-  the model named in `MODEL` (`claude-sonnet-5-5`).
+  the model named in `MODEL` (`claude-opus-5-5`).
 - **Same headings every day:** the page expects `# headline`, `TLDR:`,
   then Overnight and Asia, MU, Watchlist and Calendar, even on a holiday.
   If a brief comes back without them, the script asks Claude once to
