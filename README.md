@@ -616,7 +616,8 @@ from the optional weather, air quality and northern lights, below).
   stars, planets, eclipses, meteor showers, weather and northern (or
   southern) lights. The readout says "over you" instead of "over
   Saskatoon". Their location is kept only on their device; the only places
-  it goes are the weather and air quality checks (Open-Meteo, rounded). **Back to
+  it goes are the weather and air quality checks (Open-Meteo, rounded); the
+  space station's orbit is the same for everyone, so that call sends nothing. **Back to
   Saskatoon** switches it back. Geese, fireflies, autumn leaves, the
   crocuses and wheat, and the usual winter snow stay Saskatoon-only,
   since they follow Saskatoon's calendar.
@@ -629,6 +630,16 @@ from the optional weather, air quality and northern lights, below).
   tilting** turns it off. The tilt slide is off with "reduce motion" on;
   the compass still works. `TILT_DEG` in `main.js` sets how far you tilt
   for the full slide.
+- **Space station:** on clear dark evenings and mornings the International
+  Space Station crosses the sky as a bright steady dot (labelled "ISS" on
+  the home page), moving left to right or right to left over a few
+  minutes, just like the real one. It only shows when the station is lit
+  by the sun and the sky is dark, which is when you can actually see it
+  outside. Tap it for how high and how far away it is. Its orbit comes
+  from CelesTrak (free, no key) at most every 6 hours, and the phone works
+  out where it is from that. If the orbit can't be fetched, or it's more
+  than 4 days old, the station just doesn't show. Preview a pretend pass
+  with `?critter=iss`.
 - **Seasons:** the ray coming off the sun reaches further in summer than in
   winter (full length on the longest day, a bit under half on the
   shortest). On the longest and shortest days of the year a badge appears
@@ -640,7 +651,8 @@ phone works it out from the same sky maths (no internet): which planets
 are up after dark tonight, the moon's new, quarter and full dates (the full
 moon gets its name, like "the Hunter's Moon"), the moon passing close to a
 planet, meteor shower peaks (and whether the moon will wash them out),
-eclipses, equinoxes and solstices, and how sunset moves over the week.
+eclipses, equinoxes and solstices, how sunset moves over the week, and the
+space station's best passes (the ones that climb at least 25° high).
 Under it is the wish counter, with badges at 1, 10, 25, 50 and 100 wishes
 (`WISH_BADGES` in `main.js`). Preview a busy week with
 `?at=2026-03-01T12:00` (a total lunar eclipse).
