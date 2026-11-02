@@ -98,9 +98,9 @@
         <h1>Pre-market brief</h1>
         <p class="page-head__line">
           What I read before the open: MU and the AI hardware names, put
-          together every weekday morning from the night's news. Prices and
-          levels are estimates from web reports, not live quotes, and none
-          of this is financial advice.
+          together every weekday morning from the night's news, then graded
+          after the close. Prices and levels are estimates from web reports,
+          not live quotes, and none of this is financial advice.
         </p>
         <!-- The live horizon: main.js puts the sun where the real sun is
              over Saskatoon right now. -->
@@ -139,32 +139,48 @@
       </div>
     </section>
 
-    <!-- 2. The brief. briefs.js reads briefs/index.json, then the newest
-         briefs/YYYY-MM-DD.md (or the one named in the address, #2026-11-02)
-         and turns its Markdown into the card below. Once the market has
-         closed, a "How it did" box joins it from report-cards/. -->
+    <!-- 2. The two runs, as tabs: the morning brief and the after-close
+         report card. Each tab has its own archive at the bottom. briefs.js
+         switches them; #after in the address opens the second tab
+         (#after-2026-11-02 a past report card, #2026-11-02 a past brief).
+         Without JavaScript only the first tab's "Turn on JavaScript" shows. -->
     <section class="section wrap" aria-labelledby="brief-heading">
-      <h2 id="brief-heading">The brief</h2>
-      <!-- The running score from the after-close report cards
-           (report-cards/index.json, written by postmarket-recap.mjs after
-           every close). briefs.js fills it in; hidden until there is one. -->
-      <p class="report-tally" data-report-tally hidden></p>
-      <p class="brief-date" data-brief-date></p>
-      <p class="brief-notice" data-brief-notice hidden></p>
-      <article class="brief-card" data-brief aria-live="polite">
-        <p class="project-list__note">Loading the latest brief&hellip;</p>
-      </article>
-      <noscript>
-        <p>Turn on JavaScript to read the brief.</p>
-      </noscript>
-    </section>
+      <h2 id="brief-heading">The briefs</h2>
+      <div class="brief-tabs" role="tablist" aria-label="Which run">
+        <button type="button" class="brief-tab" role="tab" id="tab-pre" data-tab="pre" aria-controls="panel-pre" aria-selected="true">Pre-market</button>
+        <button type="button" class="brief-tab" role="tab" id="tab-post" data-tab="post" aria-controls="panel-post" aria-selected="false" tabindex="-1">After close</button>
+      </div>
 
-    <!-- 3. Every brief so far, newest first, folded by year and month.
-         briefs.js builds the folds from briefs/index.json and loads a
-         month's list (briefs/months/YYYY-MM.json) when it's opened. -->
-    <section class="section wrap" aria-labelledby="archive-heading">
-      <h2 id="archive-heading">Past briefs</h2>
-      <div class="archive-folds" data-archive></div>
+      <!-- Pre-market: briefs/index.json, then the newest briefs/YYYY-MM-DD.md
+           turned from Markdown into the card below. -->
+      <div class="brief-panel" role="tabpanel" id="panel-pre" aria-labelledby="tab-pre" tabindex="0">
+        <p class="brief-date" data-brief-date></p>
+        <p class="brief-notice" data-brief-notice hidden></p>
+        <article class="brief-card" data-brief aria-live="polite">
+          <p class="project-list__note">Loading the latest brief&hellip;</p>
+        </article>
+        <noscript>
+          <p>Turn on JavaScript to read the brief.</p>
+        </noscript>
+        <!-- Every brief so far, newest first, folded by year and month.
+             A month's list (briefs/months/YYYY-MM.json) loads when it's opened. -->
+        <h3 class="brief-archive__title">Past briefs</h3>
+        <div class="archive-folds" data-archive="pre"></div>
+      </div>
+
+      <!-- After close: the report cards written by postmarket-recap.mjs
+           (report-cards/index.json for the score and the months, then
+           report-cards/YYYY-MM.json). -->
+      <div class="brief-panel" role="tabpanel" id="panel-post" aria-labelledby="tab-post" tabindex="0" hidden>
+        <p class="report-tally" data-report-tally hidden></p>
+        <p class="brief-date" data-card-date></p>
+        <p class="brief-notice" data-card-notice hidden></p>
+        <article class="brief-card" data-card aria-live="polite">
+          <p class="project-list__note">Loading the latest report card&hellip;</p>
+        </article>
+        <h3 class="brief-archive__title">Past report cards</h3>
+        <div class="archive-folds" data-archive="post"></div>
+      </div>
     </section>
   </main>
 
