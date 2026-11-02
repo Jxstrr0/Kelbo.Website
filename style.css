@@ -2223,12 +2223,18 @@ img {
 }
 
 /* "Fog advisory · until 5:39 PM": Environment Canada's alert for the
-   spot under the sky, a pill on the left just above the horizon line
-   (main.js setUpAlert). Warnings are solid clay. */
+   spot under the sky (main.js setUpAlert). On phones it sits in the
+   ground strip on the right, beside the readout, which leaves it room
+   (--alert-room, set by main.js to the pill's width). From 40rem the
+   readout spreads across the strip, so the pill goes back above the
+   horizon line on the left. Warnings are solid clay. */
 .horizon__alert {
   position: absolute;
-  left: 0;
-  bottom: calc(var(--ground-height) + 0.75rem);
+  right: 0;
+  top: calc(var(--sky-height) + 3.5px + 10px + 0.35rem);
+  bottom: 0;
+  margin: auto 0;
+  height: max-content;
   z-index: 3;
   display: flex;
   align-items: center;
@@ -2283,7 +2289,21 @@ img {
   display: none;
 }
 
+@media (max-width: 39.99rem) {
+  .horizon__readout {
+    right: var(--alert-room, 0px);
+  }
+}
+
 @media (min-width: 40rem) {
+  .horizon__alert {
+    right: auto;
+    left: 0;
+    top: auto;
+    bottom: calc(var(--ground-height) + 0.75rem);
+    margin: 0;
+  }
+
   .horizon__alert-extra {
     display: inline;
   }
