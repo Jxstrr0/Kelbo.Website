@@ -158,7 +158,7 @@ keep the Co-Authored-By trailer for Claude in each message.
   (a V of small bots over the sun). Brief sits above the journal.
 - The live horizon (`[data-horizon]` in the home hero, every page head and
   the 404) puts the sun where the real sun is over Saskatoon (`YXE` in
-  `main.js`, no network; only the optional weather, air quality and aurora fetch; the Trading page's USD/CAD line is the one other outside call), switches to the dark theme at real sunset, and
+  `main.js`, no network; only the optional weather, air quality, aurora and ISS orbit fetches; the Trading page's USD/CAD line is the one other outside call), switches to the dark theme at real sunset, and
   warms the sky toward clay over the last 20 minutes before it (`--warm`).
   Preview any time with `?at=noon|sunrise|sunset|dusk|night` or
   `?at=2026-06-21T21:30`. The ray's reach scales with the season
@@ -441,6 +441,23 @@ keep the Co-Authored-By trailer for Claude in each message.
   radiant x always go through `skyX(az)` (180 = south, never hard-code
   `(az - 90) / 180`). It adds `.horizon__facing` ("Facing north", home only)
   and `horizon--sun-behind`/`horizon--moon-behind` (dimmed).
+- The ISS (main.js, the block before "The moon"): `loadIss` fetches the
+  CelesTrak OMM JSON (`ISS_URL`, CATNR 25544) via `cachedFetch`
+  (`ISS_KEY`, `ISS_MS` 6 h, eight fields kept); `sgp4Init`/`sgp4At` are a
+  hand-written near-Earth SGP4 (WGS-72, checked against satellite.js to a
+  few metres; deep-space orbits rejected), `issLook(t)` turns it into
+  alt/az/range for `YXE` (TEME to Earth-fixed with the site's GMST, WGS-84
+  observer) plus `sunlit` (cylindrical Earth shadow), or null when the
+  elements are over `ISS_STALE_MS` (4 days) from t. `issSeen` = alt ≥
+  `ISS_SHOW_ALT`, sunlit, sun ≤ `ISS_DARK_SUN` (−6°). `placeIss` (from
+  `placeSun`) makes `.horizon__iss` with a `b.iss` dot (name span on the
+  home sky only), placed with `skyX` and the `STAR_TOP_ALT` height map;
+  while seen on the live sky it re-places itself every second
+  (`.iss--glide` CSS transition, motion block only; every 5 s without
+  gliding under reduce motion). Tap tip in `setUpSkyTaps`; `issLine`
+  joins the night readout turns; `issPasses` (30 s steps, alt ≥
+  `ISS_PASS_ALT`) feeds Sky this week (peak ≥ `ISS_WEEK_ALT`, top 5).
+  `?critter=iss` shows `issPreview`, a pretend 40 s pass.
 - Sky this week (`[data-sky-week]` under the Now strip, home only):
   `skyWeek(t)` steps the 7 days from local midnight hourly: tonight's
   planets (sunset + 1 h, alt > 6°, > `GLARE_DEG` from the sun), moon
