@@ -1,51 +1,76 @@
+# Writes the morning pre-market brief and puts it live.
+#
+# Every weekday at 6:50 am Saskatoon time (12:50 UTC; Saskatchewan has no
+# daylight saving, so this never drifts), this:
+#   1. runs .github/scripts/premarket-brief.mjs, which asks Claude (with web
+#      search) for today's brief and writes briefs/YYYY-MM-DD.md plus
+#      briefs/index.json,
+#   2. commits those files to main,
+#   3. starts the "Deploy site" run so the brief goes live. (A push made by a
+#      workflow doesn't start other workflows on its own, so it has to ask.)
+#
+# It needs one repository secret, ANTHROPIC_API_KEY (Settings → Secrets and
+# variables → Actions). The key is only ever read from there and is never
+# written into the repo. "Run workflow" on the Actions tab runs it right now;
+# tick the box to rewrite a brief that already exists for today.
 name: Pre-market brief
 
 on:
   schedule:
-    # 12:50 UTC = 6:50 AM Saskatchewan time, Monday to Friday, all year (posts around 7)
     - cron: "50 12 * * 1-5"
-  workflow_dispatch: # lets you run it by hand from the Actions tab
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Rewrite today's brief even if one already exists"
+        type: boolean
+        default: false
 
 permissions:
-  contents: write
-  pages: write
+  contents: write # to commit the brief
+  actions: write # to start the Deploy site run
 
+# Never write two briefs at once.
 concurrency:
   group: premarket-brief
   cancel-in-progress: false
 
 jobs:
   brief:
+    name: Write and publish
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
 
       - name: Write today's brief
-        run: node scripts/premarket-brief.mjs
+        run: node .github/scripts/premarket-brief.mjs
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          # "1" when the box was ticked on a hand-started run, else empty.
+          FORCE: ${{ inputs.force == true && '1' || '' }}
 
-      - name: Commit and push
+      - name: Commit it to main
+        id: commit
         run: |
           git config user.name "premarket-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add briefs
           if git diff --cached --quiet; then
             echo "Nothing new to commit."
+            echo "pushed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           git commit -m "Pre-market brief $(TZ=America/Regina date +%F)"
           git pull --rebase
           git push
+          echo "pushed=true" >> "$GITHUB_OUTPUT"
 
-      - name: Rebuild GitHub Pages
-        run: |
-          curl -fsS -X POST \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            -H "Accept: application/vnd.github+json" \
-            https://api.github.com/repos/${{ github.repository }}/pages/builds || true
+      - name: Put the site live
+        if: steps.commit.outputs.pushed == 'true'
+        run: gh workflow run deploy.yml --ref main
+        env:
+          GH_TOKEN: ${{ github.token }}
