@@ -907,10 +907,11 @@ you open it.
   15 to 60 minutes late on busy mornings, and now and then drops one,
   which is why there are back-up tries. Keep them off :00 and :30, the
   busiest minutes.
-  It can run up to 25 web searches a brief (`MAX_SEARCHES`) and open up to
+  It can run up to 30 web searches a brief (`MAX_SEARCHES`) and open up to
   10 whole pages on any site to read the actual numbers (`MAX_FETCHES`),
   following a rough search plan in `SYSTEM` (most of it on MU). It calls
-  the model named in `MODEL` (`claude-opus-5-5`).
+  the model named in `MODEL` (`claude-opus-5-5`), set to think harder
+  than its default (`effort: "high"`), mostly for the gap call.
 - **Yesterday's call:** the robot hands it the previous brief, so it says
   what changed overnight instead of repeating old news, and the MU
   section opens with **Last call:** what the last brief predicted for the
