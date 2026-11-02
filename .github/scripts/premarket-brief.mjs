@@ -1,13 +1,19 @@
 // Pre-market brief generator for Kelbo.Website
 // Runs in GitHub Actions. Calls Claude with web search, writes briefs/YYYY-MM-DD.md
-// and updates briefs/index.json. Needs ANTHROPIC_API_KEY in the environment.
+// and updates briefs/index.json and briefs/latest.json. Keeps the briefs
+// folder under MAX_FOLDER_BYTES by removing the oldest briefs (git history
+// still has them). Needs ANTHROPIC_API_KEY in the environment.
 
-import { readFile, writeFile, mkdir, access } from "node:fs/promises";
+import { readFile, writeFile, mkdir, access, readdir, stat, unlink } from "node:fs/promises";
 
 const MODEL = "claude-opus-5-5";
 const MAX_SEARCHES = 20;
 const BRIEFS_DIR = "briefs";
 const MARKER = "===BRIEF===";
+// The briefs folder's size limit. At about 8 KB a brief this keeps roughly
+// the last two and a half years; older ones are removed from the folder and
+// the archive, but stay in the repo's git history.
+const MAX_FOLDER_BYTES = 5 * 1024 * 1024;
 
 const apiKey = process.env.ANTHROPIC_API_KEY;
 if (!apiKey) {
@@ -219,7 +225,26 @@ let index = [];
 try { index = JSON.parse(await readFile(indexPath, "utf8")); } catch { /* new index */ }
 // time: when this brief went out, so the site can flag it as new for an hour.
 index = [{ date: isoDate, time: new Date().toISOString(), headline, tldr }, ...index.filter((e) => e.date !== isoDate)];
+
+// Keep the folder under its limit: drop the oldest briefs until it fits.
+const briefFiles = (await readdir(BRIEFS_DIR)).filter((f) => /^\d{4}-\d{2}-\d{2}\.md$/.test(f)).sort();
+const sizes = new Map();
+for (const f of briefFiles) sizes.set(f, (await stat(`${BRIEFS_DIR}/${f}`)).size);
+const folderBytes = () =>
+  [...sizes.values()].reduce((a, b) => a + b, 0) + Buffer.byteLength(JSON.stringify(index, null, 2)) + 200;
+while (folderBytes() > MAX_FOLDER_BYTES && sizes.size > 1) {
+  const oldest = sizes.keys().next().value; // names sort oldest first
+  await unlink(`${BRIEFS_DIR}/${oldest}`);
+  sizes.delete(oldest);
+  index = index.filter((e) => `${e.date}.md` !== oldest);
+  console.log(`Folder over ${MAX_FOLDER_BYTES / 1024 / 1024} MB: removed ${oldest} (still in git history).`);
+}
+console.log(`Briefs folder: ${sizes.size} briefs, about ${Math.round(folderBytes() / 1024)} KB of ${MAX_FOLDER_BYTES / 1024} KB.`);
+
 await writeFile(indexPath, JSON.stringify(index, null, 2) + "\n");
+// latest.json is tiny and is what every page reads for the "new brief" dot,
+// so page loads stay small however long the archive gets.
+await writeFile(`${BRIEFS_DIR}/latest.json`, JSON.stringify({ date: index[0].date, time: index[0].time }) + "\n");
 
 console.log(`Wrote ${briefPath}: ${headline}`);
 console.log(`Tokens: ${usage.input_tokens} in, ${usage.output_tokens} out`);
