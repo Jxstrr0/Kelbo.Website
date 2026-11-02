@@ -1314,6 +1314,7 @@ function placeSun(scene, t) {
   placeMoon(scene, t);
   placeEclipse(scene, t);
   placeStars(scene, t);
+  placeIss(scene, t);
 }
 
 /* ---------- The stars ----------
@@ -1550,6 +1551,325 @@ function placeStars(scene, t) {
     line.setAttribute("x2", b.x.toFixed(2));
     line.setAttribute("y2", b.y.toFixed(2));
   }
+}
+
+/* ---------- The space station ----------
+   The International Space Station, where it really is. Its orbit comes
+   from CelesTrak (the station's latest "orbital elements", fetched at
+   most every ISS_MS and kept on the phone); everything else is worked
+   out here. SGP4 is the standard way to turn those elements into a
+   position, written out below in its near-Earth form (the station is
+   low, so the deep-space parts aren't needed). It's checked against the
+   satellite.js library to within a kilometre.
+
+   You can only see the station when it's lit by the sun but the ground
+   under it is dark: after dusk or before dawn (sun 6° below the horizon
+   or more). So the dot only shows then, and only above the horizon in
+   the direction the sky strip faces. ?critter=iss shows a pretend pass
+   any time. */
+const ISS_KEY = "kelbo.iss";
+const ISS_MS = 6 * 3600000; // CelesTrak asks for no more than one fetch every 2 hours
+const ISS_URL = "https://celestrak.org/NORAD/elements/gp.php?CATNR=25544&FORMAT=json";
+const ISS_STALE_MS = 4 * 86400000; // elements older (or newer) than this are too far off to use
+const ISS_DARK_SUN = -6; // the sun must be this far below the horizon to see it
+const ISS_SHOW_ALT = 2; // degrees: lower than this it's lost in the haze, like the stars
+const ISS_PASS_ALT = 10; // degrees: a pass counts from this height
+const ISS_WEEK_ALT = 25; // degrees: passes that climb at least this high make Sky this week
+let issOrbit = null; // the ready-to-run orbit, once it's loaded
+let issLoading = null;
+
+// The Earth, as SGP4 measures it (the WGS-72 model the elements are made for)
+const SGP_RE = 6378.135; // km
+const SGP_XKE = 60 / Math.sqrt((SGP_RE ** 3) / 398600.8); // sqrt(GM) in Earth radii per minute
+const SGP_J2 = 0.001082616, SGP_J3 = -0.00000253881, SGP_J4 = -0.00000165597;
+
+// Gets the orbit ready from CelesTrak's numbers (degrees, revolutions a
+// day). Returns null if they look wrong. The steps and names follow the
+// standard published SGP4 (Vallado, "Revisiting Spacetrack Report #3").
+function sgp4Init(e) {
+  const num = (v) => (typeof v === "number" && Number.isFinite(v) ? v : NaN);
+  const epoch = Date.parse(String(e.EPOCH || "") + (/[zZ+]/.test(String(e.EPOCH).slice(10)) ? "" : "Z"));
+  const ecco = num(e.ECCENTRICITY), inclo = num(e.INCLINATION) * D2R, nodeo = num(e.RA_OF_ASC_NODE) * D2R;
+  const argpo = num(e.ARG_OF_PERICENTER) * D2R, mo = num(e.MEAN_ANOMALY) * D2R;
+  const noKozai = (num(e.MEAN_MOTION) * 2 * Math.PI) / 1440; // radians a minute
+  const bstar = num(e.BSTAR);
+  if (![epoch, ecco, inclo, nodeo, argpo, mo, noKozai, bstar].every(Number.isFinite) || ecco >= 1 || noKozai <= 0) return null;
+  if ((2 * Math.PI) / noKozai >= 225) return null; // a deep-space orbit: not the station
+
+  const x2o3 = 2 / 3;
+  const eccsq = ecco * ecco, omeosq = 1 - eccsq, rteosq = Math.sqrt(omeosq);
+  const cosio = Math.cos(inclo), cosio2 = cosio * cosio, sinio = Math.sin(inclo);
+  // The mean motion the elements give is "Kozai"; SGP4 wants it "Brouwer".
+  const ak = (SGP_XKE / noKozai) ** x2o3;
+  const d1 = (0.75 * SGP_J2 * (3 * cosio2 - 1)) / (rteosq * omeosq);
+  let del = d1 / (ak * ak);
+  const adel = ak * (1 - del * del - del * (1 / 3 + (134 * del * del) / 81));
+  del = d1 / (adel * adel);
+  const no = noKozai / (1 + del);
+  const ao = (SGP_XKE / no) ** x2o3;
+  const po = ao * omeosq, posq = po * po, rp = ao * (1 - ecco);
+  const con42 = 1 - 5 * cosio2, con41 = -con42 - 2 * cosio2;
+
+  // Drag: how thick the air is at the orbit's lowest point
+  const isimp = rp < 220 / SGP_RE + 1; // very low orbits use a simpler drag model
+  let sfour = 78 / SGP_RE + 1, qzms24 = ((120 - 78) / SGP_RE) ** 4;
+  const perige = (rp - 1) * SGP_RE;
+  if (perige < 156) {
+    sfour = perige < 98 ? 20 : perige - 78;
+    qzms24 = ((120 - sfour) / SGP_RE) ** 4;
+    sfour = sfour / SGP_RE + 1;
+  }
+  const pinvsq = 1 / posq, tsi = 1 / (ao - sfour);
+  const eta = ao * ecco * tsi, etasq = eta * eta, eeta = ecco * eta;
+  const psisq = Math.abs(1 - etasq);
+  const coef = qzms24 * tsi ** 4, coef1 = coef / psisq ** 3.5;
+  const cc2 = coef1 * no * (ao * (1 + 1.5 * etasq + eeta * (4 + etasq))
+    + ((0.375 * SGP_J2 * tsi) / psisq) * con41 * (8 + 3 * etasq * (8 + etasq)));
+  const cc1 = bstar * cc2;
+  const j3oj2 = SGP_J3 / SGP_J2;
+  const cc3 = ecco > 1e-4 ? (-2 * coef * tsi * j3oj2 * no * sinio) / ecco : 0;
+  const x1mth2 = 1 - cosio2;
+  const cc4 = 2 * no * coef1 * ao * omeosq * (eta * (2 + 0.5 * etasq) + ecco * (0.5 + 2 * etasq)
+    - ((SGP_J2 * tsi) / (ao * psisq)) * (-3 * con41 * (1 - 2 * eeta + etasq * (1.5 - 0.5 * eeta))
+    + 0.75 * x1mth2 * (2 * etasq - eeta * (1 + etasq)) * Math.cos(2 * argpo)));
+  const cc5 = 2 * coef1 * ao * omeosq * (1 + 2.75 * (etasq + eeta) + eeta * etasq);
+  const cosio4 = cosio2 * cosio2;
+  const temp1 = 1.5 * SGP_J2 * pinvsq * no, temp2 = 0.5 * temp1 * SGP_J2 * pinvsq;
+  const temp3 = -0.46875 * SGP_J4 * pinvsq * pinvsq * no;
+  // How fast the orbit turns: the mean anomaly, the low point and the node
+  const mdot = no + 0.5 * temp1 * rteosq * con41 + 0.0625 * temp2 * rteosq * (13 - 78 * cosio2 + 137 * cosio4);
+  const argpdot = -0.5 * temp1 * con42 + 0.0625 * temp2 * (7 - 114 * cosio2 + 395 * cosio4) + temp3 * (3 - 36 * cosio2 + 49 * cosio4);
+  const xhdot1 = -temp1 * cosio;
+  const nodedot = xhdot1 + (0.5 * temp2 * (4 - 19 * cosio2) + 2 * temp3 * (3 - 7 * cosio2)) * cosio;
+  const rec = {
+    epoch, ecco, inclo, nodeo, argpo, mo, no, bstar, isimp, eta, con41, x1mth2,
+    mdot, argpdot, nodedot, cc1, cc4, cc5,
+    omgcof: bstar * cc3 * Math.cos(argpo),
+    xmcof: ecco > 1e-4 ? (-x2o3 * coef * bstar) / eeta : 0,
+    nodecf: 3.5 * omeosq * xhdot1 * cc1,
+    t2cof: 1.5 * cc1,
+    xlcof: (-0.25 * j3oj2 * sinio * (3 + 5 * cosio)) / (Math.abs(cosio + 1) > 1.5e-12 ? 1 + cosio : 1.5e-12),
+    aycof: -0.5 * j3oj2 * sinio,
+    delmo: (1 + eta * Math.cos(mo)) ** 3,
+    sinmao: Math.sin(mo),
+    x7thm1: 7 * cosio2 - 1,
+    d2: 0, d3: 0, d4: 0, t3cof: 0, t4cof: 0, t5cof: 0,
+  };
+  if (!isimp) {
+    const cc1sq = cc1 * cc1;
+    rec.d2 = 4 * ao * tsi * cc1sq;
+    const temp = (rec.d2 * tsi * cc1) / 3;
+    rec.d3 = (17 * ao + sfour) * temp;
+    rec.d4 = 0.5 * temp * ao * tsi * (221 * ao + 31 * sfour) * cc1;
+    rec.t3cof = rec.d2 + 2 * cc1sq;
+    rec.t4cof = 0.25 * (3 * rec.d3 + cc1 * (12 * rec.d2 + 10 * cc1sq));
+    rec.t5cof = 0.2 * (3 * rec.d4 + 12 * cc1 * rec.d3 + 6 * rec.d2 * rec.d2 + 15 * cc1sq * (2 * rec.d2 + cc1sq));
+  }
+  return rec;
+}
+
+// Where the station is at moment "date": x, y, z in km from the middle of
+// the Earth, in the frame SGP4 uses (TEME: z through the North Pole, x
+// toward the spring equinox). null if the maths breaks down.
+function sgp4At(rec, date) {
+  const TAU = 2 * Math.PI;
+  const t = (date.getTime() - rec.epoch) / 60000; // minutes since the elements were made
+  const xmdf = rec.mo + rec.mdot * t;
+  const argpdf = rec.argpo + rec.argpdot * t;
+  const nodedf = rec.nodeo + rec.nodedot * t;
+  let argpm = argpdf, mm = xmdf;
+  const t2 = t * t;
+  let nodem = nodedf + rec.nodecf * t2;
+  let tempa = 1 - rec.cc1 * t, tempe = rec.bstar * rec.cc4 * t, templ = rec.t2cof * t2;
+  if (!rec.isimp) {
+    const delomg = rec.omgcof * t;
+    const delm = rec.xmcof * ((1 + rec.eta * Math.cos(xmdf)) ** 3 - rec.delmo);
+    mm = xmdf + delomg + delm;
+    argpm = argpdf - delomg - delm;
+    const t3 = t2 * t, t4 = t3 * t;
+    tempa -= rec.d2 * t2 + rec.d3 * t3 + rec.d4 * t4;
+    tempe += rec.bstar * rec.cc5 * (Math.sin(mm) - rec.sinmao);
+    templ += rec.t3cof * t3 + t4 * (rec.t4cof + t * rec.t5cof);
+  }
+  const am = (SGP_XKE / rec.no) ** (2 / 3) * tempa * tempa;
+  const nm = SGP_XKE / am ** 1.5;
+  const em = Math.max(1e-6, rec.ecco - tempe);
+  if (!(am > 0.95) || em >= 1) return null; // it would have come down by now
+  mm += rec.no * templ;
+  const xlm = mm + argpm + nodem;
+  nodem %= TAU;
+  argpm %= TAU;
+  mm = (xlm - argpm - nodem) % TAU;
+
+  // Long-period wobbles
+  const axnl = em * Math.cos(argpm);
+  let temp = 1 / (am * (1 - em * em));
+  const aynl = em * Math.sin(argpm) + temp * rec.aycof;
+  const xl = mm + argpm + nodem + temp * rec.xlcof * axnl;
+
+  // Kepler's equation, a few rounds of better guesses
+  const u = (xl - nodem) % TAU;
+  let eo1 = u, tem5 = 1, sineo1 = 0, coseo1 = 1;
+  for (let k = 0; k < 10 && Math.abs(tem5) >= 1e-12; k++) {
+    sineo1 = Math.sin(eo1);
+    coseo1 = Math.cos(eo1);
+    tem5 = (u - aynl * coseo1 + axnl * sineo1 - eo1) / (1 - coseo1 * axnl - sineo1 * aynl);
+    tem5 = Math.max(-0.95, Math.min(0.95, tem5));
+    eo1 += tem5;
+  }
+
+  // Short-period wobbles, then the position
+  const ecose = axnl * coseo1 + aynl * sineo1;
+  const esine = axnl * sineo1 - aynl * coseo1;
+  const el2 = axnl * axnl + aynl * aynl;
+  const pl = am * (1 - el2);
+  if (pl < 0) return null;
+  const rl = am * (1 - ecose);
+  const betal = Math.sqrt(1 - el2);
+  temp = esine / (1 + betal);
+  const sinu = (am / rl) * (sineo1 - aynl - axnl * temp);
+  const cosu = (am / rl) * (coseo1 - axnl + aynl * temp);
+  let su = Math.atan2(sinu, cosu);
+  const sin2u = (cosu + cosu) * sinu, cos2u = 1 - 2 * sinu * sinu;
+  temp = 1 / pl;
+  const temp1 = 0.5 * SGP_J2 * temp, temp2 = temp1 * temp;
+  const cosip = Math.cos(rec.inclo), sinip = Math.sin(rec.inclo);
+  const mrt = rl * (1 - 1.5 * temp2 * betal * rec.con41) + 0.5 * temp1 * rec.x1mth2 * cos2u;
+  su -= 0.25 * temp2 * rec.x7thm1 * sin2u;
+  const xnode = nodem + 1.5 * temp2 * cosip * sin2u;
+  const xinc = rec.inclo + 1.5 * temp2 * cosip * sinip * cos2u;
+  if (mrt < 1) return null; // underground: the elements are no good
+  const sinsu = Math.sin(su), cossu = Math.cos(su);
+  const snod = Math.sin(xnode), cnod = Math.cos(xnode);
+  const sini = Math.sin(xinc), cosi = Math.cos(xinc);
+  const r = mrt * SGP_RE;
+  return [
+    r * (-snod * cosi * sinsu + cnod * cossu),
+    r * (cnod * cosi * sinsu + snod * cossu),
+    r * (sini * sinsu),
+  ];
+}
+
+// The station as seen from here at moment "t": its height in the sky
+// (alt) and compass direction (az, 180 = south) in degrees, how far away
+// and how high up it is (km), and whether sunlight is on it. null with no
+// usable orbit.
+function issLook(t) {
+  if (!issOrbit || Math.abs(t - issOrbit.epoch) > ISS_STALE_MS) return null;
+  const p = sgp4At(issOrbit, t);
+  if (!p) return null;
+  // Turn the frame with the Earth (sidereal time), so x/y/z are fixed to the ground
+  const n = t.getTime() / 86400000 - 10957.5;
+  const gmst = ((18.697374558 + 24.06570982441908 * n) * 15) * D2R;
+  const cg = Math.cos(gmst), sg = Math.sin(gmst);
+  const gx = cg * p[0] + sg * p[1], gy = -sg * p[0] + cg * p[1], gz = p[2];
+  // Where we're standing, on the real (slightly squashed) Earth
+  const lat = YXE.lat * D2R, lon = YXE.lon * D2R;
+  const f = 1 / 298.257223563, e2 = f * (2 - f), a = 6378.137, h = (YXE.elev || 0) / 1000;
+  const N = a / Math.sqrt(1 - e2 * Math.sin(lat) ** 2);
+  const ox = (N + h) * Math.cos(lat) * Math.cos(lon), oy = (N + h) * Math.cos(lat) * Math.sin(lon);
+  const oz = (N * (1 - e2) + h) * Math.sin(lat);
+  const rx = gx - ox, ry = gy - oy, rz = gz - oz;
+  const range = Math.hypot(rx, ry, rz);
+  const south = Math.sin(lat) * Math.cos(lon) * rx + Math.sin(lat) * Math.sin(lon) * ry - Math.cos(lat) * rz;
+  const east = -Math.sin(lon) * rx + Math.cos(lon) * ry;
+  const up = Math.cos(lat) * Math.cos(lon) * rx + Math.cos(lat) * Math.sin(lon) * ry + Math.sin(lat) * rz;
+  const alt = Math.asin(up / range) * R2D;
+  const az = (Math.atan2(east, -south) * R2D + 360) % 360;
+  // In the Earth's shadow? (a cylinder behind the Earth, away from the sun)
+  const { ra, dec } = sunPosition(t);
+  const sx = Math.cos(dec) * Math.cos(ra), sy = Math.cos(dec) * Math.sin(ra), sz = Math.sin(dec);
+  const along = p[0] * sx + p[1] * sy + p[2] * sz;
+  const r2 = p[0] * p[0] + p[1] * p[1] + p[2] * p[2];
+  const sunlit = along > 0 || Math.sqrt(Math.max(0, r2 - along * along)) > 6371;
+  return { alt, az, range, height: Math.sqrt(r2) - 6371, sunlit };
+}
+
+// Can it be seen right now? Up, lit by the sun, and the sky dark enough.
+function issSeen(look, t) {
+  return Boolean(look && look.alt >= ISS_SHOW_ALT && look.sunlit && sunAltitude(t) <= ISS_DARK_SUN);
+}
+
+// Fetches the orbit once (kept on the phone for ISS_MS). Never throws.
+function loadIss() {
+  if (!issLoading) {
+    issLoading = cachedFetch(ISS_KEY, ISS_MS, ISS_URL, (list) => {
+      const e = Array.isArray(list) ? list[0] : list;
+      const keep = ["EPOCH", "MEAN_MOTION", "ECCENTRICITY", "INCLINATION", "RA_OF_ASC_NODE", "ARG_OF_PERICENTER", "MEAN_ANOMALY", "BSTAR"];
+      return Object.fromEntries(keep.map((k) => [k, e && e[k]]));
+    })
+      .then((elements) => { issOrbit = sgp4Init(elements); })
+      .catch(() => { issOrbit = null; });
+  }
+  return issLoading;
+}
+
+// The pretend pass for ?critter=iss: low in the west-southwest, up
+// through the south, down in the east-southeast, every 40 seconds (it
+// stays put mid-pass with "reduce motion").
+function issPreview() {
+  const s = REDUCE_MOTION ? 0.5 : ((Date.now() / 1000) % 40) / 40;
+  return { alt: 8 + 50 * Math.sin(Math.PI * s), az: 245 - 130 * s, range: 700, height: 420, sunlit: true, preview: true };
+}
+
+// Puts the station's dot where it is at moment "t" (from placeSun), or
+// hides it. While it's crossing the live sky, it re-places itself every
+// second (every 5 with "reduce motion", without gliding) until it's gone.
+function placeIss(scene, t) {
+  if (!scene.iss) {
+    const box = el("div", "horizon__iss");
+    const dot = el("b", "iss");
+    if (!scene.closest(".page-head")) dot.append(el("span", "", "ISS")); // named on the big home sky
+    box.append(dot);
+    (scene.querySelector(".horizon__stars") || scene.firstElementChild).after(box);
+    scene.iss = { box, dot, look: null, timer: 0 };
+  }
+  const it = scene.iss;
+  const preview = CRITTER === "iss";
+  const look = preview ? issPreview() : issLook(t);
+  const across = look ? skyX(look.az) : -1;
+  const seen = (preview || issSeen(look, t)) && across >= 0 && across <= 1;
+  it.look = seen ? look : null;
+  const live = Math.abs(t - Date.now()) < 5000 && !swiping;
+  it.dot.classList.toggle("iss--glide", live && !REDUCE_MOTION && !it.dot.hidden);
+  it.dot.hidden = !seen;
+  if (seen) {
+    it.dot.style.left = `${(across * 100).toFixed(2)}%`;
+    it.dot.style.top = `${((1 - Math.min(look.alt, STAR_TOP_ALT) / STAR_TOP_ALT) * 100).toFixed(2)}%`;
+  }
+  clearTimeout(it.timer);
+  if (seen && live) it.timer = setTimeout(() => placeIss(scene, new Date()), REDUCE_MOTION ? 5000 : 1000);
+}
+
+// "Space station overhead · look southwest" for the readout while it's up.
+function issLine(t) {
+  const look = issLook(t);
+  return issSeen(look, t) ? `Space station passing over · look ${compassName(look.az)}` : "";
+}
+
+// The station's visible passes between start and end (ms): when each
+// starts and ends, how high it climbs and which way it goes. Checked
+// every 30 seconds.
+function issPasses(start, end) {
+  const passes = [];
+  if (!issOrbit) return passes;
+  let pass = null;
+  for (let at = start; at <= end; at += 30000) {
+    const t = new Date(at);
+    const look = issLook(t);
+    const ok = look && look.alt >= ISS_PASS_ALT && look.sunlit && sunAltitude(t) <= ISS_DARK_SUN;
+    if (ok) {
+      if (!pass) pass = { start: at, from: look.az, peak: look.alt };
+      pass.end = at;
+      pass.to = look.az;
+      pass.peak = Math.max(pass.peak, look.alt);
+    } else if (pass) {
+      passes.push(pass);
+      pass = null;
+    }
+  }
+  if (pass) passes.push(pass);
+  return passes;
 }
 
 /* ---------- The moon ----------
@@ -2043,6 +2363,15 @@ function setUpSkyTaps(scene, timeNow) {
       const phase = moonPhase(t);
       const span = moonSpanAt(t);
       list.push({ ...centre(moon), title: `${moonName(phase)} moon`, detail: `${Math.round(moonLit(phase) * 100)}% lit · sets ${clock(new Date(span.next))}` });
+    }
+    if (scene.iss && scene.iss.look) {
+      const look = scene.iss.look;
+      list.push({
+        ...centre(scene.iss.dot), r: 7, title: "International Space Station",
+        detail: look.preview
+          ? "Pretend pass · 420 km up · 28,000 km/h"
+          : `${Math.round(look.height)} km up, ${Math.round(look.range).toLocaleString()} km away · 28,000 km/h`,
+      });
     }
     const box = scene.querySelector(".horizon__stars");
     if (box && box.stars && document.documentElement.dataset.theme === "dark") {
@@ -4354,12 +4683,12 @@ function setUpHorizon() {
         r = `Sets ${clock(new Date(day.set))} · ${hoursMins(day.set - t)} of light left`;
       } else if (!isDay && day.rise && t < day.rise) {
         // Night: tonight's moon, and when the sun comes back
-        l = takeTurns([eclipseLine(t), moonLine(t), lightHourLine(t), showerLine(t), auroraLine(t), weatherLine(), driftLine(t), smokeLine(t)]);
+        l = takeTurns([eclipseLine(t), issLine(t), moonLine(t), lightHourLine(t), showerLine(t), auroraLine(t), weatherLine(), driftLine(t), smokeLine(t)]);
         r = `Sun's up at ${clock(new Date(day.rise))}`;
       } else {
         // After sunset: tomorrow's sunrise
         const tomorrow = sunDay(new Date(day.end + 60000));
-        l = takeTurns([eclipseLine(t), moonLine(t), lightHourLine(t), showerLine(t), auroraLine(t), weatherLine(), driftLine(t), smokeLine(t)]);
+        l = takeTurns([eclipseLine(t), issLine(t), moonLine(t), lightHourLine(t), showerLine(t), auroraLine(t), weatherLine(), driftLine(t), smokeLine(t)]);
         r = tomorrow.rise ? `Sun's back at ${clock(new Date(tomorrow.rise))}` : "Sun's back tomorrow";
       }
       setLine(left, l, swiped);
@@ -4378,6 +4707,7 @@ function setUpHorizon() {
     const shownTime = setUpSwipe(scene, paint);
     setUpLand(scene);
     setUpWeather(scene);
+    loadIss().then(() => { if (issOrbit) tick(); }); // place it as soon as the orbit arrives
     setUpMeteors(scene, now);
     setUpCritters(scene, shownTime);
     setUpSkyTaps(scene, shownTime);
@@ -4574,6 +4904,17 @@ function skyWeek(t) {
     }
   }
 
+  // The space station's best passes (if its orbit has loaded): the five
+  // that climb highest, at least ISS_WEEK_ALT
+  issPasses(Math.max(start, t.getTime()), end)
+    .filter((pass) => pass.peak >= ISS_WEEK_ALT)
+    .sort((a, b) => b.peak - a.peak)
+    .slice(0, 5)
+    .forEach((pass) => {
+      const mins = Math.max(1, Math.round((pass.end - pass.start) / 60000));
+      add(pass.start, `Space station passes over · ${clock(new Date(pass.start))}, ${compassName(pass.from)} to ${compassName(pass.to)}, up to ${Math.round(pass.peak)}° for ${mins} min`);
+    });
+
   events.sort((a, b) => a.at - b.at);
 
   // How sunset moves over the week
@@ -4609,17 +4950,28 @@ function setUpSkyWeek() {
   if (!box) return;
   const list = box.querySelector("[data-sky-week-list]");
   const note = box.querySelector("[data-sky-week-note]");
-  // After the page has drawn, so it doesn't hold up the opening spin
-  setTimeout(() => {
+  const draw = () => {
     list.replaceChildren(...skyWeek(now()).map((e) => {
       const row = el("li", "sky-week__item");
       row.append(el("span", "sky-week__when", e.when), el("span", "sky-week__what", e.text));
       return row;
     }));
-    if (note) note.textContent = `Worked out on this phone for ${YXE.home ? "Saskatoon" : "your sky"}.`;
+    let words = `Worked out on this phone for ${YXE.home ? "Saskatoon" : "your sky"}.`;
+    // The space station's orbit comes from CelesTrak; say how fresh it is
+    if (issOrbit) {
+      const made = new Date(issOrbit.epoch).toLocaleDateString(undefined, { month: "short", day: "numeric" });
+      words += ` Space station orbit from CelesTrak (${made}); its times can shift by a minute.`;
+    }
+    if (note) note.textContent = words;
+  };
+  // After the page has drawn, so it doesn't hold up the opening spin
+  setTimeout(() => {
+    draw();
     showWishes(box.querySelector("[data-wishes]"));
     box.hidden = false;
     reveal(box);
+    // Again once the station's orbit is in, to add its passes
+    loadIss().then(() => { if (issOrbit) draw(); });
   }, 0);
 }
 
