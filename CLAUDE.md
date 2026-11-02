@@ -158,7 +158,7 @@ keep the Co-Authored-By trailer for Claude in each message.
   (a V of small bots over the sun). Brief sits above the journal.
 - The live horizon (`[data-horizon]` in the home hero, every page head and
   the 404) puts the sun where the real sun is over Saskatoon (`YXE` in
-  `main.js`, no network; only the optional weather, air quality and aurora fetch), switches to the dark theme at real sunset, and
+  `main.js`, no network; only the optional weather, air quality and aurora fetch; the Trading page's USD/CAD line is the one other outside call), switches to the dark theme at real sunset, and
   warms the sky toward clay over the last 20 minutes before it (`--warm`).
   Preview any time with `?at=noon|sunrise|sunset|dusk|night` or
   `?at=2026-06-21T21:30`. The ray's reach scales with the season
@@ -376,6 +376,10 @@ keep the Co-Authored-By trailer for Claude in each message.
   `kelbo.badges`; `checkBadges` runs on every page, every minute, after a
   play and after a wish, and `toastBadges` shows the "Badge earned" note,
   above the Play here frame) and the NYSE market light on the Trading tile.
+  The Trading page head has `[data-fx]` (`setUpFx`): the Bank of Canada
+  Valet `FXUSDCAD` daily average (`recent=2`, so it shows the day's move),
+  via `cachedFetch` (`FX_KEY`, `FX_MS` 3 h), labelled as a daily average
+  with its date, never as live. It stays hidden if the call fails.
 - Fun extras (2026-10-30): `setUpLand` adds `.horizon__windmill` (SVG,
   `WINDMILL_TOWER`/`WINDMILL_TAIL`, at 16% across; `.windmill__wheel`
   spins at `--mill-s` from `breeze()`, paused by `horizon--calm` under
