@@ -868,8 +868,8 @@ Saskatoon time. Each brief is a Markdown file in `briefs/`
   from `briefs/latest.json` (just the date and time, a few bytes, so every
   page load stays small), which the robot writes. The hour is
   `BRIEF_NEW_MS` in `main.js`.
-- **Storage limit:** the `briefs/` folder is kept under 5 MB, about two and
-  a half years of briefs. When a new brief would push it over, the robot
+- **Storage limit:** the `briefs/` folder is kept under 30 MB, about 15
+  years of briefs. When a new brief would push it over, the robot
   removes the oldest ones from the folder and the archive. They're still in
   the repo's history. The limit is `MAX_FOLDER_BYTES` at the top of
   `.github/scripts/premarket-brief.mjs`.
