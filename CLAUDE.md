@@ -631,7 +631,10 @@ keep the Co-Authored-By trailer for Claude in each message.
   blinks only in the no-preference block). The workflow commits as premarket-bot, then runs
   `gh workflow run deploy.yml` (a GITHUB_TOKEN push starts no workflows by
   itself). `briefs.js` renders the Markdown itself (escape first, then
-  headings, lists, bold, italics, https links, simple tables), draws the
+  headings, lists, bold, italics, https links, simple tables; then
+  `groupParts` wraps each `##` section in a `.brief__part`, so from 64rem
+  briefs.css sets the sections side by side in a grid, `--wrap` 120rem
+  on that page, Sources and the headline full width), draws the
   4 am to 8 pm ET session strip in Saskatoon time, and routes the archive
   by `#YYYY-MM-DD`. The page speaks in Kelbo's first person; it is a
   Trading project in `projects.json`, in `sitemap.xml` and `sw.js` `CORE`.
