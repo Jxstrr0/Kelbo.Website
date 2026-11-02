@@ -2797,8 +2797,10 @@ function setUpAlert() {
   const show = () => {
     const t = Date.now();
     const live = (alerts || []).filter((a) => !(a.expires < t));
+    const sky = pill.closest(".horizon");
     if (!live.length) {
       pill.hidden = true;
+      sky?.style.removeProperty("--alert-room");
       return;
     }
     const top = live[0];
@@ -2817,7 +2819,14 @@ function setUpAlert() {
     );
     pill.setAttribute("aria-label", `Environment Canada: ${live.map((a) => a.name).join(", ")} in effect${until ? `, ${until}` : ""}. Opens their forecast page.`);
     pill.hidden = false;
+    // On phones the pill shares the ground strip with the readout, so the
+    // readout keeps clear of it (its width plus a small gap; style.css)
+    sky?.style.setProperty("--alert-room", `${pill.offsetWidth + 12}px`);
   };
+  // The pill is a different width on phones (no "until" part), so measure again
+  addEventListener("resize", () => {
+    if (!pill.hidden) pill.closest(".horizon")?.style.setProperty("--alert-room", `${pill.offsetWidth + 12}px`);
+  });
   // One quick second try if the first check didn't get through
   loadAlerts().then(() => (alerts ? show() : new Promise((go) => setTimeout(go, 30000)).then(loadAlerts).then(show)));
   setInterval(() => {

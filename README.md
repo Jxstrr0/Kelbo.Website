@@ -603,8 +603,10 @@ from the optional weather, air quality and northern lights, below).
   alerts and the latest space weather.
 - **Weather alerts:** when Environment Canada has an alert out for
   Saskatoon (a blizzard warning, extreme cold, fog advisory and so on), a
-  pill shows on the left of the home page sky, just above the horizon
-  line, like "! Fog advisory · until 5:39 PM". Warnings are solid clay.
+  pill shows on the home page sky, like "! Fog advisory · until 5:39 PM".
+  On phones it sits under the horizon line on the right, next to the
+  weather and sunrise words; on wider screens it sits on the left, just
+  above the line. Warnings are solid clay.
   Tapping it opens Environment Canada's forecast page. It's checked at
   most every 15 minutes, and it only works for places in Canada. Preview
   it with `?alert=warning`, `?alert=watch` or `?alert=advisory`.
