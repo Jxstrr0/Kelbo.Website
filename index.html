@@ -74,8 +74,8 @@
         <ul class="nav">
           <li><a href="games.html">Games</a></li>
           <li><a href="trading.html">Trading</a></li>
-          <li><a href="ai.html">AI</a></li>
-          <li><a href="projects.html">Projects</a></li>
+          <li><a href="tools.html">Tools</a></li>
+          <li><a href="projects.html">All</a></li>
           <li class="nav__wide"><a href="about.html">About</a></li>
         </ul>
       </nav>
@@ -199,8 +199,18 @@
     <section class="section wrap" aria-labelledby="sections-heading">
       <h2 id="sections-heading">Choose a mode</h2>
       <ul class="tiles">
+        <!-- Each tile has a small drawing behind its words (.tile__art),
+             coloured from style.css so it follows the light and dark themes. -->
         <li>
           <a class="tile" href="games.html">
+            <svg class="tile__art" viewBox="0 0 120 100" aria-hidden="true">
+              <!-- A game controller over the horizon -->
+              <rect class="tile__art-line" x="0" y="96" width="120" height="4"/>
+              <path class="tile__art-b" d="M30 44h60c14 0 23 10 25 24l4 16c1 8-9 12-15 6l-11-11H27l-11 11c-6 6-16 2-15-6l4-16c2-14 11-24 25-24z"/>
+              <path class="tile__art-a" d="M28 56h7v7h7v7h-7v7h-7v-7h-7v-7h7z"/>
+              <circle class="tile__art-a" cx="86" cy="60" r="5"/>
+              <circle class="tile__art-a" cx="98" cy="70" r="5"/>
+            </svg>
             <span class="tile__name">Games</span>
             <span class="tile__line">Browser games you can play on your phone.</span>
             <span class="tile__count" data-category-count="Game"></span>
@@ -208,16 +218,53 @@
         </li>
         <li>
           <a class="tile tile--trading" href="trading.html">
+            <svg class="tile__art" viewBox="0 0 120 100" aria-hidden="true">
+              <!-- Candles climbing off the horizon -->
+              <rect class="tile__art-line" x="0" y="96" width="120" height="4"/>
+              <g class="tile__art-wick">
+                <path d="M14.5 62v32M32.5 56v32M50.5 46v36M68.5 40v34M86.5 26v36M104.5 14v34"/>
+              </g>
+              <rect class="tile__art-b" x="10" y="68" width="9" height="20" rx="1.5"/>
+              <rect class="tile__art-a" x="28" y="62" width="9" height="18" rx="1.5"/>
+              <rect class="tile__art-b" x="46" y="54" width="9" height="22" rx="1.5"/>
+              <rect class="tile__art-a" x="64" y="46" width="9" height="20" rx="1.5"/>
+              <rect class="tile__art-b" x="82" y="32" width="9" height="24" rx="1.5"/>
+              <rect class="tile__art-a" x="100" y="20" width="9" height="22" rx="1.5"/>
+            </svg>
             <span class="tile__name">Trading</span>
             <span class="tile__line">Tools for my trading day.</span>
             <span class="tile__count"><span data-category-count="Trading"></span><span class="tile__live" data-market></span></span>
           </a>
         </li>
         <li>
-          <a class="tile tile--ai" href="ai.html">
-            <span class="tile__name">AI</span>
-            <span class="tile__line">AI projects and small bots.</span>
-            <span class="tile__count" data-category-count="AI"></span>
+          <a class="tile tile--tools" href="tools.html">
+            <svg class="tile__art" viewBox="0 0 120 100" aria-hidden="true">
+              <!-- A prairie highway running to the horizon, and a wrench -->
+              <rect class="tile__art-line" x="0" y="46" width="120" height="3"/>
+              <path class="tile__art-b" d="M18 100 58 49h6l40 51z"/>
+              <path class="tile__art-dash" d="M61 53v5M61 64v9M61 80v14"/>
+              <g transform="translate(102 18) rotate(-45)">
+                <path class="tile__art-wrench" d="M5.7 5.7A8 8 0 1 1 5.7 -5.7M-8 0H-26"/>
+              </g>
+            </svg>
+            <span class="tile__name">Tools</span>
+            <span class="tile__line">Handy little tools for everyday things.</span>
+            <span class="tile__count" data-category-count="Tool"></span>
+          </a>
+        </li>
+        <li>
+          <a class="tile tile--all" href="projects.html">
+            <svg class="tile__art" viewBox="0 0 120 100" aria-hidden="true">
+              <!-- Four suns of every size along one horizon -->
+              <rect class="tile__art-line" x="0" y="96" width="120" height="4"/>
+              <path class="tile__art-b" d="M3 96a9 9 0 0 1 18 0z"/>
+              <path class="tile__art-a" d="M26 96a14 14 0 0 1 28 0z"/>
+              <path class="tile__art-b" d="M57 96a11 11 0 0 1 22 0z"/>
+              <path class="tile__art-a" d="M82 96a17 17 0 0 1 34 0z"/>
+            </svg>
+            <span class="tile__name">All</span>
+            <span class="tile__line">Everything Longlight is building, in one list.</span>
+            <span class="tile__count" data-category-count="*"></span>
           </a>
         </li>
       </ul>
