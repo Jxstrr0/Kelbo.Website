@@ -4,7 +4,7 @@
 
 import { readFile, writeFile, mkdir, access } from "node:fs/promises";
 
-const MODEL = "claude-sonnet-5-5";
+const MODEL = "claude-opus-5-5";
 const MAX_SEARCHES = 20;
 const BRIEFS_DIR = "briefs";
 const MARKER = "===BRIEF===";
