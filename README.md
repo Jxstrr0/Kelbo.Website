@@ -37,7 +37,7 @@ from their releases, then publishes the files as they are (see
 | `scan.json` | **The weekly scan.** Rewritten every Saturday by a Claude routine |
 | `scan.js` | Shows the weekly scan on the Agent Fleet page |
 | `briefs.html` | **The pre-market brief** page: the latest brief, where the US trading day is in Saskatoon time, and the archive |
-| `briefs/` | The briefs themselves, one `YYYY-MM-DD.md` per weekday, plus `index.json` (the list the page reads). Written by the robot below, so you never need to edit them |
+| `briefs/` | The briefs themselves, one `YYYY-MM-DD.md` per weekday, plus `index.json` (the list the page reads) and `latest.json` (the newest one's time, for the alert dot). Written by the robot below, so you never need to edit them |
 | `briefs.js`, `briefs.css` | Show the brief and the archive |
 | `journal.html` | The AI Trading Journal page |
 | `journal.json` | **Your journal entries.** Edit this to add an update |
@@ -865,8 +865,14 @@ Saskatoon time. Each brief is a Markdown file in `briefs/`
 - **New brief alert:** for an hour after a brief goes out, every page shows
   a flashing dot on the Trading link at the top, the brief's card says
   "New", and the brief page says "New · posted 6:34 am". The time comes
-  from `time` in `briefs/index.json`, which the robot fills in. The hour is
+  from `briefs/latest.json` (just the date and time, a few bytes, so every
+  page load stays small), which the robot writes. The hour is
   `BRIEF_NEW_MS` in `main.js`.
+- **Storage limit:** the `briefs/` folder is kept under 5 MB, about two and
+  a half years of briefs. When a new brief would push it over, the robot
+  removes the oldest ones from the folder and the archive. They're still in
+  the repo's history. The limit is `MAX_FOLDER_BYTES` at the top of
+  `.github/scripts/premarket-brief.mjs`.
 - Prices and levels come from web reports, not live quotes, so every brief
   says they're estimates and lists its sources.
 
