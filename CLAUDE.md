@@ -632,12 +632,20 @@ keep the Co-Authored-By trailer for Claude in each message.
   prices, sources must be https links seen that run) and writes
   `report-cards/YYYY-MM.json` (`{date: card}`, newest first) plus
   `report-cards/index.json` (`{latest, days, gap: {hit, partial, miss,
-  unknown}, levels: {held, broke, untested, unknown}, months}`, re-added
+  unknown}, levels: {held, broke, untested, unknown}, months, counts}`
+  (counts = cards per month, for the folds), re-added
   from every month file each run). It commits as postmarket-bot and runs
   `gh workflow run deploy.yml`. Never write report cards into `briefs/`.
-  `briefs.js` adds the "How it did" `.report-card` under the brief's TLDR
-  (`addReportCard`; today's weekday brief shows a waiting note) and
-  `[data-report-tally]` above it (`showTally`), all as text nodes; the
+  `briefs.html` shows the two runs as tabs (`[data-tab]` buttons,
+  `role="tablist"`, arrow keys; `showTab`/`pickTab`): Pre-market
+  (`#panel-pre`: `showBrief`, plus `addCardLink`'s one-line "How it did"
+  pointer under the TLDR, or today's waiting note) and After close
+  (`#panel-post`: `[data-report-tally]` from `showTally`, `showCard`
+  with a "Read that brief" link). Each tab ends in its own archive
+  (`[data-archive="pre|post"]`, the shared `drawArchive`/`fillMonth`
+  folds driven by `preArchive`/`postArchive`). The address is `#date`
+  (brief), `#after` or `#after-date` (card) via `readHash`/`tabHash`.
+  Everything goes on the page as text nodes; the
   `.grade--*` pills are purple (right/held), purple outline (partly), clay
   (wrong/broke) and dashed grey (not reached/couldn't confirm).
 - The Prediction Tracker in `tools/prediction-tracker/` is parked: still in

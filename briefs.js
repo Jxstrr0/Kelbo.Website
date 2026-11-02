@@ -1,5 +1,6 @@
 /* ==========================================================================
-   briefs.js — the pre-market brief page (briefs.html).
+   briefs.js — the pre-market brief and after-close report card page
+   (briefs.html).
    --------------------------------------------------------------------------
    Every weekday morning a GitHub Action (.github/workflows/premarket-brief.yml)
    runs .github/scripts/premarket-brief.mjs, which asks Claude for the day's
@@ -21,9 +22,11 @@
 
    After the close, a second Action (.github/workflows/postmarket-recap.yml)
    grades the day's brief into report-cards/YYYY-MM.json ({ "2026-11-02":
-   card, ... }) and report-cards/index.json (running totals). The "How it
-   did" box on each brief and the score above it come from those; see
-   "The report cards" below.
+   card, ... }) and report-cards/index.json (running totals, the months
+   and how many cards each holds). The page shows the two runs as tabs:
+   "Pre-market" (the brief, with a one-line "How it did" pointer once it's
+   graded) and "After close" (the report card and the running score). Each
+   tab has its own archive at the bottom; see "The two tabs" below.
 
    Uses el() from main.js, which loads first.
    ========================================================================== */
@@ -274,20 +277,67 @@ function drawSession() {
 
 /* ---------- The briefs ---------- */
 
-let latest = null; // the newest brief's entry, from briefs/index.json
-let months = []; // [{ month: "2026-11", count }], newest first
-const monthLists = new Map(); // "2026-11" -> promise of that month's entries
+/* ---------- The two tabs ----------
+   "Pre-market" (the morning brief) and "After close" (the report card).
+   The address keeps track of what's on show, so it can be shared:
+     (nothing)          the latest brief
+     #2026-11-02        that day's brief
+     #after             the latest report card
+     #after-2026-11-02  that day's report card */
 
-const isEntry = (e) => e && /^\d{4}-\d{2}-\d{2}$/.test(e.date);
+const tabs = [...document.querySelectorAll("[data-tab]")];
+let tab = "pre";
 
-async function loadBriefFile(name) {
-  const response = await fetch(BRIEFS_DIR + name, { cache: "no-cache" });
-  if (!response.ok) throw new Error(`Couldn't load ${name} (${response.status})`);
-  return response.text();
+function showTab(name, focus) {
+  tab = name;
+  tabs.forEach((button) => {
+    const on = button.dataset.tab === name;
+    button.setAttribute("aria-selected", on ? "true" : "false");
+    button.tabIndex = on ? 0 : -1;
+    document.getElementById(button.getAttribute("aria-controls")).hidden = !on;
+    if (on && focus) button.focus();
+  });
 }
 
-function setNotice(text, buttonText, onClick) {
-  const notice = document.querySelector("[data-brief-notice]");
+// The address for what each tab is showing right now.
+function tabHash(name) {
+  if (name === "post") return shownCard && shownCard !== cardIndex?.latest ? "#after-" + shownCard : "#after";
+  return shownDate && latest && shownDate !== latest.date ? "#" + shownDate : location.pathname;
+}
+
+function pickTab(name, focus) {
+  if (name === tab) return;
+  showTab(name, focus);
+  history.replaceState(null, "", tabHash(name));
+}
+
+function setUpTabs() {
+  tabs.forEach((button, i) => {
+    button.addEventListener("click", () => pickTab(button.dataset.tab));
+    // Left and right arrows move between tabs, like any tab list.
+    button.addEventListener("keydown", (event) => {
+      if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
+      event.preventDefault();
+      const next = tabs[(i + (event.key === "ArrowRight" ? 1 : tabs.length - 1)) % tabs.length];
+      pickTab(next.dataset.tab, true);
+    });
+  });
+}
+
+function readHash() {
+  const hash = location.hash.slice(1);
+  const after = /^after(?:-(\d{4}-\d{2}-\d{2}))?$/.exec(hash);
+  if (after) return { tab: "post", date: after[1] || "" };
+  return { tab: "pre", date: /^\d{4}-\d{2}-\d{2}$/.test(hash) ? hash : "" };
+}
+
+function scrollToTabs() {
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  document.getElementById("brief-heading").scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+}
+
+// The "This is an older ..." line, with an optional button.
+function setNotice(notice, text, buttonText, onClick) {
   notice.textContent = "";
   notice.hidden = !text;
   if (!text) return;
@@ -300,32 +350,182 @@ function setNotice(text, buttonText, onClick) {
   }
 }
 
-async function showBrief(date, scroll) {
-  const article = document.querySelector("[data-brief]");
+const longDate = (ymd) => briefDate(ymd, { weekday: "long", month: "long", day: "numeric" });
+const skTime = (iso) =>
+  new Intl.DateTimeFormat("en-US", { timeZone: SK_ZONE, hour: "numeric", minute: "2-digit" }).format(new Date(iso)).toLowerCase();
 
-  const dateLine = document.querySelector("[data-brief-date]");
-  dateLine.textContent = briefDate(date, {
-    weekday: "long",
-    month: "long",
-    day: "numeric",
+/* ---------- The archive folds: years, then months ----------
+   Used by both tabs. The index files only list the months, so the page
+   stays small however many years pile up. Each month is a fold; opening
+   one loads that month's list, once. The newest year and month start
+   open. "a" is what the tab needs:
+     box       the [data-archive] element
+     months    [{ month: "2026-11", count }], newest first
+     word      (n) => "3 briefs"
+     load      (month) => promise of [{ date, title, note }] (null = failed)
+     pick      (date) => show that one
+     current   () => the date on show */
+
+function monthName(month) {
+  return briefDate(month + "-15", { month: "long" }); // "2026-11" -> "November"
+}
+
+function drawArchive(a) {
+  a.box.textContent = "";
+  const years = new Map(); // "2026" -> [{ month, count }]
+  a.months.forEach((m) => {
+    const year = m.month.slice(0, 4);
+    if (!years.has(year)) years.set(year, []);
+    years.get(year).push(m);
   });
+
+  let first = true;
+  years.forEach((list, year) => {
+    const yearBox = el("details", "archive__year");
+    yearBox.open = first;
+    const yearLine = el("summary", "archive__fold archive__fold--year");
+    yearLine.append(el("span", "archive__label", year));
+    yearLine.append(el("span", "archive__count", a.word(list.reduce((n, m) => n + m.count, 0))));
+    yearBox.append(yearLine);
+
+    list.forEach((m) => {
+      const monthBox = el("details", "archive__month");
+      monthBox.dataset.month = m.month;
+      const monthLine = el("summary", "archive__fold");
+      monthLine.append(el("span", "archive__label", monthName(m.month)));
+      monthLine.append(el("span", "archive__count", a.word(m.count)));
+      monthBox.append(monthLine, el("ul", "archive"));
+      monthBox.addEventListener("toggle", () => {
+        if (monthBox.open) fillMonth(a, monthBox);
+      });
+      monthBox.open = first; // fires toggle, which fills it
+      first = false;
+      yearBox.append(monthBox);
+    });
+    a.box.append(yearBox);
+  });
+}
+
+// Puts a month's rows into its fold (once) and marks the one on show.
+async function fillMonth(a, monthBox) {
+  const list = monthBox.querySelector(".archive");
+  if (monthBox.dataset.filled) return markCurrent(a);
+  monthBox.dataset.filled = "loading";
+  list.textContent = "";
+  list.append(el("li", "project-list__note archive__note", "Loading…"));
+  const entries = await a.load(monthBox.dataset.month);
+  list.textContent = "";
+  if (!entries) {
+    delete monthBox.dataset.filled;
+    list.append(el("li", "project-list__note archive__note", "This month couldn't load. Close it and open it again to retry."));
+    return;
+  }
+  entries.forEach((entry) => {
+    const item = el("li");
+    const button = el("button", "archive__row");
+    button.type = "button";
+    button.dataset.date = entry.date;
+    button.append(el("span", "archive__date", briefDate(entry.date, { month: "short", day: "numeric" })));
+    const title = el("span", "archive__headline");
+    title.append(...[].concat(entry.title));
+    button.append(title);
+    if (entry.note) button.append(el("span", "archive__tldr", entry.note));
+    button.addEventListener("click", () => {
+      a.pick(entry.date);
+      scrollToTabs();
+    });
+    item.append(button);
+    list.append(item);
+  });
+  monthBox.dataset.filled = "yes";
+  markCurrent(a);
+}
+
+function markCurrent(a) {
+  a.box.querySelectorAll(".archive__row").forEach((row) => {
+    row.setAttribute("aria-current", row.dataset.date === a.current() ? "true" : "false");
+  });
+}
+
+// Opens the fold for the one on show (and its year), then marks it.
+function openMonth(a, date) {
+  const monthBox = a.box.querySelector(`.archive__month[data-month="${date.slice(0, 7)}"]`);
+  if (monthBox) {
+    monthBox.closest(".archive__year").open = true;
+    if (!monthBox.open) monthBox.open = true; // its toggle fills and marks
+  }
+  markCurrent(a);
+}
+
+/* ---------- Tab 1: the pre-market brief ---------- */
+
+let latest = null; // the newest brief's entry, from briefs/index.json
+let shownDate = ""; // the brief on show
+const monthLists = new Map(); // "2026-11" -> promise of that month's entries
+
+const isEntry = (e) => e && /^\d{4}-\d{2}-\d{2}$/.test(e.date);
+
+async function loadBriefFile(name) {
+  const response = await fetch(BRIEFS_DIR + name, { cache: "no-cache" });
+  if (!response.ok) throw new Error(`Couldn't load ${name} (${response.status})`);
+  return response.text();
+}
+
+function loadMonth(month) {
+  if (!monthLists.has(month)) {
+    const list = loadBriefFile(`months/${month}.json`)
+      .then((text) => {
+        const data = JSON.parse(text);
+        return Array.isArray(data) ? data.filter(isEntry) : [];
+      })
+      .catch(() => {
+        monthLists.delete(month); // try again next time it's opened
+        return null;
+      });
+    monthLists.set(month, list);
+  }
+  return monthLists.get(month);
+}
+
+// The brief's archive entry for a date (headline, tldr), or null.
+async function briefEntry(date) {
+  const entries = await loadMonth(date.slice(0, 7));
+  return (entries && entries.find((e) => e.date === date)) || null;
+}
+
+const preArchive = {
+  box: document.querySelector('[data-archive="pre"]'),
+  months: [],
+  word: (n) => `${n} brief${n === 1 ? "" : "s"}`,
+  load: async (month) => {
+    const entries = await loadMonth(month);
+    return entries && entries.map((e) => ({ date: e.date, title: e.headline || "Pre-market brief", note: e.tldr }));
+  },
+  pick: (date) => {
+    history.pushState(null, "", date === latest.date ? location.pathname : "#" + date);
+    showBrief(date);
+  },
+  current: () => shownDate,
+};
+
+async function showBrief(date) {
+  shownDate = date;
+  const article = document.querySelector("[data-brief]");
+  const dateLine = document.querySelector("[data-brief-date]");
+  dateLine.textContent = longDate(date);
   // Fresh off the press (within the hour): a flashing "New" pill with the
   // time it went out. briefIsNew() is in main.js.
   if (date === latest.date && briefIsNew(latest)) {
-    const posted = new Intl.DateTimeFormat("en-US", { timeZone: SK_ZONE, hour: "numeric", minute: "2-digit" })
-      .format(new Date(latest.time)).toLowerCase();
-    dateLine.append(" ", el("span", "brief-new", "New · posted " + posted));
+    dateLine.append(" ", el("span", "brief-new", "New · posted " + skTime(latest.time)));
   }
 
+  const notice = document.querySelector("[data-brief-notice]");
   if (date !== latest.date) {
-    setNotice("This is an older brief.", "Back to the latest", () => {
-      history.pushState(null, "", location.pathname);
-      showBrief(latest.date, true);
-    });
+    setNotice(notice, "This is an older brief.", "Back to the latest", () => preArchive.pick(latest.date));
   } else if (date !== skToday()) {
-    setNotice("No brief yet today. This is the latest one.");
+    setNotice(notice, "No brief yet today. This is the latest one.");
   } else {
-    setNotice("");
+    setNotice(notice, "");
   }
 
   article.textContent = "";
@@ -338,22 +538,49 @@ async function showBrief(date, scroll) {
     article.textContent = "";
     article.append(el("p", "project-list__note", "This brief couldn't load. Pull down to refresh and try again."));
   }
-  addReportCard(date, article);
-  openMonth(date.slice(0, 7), date);
-
-  if (scroll) {
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    document.getElementById("brief-heading").scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
-  }
+  addCardLink(date, article);
+  openMonth(preArchive, date);
 }
 
-/* ---------- The report cards ----------
+// A one-line pointer under the brief's TLDR to its report card on the
+// other tab ("How it did: gap call Right · See the report card"), or
+// the "graded after the close" note on today's brief.
+async function addCardLink(date, article) {
+  const cards = await loadCards(date.slice(0, 7));
+  if (shownDate !== date || !article.isConnected) return; // moved on meanwhile
+  article.querySelector(".report-link")?.remove();
+  const card = cards && cards[date];
+  const line = el("p", "report-link");
+  if (card) {
+    line.append(el("strong", "", "How it did:"), " gap call ", gradePill(card.gap?.grade), " ");
+    const button = el("button", "report-link__go", "See the report card");
+    button.type = "button";
+    button.addEventListener("click", () => {
+      showCard(date);
+      showTab("post");
+      history.pushState(null, "", tabHash("post"));
+    });
+    line.append(button);
+  } else {
+    // Only today's weekday brief is still waiting for its grade.
+    const day = new Date(date + "T12:00:00").getDay();
+    if (date !== skToday() || day === 0 || day === 6) return;
+    line.append("Graded after the close, around 4:10 pm Saskatoon time, on the After close tab.");
+  }
+  const tldr = article.querySelector(".brief__tldr");
+  if (tldr) tldr.after(line);
+  else article.prepend(line);
+}
+
+/* ---------- Tab 2: the after-close report card ----------
    Written after each close by .github/scripts/postmarket-recap.mjs. Every
    value is put on the page as text (never as HTML), and links only if
    they're https web addresses. */
 
 const CARDS_DIR = "report-cards/";
 const cardMonths = new Map(); // "2026-11" -> promise of { date: card }
+let cardIndex = null; // report-cards/index.json
+let shownCard = ""; // the report card on show
 
 function loadCards(month) {
   if (!cardMonths.has(month)) {
@@ -361,7 +588,7 @@ function loadCards(month) {
       .then((r) => (r.ok ? r.json() : {}))
       .catch(() => {
         cardMonths.delete(month); // try again next time
-        return {};
+        return null;
       });
     cardMonths.set(month, cards);
   }
@@ -395,87 +622,116 @@ function cardRow(box, label, ...content) {
   box.append(row);
 }
 
-async function addReportCard(date, article) {
-  const cards = await loadCards(date.slice(0, 7));
-  if (shownDate !== date || !article.isConnected) return; // moved on meanwhile
-  article.querySelector(".report-card")?.remove();
-  const card = cards && cards[date];
-  const box = el("section", "report-card");
-  box.setAttribute("aria-label", "How it did");
-  box.append(el("h3", "report-card__title", "How it did"));
+const postArchive = {
+  box: document.querySelector('[data-archive="post"]'),
+  months: [],
+  word: (n) => `${n} report card${n === 1 ? "" : "s"}`,
+  load: async (month) => {
+    const cards = await loadCards(month);
+    if (!cards) return null;
+    return Object.keys(cards)
+      .filter((date) => isEntry({ date }))
+      .sort()
+      .reverse()
+      .map((date) => ({ date, title: [gradePill(cards[date].gap?.grade), " Gap call"], note: cards[date].summary }));
+  },
+  pick: (date) => {
+    history.pushState(null, "", date === cardIndex.latest ? "#after" : "#after-" + date);
+    showCard(date);
+  },
+  current: () => shownCard,
+};
 
-  if (!card) {
-    // Only today's brief is still waiting for its grade.
-    // (Weekend briefs never get one.)
-    const day = new Date(date + "T12:00:00").getDay();
-    if (date !== skToday() || day === 0 || day === 6) return;
-    box.classList.add("report-card--waiting");
-    box.append(el("p", "report-card__summary", "Graded after the close, around 4:10 pm Saskatoon time."));
+async function showCard(date) {
+  shownCard = date;
+  const article = document.querySelector("[data-card]");
+  document.querySelector("[data-card-date]").textContent = longDate(date);
+  const notice = document.querySelector("[data-card-notice]");
+  if (date !== cardIndex.latest) {
+    setNotice(notice, "This is an older report card.", "Back to the latest", () => postArchive.pick(cardIndex.latest));
+  } else if (date !== skToday() && latest && latest.date === skToday()) {
+    setNotice(notice, "Today's brief is graded after the close, around 4:10 pm Saskatoon time. This is the latest card.");
   } else {
-    if (card.summary) box.append(el("p", "report-card__summary", card.summary));
-    const rows = el("dl", "report-card__rows");
-
-    const gap = card.gap || {};
-    const gapText = el("span", "", [gap.call && `Called: ${gap.call}.`, gap.result].filter(Boolean).join(" "));
-    cardRow(rows, "Gap call", gradePill(gap.grade), " ", gapText);
-
-    const mu = card.mu || {};
-    const muText = [
-      `Opened ${money(mu.open)}${mu.open_pct != null ? ` (${change(mu.open_pct)})` : ""}`,
-      `closed ${money(mu.close)}${mu.close_pct != null ? ` (${change(mu.close_pct)})` : ""}`,
-    ].join(", ");
-    cardRow(rows, "MU", el("span", "", `${muText}, from ${money(mu.prev_close)} the session before.`));
-
-    if (Array.isArray(card.levels) && card.levels.length) {
-      const list = el("ul", "report-card__levels");
-      card.levels.forEach((l) => {
-        const item = el("li");
-        item.append(gradePill(l.grade), " ", el("strong", "", l.level || ""));
-        if (l.result) item.append(" ", el("span", "", l.result));
-        list.append(item);
-      });
-      cardRow(rows, "Key levels", list);
-    }
-    box.append(rows);
-
-    const links = (card.sources || []).filter((s) => s && /^https:\/\//.test(s.url));
-    if (links.length) {
-      const p = el("p", "report-card__sources", "Checked against: ");
-      links.forEach((s, i) => {
-        const a = el("a", "", s.title || s.url);
-        a.href = s.url;
-        a.target = "_blank";
-        a.rel = "noopener";
-        p.append(i ? ", " : "", a);
-      });
-      box.append(p);
-    }
-    if (card.time) {
-      const at = new Intl.DateTimeFormat("en-US", { timeZone: SK_ZONE, hour: "numeric", minute: "2-digit" })
-        .format(new Date(card.time)).toLowerCase();
-      box.append(el("p", "report-card__stamp", `Graded after the close at ${at}, from web reports. Prices it couldn't confirm say so.`));
-    }
+    setNotice(notice, "");
   }
-  // Right under the TLDR line, so it's near the top of the brief.
-  const tldr = article.querySelector(".brief__tldr");
-  if (tldr) tldr.after(box);
-  else article.prepend(box);
-}
 
-// "Report card: gap call 7 right · 2 partly · 1 wrong, key levels 12 held
-// · 6 broke, over 10 graded days." Left hidden until there's a score.
-async function showTally() {
-  const line = document.querySelector("[data-report-tally]");
-  if (!line) return;
-  let data;
-  try {
-    const response = await fetch(CARDS_DIR + "index.json", { cache: "no-cache" });
-    if (!response.ok) return;
-    data = await response.json();
-  } catch (error) {
+  article.textContent = "";
+  article.append(el("p", "project-list__note", "Loading…"));
+  const [cards, entry] = await Promise.all([loadCards(date.slice(0, 7)), briefEntry(date)]);
+  if (shownCard !== date) return; // moved on meanwhile
+  const card = cards && cards[date];
+  article.textContent = "";
+  openMonth(postArchive, date);
+  if (!card) {
+    article.append(el("p", "project-list__note", "This report card couldn't load. Pull down to refresh and try again."));
     return;
   }
-  if (!data || !(data.days > 0)) return;
+
+  // Which brief it grades, with a way back to it on the other tab.
+  const heading = el("h2", "brief__headline", "How the brief did");
+  const from = el("p", "report-card__from");
+  if (entry && entry.headline) from.append("That morning's call: ", el("strong", "", entry.headline), " ");
+  const back = el("button", "report-link__go", "Read that brief");
+  back.type = "button";
+  back.addEventListener("click", () => {
+    showBrief(date);
+    showTab("pre");
+    history.pushState(null, "", tabHash("pre"));
+  });
+  from.append(back);
+  article.append(heading, from);
+
+  const box = el("section", "report-card");
+  box.setAttribute("aria-label", "The grades");
+  if (card.summary) box.append(el("p", "report-card__summary", card.summary));
+  const rows = el("dl", "report-card__rows");
+
+  const gap = card.gap || {};
+  const gapText = el("span", "", [gap.call && `Called: ${gap.call}.`, gap.result].filter(Boolean).join(" "));
+  cardRow(rows, "Gap call", gradePill(gap.grade), " ", gapText);
+
+  const mu = card.mu || {};
+  const muText = [
+    `Opened ${money(mu.open)}${mu.open_pct != null ? ` (${change(mu.open_pct)})` : ""}`,
+    `closed ${money(mu.close)}${mu.close_pct != null ? ` (${change(mu.close_pct)})` : ""}`,
+  ].join(", ");
+  cardRow(rows, "MU", el("span", "", `${muText}, from ${money(mu.prev_close)} the session before.`));
+
+  if (Array.isArray(card.levels) && card.levels.length) {
+    const list = el("ul", "report-card__levels");
+    card.levels.forEach((l) => {
+      const item = el("li");
+      item.append(gradePill(l.grade), " ", el("strong", "", l.level || ""));
+      if (l.result) item.append(" ", el("span", "", l.result));
+      list.append(item);
+    });
+    cardRow(rows, "Key levels", list);
+  }
+  box.append(rows);
+
+  const links = (card.sources || []).filter((s) => s && /^https:\/\//.test(s.url));
+  if (links.length) {
+    const p = el("p", "report-card__sources", "Checked against: ");
+    links.forEach((s, i) => {
+      const a = el("a", "", s.title || s.url);
+      a.href = s.url;
+      a.target = "_blank";
+      a.rel = "noopener";
+      p.append(i ? ", " : "", a);
+    });
+    box.append(p);
+  }
+  if (card.time) {
+    box.append(el("p", "report-card__stamp", `Graded after the close at ${skTime(card.time)}, from web reports. Prices it couldn't confirm say so.`));
+  }
+  article.append(box);
+}
+
+// "Report card, 10 graded days: Gap call 7 right · 2 partly · 1 wrong,
+// Key levels 12 held · 6 broke." Left hidden until there's a score.
+function showTally(data) {
+  const line = document.querySelector("[data-report-tally]");
+  if (!line || !data || !(data.days > 0)) return;
   const n = (v) => (Number.isFinite(v) ? v : 0);
   const part = (label, items) => {
     const group = el("span", "report-tally__group");
@@ -496,172 +752,87 @@ async function showTally() {
   line.hidden = false;
 }
 
-/* ---------- The archive: years, then months ----------
-   briefs/index.json only lists the months (and the latest brief), so the
-   page stays small however many years of briefs pile up. Each month is a
-   fold; opening one loads briefs/months/YYYY-MM.json, once. The newest year
-   and month start open. */
-
-function loadMonth(month) {
-  if (!monthLists.has(month)) {
-    const list = loadBriefFile(`months/${month}.json`)
-      .then((text) => {
-        const data = JSON.parse(text);
-        return Array.isArray(data) ? data.filter(isEntry) : [];
-      })
-      .catch(() => {
-        monthLists.delete(month); // try again next time it's opened
-        return null;
-      });
-    monthLists.set(month, list);
+async function setUpCards() {
+  try {
+    const response = await fetch(CARDS_DIR + "index.json", { cache: "no-cache" });
+    const data = response.ok ? await response.json() : null;
+    if (data && isEntry({ date: data.latest }) && Array.isArray(data.months)) cardIndex = data;
+  } catch (error) {
+    cardIndex = null;
   }
-  return monthLists.get(month);
-}
-
-// "2026-11" -> "November"
-function monthName(month) {
-  return briefDate(month + "-15", { month: "long" });
-}
-
-const briefCount = (n) => `${n} brief${n === 1 ? "" : "s"}`;
-
-function drawArchive() {
-  const box = document.querySelector("[data-archive]");
-  box.textContent = "";
-  const years = new Map(); // "2026" -> [{ month, count }]
-  months.forEach((m) => {
-    const year = m.month.slice(0, 4);
-    if (!years.has(year)) years.set(year, []);
-    years.get(year).push(m);
-  });
-
-  let first = true;
-  years.forEach((list, year) => {
-    const yearBox = el("details", "archive__year");
-    yearBox.open = first;
-    yearBox.dataset.year = year;
-    const yearLine = el("summary", "archive__fold archive__fold--year");
-    yearLine.append(el("span", "archive__label", year));
-    yearLine.append(el("span", "archive__count", briefCount(list.reduce((n, m) => n + m.count, 0))));
-    yearBox.append(yearLine);
-
-    list.forEach((m) => {
-      const monthBox = el("details", "archive__month");
-      monthBox.dataset.month = m.month;
-      const monthLine = el("summary", "archive__fold");
-      monthLine.append(el("span", "archive__label", monthName(m.month)));
-      monthLine.append(el("span", "archive__count", briefCount(m.count)));
-      monthBox.append(monthLine, el("ul", "archive"));
-      monthBox.addEventListener("toggle", () => {
-        if (monthBox.open) fillMonth(monthBox);
-      });
-      monthBox.open = first; // fires toggle, which fills it
-      first = false;
-      yearBox.append(monthBox);
-    });
-    box.append(yearBox);
-  });
-}
-
-// Puts a month's briefs into its fold (once) and marks the one on show.
-async function fillMonth(monthBox) {
-  const list = monthBox.querySelector(".archive");
-  if (monthBox.dataset.filled) return markCurrent();
-  monthBox.dataset.filled = "loading";
-  list.textContent = "";
-  list.append(el("li", "project-list__note archive__note", "Loading…"));
-  const entries = await loadMonth(monthBox.dataset.month);
-  list.textContent = "";
-  if (!entries) {
-    delete monthBox.dataset.filled;
-    list.append(el("li", "project-list__note archive__note", "This month couldn't load. Close it and open it again to retry."));
+  if (!cardIndex) {
+    const article = document.querySelector("[data-card]");
+    article.textContent = "";
+    article.append(
+      el("p", "project-list__note", "No report cards yet. Each weekday brief is graded after the close, around 4:10 pm Saskatoon time.")
+    );
+    postArchive.box.append(el("p", "project-list__note", "Past report cards will collect here."));
     return;
   }
-  entries.forEach((entry) => {
-    const item = el("li");
-    const button = el("button", "archive__row");
-    button.type = "button";
-    button.dataset.date = entry.date;
-    button.append(el("span", "archive__date", briefDate(entry.date, { month: "short", day: "numeric" })));
-    button.append(el("span", "archive__headline", entry.headline || "Pre-market brief"));
-    if (entry.tldr) button.append(el("span", "archive__tldr", entry.tldr));
-    button.addEventListener("click", () => {
-      history.pushState(null, "", "#" + entry.date);
-      showBrief(entry.date, true);
-    });
-    item.append(button);
-    list.append(item);
-  });
-  monthBox.dataset.filled = "yes";
-  markCurrent();
+  showTally(cardIndex);
+  const counts = cardIndex.counts || {};
+  postArchive.months = cardIndex.months
+    .filter((m) => /^\d{4}-\d{2}$/.test(m))
+    .map((month) => ({ month, count: Number.isFinite(counts[month]) ? counts[month] : 0 }));
+  drawArchive(postArchive);
 }
 
-let shownDate = "";
+/* ---------- Starting up ---------- */
 
-function markCurrent() {
-  document.querySelectorAll(".archive__row").forEach((row) => {
-    row.setAttribute("aria-current", row.dataset.date === shownDate ? "true" : "false");
-  });
-}
-
-// Opens the fold for the brief on show (and its year), so it's easy to
-// find, then marks it.
-function openMonth(month, date) {
-  shownDate = date;
-  const monthBox = document.querySelector(`.archive__month[data-month="${month}"]`);
-  if (monthBox) {
-    monthBox.closest(".archive__year").open = true;
-    if (!monthBox.open) monthBox.open = true; // its toggle fills and marks
-  }
-  markCurrent();
-}
-
-// #2026-11-02 in the address picks that brief; otherwise the latest.
+// Shows whatever the address asks for (see "The two tabs").
 async function showFromHash() {
-  const wanted = location.hash.slice(1);
-  let date = latest.date;
-  if (wanted !== date && isEntry({ date: wanted }) && months.some((m) => m.month === wanted.slice(0, 7))) {
-    const entries = await loadMonth(wanted.slice(0, 7));
-    if (entries && entries.some((e) => e.date === wanted)) date = wanted;
+  const want = readHash();
+  showTab(want.tab);
+  if (want.tab === "post") {
+    if (!cardIndex) return;
+    let date = cardIndex.latest;
+    if (want.date && want.date !== date) {
+      const cards = await loadCards(want.date.slice(0, 7));
+      if (cards && cards[want.date]) date = want.date;
+    }
+    if (date !== shownCard) showCard(date);
+  } else {
+    if (!latest) return;
+    let date = latest.date;
+    if (want.date && want.date !== date && (await briefEntry(want.date))) date = want.date;
+    if (date !== shownDate) showBrief(date);
   }
-  showBrief(date, false);
 }
 
 async function setUpBriefs() {
   drawSession();
   setInterval(drawSession, 60 * 1000);
-
-  window.addEventListener("popstate", () => {
-    if (latest) showFromHash();
-  });
+  setUpTabs();
+  window.addEventListener("popstate", showFromHash);
 
   try {
     const index = JSON.parse(await loadBriefFile("index.json"));
     if (index && isEntry(index.latest) && Array.isArray(index.months)) {
       latest = index.latest;
-      months = index.months.filter((m) => m && /^\d{4}-\d{2}$/.test(m.month) && m.count > 0);
+      preArchive.months = index.months.filter((m) => m && /^\d{4}-\d{2}$/.test(m.month) && m.count > 0);
     }
   } catch (error) {
     latest = null;
   }
+  await setUpCards();
 
   if (!latest) {
-    document.querySelector("[data-brief-date]").textContent = briefDate(skToday(), {
-      weekday: "long",
-      month: "long",
-      day: "numeric",
-    });
+    document.querySelector("[data-brief-date]").textContent = longDate(skToday());
     const article = document.querySelector("[data-brief]");
     article.textContent = "";
     article.append(
       el("p", "project-list__note", "No briefs yet. The first one lands around 6:35 am Saskatoon time on the next weekday.")
     );
-    document.querySelector("[data-archive]").append(el("p", "project-list__note", "Past briefs will collect here."));
-    return;
+    preArchive.box.append(el("p", "project-list__note", "Past briefs will collect here."));
+  } else {
+    drawArchive(preArchive);
   }
-  drawArchive();
-  showFromHash();
-  showTally();
+
+  // Both tabs start filled, so switching is instant: the one the address
+  // asks for, and the latest of the other.
+  await showFromHash();
+  if (latest && !shownDate) showBrief(latest.date);
+  if (cardIndex && !shownCard) showCard(cardIndex.latest);
 }
 
 setUpBriefs();

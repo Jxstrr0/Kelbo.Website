@@ -312,15 +312,17 @@ await writeFile(monthPath, JSON.stringify(sorted, null, 2) + "\n");
 // a redone grade never counts twice.
 const totals = { days: 0, gap: { hit: 0, partial: 0, miss: 0, unknown: 0 }, levels: { held: 0, broke: 0, untested: 0, unknown: 0 } };
 const months = (await readdir(CARDS_DIR)).filter((f) => /^\d{4}-\d{2}\.json$/.test(f)).map((f) => f.slice(0, 7)).sort().reverse();
+const counts = {}; // "2026-11" -> how many cards that month (for the page's folds)
 for (const m of months) {
   const cards = JSON.parse(await readFile(`${CARDS_DIR}/${m}.json`, "utf8"));
+  counts[m] = Object.keys(cards).length;
   for (const c of Object.values(cards)) {
     totals.days++;
     totals.gap[c.gap?.grade in totals.gap ? c.gap.grade : "unknown"]++;
     for (const l of c.levels ?? []) totals.levels[l.grade in totals.levels ? l.grade : "unknown"]++;
   }
 }
-await writeFile(`${CARDS_DIR}/index.json`, JSON.stringify({ latest: isoDate, ...totals, months }, null, 2) + "\n");
+await writeFile(`${CARDS_DIR}/index.json`, JSON.stringify({ latest: isoDate, ...totals, months, counts }, null, 2) + "\n");
 
 console.log(`Graded ${isoDate}: gap ${card.gap.grade}; levels ${card.levels.map((l) => l.grade).join(", ") || "none"}`);
 console.log(`MU: prev close ${mu.prev_close ?? "?"}, open ${mu.open ?? "?"} (${mu.open_pct ?? "?"}%), close ${mu.close ?? "?"} (${mu.close_pct ?? "?"}%)`);
