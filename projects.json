@@ -204,12 +204,24 @@
     "featured": false
   },
   {
+    "title": "Pre-market brief",
+    "status": "Live",
+    "category": "Trading",
+    "summary": "Every weekday before the open, a short read on MU and the AI hardware names: overnight moves, the gap call, key levels and the day's calendar, written from the morning's news.",
+    "version": "",
+    "latest": "",
+    "link": "briefs.html",
+    "code": "",
+    "image": "",
+    "featured": false
+  },
+  {
     "title": "Agent Fleet",
     "status": "In development",
     "category": "AI",
     "summary": "A set of small, single-purpose bots I can run from my phone, like news digests, trackers, and weekly scans.",
     "version": "",
-    "latest": "Weekly scan is live",
+    "latest": "Weekly scan and pre-market brief are live",
     "link": "agent-fleet.html",
     "code": "",
     "image": "",
