@@ -1,0 +1,79 @@
+# Grades the morning's pre-market brief after the US market closes.
+#
+# Every weekday at 4:07 pm Saskatoon time (22:07 UTC; Saskatchewan has no
+# daylight saving, and that's after the 4:00 pm ET close in both summer
+# and winter), this:
+#   1. runs .github/scripts/postmarket-recap.mjs, which asks Claude (with
+#      web search) how MU really traded and grades the brief's gap call and
+#      key levels into report-cards/YYYY-MM.json and report-cards/index.json
+#      (the brief itself in briefs/ is never changed),
+#   2. commits those files to main,
+#   3. starts the "Deploy site" run so the "How it did" box goes live.
+#      (A push made by a workflow doesn't start other workflows on its own.)
+# Weekends, US market holidays and days without a brief are skipped.
+#
+# It uses the same ANTHROPIC_API_KEY repository secret as the brief. "Run
+# workflow" on the Actions tab runs it right now; tick the box to grade
+# today again. To stop it, open it on the Actions tab, tap "..." and
+# choose "Disable workflow".
+name: After-close report card
+
+on:
+  schedule:
+    - cron: "7 22 * * 1-5"
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Redo today's grade even if there already is one"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write # to commit the report card
+  actions: write # to start the Deploy site run
+
+concurrency:
+  group: postmarket-recap
+  cancel-in-progress: false
+
+jobs:
+  grade:
+    name: Grade and publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      - name: Grade today's brief
+        run: node .github/scripts/postmarket-recap.mjs
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          # "1" when the box was ticked on a hand-started run, else empty.
+          FORCE: ${{ inputs.force == true && '1' || '' }}
+
+      - name: Commit it to main
+        id: commit
+        run: |
+          git config user.name "postmarket-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          mkdir -p report-cards
+          git add report-cards
+          if git diff --cached --quiet; then
+            echo "Nothing new to commit."
+            echo "pushed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git commit -m "Report card $(TZ=America/Regina date +%F)"
+          git pull --rebase
+          git push
+          echo "pushed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Put the site live
+        if: steps.commit.outputs.pushed == 'true'
+        run: gh workflow run deploy.yml --ref main
+        env:
+          GH_TOKEN: ${{ github.token }}
