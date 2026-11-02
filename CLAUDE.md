@@ -29,8 +29,8 @@ Live at https://jxstrr0.github.io/Kelbo.Website/
   the footer all say Longlight Interactive. Everything personal about Kelbo
   lives on `about.html`, linked from "by Kelbo" under the hero name (the one
   place the site says "by Kelbo"), every footer, and the nav
-  on wide screens (`nav__wide`, 64rem+). Studio pages (home, Games, AI,
-  Projects) speak as Longlight; Trading, the journal and Agent Fleet stay in
+  on wide screens (`nav__wide`, 64rem+). Studio pages (home, Games, Tools,
+  All) speak as Longlight; Trading, the journal and Agent Fleet stay in
   his own first-person voice.
 
 ## Commits
@@ -464,9 +464,20 @@ keep the Co-Authored-By trailer for Claude in each message.
 - Tools live in `tools/<name>/` with their own `index.html`, CSS, and JS,
   reusing `../../style.css`. They run in the browser only (localStorage,
   no server), so their data stays on the visitor's device.
-- Sections: `games.html`, `trading.html`, and `ai.html` each list the
+- Sections: `games.html`, `trading.html`, and `tools.html` each list the
   projects whose `category` matches the list's `data-category` (Game,
-  Trading, AI). The home page tiles link to them and show counts.
+  Trading, Tool); `projects.html` is "All" in the nav and on its `<h1>`.
+  Trading = anything for the trading day (Agent Fleet is there, since its
+  bot is the weekly market scan); Tool = every other tool (the winter
+  roads checker goes here). `tools.html` was `ai.html` until November 2026:
+  `404.html` sends `ai.html` there and the Explorer badge counts either.
+  The home page has four tiles (Games, Trading, Tools, All;
+  `data-category-count="*"` counts everything, 0 reads "Coming soon"),
+  each with an inline `svg.tile__art` drawing (viewBox 120×100, bottom
+  right at 0.4 opacity over the corner sun; `.tile__art-a` clay /
+  `-b` and `-line` `--secondary`, so it follows the theme): a controller,
+  candles, a highway with a wrench, four suns. 1 column on phones, 2 from
+  40rem, 4 from 64rem; the market light sits on its own line.
 - `devlog.html` is the devlog: `setUpDevlog` renders `devlog.json`
   (`{"posts": [...]}`, newest first; `date` YYYY-MM-DD, `title`, `body`
   split on blank lines, optional `game` = a projects.json title) as dated
@@ -513,7 +524,7 @@ keep the Co-Authored-By trailer for Claude in each message.
   ray. Below 40rem the header shows `.logo--compact` (sun +
   short line), from 40rem `.logo--full`; the footer always shows the full
   lockup.
-- The header (the logo as home, the nav Games, Trading, AI, Projects, plus
+- The header (the logo as home, the nav Games, Trading, Tools, All, plus
   About from 64rem, and the ☀/☾ button) is copied in every page and only
   just fits at 360px, where only the compact mark shows. Test before adding
   to it. The parked tracker doesn't load

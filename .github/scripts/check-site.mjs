@@ -85,7 +85,7 @@ const OLD_STATUS = {
   "Ongoing": "Live", "Mostly done": "Polishing", "Building": "In development",
   "Early stages": "Prototype", "Planned": "Concept",
 };
-const KNOWN_CATEGORY = ["Game", "Trading", "AI"];
+const KNOWN_CATEGORY = ["Game", "Trading", "Tool"];
 const projects = json["projects.json"];
 
 if (projects !== undefined) {
@@ -109,7 +109,7 @@ if (projects !== undefined) {
       }
       if (OLD_STATUS[p.status]) warn("projects.json", `${name} uses the old status "${p.status}". It still works, but the new name is "${OLD_STATUS[p.status]}".`);
       else if (p.status && !KNOWN_STATUS.includes(p.status)) warn("projects.json", `${name} has the status "${p.status}", which the site hasn't seen before. Fine if it's on purpose.`);
-      if (p.category && !KNOWN_CATEGORY.includes(p.category)) warn("projects.json", `${name} has the category "${p.category}", so it won't appear on the Games, Trading or AI pages.`);
+      if (p.category && !KNOWN_CATEGORY.includes(p.category)) warn("projects.json", `${name} has the category "${p.category}", so it won't appear on the Games, Trading or Tools pages.`);
       if (p.image && !exists(p.image)) error("projects.json", `${name}: the cover image "${p.image}" doesn't exist.`);
       if (p.link && !/^https?:\/\//.test(p.link) && !exists(p.link.split(/[?#]/)[0])) error("projects.json", `${name}: the link "${p.link}" points at a file that doesn't exist.`);
       if (p.shots !== undefined) {

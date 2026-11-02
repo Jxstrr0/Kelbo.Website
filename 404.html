@@ -19,6 +19,8 @@
       // show the same game on game.html instead.
       var game = location.pathname.match(/\/game-([a-z0-9-]+)\.html$/);
       if (game) location.replace(base.href + "game.html?g=" + game[1]);
+      // Pages that moved: the AI page is now Tools.
+      if (/\/ai\.html$/.test(location.pathname)) location.replace(base.href + "tools.html");
     })();
   </script>
   <title>Page not found · Longlight Interactive</title>
@@ -75,8 +77,8 @@
         <ul class="nav">
           <li><a href="games.html">Games</a></li>
           <li><a href="trading.html">Trading</a></li>
-          <li><a href="ai.html">AI</a></li>
-          <li><a href="projects.html">Projects</a></li>
+          <li><a href="tools.html">Tools</a></li>
+          <li><a href="projects.html">All</a></li>
           <li class="nav__wide"><a href="about.html">About</a></li>
         </ul>
       </nav>

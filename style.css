@@ -3192,7 +3192,7 @@ img {
   z-index: 2;
 }
 
-/* ---------- Mode tiles (Games / Trading / AI) ---------- */
+/* ---------- Mode tiles (Games / Trading / Tools / All) ---------- */
 .tiles {
   display: grid;
   gap: 0.9rem;
@@ -3259,8 +3259,47 @@ img {
   background: var(--ll-purple);
 }
 
-.tile--ai::before {
+.tile--tools::before {
   background: var(--ll-lilac);
+}
+
+/* The drawing behind each tile's words: bottom right, over the sun, soft
+   enough that the words on top stay easy to read. Colours come from the
+   theme, so it works in light and dark. */
+.tile > .tile__art {
+  position: absolute;
+  right: 0.75rem;
+  bottom: 0.5rem;
+  width: 7.5rem;
+  height: auto;
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.tile__art-a { fill: var(--accent); }
+.tile__art-b { fill: var(--secondary); }
+.tile__art-line { fill: var(--secondary); opacity: 0.6; }
+
+.tile__art-wick path,
+.tile__art-dash,
+.tile__art-wrench {
+  fill: none;
+  stroke-linecap: round;
+}
+
+.tile__art-wick path {
+  stroke: var(--secondary);
+  stroke-width: 2;
+}
+
+.tile__art-dash {
+  stroke: var(--accent);
+  stroke-width: 3;
+}
+
+.tile__art-wrench {
+  stroke: var(--accent);
+  stroke-width: 6;
 }
 
 .tile:hover {
@@ -3296,12 +3335,13 @@ img {
   color: var(--secondary);
 }
 
-/* Market light on the Trading tile: "● Market open" */
+/* Market light on the Trading tile: "● Market open", on its own line
+   under the count so it stays clear of the tile's drawing */
 .tile__live {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 0.4rem;
-  margin-left: 0.75rem;
+  margin-top: 0.35rem;
   color: var(--muted);
 }
 
@@ -3802,7 +3842,7 @@ img {
   }
 
   .tiles {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   /* Taller header bar once there's room for the full logo */
@@ -3893,6 +3933,10 @@ img {
 @media (min-width: 64rem) {
   .project-list {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .tiles {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .nav__wide {
