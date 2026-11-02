@@ -545,10 +545,11 @@ keep the Co-Authored-By trailer for Claude in each message.
   weekdays 12:50 UTC = 6:50 am America/Regina, or by hand with a "rewrite
   today's" box) runs `.github/scripts/premarket-brief.mjs`: plain Node
   `fetch` to the Anthropic Messages API (`claude-sonnet-5-5`, server-side
-  `web_search_20260209`, `pause_turn` loop), which writes
+  `web_search_20260209` with `MAX_SEARCHES` 20, `pause_turn` loop), which writes
   `briefs/YYYY-MM-DD.md` (fixed headings: `# headline`, `TLDR:`,
   `## Overnight and Asia`, `## MU`, `## Watchlist`, `## Calendar`, then
-  `## Sources` and a `<small>` stamp) and prepends `{date, headline, tldr}`
+  `## Sources` and a `<small>` stamp; if a heading is missing it asks once,
+  with search off, for a rewrite in the format) and prepends `{date, headline, tldr}`
   to `briefs/index.json`. The workflow commits as premarket-bot, then runs
   `gh workflow run deploy.yml` (a GITHUB_TOKEN push starts no workflows by
   itself). `briefs.js` renders the Markdown itself (escape first, then
