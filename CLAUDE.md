@@ -644,7 +644,7 @@ keep the Co-Authored-By trailer for Claude in each message.
   America/Regina, after the close all year, or by hand with a "redo
   today's grade" box) runs `.github/scripts/postmarket-recap.mjs`: plain
   Node `fetch`, the smaller model in `MODEL` (`claude-sonnet-5-5` at `output_config.effort` "high"), `web_search_20260209`
-  (`MAX_SEARCHES` 8) and `web_fetch_20260209` (`MAX_FETCHES` 4), the same
+  (`MAX_SEARCHES` 15) and `web_fetch_20260209` (`MAX_FETCHES` 10), the same
   caching, `pause_turn` loop and cost log line as the brief. It skips
   weekends, NYSE holidays (`marketHolidays`, computed, incl. Good Friday
   and the Saturday/Sunday observance rules), any run before 4:00 pm New
