@@ -860,8 +860,19 @@ you open it.
   The time is the `cron` line in the workflow (UTC; Saskatoon is UTC−6 all
   year, so 12:30 is 6:30 am). GitHub can start scheduled runs a few
   minutes late when it's busy.
-  It can run up to 20 web searches a brief (`MAX_SEARCHES`), and it calls
+  It can run up to 25 web searches a brief (`MAX_SEARCHES`) and open up to
+  10 whole pages on any site to read the actual numbers (`MAX_FETCHES`),
+  following a rough search plan in `SYSTEM` (most of it on MU). It calls
   the model named in `MODEL` (`claude-opus-5-5`).
+- **Yesterday's call:** the robot hands it the previous brief, so it says
+  what changed overnight instead of repeating old news, and the MU
+  section opens with **Last call:** what the last brief predicted for the
+  open and what MU actually did.
+- **Cost:** it uses prompt caching, so re-reading what it already found
+  costs a twentieth of the normal price. The end of each run's log says
+  how many searches and page reads it used and an estimated cost in US
+  dollars (`PRICE` near the top of the script; the Anthropic console has
+  the real bill).
 - **Same headings every day:** the page expects `# headline`, `TLDR:`,
   then Overnight and Asia, MU, Watchlist and Calendar, even on a holiday.
   If a brief comes back without them, the script asks Claude once to

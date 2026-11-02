@@ -549,7 +549,12 @@ keep the Co-Authored-By trailer for Claude in each message.
   weekdays 12:30 UTC = 6:30 am America/Regina, or by hand with a "rewrite
   today's" box) runs `.github/scripts/premarket-brief.mjs`: plain Node
   `fetch` to the Anthropic Messages API (`claude-opus-5-5`, server-side
-  `web_search_20260209` with `MAX_SEARCHES` 20, `pause_turn` loop), which writes
+  `web_search_20260209` with `MAX_SEARCHES` 25 and `web_fetch_20260209`
+  with `MAX_FETCHES` 10, no domain limits, a per-section research plan in
+  `SYSTEM`, prompt caching (a marker on the system block plus top-level
+  `cache_control`), the previous brief minus its Sources in the user
+  message for the MU **Last call:** line, a usage and estimated-cost log
+  line from `PRICE`, and a `pause_turn` loop), which writes
   `briefs/YYYY-MM-DD.md` (fixed headings: `# headline`, `TLDR:`,
   `## Overnight and Asia`, `## MU`, `## Watchlist`, `## Calendar`, then
   `## Sources` (the model lists its own; the script keeps only links that
