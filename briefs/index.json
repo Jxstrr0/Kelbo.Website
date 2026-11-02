@@ -1,14 +1,14 @@
 {
   "latest": {
-    "date": "2026-11-01",
-    "time": "2026-11-02T02:32:24.345Z",
-    "headline": "Kioxia's weak outlook hits memory after Friday's chip sell-off",
-    "tldr": "US markets are closed today (Sunday) and reopen Monday at 9:30 ET (8:30 SK). Futures are up modestly after Friday's sell-off in chips, SK Hynix has recovered in Seoul, and Kioxia's flat profit outlook is the main new risk for memory stocks."
+    "date": "2026-11-02",
+    "time": "2026-11-02T12:47:18.225Z",
+    "headline": "MU indicated about 2% higher as chips bounce despite Kioxia",
+    "tldr": "Futures are up after Friday's chip rout, helped by Korea's strong chip exports, SK Hynix's 3.8% gain and lower oil, so MU is set to open about 2–3% higher near $905, with Kioxia's flat NAND outlook as the main risk."
   },
   "months": [
     {
       "month": "2026-11",
-      "count": 1
+      "count": 2
     }
   ]
 }
