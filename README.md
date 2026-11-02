@@ -967,7 +967,10 @@ you can see how good the calls really are over time.
   and each card has a "Read that brief" link back. Before the grade is in,
   today's brief says "Graded after the close, around 4:10 pm". Links:
   `briefs.html#after` opens the After close tab, `#after-2026-11-02` a
-  past card, `#2026-11-02` a past brief.
+  past card, `#2026-11-02` a past brief. On a computer (64rem and wider)
+  the page uses the whole screen: the brief's sections (Overnight, MU,
+  Watchlist, Calendar) sit side by side, two to four across depending on
+  the width; phones keep one column.
 - **Where it's saved:** `report-cards/2026-11.json` (that month's grades)
   and `report-cards/index.json` (the totals). The brief files in `briefs/`
   are never touched.

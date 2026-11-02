@@ -623,3 +623,78 @@ details[open] > .archive__fold::after {
   outline-offset: 2px;
   border-radius: 4px;
 }
+
+/* ---------- Desktop: use the whole screen ----------
+   From 64rem wide the page drops the 44rem reading column. The page's
+   wrap (header and footer too, so everything lines up) grows to 120rem.
+   The brief's sections (Overnight and Asia, MU, Watchlist, Calendar),
+   each wrapped in a .brief__part by groupParts in briefs.js, sit side by
+   side in a grid, each at least 24rem so lines stay easy to read: two
+   across on a laptop, three on a big monitor. Each section still reads
+   top to bottom. The headline, TLDR, report-card line, Sources and stamp
+   run the full width. The report card keeps its rows. */
+@media (min-width: 64rem) {
+  :root {
+    --wrap: 120rem;
+    --gutter: 2.5rem;
+  }
+
+  .session,
+  .brief-notice,
+  .brief-card,
+  .archive,
+  .archive-folds {
+    max-width: none;
+  }
+
+  .brief-card {
+    padding: 1.75rem 2rem 2rem;
+  }
+
+  .brief-card[data-brief] {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(24rem, 1fr));
+    gap: 0 3rem;
+    align-items: start;
+  }
+
+  .brief-card[data-brief] > :not(.brief__part),
+  .brief-card[data-brief] > .brief__part--sources {
+    grid-column: 1 / -1;
+  }
+
+  .brief__headline {
+    font-size: 1.8rem;
+  }
+
+  .brief__tldr {
+    max-width: 70rem;
+  }
+
+  .brief__part {
+    margin-bottom: 1.25rem;
+  }
+
+  .brief__part > h3 {
+    margin-top: 0;
+  }
+
+  .brief__part > :last-child {
+    margin-bottom: 0;
+  }
+
+  /* Sources: the links flow in columns, they're short */
+  .brief__part--sources ul {
+    columns: 3 20rem;
+    column-gap: 3rem;
+  }
+
+  .brief__part--sources li {
+    break-inside: avoid;
+  }
+
+  /* Report card rows: wider label column, text kept to a readable line */
+  .report-card__row {
+    grid-template-columns: 10rem minmax(0, 60rem);
+  }
+}
