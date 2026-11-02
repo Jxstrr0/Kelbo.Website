@@ -401,6 +401,40 @@ img {
   background: rgba(250, 249, 245, 0.16);
 }
 
+/* New brief: for an hour after the pre-market brief goes out, a clay dot
+   (ivory ring so it shows on the purple sky) sits on the Trading link and
+   the brief's card says "New". main.js sets data-brief-new on <html>; the
+   flashing is in the Motion block at the bottom. */
+:root[data-brief-new] .nav a[href="trading.html"] {
+  position: relative;
+}
+
+:root[data-brief-new] .nav a[href="trading.html"]::after {
+  content: "";
+  position: absolute;
+  top: 0.2rem;
+  right: -0.05rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--ll-clay);
+  box-shadow: 0 0 0 2px var(--ll-ivory);
+}
+
+:root[data-brief-new] .project:has(.project__main[href="briefs.html"]) .project__title::after {
+  content: "New";
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  background: var(--ll-clay);
+  color: var(--on-accent); /* slate on clay, like the buttons */
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  vertical-align: 0.3em;
+}
+
 /* ☀/☾ button: auto → light → dark → auto */
 .theme-toggle {
   display: inline-flex;
@@ -4143,6 +4177,18 @@ img {
 
 /* ---------- Motion ---------- */
 @media (prefers-reduced-motion: no-preference) {
+  /* New brief: the dot and the "New" badges blink softly for the hour. */
+  :root[data-brief-new] .nav a[href="trading.html"]::after,
+  :root[data-brief-new] .project:has(.project__main[href="briefs.html"]) .project__title::after,
+  .brief-new {
+    animation: brief-flash 1.2s ease-in-out infinite;
+  }
+
+  @keyframes brief-flash {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.25; }
+  }
+
   /* The "Badge earned" note slides up and fades. */
   .badge-toast {
     transform: translate(-50%, 1rem);
