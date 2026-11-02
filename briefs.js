@@ -3,11 +3,14 @@
    --------------------------------------------------------------------------
    Every weekday morning a GitHub Action (.github/workflows/premarket-brief.yml)
    runs .github/scripts/premarket-brief.mjs, which asks Claude for the day's
-   brief and writes two files:
+   brief and writes these files:
      briefs/YYYY-MM-DD.md   the brief itself, in Markdown
-     briefs/index.json      [{ date, time, headline, tldr }, ...], newest first
-                            (time = when it went out; main.js flags it as new
-                            for an hour, see setUpBriefAlert)
+     briefs/index.json      { latest: { date, time, headline, tldr },
+                              months: [{ month: "2026-11", count }, ...] }
+                            newest first (time = when it went out; main.js
+                            flags it as new for an hour, see setUpBriefAlert)
+     briefs/months/YYYY-MM.json  that month's [{ date, time, headline, tldr }]
+                            (written by .github/scripts/brief-index.mjs)
    This file reads them and shows the latest brief, a strip of the US trading
    day in Saskatoon time, and the archive. Tapping a past brief puts its date
    in the address (#2026-11-02) so it can be shared or bookmarked.
@@ -20,7 +23,6 @@
    ========================================================================== */
 
 const BRIEFS_DIR = "briefs/";
-const ARCHIVE_PAGE = 20; // archive rows shown before "Show older briefs"
 const SK_ZONE = "America/Regina"; // Saskatoon: no daylight saving
 const ET_ZONE = "America/New_York"; // the US markets
 
@@ -266,8 +268,11 @@ function drawSession() {
 
 /* ---------- The briefs ---------- */
 
-let briefIndex = []; // from briefs/index.json, newest first
-let archiveShown = ARCHIVE_PAGE;
+let latest = null; // the newest brief's entry, from briefs/index.json
+let months = []; // [{ month: "2026-11", count }], newest first
+const monthLists = new Map(); // "2026-11" -> promise of that month's entries
+
+const isEntry = (e) => e && /^\d{4}-\d{2}-\d{2}$/.test(e.date);
 
 async function loadBriefFile(name) {
   const response = await fetch(BRIEFS_DIR + name, { cache: "no-cache" });
@@ -291,7 +296,6 @@ function setNotice(text, buttonText, onClick) {
 
 async function showBrief(date, scroll) {
   const article = document.querySelector("[data-brief]");
-  const latest = briefIndex[0] && briefIndex[0].date;
 
   const dateLine = document.querySelector("[data-brief-date]");
   dateLine.textContent = briefDate(date, {
@@ -301,16 +305,16 @@ async function showBrief(date, scroll) {
   });
   // Fresh off the press (within the hour): a flashing "New" pill with the
   // time it went out. briefIsNew() is in main.js.
-  if (date === latest && briefIsNew(briefIndex[0])) {
+  if (date === latest.date && briefIsNew(latest)) {
     const posted = new Intl.DateTimeFormat("en-US", { timeZone: SK_ZONE, hour: "numeric", minute: "2-digit" })
-      .format(new Date(briefIndex[0].time)).toLowerCase();
+      .format(new Date(latest.time)).toLowerCase();
     dateLine.append(" ", el("span", "brief-new", "New · posted " + posted));
   }
 
-  if (date !== latest) {
+  if (date !== latest.date) {
     setNotice("This is an older brief.", "Back to the latest", () => {
       history.pushState(null, "", location.pathname);
-      showBrief(latest, true);
+      showBrief(latest.date, true);
     });
   } else if (date !== skToday()) {
     setNotice("No brief yet today. This is the latest one.");
@@ -328,7 +332,7 @@ async function showBrief(date, scroll) {
     article.textContent = "";
     article.append(el("p", "project-list__note", "This brief couldn't load. Pull down to refresh and try again."));
   }
-  drawArchive(date);
+  openMonth(date.slice(0, 7), date);
 
   if (scroll) {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -336,15 +340,92 @@ async function showBrief(date, scroll) {
   }
 }
 
-function drawArchive(current) {
-  const list = document.querySelector("[data-archive]");
-  const more = document.querySelector("[data-archive-more]");
+/* ---------- The archive: years, then months ----------
+   briefs/index.json only lists the months (and the latest brief), so the
+   page stays small however many years of briefs pile up. Each month is a
+   fold; opening one loads briefs/months/YYYY-MM.json, once. The newest year
+   and month start open. */
+
+function loadMonth(month) {
+  if (!monthLists.has(month)) {
+    const list = loadBriefFile(`months/${month}.json`)
+      .then((text) => {
+        const data = JSON.parse(text);
+        return Array.isArray(data) ? data.filter(isEntry) : [];
+      })
+      .catch(() => {
+        monthLists.delete(month); // try again next time it's opened
+        return null;
+      });
+    monthLists.set(month, list);
+  }
+  return monthLists.get(month);
+}
+
+// "2026-11" -> "November"
+function monthName(month) {
+  return briefDate(month + "-15", { month: "long" });
+}
+
+const briefCount = (n) => `${n} brief${n === 1 ? "" : "s"}`;
+
+function drawArchive() {
+  const box = document.querySelector("[data-archive]");
+  box.textContent = "";
+  const years = new Map(); // "2026" -> [{ month, count }]
+  months.forEach((m) => {
+    const year = m.month.slice(0, 4);
+    if (!years.has(year)) years.set(year, []);
+    years.get(year).push(m);
+  });
+
+  let first = true;
+  years.forEach((list, year) => {
+    const yearBox = el("details", "archive__year");
+    yearBox.open = first;
+    yearBox.dataset.year = year;
+    const yearLine = el("summary", "archive__fold archive__fold--year");
+    yearLine.append(el("span", "archive__label", year));
+    yearLine.append(el("span", "archive__count", briefCount(list.reduce((n, m) => n + m.count, 0))));
+    yearBox.append(yearLine);
+
+    list.forEach((m) => {
+      const monthBox = el("details", "archive__month");
+      monthBox.dataset.month = m.month;
+      const monthLine = el("summary", "archive__fold");
+      monthLine.append(el("span", "archive__label", monthName(m.month)));
+      monthLine.append(el("span", "archive__count", briefCount(m.count)));
+      monthBox.append(monthLine, el("ul", "archive"));
+      monthBox.addEventListener("toggle", () => {
+        if (monthBox.open) fillMonth(monthBox);
+      });
+      monthBox.open = first; // fires toggle, which fills it
+      first = false;
+      yearBox.append(monthBox);
+    });
+    box.append(yearBox);
+  });
+}
+
+// Puts a month's briefs into its fold (once) and marks the one on show.
+async function fillMonth(monthBox) {
+  const list = monthBox.querySelector(".archive");
+  if (monthBox.dataset.filled) return markCurrent();
+  monthBox.dataset.filled = "loading";
   list.textContent = "";
-  briefIndex.slice(0, archiveShown).forEach((entry) => {
+  list.append(el("li", "project-list__note archive__note", "Loading…"));
+  const entries = await loadMonth(monthBox.dataset.month);
+  list.textContent = "";
+  if (!entries) {
+    delete monthBox.dataset.filled;
+    list.append(el("li", "project-list__note archive__note", "This month couldn't load. Close it and open it again to retry."));
+    return;
+  }
+  entries.forEach((entry) => {
     const item = el("li");
     const button = el("button", "archive__row");
     button.type = "button";
-    button.setAttribute("aria-current", entry.date === current ? "true" : "false");
+    button.dataset.date = entry.date;
     button.append(el("span", "archive__date", briefDate(entry.date, { month: "short", day: "numeric" })));
     button.append(el("span", "archive__headline", entry.headline || "Pre-market brief"));
     if (entry.tldr) button.append(el("span", "archive__tldr", entry.tldr));
@@ -355,38 +436,60 @@ function drawArchive(current) {
     item.append(button);
     list.append(item);
   });
-  more.hidden = briefIndex.length <= archiveShown;
+  monthBox.dataset.filled = "yes";
+  markCurrent();
+}
+
+let shownDate = "";
+
+function markCurrent() {
+  document.querySelectorAll(".archive__row").forEach((row) => {
+    row.setAttribute("aria-current", row.dataset.date === shownDate ? "true" : "false");
+  });
+}
+
+// Opens the fold for the brief on show (and its year), so it's easy to
+// find, then marks it.
+function openMonth(month, date) {
+  shownDate = date;
+  const monthBox = document.querySelector(`.archive__month[data-month="${month}"]`);
+  if (monthBox) {
+    monthBox.closest(".archive__year").open = true;
+    if (!monthBox.open) monthBox.open = true; // its toggle fills and marks
+  }
+  markCurrent();
 }
 
 // #2026-11-02 in the address picks that brief; otherwise the latest.
-function showFromHash() {
+async function showFromHash() {
   const wanted = location.hash.slice(1);
-  const hit = briefIndex.find((entry) => entry.date === wanted);
-  showBrief(hit ? hit.date : briefIndex[0].date, false);
+  let date = latest.date;
+  if (wanted !== date && isEntry({ date: wanted }) && months.some((m) => m.month === wanted.slice(0, 7))) {
+    const entries = await loadMonth(wanted.slice(0, 7));
+    if (entries && entries.some((e) => e.date === wanted)) date = wanted;
+  }
+  showBrief(date, false);
 }
 
 async function setUpBriefs() {
   drawSession();
   setInterval(drawSession, 60 * 1000);
 
-  const more = document.querySelector("[data-archive-more]");
-  more.addEventListener("click", () => {
-    archiveShown += ARCHIVE_PAGE;
-    const wanted = location.hash.slice(1);
-    drawArchive(briefIndex.some((e) => e.date === wanted) ? wanted : briefIndex[0].date);
-  });
   window.addEventListener("popstate", () => {
-    if (briefIndex.length) showFromHash();
+    if (latest) showFromHash();
   });
 
   try {
     const index = JSON.parse(await loadBriefFile("index.json"));
-    briefIndex = Array.isArray(index) ? index.filter((e) => e && /^\d{4}-\d{2}-\d{2}$/.test(e.date)) : [];
+    if (index && isEntry(index.latest) && Array.isArray(index.months)) {
+      latest = index.latest;
+      months = index.months.filter((m) => m && /^\d{4}-\d{2}$/.test(m.month) && m.count > 0);
+    }
   } catch (error) {
-    briefIndex = [];
+    latest = null;
   }
 
-  if (!briefIndex.length) {
+  if (!latest) {
     document.querySelector("[data-brief-date]").textContent = briefDate(skToday(), {
       weekday: "long",
       month: "long",
@@ -397,10 +500,10 @@ async function setUpBriefs() {
     article.append(
       el("p", "project-list__note", "No briefs yet. The first one lands around 6:35 am Saskatoon time on the next weekday.")
     );
-    const list = document.querySelector("[data-archive]");
-    list.append(el("li", "project-list__note", "Past briefs will collect here."));
+    document.querySelector("[data-archive]").append(el("p", "project-list__note", "Past briefs will collect here."));
     return;
   }
+  drawArchive();
   showFromHash();
 }
 

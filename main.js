@@ -4826,13 +4826,13 @@ function setUpBriefAlert() {
   async function check() {
     if (document.visibilityState === "hidden") return;
     try {
-      // latest.json is a few bytes ({date, time}); index.json, the whole
-      // archive list, is only the fallback for before the robot writes it.
+      // latest.json is a few bytes ({date, time}); index.json (the list of
+      // months, with the latest brief at the top) is only the fallback.
       let response = await fetch("briefs/latest.json", { cache: "no-cache" });
       if (!response.ok) response = await fetch("briefs/index.json", { cache: "no-cache" });
       if (!response.ok) return;
       const data = await response.json();
-      const latest = Array.isArray(data) ? data[0] : data;
+      const latest = data.latest || data;
       show(briefIsNew(latest), latest);
     } catch {
       // Offline or no briefs yet: just no dot.
