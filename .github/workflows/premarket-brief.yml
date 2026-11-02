@@ -1,6 +1,6 @@
 # Writes the morning pre-market brief and puts it live.
 #
-# Every weekday at 6:50 am Saskatoon time (12:50 UTC; Saskatchewan has no
+# Every weekday at 6:30 am Saskatoon time (12:30 UTC; Saskatchewan has no
 # daylight saving, so this never drifts), this:
 #   1. runs .github/scripts/premarket-brief.mjs, which asks Claude (with web
 #      search) for today's brief and writes briefs/YYYY-MM-DD.md plus
@@ -17,7 +17,7 @@ name: Pre-market brief
 
 on:
   schedule:
-    - cron: "50 12 * * 1-5"
+    - cron: "30 12 * * 1-5"
   workflow_dispatch:
     inputs:
       force:

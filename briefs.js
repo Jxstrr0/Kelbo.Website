@@ -253,12 +253,12 @@ function drawSession() {
   if (!mark.hidden) mark.style.left = pct(min) + "%";
 
   let status;
-  if (!tradingDay) status = "Weekend. Markets reopen Monday, and the next brief lands around 7 am.";
+  if (!tradingDay) status = "Weekend. Markets reopen Monday, and the next brief lands around 6:35 am.";
   else if (min < START) status = `Pre-market starts at ${sk(START)} my time. The open is ${sk(OPEN)}.`;
   else if (min < OPEN) status = `Opens in ${minutesLeft(OPEN - min)}, at ${sk(OPEN)} my time.`;
   else if (min < CLOSE) status = `Market open. Closes in ${minutesLeft(CLOSE - min)}, at ${sk(CLOSE)}.`;
   else if (min < END) status = `Closed for the day at ${sk(CLOSE)}. After-hours trading runs until ${sk(END)}.`;
-  else status = `Closed for the day. ${weekday === "Fri" ? "Monday's" : "Tomorrow's"} brief lands around 7 am.`;
+  else status = `Closed for the day. ${weekday === "Fri" ? "Monday's" : "Tomorrow's"} brief lands around 6:35 am.`;
   box.querySelector("[data-session-status]").textContent = status;
 }
 
@@ -385,7 +385,7 @@ async function setUpBriefs() {
     const article = document.querySelector("[data-brief]");
     article.textContent = "";
     article.append(
-      el("p", "project-list__note", "No briefs yet. The first one lands around 7 am Saskatoon time on the next weekday.")
+      el("p", "project-list__note", "No briefs yet. The first one lands around 6:35 am Saskatoon time on the next weekday.")
     );
     const list = document.querySelector("[data-archive]");
     list.append(el("li", "project-list__note", "Past briefs will collect here."));
