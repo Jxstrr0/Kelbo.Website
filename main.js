@@ -4784,6 +4784,64 @@ function setUpMarketLight() {
 }
 
 /* ======================================================================
+   NEW BRIEF ALERT
+   ----------------------------------------------------------------------
+   For an hour after the pre-market brief goes out each morning, every
+   page shows a flashing dot on the Trading link in the header, and the
+   brief's card gets a flashing "New" badge (both drawn in style.css from
+   data-brief-new on <html>). The time comes from briefs/index.json, which
+   the brief robot stamps when it writes a brief. A page left open checks
+   again every few minutes, so it notices a brief that lands while you're
+   looking at it, and the dot goes away by itself when the hour is up.
+   ====================================================================== */
+const BRIEF_NEW_MS = 60 * 60 * 1000; // how long a brief counts as new
+const BRIEF_CHECK_MS = 5 * 60 * 1000; // how often an open page checks again
+
+// True if this index entry went out less than an hour ago (real time,
+// not the ?at= sky preview).
+function briefIsNew(entry) {
+  const sent = entry && Date.parse(entry.time);
+  if (!Number.isFinite(sent)) return false;
+  const age = Date.now() - sent;
+  return age >= 0 && age < BRIEF_NEW_MS;
+}
+
+function setUpBriefAlert() {
+  const root = document.documentElement;
+  let clearTimer = 0;
+
+  function show(isNew, entry) {
+    if (isNew) root.dataset.briefNew = "";
+    else delete root.dataset.briefNew;
+    // Screen readers hear "Trading, new brief" while the dot shows.
+    document.querySelectorAll('.nav a[href="trading.html"]').forEach((link) => {
+      let note = link.querySelector(".nav__new");
+      if (isNew && !note) link.append(el("span", "visually-hidden nav__new", ", new brief"));
+      if (!isNew && note) note.remove();
+    });
+    clearTimeout(clearTimer);
+    if (isNew) clearTimer = setTimeout(() => show(false), Date.parse(entry.time) + BRIEF_NEW_MS - Date.now());
+  }
+
+  async function check() {
+    if (document.visibilityState === "hidden") return;
+    try {
+      const response = await fetch("briefs/index.json", { cache: "no-cache" });
+      if (!response.ok) return;
+      const list = await response.json();
+      const latest = Array.isArray(list) ? list[0] : null;
+      show(briefIsNew(latest), latest);
+    } catch {
+      // Offline or no briefs yet: just no dot.
+    }
+  }
+
+  check();
+  setInterval(check, BRIEF_CHECK_MS);
+  document.addEventListener("visibilitychange", check);
+}
+
+/* ======================================================================
    BADGES
    ----------------------------------------------------------------------
    Little goals for visitors, earned by using the site: playing games,
@@ -5007,6 +5065,7 @@ async function init() {
   rememberPlays();
   setUpContinue();
   setUpMarketLight();
+  setUpBriefAlert();
   setUpContactForm();
   setUpNow();
   setUpDevlog();
