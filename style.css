@@ -2222,6 +2222,73 @@ img {
   display: none;
 }
 
+/* "Fog advisory · until 5:39 PM": Environment Canada's alert for the
+   spot under the sky, a pill on the left just above the horizon line
+   (main.js setUpAlert). Warnings are solid clay. */
+.horizon__alert {
+  position: absolute;
+  left: 0;
+  bottom: calc(var(--ground-height) + 0.75rem);
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  max-width: calc(100% - 1rem);
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  background: var(--sky-ink);
+  color: var(--sky);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.horizon__alert::before {
+  content: "!";
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background: var(--ll-clay);
+  color: var(--ll-slate);
+  letter-spacing: 0;
+}
+
+.horizon__alert--warning {
+  background: var(--ll-clay);
+  color: var(--ll-slate);
+}
+
+.horizon__alert--warning::before {
+  background: var(--ll-slate);
+  color: var(--ll-clay);
+}
+
+.horizon__alert:focus-visible {
+  outline: 2px solid var(--sky-ink);
+  outline-offset: 3px;
+}
+
+.horizon__alert[hidden] {
+  display: none;
+}
+
+/* The "until 5:39 PM" part only fits from tablet size up */
+.horizon__alert-extra {
+  display: none;
+}
+
+@media (min-width: 40rem) {
+  .horizon__alert-extra {
+    display: inline;
+  }
+}
+
 /* "Facing southwest": shown in the corner while the compass turns the
    sky (Tilt sky, main.js) */
 .horizon__facing {
@@ -2473,6 +2540,31 @@ img {
   .sky-week__item {
     grid-template-columns: 1fr;
   }
+}
+
+/* "Clear sky" / "Some cloud" / "Cloudy": the cloud forecast tag on
+   each thing to look at (main.js setUpSkyWeek) */
+.sky-week__cloud {
+  display: inline-block;
+  margin-left: 0.2rem;
+  padding: 0.05rem 0.5rem;
+  border: 1px solid var(--secondary);
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.sky-week__cloud--clear {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--ll-slate);
+}
+
+.sky-week__cloud--cloudy {
+  border-style: dashed;
+  color: var(--muted);
+  border-color: var(--muted);
 }
 
 .sky-week__wishes {

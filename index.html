@@ -125,6 +125,8 @@
           </p>
           <!-- Shown by main.js on the longest and shortest days of the year -->
           <p class="horizon__badge" data-horizon-badge hidden></p>
+          <!-- Shown by main.js while Environment Canada has a weather alert out -->
+          <a class="horizon__alert" data-horizon-alert target="_blank" rel="noopener" hidden></a>
         </div>
       </div>
     </section>
@@ -137,9 +139,9 @@
       <p class="now__updated" data-now-updated></p>
     </section>
 
-    <!-- Sky this week: what's coming up in the sky, worked out by main.js
-         (no internet), plus the shooting-star wish counter. Hidden
-         without JavaScript. -->
+    <!-- Sky this week: what's coming up in the sky, worked out by main.js,
+         plus the cloud and northern lights forecasts when they load and
+         the shooting-star wish counter. Hidden without JavaScript. -->
     <section class="sky-week wrap" aria-labelledby="sky-week-heading" data-sky-week hidden>
       <h2 id="sky-week-heading" class="now__label">Sky this week</h2>
       <ol class="sky-week__list" data-sky-week-list></ol>
