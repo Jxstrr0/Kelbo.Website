@@ -861,7 +861,7 @@ you open it.
   year, so 12:30 is 6:30 am). GitHub can start scheduled runs a few
   minutes late when it's busy.
   It can run up to 25 web searches a brief (`MAX_SEARCHES`) and open up to
-  15 whole pages on any site to read the actual numbers (`MAX_FETCHES`),
+  10 whole pages on any site to read the actual numbers (`MAX_FETCHES`),
   following a rough search plan in `SYSTEM` (most of it on MU). It calls
   the model named in `MODEL` (`claude-opus-5-5`).
 - **Yesterday's call:** the robot hands it the previous brief, so it says

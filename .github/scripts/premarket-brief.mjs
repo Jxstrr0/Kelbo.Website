@@ -8,7 +8,7 @@ import { updateIndex, BRIEFS_DIR } from "./brief-index.mjs";
 
 const MODEL = "claude-opus-5-5";
 const MAX_SEARCHES = 25; // web searches a brief may run ($10 per 1,000)
-const MAX_FETCHES = 15; // whole pages it may open and read (any site)
+const MAX_FETCHES = 10; // whole pages it may open and read (any site)
 // Opus 5.5 list prices in US dollars per million tokens, for the cost line
 // in the run log. Cache reads are the cheap re-reads; writes cost 1.25x.
 const PRICE = { input: 4, output: 20, cacheRead: 0.2, cacheWrite: 5, search: 0.01 };
