@@ -59,7 +59,7 @@ Rules:
 - Be direct and specific. No hype, no filler, no financial-advice disclaimers beyond the levels note.
 - If you can't find something, say so in a few words rather than guessing.
 
-When you are done researching, output the line ${MARKER} and then the brief in exactly this Markdown format, with nothing after it. Use these headings word for word, in this order, every day: the "# " headline, the "TLDR:" line, then ## Overnight and Asia, ## MU, ## Watchlist, ## Calendar. Never rename, add or drop a heading; put extra notes inside the nearest section.
+When you are done researching, output the line ${MARKER} and then the brief in exactly this Markdown format, with nothing after it. Use these headings word for word, in this order, every day: the "# " headline, the "TLDR:" line, then ## Overnight and Asia, ## MU, ## Watchlist, ## Calendar, ## Sources. Never rename, add or drop a heading; put extra notes inside the nearest section.
 
 # <headline: the single most important thing for today, under 12 words>
 TLDR: <one sentence summary>
@@ -79,7 +79,10 @@ TLDR: <one sentence summary>
 <one bullet per ticker: **TICKER** then one line. Put names with real news first and start their line with "News:". Skip none.>
 
 ## Calendar
-<bullets: economic data and earnings today, with ET and SK times. Mention watchlist earnings this week too.>`;
+<bullets: economic data and earnings today, with ET and SK times. Mention watchlist earnings this week too.>
+
+## Sources
+<5 to 12 bullets, each "- [page title](https://full-url)", for the pages this brief relies on most. Copy each URL exactly as it appeared in your search results; never make one up or shorten it.>`;
 
 const tools = [{ type: "web_search_20260209", name: "web_search", max_uses: MAX_SEARCHES }];
 
@@ -134,6 +137,23 @@ for (const block of allBlocks) {
   }
 }
 
+// Every web address that came back from the searches this run, so the
+// Sources list can only hold pages the model really saw. Search results can
+// arrive in different block types, so this just scans them all for links.
+const seenUrls = new Set();
+const normUrl = (u) => {
+  try {
+    const x = new URL(u);
+    return (x.host.replace(/^www\./, "") + x.pathname.replace(/\/+$/, "") + x.search).toLowerCase();
+  } catch { return ""; }
+};
+for (const block of allBlocks) {
+  if (block.type === "text") continue;
+  for (const m of JSON.stringify(block).matchAll(/https?:\/\/[^\s"'<>\\)\]]+/g)) seenUrls.add(normUrl(m[0]));
+}
+seenUrls.delete("");
+console.log(`Blocks: ${Object.entries(allBlocks.reduce((n, b) => (n[b.type] = (n[b.type] || 0) + 1, n), {})).map(([k, v]) => `${k} ${v}`).join(", ")}; ${seenUrls.size} links seen in search results, ${sources.size} cited.`);
+
 const markerAt = text.lastIndexOf(MARKER);
 let brief = (markerAt >= 0 ? text.slice(markerAt + MARKER.length) : text).trim();
 if (!brief.startsWith("#")) {
@@ -169,9 +189,26 @@ if (missing().length) {
 const headline = (brief.match(/^#\s+(.+)$/m)?.[1] ?? "Pre-market brief").trim();
 const tldr = (brief.match(/^TLDR:\s*(.+)$/m)?.[1] ?? "").trim();
 
+// Sources: the model's own list (only links the searches really returned),
+// then any inline citations, without repeats, at most 15.
+const srcAt = brief.search(/^## Sources\s*$/m);
+if (srcAt >= 0) {
+  const listed = brief.slice(srcAt);
+  brief = brief.slice(0, srcAt).trimEnd();
+  const picked = new Map();
+  for (const m of listed.matchAll(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g)) {
+    if (seenUrls.has(normUrl(m[2]))) picked.set(m[2], m[1]);
+    else console.warn(`Dropped a source the searches never returned: ${m[2]}`);
+  }
+  for (const [url, title] of sources) picked.set(url, title);
+  sources.clear();
+  for (const [url, title] of picked) sources.set(url, title);
+}
 if (sources.size) {
   brief += "\n\n## Sources\n" + [...sources].slice(0, 15)
     .map(([url, title]) => `- [${title.replace(/[\[\]]/g, "")}](${url})`).join("\n");
+} else {
+  console.warn("No sources to list this time.");
 }
 brief += `\n\n<small>Generated ${new Date().toISOString()} by ${MODEL}. Levels are estimates from web reports, not live quotes.</small>\n`;
 

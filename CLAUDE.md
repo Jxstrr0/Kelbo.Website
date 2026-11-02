@@ -552,7 +552,9 @@ keep the Co-Authored-By trailer for Claude in each message.
   `web_search_20260209` with `MAX_SEARCHES` 20, `pause_turn` loop), which writes
   `briefs/YYYY-MM-DD.md` (fixed headings: `# headline`, `TLDR:`,
   `## Overnight and Asia`, `## MU`, `## Watchlist`, `## Calendar`, then
-  `## Sources` and a `<small>` stamp; if a heading is missing it asks once,
+  `## Sources` (the model lists its own; the script keeps only links that
+  appear in that run's search results, plus inline citations, max 15) and a
+  `<small>` stamp; if a heading is missing it asks once,
   with search off, for a rewrite in the format) and prepends `{date, headline, tldr}`
   to `briefs/index.json`. The workflow commits as premarket-bot, then runs
   `gh workflow run deploy.yml` (a GITHUB_TOKEN push starts no workflows by
