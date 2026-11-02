@@ -556,7 +556,12 @@ keep the Co-Authored-By trailer for Claude in each message.
   appear in that run's search results, plus inline citations, max 15) and a
   `<small>` stamp; if a heading is missing it asks once,
   with search off, for a rewrite in the format) and prepends `{date, headline, tldr}`
-  to `briefs/index.json`. The workflow commits as premarket-bot, then runs
+  to `briefs/index.json` (plus `time`, the ISO send time: `setUpBriefAlert`
+  in main.js sets `data-brief-new` on `<html>` while `briefIsNew` (under
+  `BRIEF_NEW_MS`, 1 h; rechecked every `BRIEF_CHECK_MS`), drawing a clay
+  dot on the nav Trading link and a "New" badge on the brief's card in
+  style.css, plus the `.brief-new` pill by the date on briefs.html; it
+  blinks only in the no-preference block). The workflow commits as premarket-bot, then runs
   `gh workflow run deploy.yml` (a GITHUB_TOKEN push starts no workflows by
   itself). `briefs.js` renders the Markdown itself (escape first, then
   headings, lists, bold, italics, https links, simple tables), draws the
