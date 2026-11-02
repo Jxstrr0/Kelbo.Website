@@ -834,10 +834,10 @@ Saskatoon time. Each brief is a Markdown file in `briefs/`
 (`2026-11-02.md`), and `briefs/index.json` is the list the page reads.
 
 - **Who writes it:** the **Pre-market brief** robot
-  (`.github/workflows/premarket-brief.yml`) runs every weekday at 6:50 am
+  (`.github/workflows/premarket-brief.yml`) runs every weekday at 6:30 am
   Saskatoon time. It runs `.github/scripts/premarket-brief.mjs`, which asks
   Claude (with web search) for the brief, saves it, commits it to `main`,
-  and starts the **Deploy site** run so it goes live around 7.
+  and starts the **Deploy site** run so it goes live around 6:35.
 - **The key:** it uses the Anthropic API, so the repo has one secret,
   `ANTHROPIC_API_KEY`, under Settings → Secrets and variables → Actions.
   The workflow only ever reads it from there. Never paste the key into a
@@ -852,7 +852,8 @@ Saskatoon time. Each brief is a Markdown file in `briefs/`
 - **Changing it:** the watchlist, the rules and the layout of the brief are
   all in `SYSTEM` near the top of `premarket-brief.mjs`, in plain English.
   The time is the `cron` line in the workflow (UTC; Saskatoon is UTC−6 all
-  year, so 12:50 is 6:50 am).
+  year, so 12:30 is 6:30 am). GitHub can start scheduled runs a few
+  minutes late when it's busy.
   It can run up to 20 web searches a brief (`MAX_SEARCHES`), and it calls
   the model named in `MODEL` (`claude-opus-5-5`).
 - **Same headings every day:** the page expects `# headline`, `TLDR:`,
