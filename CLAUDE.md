@@ -151,7 +151,11 @@ keep the Co-Authored-By trailer for Claude in each message.
   Prairie Engine Works is the GM LT4 6.2 from the game's own studio render,
   `ENGINE_VIS.photoShot(1280, 960)`, so no stray parts show; Season Ticket is
   the game's dusk title scene at 1024×768, with every element except the 3D
-  canvas hidden, cropped 4:3).
+  canvas hidden, cropped 4:3). The non-game projects have drawn covers
+  (inline SVG rendered to 640×480 JPG, palette only, no text): Pre-market
+  brief (dawn sky, candles rising off the horizon, clay sun), AI Trading
+  Journal (notebook with results bars and a running line), Agent Fleet
+  (a V of small bots over the sun). Brief sits above the journal.
 - The live horizon (`[data-horizon]` in the home hero, every page head and
   the 404) puts the sun where the real sun is over Saskatoon (`YXE` in
   `main.js`, no network; only the optional weather, air quality and aurora fetch), switches to the dark theme at real sunset, and
