@@ -7,7 +7,7 @@ import { readFile, readdir, writeFile, mkdir, access } from "node:fs/promises";
 import { updateIndex, BRIEFS_DIR } from "./brief-index.mjs";
 
 const MODEL = "claude-opus-5-5";
-const MAX_SEARCHES = 25; // web searches a brief may run ($10 per 1,000)
+const MAX_SEARCHES = 30; // web searches a brief may run ($10 per 1,000)
 const MAX_FETCHES = 10; // whole pages it may open and read (any site)
 // Opus 5.5 list prices in US dollars per million tokens, for the cost line
 // in the run log. Cache reads are the cheap re-reads; writes cost 1.25x.
@@ -117,14 +117,18 @@ async function callClaude(messages, withTools = true, attempt = 1) {
       "anthropic-version": "2023-06-01",
     },
     // max_tokens covers the model's thinking as well as the brief itself, so
-    // leave it roomy: a tight cap cuts the brief off mid-sentence.
+    // leave it roomy: a tight cap cuts the brief off mid-sentence. It's
+    // only a ceiling; the brief is billed for what it really writes.
+    // effort "high": think harder than Opus's default ("medium") about what
+    // the research found, mostly for the gap call.
     // cache_control: every step of the research re-reads everything found so
     // far. Caching bills those re-reads at a twentieth of the price. The
     // marker on the instructions keeps them cached; the top-level one moves
     // along the conversation as it grows.
     body: JSON.stringify({
       model: MODEL,
-      max_tokens: 16000,
+      max_tokens: 32000,
+      output_config: { effort: "high" },
       system: [{ type: "text", text: SYSTEM, cache_control: { type: "ephemeral" } }],
       messages,
       cache_control: { type: "ephemeral" },
