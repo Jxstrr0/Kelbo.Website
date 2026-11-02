@@ -597,9 +597,17 @@ from the optional weather, air quality and northern lights, below).
 - **On a computer:** moving the mouse shifts the stars, moon and clouds a
   little against the land (like tilting a phone), and game cards tip
   toward the mouse with a glint on the cover.
-- Weather, the air quality and the northern lights are the only parts of
-  the site that fetch anything. They send no personal details, just a
-  request for Saskatoon's weather and air and the latest space weather.
+- Weather, the air quality, the northern lights, the forecasts and the
+  weather alerts are the only parts of the sky that fetch anything. They
+  send no personal details, just a request for Saskatoon's weather, air,
+  alerts and the latest space weather.
+- **Weather alerts:** when Environment Canada has an alert out for
+  Saskatoon (a blizzard warning, extreme cold, fog advisory and so on), a
+  pill shows on the left of the home page sky, just above the horizon
+  line, like "! Fog advisory · until 5:39 PM". Warnings are solid clay.
+  Tapping it opens Environment Canada's forecast page. It's checked at
+  most every 15 minutes, and it only works for places in Canada. Preview
+  it with `?alert=warning`, `?alert=watch` or `?alert=advisory`.
 - **Eclipses:** worked out from the same sun and moon maths (no
   internet), within a few minutes of the real times. In a lunar eclipse
   the Earth's shadow, a deep copper red, creeps across the moon and covers
@@ -653,6 +661,12 @@ moon gets its name, like "the Hunter's Moon"), the moon passing close to a
 planet, meteor shower peaks (and whether the moon will wash them out),
 eclipses, equinoxes and solstices, how sunset moves over the week, and the
 space station's best passes (the ones that climb at least 25° high).
+Two free forecasts join in when they load. NOAA's 3-day northern lights
+forecast adds a "Northern lights possible" (or "likely") line for any
+night it's strong enough to reach Saskatoon after dark. Open-Meteo's cloud
+forecast puts a little **Clear sky**, **Some cloud** or **Cloudy** tag on
+each thing to go out and look at. Preview them with `?kpcast=5` (the
+northern lights strength, 0 to 9) and `?clouds=10` (cloud cover, 0 to 100).
 Under it is the wish counter, with badges at 1, 10, 25, 50 and 100 wishes
 (`WISH_BADGES` in `main.js`). Preview a busy week with
 `?at=2026-03-01T12:00` (a total lunar eclipse).
