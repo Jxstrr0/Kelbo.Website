@@ -47,10 +47,13 @@ keep the Co-Authored-By trailer for Claude in each message.
   the only things it changes are each game's `version` and `latest`, filled
   in from that game's newest GitHub Release (see below), and the
   `game-<slug>.html` copies of `game.html` it adds (`make-game-pages.mjs`,
-  see below). The three scripts in
+  see below). The scripts in
   `.github/scripts/` are plain Node with no packages; keep them that way.
 - **No secrets.** The repo is public. Never commit API keys, tokens, or
   passwords. If a tool needs a key, talk through options with Kelbo first.
+  The one key that exists is the `ANTHROPIC_API_KEY` repository secret for
+  the pre-market brief; it is only ever referenced as
+  `${{ secrets.ANTHROPIC_API_KEY }}` in that workflow.
 - Mobile first (works down to 360px wide), light and dark themes with
   every colour in CSS variables (`data-theme` on `<html>`, set by `main.js`
   from the real sun; `prefers-color-scheme` is only the fallback before JS
@@ -537,6 +540,23 @@ keep the Co-Authored-By trailer for Claude in each message.
   routine: only touch `scan.json`, use real figures from sources found that
   run (list them in `sources`), never guess a number, and leave out anything
   that can't be confirmed.
+- The pre-market brief is `briefs.html` + `briefs.js` + `briefs.css`. The
+  **Pre-market brief** workflow (`.github/workflows/premarket-brief.yml`,
+  weekdays 12:50 UTC = 6:50 am America/Regina, or by hand with a "rewrite
+  today's" box) runs `.github/scripts/premarket-brief.mjs`: plain Node
+  `fetch` to the Anthropic Messages API (`claude-sonnet-5-5`, server-side
+  `web_search_20260209`, `pause_turn` loop), which writes
+  `briefs/YYYY-MM-DD.md` (fixed headings: `# headline`, `TLDR:`,
+  `## Overnight and Asia`, `## MU`, `## Watchlist`, `## Calendar`, then
+  `## Sources` and a `<small>` stamp) and prepends `{date, headline, tldr}`
+  to `briefs/index.json`. The workflow commits as premarket-bot, then runs
+  `gh workflow run deploy.yml` (a GITHUB_TOKEN push starts no workflows by
+  itself). `briefs.js` renders the Markdown itself (escape first, then
+  headings, lists, bold, italics, https links, simple tables), draws the
+  4 am to 8 pm ET session strip in Saskatoon time, and routes the archive
+  by `#YYYY-MM-DD`. The page speaks in Kelbo's first person; it is a
+  Trading project in `projects.json`, in `sitemap.xml` and `sw.js` `CORE`.
+  Don't hand-edit the files in `briefs/`.
 - The Prediction Tracker in `tools/prediction-tracker/` is parked: still in
   the repo but removed from `projects.json` (README has the block to
   restore it).

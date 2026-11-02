@@ -1,0 +1,304 @@
+/* ==========================================================================
+   briefs.css — the pre-market brief page (briefs.html).
+   --------------------------------------------------------------------------
+   Only the parts that page adds: the strip of the trading day, the brief
+   itself (Markdown turned into HTML by briefs.js) and the archive list.
+   Every colour is a token from style.css, so light and dark both work.
+   ========================================================================== */
+
+/* ---------- The trading day: 4 am to 8 pm ET, regular hours shaded ---------- */
+.session {
+  display: grid;
+  gap: 0.55rem;
+  max-width: 44rem;
+}
+
+.session__strip {
+  position: relative;
+  height: 10px;
+  border: 1px solid var(--rule);
+  border-radius: 5px;
+  background: var(--surface);
+}
+
+/* Regular trading hours, 9:30 to 4:00 ET */
+.session__rth {
+  position: absolute;
+  top: -1px;
+  bottom: -1px;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--secondary) 55%, var(--surface));
+}
+
+/* Where we are in the day right now (hidden outside 4 am to 8 pm ET) */
+.session__now {
+  position: absolute;
+  top: -6px;
+  width: 3px;
+  height: 20px;
+  margin-left: -1.5px;
+  border-radius: 2px;
+  background: var(--accent);
+}
+
+.session__now[hidden] {
+  display: none;
+}
+
+.session__ticks {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.session__status {
+  margin: 0;
+  font-weight: 700;
+}
+
+/* ---------- The brief ---------- */
+.brief-date {
+  margin: -0.5rem 0 1rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+/* "This is an older brief" / "No brief yet today" */
+.brief-notice {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  max-width: 44rem;
+  margin: 0 0 1rem;
+  padding: 0.6rem 0.9rem;
+  border-radius: 12px;
+  background: var(--secondary-soft);
+  color: var(--ink);
+  font-size: 0.95rem;
+}
+
+.brief-notice[hidden] {
+  display: none;
+}
+
+.brief-notice button {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-weight: 700;
+  color: var(--secondary);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+  cursor: pointer;
+}
+
+/* The card the brief sits in, like a journal entry */
+.brief-card {
+  max-width: 44rem;
+  padding: 1.25rem 1.25rem 1.4rem;
+  border: 1px solid var(--rule);
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radius);
+  background: var(--card);
+  box-shadow: var(--shadow);
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+.brief-card > :first-child {
+  margin-top: 0;
+}
+
+.brief-card > :last-child {
+  margin-bottom: 0;
+}
+
+/* The "# headline" line of the brief */
+.brief__headline {
+  margin: 0 0 0.5rem;
+  font-size: 1.45rem;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.brief__tldr {
+  margin: 0 0 1.5rem;
+  font-size: 1.1rem;
+  color: var(--muted);
+}
+
+/* "## Overnight and Asia", "## MU", ... */
+.brief-card h3 {
+  margin: 1.75rem 0 0.6rem;
+  padding-left: 0.75rem;
+  border-left: 3px solid var(--secondary);
+  font-size: 1.05rem;
+}
+
+.brief-card h4 {
+  margin: 1.25rem 0 0.4rem;
+  font-size: 0.95rem;
+}
+
+.brief-card p {
+  margin: 0 0 0.8rem;
+}
+
+.brief-card ul,
+.brief-card ol {
+  margin: 0 0 1rem;
+  padding-left: 1.25rem;
+}
+
+.brief-card li {
+  margin-bottom: 0.4rem;
+}
+
+.brief-card li::marker {
+  color: var(--accent-ink);
+}
+
+.brief-card a {
+  color: var(--secondary);
+}
+
+.brief-card code {
+  padding: 0 0.3em;
+  border-radius: 4px;
+  background: var(--surface);
+  font-size: 0.9em;
+}
+
+.brief-card blockquote {
+  margin: 0 0 1rem;
+  padding-left: 0.9rem;
+  border-left: 3px solid var(--rule);
+  color: var(--muted);
+}
+
+.brief-card hr {
+  margin: 1.5rem 0;
+  border: 0;
+  border-top: 1px solid var(--rule);
+}
+
+.brief__table {
+  margin: 0 0 1rem;
+  overflow-x: auto;
+}
+
+.brief-card table {
+  min-width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.brief-card th,
+.brief-card td {
+  padding: 0.4rem 0.6rem;
+  border-bottom: 1px solid var(--rule);
+  text-align: left;
+}
+
+.brief-card th {
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--secondary);
+}
+
+/* The "## Sources" list is quieter than the rest */
+.brief__sources + ul {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+/* The "Generated ... by ..." line at the end */
+.brief__stamp {
+  margin-top: 1.5rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+/* ---------- The archive ---------- */
+.archive {
+  max-width: 44rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.archive li + li {
+  border-top: 1px solid var(--rule);
+}
+
+.archive__row {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr;
+  gap: 0.2rem 0.75rem;
+  width: 100%;
+  padding: 0.85rem 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.archive__row:hover .archive__headline {
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-underline-offset: 0.15em;
+}
+
+.archive__row:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+.archive__date {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+
+.archive__row[aria-current="true"] .archive__date {
+  color: var(--accent-ink);
+}
+
+.archive__headline {
+  font-weight: 700;
+}
+
+.archive__tldr {
+  grid-column: 2;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.archive__more {
+  margin-top: 1.25rem;
+}
+
+/* .button sets its own display, so say it twice: hidden means hidden */
+.archive__more[hidden] {
+  display: none;
+}
+
+/* Narrow phones: the date sits above the headline */
+@media (max-width: 24rem) {
+  .archive__row {
+    grid-template-columns: 1fr;
+  }
+
+  .archive__tldr {
+    grid-column: 1;
+  }
+}
