@@ -653,6 +653,11 @@ keep the Co-Authored-By trailer for Claude in each message.
   reads today's brief (minus Sources) to grade the MU gap call
   (hit/partial/miss, ±0.5% = flat) and each key level
   (held/broke/untested), with `unknown` whenever a price isn't confirmed.
+  Claude also copies the brief's numbers (`call_low_pct`/`call_high_pct`,
+  each level's `kind`/`low`/`high`); `gapGrade` and `levelGrade` redo the
+  grades from them and the prices (code wins, disagreements logged; the
+  model's grade only when a number is missing), and `callClaude` retries
+  network failures as well as 429/5xx.
   The script validates everything (grades outside the list become
   unknown, prices must be positive numbers or null, the gap is unknown
   without both prices, `open_pct`/`close_pct` are computed from the

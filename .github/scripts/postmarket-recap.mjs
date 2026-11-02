@@ -137,6 +137,7 @@ You have up to ${MAX_SEARCHES} web searches and ${MAX_FETCHES} page reads (web_f
 - today's opening price (the 9:30 ET regular-session open),
 - today's regular-session high and low,
 - today's 4:00 pm ET close.
+For the gap call, call_low_pct and call_high_pct are the brief's predicted range ("Up about 2–3%" is 2 and 3; "down 1%" is -1 and -1; a flat call is 0 and 0; null if the brief gave no size). For a level like "$902.50–$906.54", low is 902.5 and high is 906.54; for one price, low and high are the same.
 A daily price history page or a quote page usually has all of these at once: fetch one rather than searching for each number. Use a second source to cross-check the open and close if the first one looks odd.
 
 Grading rules.
@@ -155,13 +156,14 @@ Rules:
 - Never guess or estimate a price. If you can't confirm a number from a source you found today, use null for it and say "couldn't confirm" in the text.
 - Prices are US dollars per share, as plain numbers (884.74, not "$884.74").
 - Keep every text field short and plain: one sentence at most.
+- Also copy the brief's own numbers into the fields below (call_low_pct, call_high_pct, kind, low, high). The script redoes the grade arithmetic from them and your prices, so copy them exactly as the brief gave them.
 
 When you are done, output the line ${MARKER} and then one JSON object, with nothing after it, in exactly this shape:
 {
   "summary": "<one sentence: how the brief did today>",
-  "gap": { "call": "<what the brief called, in a few words>", "result": "<what MU actually did at the open>", "grade": "hit|partial|miss|unknown" },
+  "gap": { "call": "<what the brief called, in a few words>", "call_low_pct": <the low end of the brief's predicted gap in percent, negative for down, or null>, "call_high_pct": <the high end, or null>, "result": "<what MU actually did at the open>", "grade": "hit|partial|miss|unknown" },
   "mu": { "prev_close": <number or null>, "open": <number or null>, "high": <number or null>, "low": <number or null>, "close": <number or null> },
-  "levels": [ { "level": "<the level as the brief named it, e.g. Support $861.59 (Friday's low)>", "result": "<what the price did around it>", "grade": "held|broke|untested|unknown" } ],
+  "levels": [ { "level": "<the level as the brief named it, e.g. Support $861.59 (Friday's low)>", "kind": "support|resistance", "low": <the level's price, or the bottom of its range>, "high": <the same price, or the top of its range>, "result": "<what the price did around it>", "grade": "held|broke|untested|unknown" } ],
   "sources": [ { "title": "<page title>", "url": "<the exact URL from your search results or a page you fetched>" } ]
 }`;
 
@@ -172,7 +174,15 @@ const tools = [
 
 // withTools = false sends the request with search and page reads off.
 async function callClaude(messages, withTools = true, attempt = 1) {
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
+  const retry = async (why) => {
+    const wait = 15000 * attempt;
+    console.log(`${why}, retrying in ${wait / 1000}s`);
+    await new Promise((r) => setTimeout(r, wait));
+    return callClaude(messages, withTools, attempt + 1);
+  };
+  let res;
+  try {
+    res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: {
       "content-type": "application/json",
@@ -190,13 +200,13 @@ async function callClaude(messages, withTools = true, attempt = 1) {
       cache_control: { type: "ephemeral" },
       ...(withTools && { tools }),
     }),
-  });
-  if ((res.status === 429 || res.status >= 500) && attempt < 4) {
-    const wait = 15000 * attempt;
-    console.log(`API returned ${res.status}, retrying in ${wait / 1000}s`);
-    await new Promise((r) => setTimeout(r, wait));
-    return callClaude(messages, withTools, attempt + 1);
+    });
+  } catch (err) {
+    // The connection itself failed (a network blip): try again too.
+    if (attempt < 4) return retry(`Couldn't reach the API (${err.message})`);
+    throw err;
   }
+  if ((res.status === 429 || res.status >= 500) && attempt < 4) return retry(`API returned ${res.status}`);
   if (!res.ok) throw new Error(`API error ${res.status}: ${await res.text()}`);
   return res.json();
 }
@@ -275,6 +285,42 @@ const mu = {
 mu.open_pct = pct(mu.prev_close, mu.open); // the gap
 mu.close_pct = pct(mu.prev_close, mu.close); // the day's move
 
+/* ---------- Redo the grade arithmetic ----------
+   Claude finds the prices and copies the brief's numbers; the sums are
+   done here, by the same rules as in SYSTEM, so a slip in the model's
+   maths can't change a grade. When a number is missing, Claude's own
+   grade is kept. Any time the two disagree, the run log says so. */
+const num = (v) => (typeof v === "number" && Number.isFinite(v) ? v : null);
+const FLAT = 0.5; // a gap within ±0.5% counts as flat
+const NEAR = 0.5; // a level within 0.5% of the day's range was tested
+
+function gapGrade(lowPct, highPct, gap) {
+  if (gap === null || lowPct === null || highPct === null) return null;
+  const [lo, hi] = lowPct <= highPct ? [lowPct, highPct] : [highPct, lowPct];
+  const mid = (lo + hi) / 2;
+  const callDir = Math.abs(mid) <= FLAT ? 0 : Math.sign(mid);
+  if (callDir === 0) return Math.abs(gap) <= FLAT ? "hit" : Math.abs(gap) <= 1 ? "partial" : "miss";
+  const gapDir = Math.abs(gap) <= FLAT ? 0 : Math.sign(gap);
+  if (gapDir !== callDir) return "miss";
+  const off = gap >= lo && gap <= hi ? 0 : Math.min(Math.abs(gap - lo), Math.abs(gap - hi));
+  return off <= 1 ? "hit" : "partial";
+}
+
+function levelGrade(kind, low, high, day) {
+  if (!["support", "resistance"].includes(kind) || !price(low) || !price(high)) return null;
+  if (!day.high || !day.low || !day.close) return null;
+  const [lo, hi] = low <= high ? [low, high] : [high, low];
+  // How close the day's range came to the level (0 if it touched it).
+  const gapToLevel = day.low > hi ? day.low - hi : day.high < lo ? lo - day.high : 0;
+  if (gapToLevel > (lo * NEAR) / 100) return "untested";
+  const broke = kind === "support" ? day.close < lo : day.close > hi;
+  return broke ? "broke" : "held";
+}
+
+const modelGap = oneOf(raw.gap?.grade, ["hit", "partial", "miss"]);
+const checkedGap = gapGrade(num(raw.gap?.call_low_pct), num(raw.gap?.call_high_pct), mu.open_pct);
+if (checkedGap && checkedGap !== modelGap) console.warn(`Gap: Claude said ${modelGap}, the arithmetic says ${checkedGap}. Using ${checkedGap}.`);
+
 // Only links that really came back from this run's searches and page reads.
 const normUrl = (u) => {
   try {
@@ -310,14 +356,17 @@ const card = {
     call: text(raw.gap?.call),
     result: text(raw.gap?.result),
     // A gap can't be graded without both prices, whatever the model said.
-    grade: mu.open_pct === null ? "unknown" : oneOf(raw.gap?.grade, ["hit", "partial", "miss"]),
+    grade: mu.open_pct === null ? "unknown" : checkedGap ?? modelGap,
   },
   mu,
-  levels: (Array.isArray(raw.levels) ? raw.levels : []).slice(0, 8).map((l) => ({
-    level: text(l?.level, 120),
-    result: text(l?.result),
-    grade: oneOf(l?.grade, ["held", "broke", "untested"]),
-  })).filter((l) => l.level),
+  levels: (Array.isArray(raw.levels) ? raw.levels : []).slice(0, 8).map((l) => {
+    const said = oneOf(l?.grade, ["held", "broke", "untested"]);
+    const checked = levelGrade(l?.kind, l?.low, l?.high, mu);
+    if (checked && checked !== said) console.warn(`${text(l?.level, 60)}: Claude said ${said}, the arithmetic says ${checked}. Using ${checked}.`);
+    // Without the day's high, low and close no level can be graded.
+    const grade = !mu.high || !mu.low || !mu.close ? "unknown" : checked ?? said;
+    return { level: text(l?.level, 120), result: text(l?.result), grade };
+  }).filter((l) => l.level),
   sources: sources.slice(0, 6),
 };
 
