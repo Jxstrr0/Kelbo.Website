@@ -908,7 +908,7 @@ you open it.
   which is why there are back-up tries. Keep them off :00 and :30, the
   busiest minutes.
   It can run up to 30 web searches a brief (`MAX_SEARCHES`) and open up to
-  10 whole pages on any site to read the actual numbers (`MAX_FETCHES`),
+  15 whole pages on any site to read the actual numbers (`MAX_FETCHES`),
   following a rough search plan in `SYSTEM` (most of it on MU). It calls
   the model named in `MODEL` (`claude-opus-5-5`), set to think harder
   than its default (`effort: "high"`), mostly for the gap call.
