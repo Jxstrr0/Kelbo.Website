@@ -2683,6 +2683,148 @@ function loadKp() {
     .catch(() => {});
 }
 
+/* ---------- Forecasts for Sky this week, and weather warnings ----------
+   Three more free calls with no key, each kept on the phone between
+   checks and skipped quietly if they can't be reached:
+   - NOAA's 3-day aurora forecast (Kp in 3-hour blocks), so Sky this
+     week can say which nights the northern lights might reach here.
+   - Open-Meteo's hourly cloud forecast for the week, so each thing to
+     look at in Sky this week says whether the sky should be clear.
+   - Environment Canada's weather alerts (blizzard, extreme cold, fog...)
+     for the spot under the sky, shown as a pill on the home sky that
+     opens their forecast page. Their feed covers Canada only.
+   Previews: ?kpcast=5 (every block), ?clouds=10 (every hour, 0..100),
+   ?alert=warning|watch|advisory. They work with ?at= too; without a
+   preview, ?at= skips these, since today's forecast wouldn't fit. */
+const KP_CAST_KEY = "kelbo.kpCast";
+const KP_CAST_MS = 3 * 3600000;
+const CLOUDS_KEY = "kelbo.clouds";
+const CLOUDS_MS = 60 * 60000;
+const ALERTS_KEY = "kelbo.alerts";
+const ALERTS_MS = 15 * 60000;
+const BLOCK_MS = 3 * 3600000; // NOAA's Kp blocks are 3 hours long
+let kpCast = null; // [[block start ms, Kp], ...] for blocks still to come
+let cloudCast = null; // { start: ms of the first hour, cover: [cloud %, one per hour] }
+let alerts = null; // [{ name, type, ends, expires }], most serious first
+
+function loadKpCast() {
+  const q = new URLSearchParams(location.search);
+  if (q.has("kpcast")) {
+    const k = parseFloat(q.get("kpcast")) || 0;
+    const first = Math.floor(now().getTime() / BLOCK_MS) * BLOCK_MS;
+    kpCast = Array.from({ length: 24 }, (_, i) => [first + i * BLOCK_MS, k]);
+    return Promise.resolve();
+  }
+  if (q.has("at")) return Promise.resolve();
+  return cachedFetch(KP_CAST_KEY, KP_CAST_MS, "https://services.swpc.noaa.gov/products/noaa-planetary-k-index-forecast.json", (list) =>
+    // Keep the blocks NOAA hasn't measured yet ("estimated" or "predicted").
+    // Its times are UTC without the Z.
+    list.filter((row) => row.observed !== "observed" && Number.isFinite(row.kp))
+      .map((row) => [Date.parse(`${row.time_tag}Z`), row.kp]))
+    .then((list) => { kpCast = list; })
+    .catch(() => {});
+}
+
+function loadClouds() {
+  const q = new URLSearchParams(location.search);
+  if (q.has("clouds")) {
+    const cover = Math.min(100, Math.max(0, parseFloat(q.get("clouds")) || 0));
+    cloudCast = { start: now().getTime() - 2 * 86400000, cover: Array(10 * 24).fill(cover) };
+    return Promise.resolve();
+  }
+  if (q.has("at")) return Promise.resolve();
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${YXE.lat}&longitude=${YXE.lon}`
+    + "&hourly=cloud_cover&forecast_days=8&timeformat=unixtime&timezone=GMT";
+  return cachedFetch(`${CLOUDS_KEY}:${YXE.lat},${YXE.lon}`, CLOUDS_MS, url, (d) => ({
+    start: d.hourly.time[0] * 1000, // the hours come one apart, so only the first time is kept
+    cover: d.hourly.cloud_cover,
+  }))
+    .then((c) => { cloudCast = c; })
+    .catch(() => {});
+}
+
+// Forecast cloud cover (%) for the hour nearest ms, or null if unknown.
+function cloudAt(ms) {
+  if (!cloudCast) return null;
+  const c = cloudCast.cover[Math.round((ms - cloudCast.start) / 3600000)];
+  return Number.isFinite(c) ? c : null;
+}
+
+// Made-up alerts for ?alert= previews
+const ALERT_PREVIEWS = {
+  warning: { name: "Blizzard warning", type: "warning" },
+  watch: { name: "Winter storm watch", type: "watch" },
+  advisory: { name: "Fog advisory", type: "advisory" },
+};
+
+function loadAlerts() {
+  const q = new URLSearchParams(location.search);
+  if (q.has("alert")) {
+    const made = ALERT_PREVIEWS[q.get("alert")];
+    const t = now().getTime();
+    alerts = made ? [{ ...made, ends: t + 9 * 3600000, expires: t + 9 * 3600000 }] : [];
+    return Promise.resolve();
+  }
+  if (q.has("at")) return Promise.resolve();
+  // A small box around the spot; any alert area touching it counts
+  const box = [YXE.lon - 0.03, YXE.lat - 0.02, YXE.lon + 0.03, YXE.lat + 0.02].map((n) => n.toFixed(3)).join(",");
+  const url = `https://api.weather.gc.ca/collections/weather-alerts/items?f=json&lang=en&skipGeometry=true&limit=20&bbox=${box}`;
+  const rank = { warning: 0, watch: 1, advisory: 2, statement: 3 };
+  return cachedFetch(`${ALERTS_KEY}:${YXE.lat},${YXE.lon}`, ALERTS_MS, url, (d) => {
+    const seen = new Set();
+    return (d.features || []).map((f) => f.properties || {})
+      .filter((p) => p.alert_name_en && p.status_en !== "ended")
+      .map((p) => ({
+        name: p.alert_name_en.charAt(0).toUpperCase() + p.alert_name_en.slice(1),
+        type: p.alert_type,
+        ends: Date.parse(p.event_end_datetime || p.expiration_datetime),
+        expires: Date.parse(p.expiration_datetime),
+      }))
+      .filter((a) => !seen.has(a.name) && seen.add(a.name)) // the same alert can cover several areas
+      .sort((a, b) => (rank[a.type] ?? 9) - (rank[b.type] ?? 9));
+  })
+    .then((list) => { alerts = list; })
+    .catch(() => {});
+}
+
+// The alert pill on the home sky ([data-horizon-alert]): the most serious
+// alert, "+1 more" if there are others, linking to Environment Canada.
+function setUpAlert() {
+  const pill = document.querySelector("[data-horizon-alert]");
+  if (!pill) return;
+  // Taps on the pill open the link; they mustn't also swipe or tap the sky
+  ["pointerdown", "click"].forEach((type) => pill.addEventListener(type, (e) => e.stopPropagation()));
+  const show = () => {
+    const t = Date.now();
+    const live = (alerts || []).filter((a) => !(a.expires < t));
+    if (!live.length) {
+      pill.hidden = true;
+      return;
+    }
+    const top = live[0];
+    let until = "";
+    if (Number.isFinite(top.ends) && top.ends > t) {
+      const ends = new Date(top.ends);
+      const sameDay = localParts(ends).d === localParts(new Date(t)).d && top.ends - t < 86400000;
+      until = `until ${sameDay ? "" : `${localParts(ends).weekday} `}${clock(ends)}`;
+    }
+    pill.href = `https://weather.gc.ca/en/location/index.html?coords=${YXE.lat.toFixed(3)},${YXE.lon.toFixed(3)}`;
+    pill.classList.toggle("horizon__alert--warning", top.type === "warning");
+    pill.replaceChildren(
+      el("span", "", top.name),
+      until ? el("span", "horizon__alert-extra", ` · ${until}`) : "",
+      live.length > 1 ? el("span", "", ` +${live.length - 1}`) : ""
+    );
+    pill.setAttribute("aria-label", `Environment Canada: ${live.map((a) => a.name).join(", ")} in effect${until ? `, ${until}` : ""}. Opens their forecast page.`);
+    pill.hidden = false;
+  };
+  // One quick second try if the first check didn't get through
+  loadAlerts().then(() => (alerts ? show() : new Promise((go) => setTimeout(go, 30000)).then(loadAlerts).then(show)));
+  setInterval(() => {
+    if (!document.hidden) loadAlerts().then(show);
+  }, ALERTS_MS);
+}
+
 // "Light snow · −4°C" for the readout, or "" if the weather isn't known.
 function weatherLine() {
   if (!weather) return "";
@@ -4769,7 +4911,8 @@ function skyWeek(t) {
   const start = zoneMidnight(p.y, p.m, p.d);
   const end = start + 7 * 86400000;
   const events = [];
-  const add = (at, text, when) => events.push({ at, text, when: when || dayLabel(at, start) });
+  // "look" is when to go out and look (for the cloud forecast), if it's something to see
+  const add = (at, text, when, look) => events.push({ at, text, when: when || dayLabel(at, start), look });
   const north = YXE.lat >= 0;
 
   // Narrows a change (f goes from below 0 to 0 or above) between a and b
@@ -4807,7 +4950,7 @@ function skyWeek(t) {
     const dusk = new Date(today.set + HOUR_MS);
     const sun = sunPosition(dusk);
     const up = planetsAt(dusk).filter((b) => sunGap(b, sun) > GLARE_DEG && altAz(b.ra * R2D, b.dec * R2D, dusk).alt > 6);
-    add(start, up.length ? `${listWords(up.map((b) => b.name))} ${up.length > 1 ? "are" : "is"} up after dark` : "No bright planets up after dark", "Tonight");
+    add(start, up.length ? `${listWords(up.map((b) => b.name))} ${up.length > 1 ? "are" : "is"} up after dark` : "No bright planets up after dark", "Tonight", up.length ? dusk.getTime() : null);
   }
 
   // Step through the week an hour at a time, keeping last hour's numbers
@@ -4867,14 +5010,14 @@ function skyWeek(t) {
         if (g < NEAR_MOON_DEG && g <= prev.before.moonGaps[i] && g < nowStep.moonGaps[i] && !prev.glare[i]) {
           const pl = prev.planets[i];
           const look = viewing(prev.at, pl.ra * R2D, pl.dec * R2D);
-          if (look) add(look.at, `Moon near ${b.name} · about ${Math.max(1, Math.round(g))}° apart, ${look.words}`);
+          if (look) add(look.at, `Moon near ${b.name} · about ${Math.max(1, Math.round(g))}° apart, ${look.words}`, null, look.at);
         }
         for (let j = i + 1; j < planets.length; j++) {
           const pg = prev.pairGaps[i][j];
           if (pg < NEAR_PLANETS_DEG && pg <= prev.before.pairGaps[i][j] && pg < nowStep.pairGaps[i][j] && !prev.glare[i] && !prev.glare[j]) {
             const pl = prev.planets[i];
             const look = viewing(prev.at, pl.ra * R2D, pl.dec * R2D);
-            if (look) add(look.at, `${b.name} and ${planets[j].name} close together · ${pg.toFixed(1)}° apart, ${look.words}`);
+            if (look) add(look.at, `${b.name} and ${planets[j].name} close together · ${pg.toFixed(1)}° apart, ${look.words}`, null, look.at);
           }
         }
       });
@@ -4889,7 +5032,7 @@ function skyWeek(t) {
       const peak = zoneMidnight(y, shower.m, shower.d) + 6 * HOUR_MS;
       if (peak < start || peak >= end) continue;
       const bright = moonLit(moonPhase(new Date(peak))) > 0.6 && moonAltitude(new Date(peak)) > 0;
-      add(peak, `${shower.name} meteor shower peaks before dawn · up to ${shower.zhr} an hour${bright ? ", bright moon" : " in a dark sky"}`);
+      add(peak, `${shower.name} meteor shower peaks before dawn · up to ${shower.zhr} an hour${bright ? ", bright moon" : " in a dark sky"}`, null, peak - 2 * HOUR_MS);
     }
   }
 
@@ -4899,7 +5042,7 @@ function skyWeek(t) {
     const e = at <= end ? visibleEclipse(new Date(at)) : null;
     if (e && (!ecl || e.share > ecl.share)) ecl = { ...e, at };
     else if (!e && ecl) {
-      add(ecl.at, `${ecl.total ? "Total" : "Partial"} ${ecl.kind} eclipse · deepest at ${clock(new Date(ecl.at))}`);
+      add(ecl.at, `${ecl.total ? "Total" : "Partial"} ${ecl.kind} eclipse · deepest at ${clock(new Date(ecl.at))}`, null, ecl.at);
       ecl = null;
     }
   }
@@ -4912,8 +5055,28 @@ function skyWeek(t) {
     .slice(0, 5)
     .forEach((pass) => {
       const mins = Math.max(1, Math.round((pass.end - pass.start) / 60000));
-      add(pass.start, `Space station passes over · ${clock(new Date(pass.start))}, ${compassName(pass.from)} to ${compassName(pass.to)}, up to ${Math.round(pass.peak)}° for ${mins} min`);
+      add(pass.start, `Space station passes over · ${clock(new Date(pass.start))}, ${compassName(pass.from)} to ${compassName(pass.to)}, up to ${Math.round(pass.peak)}° for ${mins} min`, null, pass.start);
     });
+
+  // Northern lights: NOAA's forecast (if it has loaded) for the next 3
+  // days, in 3-hour blocks. A night makes the list when a properly dark
+  // block (sun 12° down) reaches the Kp the lights need here.
+  if (kpCast) {
+    const need = auroraKp();
+    const nights = new Map(); // that evening's day label -> the strongest dark block
+    kpCast.forEach(([from, k]) => {
+      const mid = from + BLOCK_MS / 2;
+      if (from + BLOCK_MS < t.getTime() || mid < start || mid >= end || k < need) return;
+      if (sunAltitude(new Date(mid)) > -12) return;
+      const night = dayLabel(mid - 12 * HOUR_MS, start); // after midnight still counts as that night
+      const best = nights.get(night);
+      if (!best || k > best.k) nights.set(night, { mid, k });
+    });
+    const name = YXE.lat >= 0 ? "Northern" : "Southern";
+    nights.forEach(({ mid, k }, night) => {
+      add(mid, `${name} lights ${k >= need + 1 ? "likely" : "possible"} · Kp ${Math.round(k * 10) / 10} forecast, best around ${clock(new Date(mid))}`, night === "Today" ? "Tonight" : night, mid);
+    });
+  }
 
   events.sort((a, b) => a.at - b.at);
 
@@ -4953,7 +5116,14 @@ function setUpSkyWeek() {
   const draw = () => {
     list.replaceChildren(...skyWeek(now()).map((e) => {
       const row = el("li", "sky-week__item");
-      row.append(el("span", "sky-week__when", e.when), el("span", "sky-week__what", e.text));
+      const what = el("span", "sky-week__what", e.text);
+      // The cloud forecast for when to look, for the next week or so
+      const cloud = e.look != null && e.look > Date.now() - HOUR_MS ? cloudAt(e.look) : null;
+      if (cloud != null) {
+        const [kind, words] = cloud < 30 ? ["clear", "Clear sky"] : cloud < 70 ? ["some", "Some cloud"] : ["cloudy", "Cloudy"];
+        what.append(" ", el("span", `sky-week__cloud sky-week__cloud--${kind}`, words));
+      }
+      row.append(el("span", "sky-week__when", e.when), what);
       return row;
     }));
     let words = `Worked out on this phone for ${YXE.home ? "Saskatoon" : "your sky"}.`;
@@ -4962,6 +5132,8 @@ function setUpSkyWeek() {
       const made = new Date(issOrbit.epoch).toLocaleDateString(undefined, { month: "short", day: "numeric" });
       words += ` Space station orbit from CelesTrak (${made}); its times can shift by a minute.`;
     }
+    if (cloudCast) words += " Cloud forecast from Open-Meteo.";
+    if (kpCast) words += " Northern lights forecast from NOAA.";
     if (note) note.textContent = words;
   };
   // After the page has drawn, so it doesn't hold up the opening spin
@@ -4970,8 +5142,8 @@ function setUpSkyWeek() {
     showWishes(box.querySelector("[data-wishes]"));
     box.hidden = false;
     reveal(box);
-    // Again once the station's orbit is in, to add its passes
-    loadIss().then(() => { if (issOrbit) draw(); });
+    // Again once the station's orbit and the forecasts are in
+    Promise.allSettled([loadIss(), loadClouds(), loadKpCast()]).then(draw);
   }, 0);
 }
 
@@ -5461,6 +5633,7 @@ async function init() {
   setUpHorizon();
   setUpSkySwitch();
   setUpSkyWeek();
+  setUpAlert();
   rememberPlays();
   setUpContinue();
   setUpMarketLight();
