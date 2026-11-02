@@ -4783,6 +4783,47 @@ function setUpMarketLight() {
   setInterval(tick, 60000);
 }
 
+/* ---------- USD/CAD on the Trading page ----------
+   The Bank of Canada's daily average exchange rate (free, no key, and it
+   lets browsers ask). It's published once each business day, late in the
+   afternoon, so it's yesterday's or today's average, never a live quote:
+   the line says so and shows the date. The last two days give the move. */
+const FX_KEY = "kelbo.fx";
+const FX_MS = 3 * 60 * 60 * 1000; // ask the bank again after 3 hours
+const FX_URL = "https://www.bankofcanada.ca/valet/observations/FXUSDCAD/json?recent=2";
+
+function setUpFx() {
+  const node = document.querySelector("[data-fx]");
+  if (!node) return;
+  cachedFetch(FX_KEY, FX_MS, FX_URL, (d) =>
+    // Oldest first: [{date: "2026-10-29", rate: 1.3948}, {date: "2026-10-30", ...}]
+    (d.observations || [])
+      .map((o) => ({ date: o.d, rate: parseFloat(o.FXUSDCAD && o.FXUSDCAD.v) }))
+      .filter((o) => /^\d{4}-\d{2}-\d{2}$/.test(o.date) && Number.isFinite(o.rate))
+      .sort((a, b) => (a.date < b.date ? -1 : 1))
+  )
+    .then((list) => {
+      const last = list[list.length - 1];
+      if (!last) return; // nothing usable: leave the line hidden
+      const day = new Date(last.date + "T12:00:00Z").toLocaleDateString("en-CA", {
+        weekday: "short", month: "short", day: "numeric", timeZone: "UTC",
+      });
+      node.replaceChildren(
+        el("span", "fx__pair", "USD/CAD"),
+        el("strong", "fx__rate", last.rate.toFixed(4))
+      );
+      const prev = list[list.length - 2];
+      if (prev) {
+        const pct = ((last.rate - prev.rate) / prev.rate) * 100;
+        const move = Math.abs(pct) < 0.005 ? "flat" : `${pct > 0 ? "up" : "down"} ${Math.abs(pct).toFixed(2)}%`;
+        node.append(el("span", "fx__move", move));
+      }
+      node.append(el("span", "fx__note", `Bank of Canada daily average for ${day}, not a live quote`));
+      node.hidden = false;
+    })
+    .catch(() => {}); // the bank didn't answer: the line just stays hidden
+}
+
 /* ======================================================================
    NEW BRIEF ALERT
    ----------------------------------------------------------------------
@@ -5068,6 +5109,7 @@ async function init() {
   rememberPlays();
   setUpContinue();
   setUpMarketLight();
+  setUpFx();
   setUpBriefAlert();
   setUpContactForm();
   setUpNow();
