@@ -3,11 +3,15 @@
 // and adds it to the archive index (brief-index.mjs, which also keeps the
 // folder under its size limit). Needs ANTHROPIC_API_KEY in the environment.
 
-import { writeFile, mkdir, access } from "node:fs/promises";
+import { readFile, readdir, writeFile, mkdir, access } from "node:fs/promises";
 import { updateIndex, BRIEFS_DIR } from "./brief-index.mjs";
 
 const MODEL = "claude-opus-5-5";
-const MAX_SEARCHES = 20;
+const MAX_SEARCHES = 25; // web searches a brief may run ($10 per 1,000)
+const MAX_FETCHES = 10; // whole pages it may open and read (any site)
+// Opus 5.5 list prices in US dollars per million tokens, for the cost line
+// in the run log. Cache reads are the cheap re-reads; writes cost 1.25x.
+const PRICE = { input: 4, output: 20, cacheRead: 0.2, cacheWrite: 5, search: 0.01 };
 const MARKER = "===BRIEF===";
 
 const apiKey = process.env.ANTHROPIC_API_KEY;
@@ -48,7 +52,17 @@ Watchlist:
 - Power and networking: VRT, ANET
 - Overnight read-through: Samsung Electronics, SK Hynix, TSMC (Taipei), Kioxia; S&P 500 and Nasdaq 100 futures; the semiconductor index
 
-Use web search to get today's information: overnight news, Asian session moves, US futures, pre-market moves, analyst actions, scheduled economic data and earnings. Prefer sources from the last 24 hours. You have up to ${MAX_SEARCHES} searches: cover futures, Asia, MU, the watchlist and the calendar before going deeper on any one.
+Use web search to get today's information: overnight news, Asian session moves, US futures, pre-market moves, analyst actions, scheduled economic data and earnings. Prefer sources from the last 24 hours.
+
+Research plan. You have up to ${MAX_SEARCHES} searches and ${MAX_FETCHES} page reads (web_fetch opens a full page from any site). Spend them roughly like this:
+- US futures and macro news: 3 searches
+- Asia (Korea, Taiwan, Japan, the memory names): 3 searches
+- MU (overnight or pre-market quote, news, analyst actions, the levels): 6 searches
+- Calendar (economic data today, watchlist earnings dates this week): 2 searches
+- The watchlist with what's left, names with real news first
+Use web_fetch when a snippet lacks the number, time or date you need: open the quote page, the earnings calendar or the article itself instead of saying you couldn't confirm it. Don't fetch a page only to re-check what a snippet already says.
+
+The user message includes the previous brief, if there is one. Use it to say what has changed since rather than repeating its news, and for the "Last call" line: what that brief's MU gap call said and how MU actually traded since (the open or the close, with the move in percent).
 
 First check whether US stock markets are open today. If they are closed (weekend or holiday), still use every heading below: say the market is closed and when it reopens under Overnight and Asia, give MU's last close and any news under MU with the gap call "Market closed", keep the Watchlist, and give the next session's calendar.
 
@@ -68,6 +82,7 @@ TLDR: <one sentence summary>
 <3 to 5 bullets: futures, Asian memory and chip names, major macro news>
 
 ## MU
+**Last call:** <the previous brief's gap call and what MU actually did; "No previous brief" if there isn't one>
 **Gap call:** <direction, rough size, why>
 **Pre-market:** <price and time if found>
 **Key levels (estimates):** <support and resistance with what each is based on>
@@ -84,7 +99,13 @@ TLDR: <one sentence summary>
 ## Sources
 <5 to 12 bullets, each "- [page title](https://full-url)", for the pages this brief relies on most. Copy each URL exactly as it appeared in your search results; never make one up or shorten it.>`;
 
-const tools = [{ type: "web_search_20260209", name: "web_search", max_uses: MAX_SEARCHES }];
+// Search and page reading both run on Anthropic's side. Neither is limited
+// to certain sites. Both filter what they find with a little code before
+// it reaches the model, which keeps the token count down.
+const tools = [
+  { type: "web_search_20260209", name: "web_search", max_uses: MAX_SEARCHES },
+  { type: "web_fetch_20260209", name: "web_fetch", max_uses: MAX_FETCHES },
+];
 
 // withTools = false sends the request with web search turned off.
 async function callClaude(messages, withTools = true, attempt = 1) {
@@ -97,7 +118,18 @@ async function callClaude(messages, withTools = true, attempt = 1) {
     },
     // max_tokens covers the model's thinking as well as the brief itself, so
     // leave it roomy: a tight cap cuts the brief off mid-sentence.
-    body: JSON.stringify({ model: MODEL, max_tokens: 16000, system: SYSTEM, messages, ...(withTools && { tools }) }),
+    // cache_control: every step of the research re-reads everything found so
+    // far. Caching bills those re-reads at a twentieth of the price. The
+    // marker on the instructions keeps them cached; the top-level one moves
+    // along the conversation as it grows.
+    body: JSON.stringify({
+      model: MODEL,
+      max_tokens: 16000,
+      system: [{ type: "text", text: SYSTEM, cache_control: { type: "ephemeral" } }],
+      messages,
+      cache_control: { type: "ephemeral" },
+      ...(withTools && { tools }),
+    }),
   });
   if ((res.status === 429 || res.status >= 500) && attempt < 4) {
     const wait = 15000 * attempt;
@@ -111,16 +143,38 @@ async function callClaude(messages, withTools = true, attempt = 1) {
   return res.json();
 }
 
-const messages = [{ role: "user", content: `Today is ${longDate} (Saskatchewan date). Write today's pre-market brief.` }];
+// The newest brief before today's, without its Sources list, so the model
+// can check its last gap call and say what has changed since.
+let previous = "";
+try {
+  const older = (await readdir(BRIEFS_DIR)).filter((f) => /^\d{4}-\d{2}-\d{2}\.md$/.test(f) && f < `${isoDate}.md`).sort();
+  if (older.length) {
+    const name = older[older.length - 1];
+    const body = (await readFile(`${BRIEFS_DIR}/${name}`, "utf8")).split(/^## Sources\s*$/m)[0].trim();
+    previous = `\n\nThe previous brief (${name.slice(0, 10)}):\n<previous_brief>\n${body}\n</previous_brief>`;
+  }
+} catch { /* no briefs folder yet */ }
+
+const messages = [{
+  role: "user",
+  content: `Today is ${longDate} (Saskatchewan date). Write today's pre-market brief.${previous || "\n\nThere is no previous brief."}`,
+}];
 const allBlocks = [];
-let usage = { input_tokens: 0, output_tokens: 0 };
+const usage = { input_tokens: 0, output_tokens: 0, cache_read: 0, cache_write: 0, searches: 0, fetches: 0 };
+const addUsage = (u = {}) => {
+  usage.input_tokens += u.input_tokens ?? 0;
+  usage.output_tokens += u.output_tokens ?? 0;
+  usage.cache_read += u.cache_read_input_tokens ?? 0;
+  usage.cache_write += u.cache_creation_input_tokens ?? 0;
+  usage.searches += u.server_tool_use?.web_search_requests ?? 0;
+  usage.fetches += u.server_tool_use?.web_fetch_requests ?? 0;
+};
 
 // Server-side web search can pause long turns; continue up to 5 times.
 for (let i = 0; i < 6; i++) {
   const data = await callClaude(messages);
   allBlocks.push(...data.content);
-  usage.input_tokens += data.usage?.input_tokens ?? 0;
-  usage.output_tokens += data.usage?.output_tokens ?? 0;
+  addUsage(data.usage);
   if (data.stop_reason === "max_tokens") console.warn("Hit max_tokens: the brief may be cut short.");
   if (data.stop_reason !== "pause_turn") break;
   messages.push({ role: "assistant", content: data.content });
@@ -177,8 +231,7 @@ if (missing().length) {
     { role: "assistant", content: brief },
     { role: "user", content: `Rewrite that brief in the exact format from your instructions, using every heading word for word: # headline, TLDR:, ${REQUIRED.join(", ")}. Keep the same facts. Output ${MARKER} first.` },
   ], false);
-  usage.input_tokens += fix.usage?.input_tokens ?? 0;
-  usage.output_tokens += fix.usage?.output_tokens ?? 0;
+  addUsage(fix.usage);
   const fixed = fix.content.filter((b) => b.type === "text").map((b) => b.text).join("");
   const at = fixed.lastIndexOf(MARKER);
   const retry = (at >= 0 ? fixed.slice(at + MARKER.length) : fixed).trim();
@@ -221,4 +274,9 @@ await writeFile(briefPath, brief);
 await updateIndex({ date: isoDate, time: new Date().toISOString(), headline, tldr });
 
 console.log(`Wrote ${briefPath}: ${headline}`);
-console.log(`Tokens: ${usage.input_tokens} in, ${usage.output_tokens} out`);
+console.log(`Tokens: ${usage.input_tokens} in, ${usage.cache_read} cache reads, ${usage.cache_write} cache writes, ${usage.output_tokens} out`);
+console.log(`Searches: ${usage.searches} of ${MAX_SEARCHES}; pages read: ${usage.fetches} of ${MAX_FETCHES}`);
+// An estimate at list prices; the Anthropic console has the real bill.
+const cost = (usage.input_tokens * PRICE.input + usage.output_tokens * PRICE.output +
+  usage.cache_read * PRICE.cacheRead + usage.cache_write * PRICE.cacheWrite) / 1e6 + usage.searches * PRICE.search;
+console.log(`Estimated cost: US$${cost.toFixed(2)}`);
