@@ -1,7 +1,7 @@
 # Writes the morning pre-market brief and puts it live.
 #
-# Every weekday at 6:30 am Saskatoon time (12:30 UTC; Saskatchewan has no
-# daylight saving, so this never drifts), this:
+# Every weekday morning in Saskatoon (Saskatchewan has no daylight saving,
+# so these times never drift), this:
 #   1. runs .github/scripts/premarket-brief.mjs, which asks Claude (with web
 #      search) for today's brief and writes briefs/YYYY-MM-DD.md plus
 #      briefs/index.json,
@@ -15,9 +15,17 @@
 # tick the box to rewrite a brief that already exists for today.
 name: Pre-market brief
 
+# GitHub starts timed runs late on busy mornings (often 15 to 60 minutes,
+# and now and then it drops one), so there are three tries: 6:17, 6:43
+# and 7:11 am Saskatoon time (12:17, 12:43 and 13:11 UTC). They stay off
+# :00 and :30, the busiest minutes. Whichever starts first writes the
+# brief; the later ones see today's brief is already there and stop before
+# calling Claude, so a normal morning costs one brief, not three.
 on:
   schedule:
-    - cron: "30 12 * * 1-5"
+    - cron: "17 12 * * 1-5"
+    - cron: "43 12 * * 1-5"
+    - cron: "11 13 * * 1-5"
   workflow_dispatch:
     inputs:
       force:
