@@ -959,6 +959,11 @@ you can see how good the calls really are over time.
     works the percentages out itself from the prices.
   Anything it can't confirm says "couldn't confirm"; it never guesses a
   price, and it only lists links it really saw that run.
+  Claude finds the prices and copies the brief's numbers (the gap range,
+  each level's price); the script then does the grading sums itself, so a
+  maths slip by the model can't change a grade. The run log says when the
+  two disagreed. A dropped connection is retried, and prompt caching keeps
+  the repeat reads cheap (the run log ends with the estimated cost).
 - **Where it shows:** `briefs.html` has two tabs. **Pre-market** is the
   morning brief, with "Past briefs" at the bottom. **After close** is the
   report card, with the running score ("Report card, 10 graded days: Gap
