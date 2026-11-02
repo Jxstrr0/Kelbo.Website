@@ -1,8 +1,8 @@
 # Grades the morning's pre-market brief after the US market closes.
 #
-# Every weekday at 4:07 pm Saskatoon time (22:07 UTC; Saskatchewan has no
-# daylight saving, and that's after the 4:00 pm ET close in both summer
-# and winter), this:
+# Every weekday after the close (Saskatchewan has no daylight saving, and
+# 4:07 pm Saskatoon time is after the 4:00 pm ET close in both summer and
+# winter), this:
 #   1. runs .github/scripts/postmarket-recap.mjs, which asks Claude (with
 #      web search) how MU really traded and grades the brief's gap call and
 #      key levels into report-cards/YYYY-MM.json and report-cards/index.json
@@ -18,9 +18,15 @@
 # choose "Disable workflow".
 name: After-close report card
 
+# GitHub starts timed runs late now and then, or drops one, so there are
+# three tries: 4:07, 4:37 and 5:13 pm Saskatoon time (22:07, 22:37 and
+# 23:13 UTC). The first one that runs grades the day; the others see the
+# report card is already there and stop before calling Claude.
 on:
   schedule:
     - cron: "7 22 * * 1-5"
+    - cron: "37 22 * * 1-5"
+    - cron: "13 23 * * 1-5"
   workflow_dispatch:
     inputs:
       force:
