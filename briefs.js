@@ -5,7 +5,9 @@
    runs .github/scripts/premarket-brief.mjs, which asks Claude for the day's
    brief and writes two files:
      briefs/YYYY-MM-DD.md   the brief itself, in Markdown
-     briefs/index.json      [{ date, headline, tldr }, ...], newest first
+     briefs/index.json      [{ date, time, headline, tldr }, ...], newest first
+                            (time = when it went out; main.js flags it as new
+                            for an hour, see setUpBriefAlert)
    This file reads them and shows the latest brief, a strip of the US trading
    day in Saskatoon time, and the archive. Tapping a past brief puts its date
    in the address (#2026-11-02) so it can be shared or bookmarked.
@@ -291,11 +293,19 @@ async function showBrief(date, scroll) {
   const article = document.querySelector("[data-brief]");
   const latest = briefIndex[0] && briefIndex[0].date;
 
-  document.querySelector("[data-brief-date]").textContent = briefDate(date, {
+  const dateLine = document.querySelector("[data-brief-date]");
+  dateLine.textContent = briefDate(date, {
     weekday: "long",
     month: "long",
     day: "numeric",
   });
+  // Fresh off the press (within the hour): a flashing "New" pill with the
+  // time it went out. briefIsNew() is in main.js.
+  if (date === latest && briefIsNew(briefIndex[0])) {
+    const posted = new Intl.DateTimeFormat("en-US", { timeZone: SK_ZONE, hour: "numeric", minute: "2-digit" })
+      .format(new Date(briefIndex[0].time)).toLowerCase();
+    dateLine.append(" ", el("span", "brief-new", "New · posted " + posted));
+  }
 
   if (date !== latest) {
     setNotice("This is an older brief.", "Back to the latest", () => {
