@@ -14,7 +14,7 @@
    its own folder and below. If it ever gets stuck, change CACHE below
    ("longlight-3") and the old copies are thrown away.
    ====================================================================== */
-const CACHE = "longlight-2";
+const CACHE = "longlight-3";
 
 // Saved as soon as the helper is installed, so these work offline even
 // if they haven't been opened yet.
@@ -24,7 +24,7 @@ const CORE = [
   "games.html",
   "game.html",
   "trading.html",
-  "ai.html",
+  "tools.html",
   "projects.html",
   "about.html",
   "whats-new.html",
