@@ -36,6 +36,9 @@ from their releases, then publishes the files as they are (see
 | `agent-fleet.html` | The Agent Fleet page. All plain text except the weekly scan, so edit the words directly |
 | `scan.json` | **The weekly scan.** Rewritten every Saturday by a Claude routine |
 | `scan.js` | Shows the weekly scan on the Agent Fleet page |
+| `briefs.html` | **The pre-market brief** page: the latest brief, where the US trading day is in Saskatoon time, and the archive |
+| `briefs/` | The briefs themselves, one `YYYY-MM-DD.md` per weekday, plus `index.json` (the list the page reads). Written by the robot below, so you never need to edit them |
+| `briefs.js`, `briefs.css` | Show the brief and the archive |
 | `journal.html` | The AI Trading Journal page |
 | `journal.json` | **Your journal entries.** Edit this to add an update |
 | `options.json` | **Your options trades.** Edit this to log a trade |
@@ -43,8 +46,8 @@ from their releases, then publishes the files as they are (see
 | `tools/prediction-tracker/` | The Prediction Tracker tool, parked for now (not linked from the site) |
 | `404.html` | The "page not found" screen GitHub shows for any address that doesn't exist |
 | `.nojekyll` | Tells GitHub Pages to serve the files as-is. Leave it alone |
-| `.github/workflows/` | The two robots: `site-check.yml` (checks every pull request) and `deploy.yml` (checks again, then puts the site live) |
-| `.github/scripts/` | What they run: `check-site.mjs` (the mistake finder), `sync-releases.mjs` (fills in game versions from their releases) and `make-game-pages.mjs` (makes each game's own page, below) |
+| `.github/workflows/` | The three robots: `site-check.yml` (checks every pull request), `deploy.yml` (checks again, then puts the site live) and `premarket-brief.yml` (writes the morning brief, below) |
+| `.github/scripts/` | What they run: `check-site.mjs` (the mistake finder), `sync-releases.mjs` (fills in game versions from their releases), `make-game-pages.mjs` (makes each game's own page, below) and `premarket-brief.mjs` (asks Claude for the brief) |
 
 ## Editing on your phone
 
@@ -821,6 +824,37 @@ economic reports. It lives in `scan.json` and `scan.js` puts it on the page.
   Saturday" instead.
 - The numbers come from news searches, so the page says to double-check
   them, and lists its sources.
+
+## The pre-market brief
+
+`briefs.html` shows a short brief on MU and the AI hardware names every
+weekday morning: overnight and Asia, the gap call and key levels for MU,
+one line per watchlist name, and the day's calendar in Eastern and
+Saskatoon time. Each brief is a Markdown file in `briefs/`
+(`2026-11-02.md`), and `briefs/index.json` is the list the page reads.
+
+- **Who writes it:** the **Pre-market brief** robot
+  (`.github/workflows/premarket-brief.yml`) runs every weekday at 6:50 am
+  Saskatoon time. It runs `.github/scripts/premarket-brief.mjs`, which asks
+  Claude (with web search) for the brief, saves it, commits it to `main`,
+  and starts the **Deploy site** run so it goes live around 7.
+- **The key:** it uses the Anthropic API, so the repo has one secret,
+  `ANTHROPIC_API_KEY`, under Settings → Secrets and variables → Actions.
+  The workflow only ever reads it from there. Never paste the key into a
+  file. If it ever leaks, make a new key on the Anthropic console and
+  replace the secret.
+- **Run it now:** Actions tab → Pre-market brief → Run workflow. It skips
+  the day if today's brief already exists; tick the box to rewrite it.
+- **If it fails:** the run shows a red ❌ with the reason. "Missing
+  ANTHROPIC_API_KEY" means the secret is gone or misnamed. An "API error
+  401" means the key no longer works. A "push" error means Settings →
+  Actions → General → Workflow permissions needs "Read and write".
+- **Changing it:** the watchlist, the rules and the layout of the brief are
+  all in `SYSTEM` near the top of `premarket-brief.mjs`, in plain English.
+  The time is the `cron` line in the workflow (UTC; Saskatoon is UTC−6 all
+  year, so 12:50 is 6:50 am).
+- Prices and levels come from web reports, not live quotes, so every brief
+  says they're estimates and lists its sources.
 
 ## The Prediction Tracker (parked)
 
