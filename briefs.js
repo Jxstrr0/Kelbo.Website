@@ -19,6 +19,12 @@
    bullets, numbered lists, bold, italics, links and simple tables. Every
    line is escaped first, so nothing inside a brief can run as code.
 
+   After the close, a second Action (.github/workflows/postmarket-recap.yml)
+   grades the day's brief into report-cards/YYYY-MM.json ({ "2026-11-02":
+   card, ... }) and report-cards/index.json (running totals). The "How it
+   did" box on each brief and the score above it come from those; see
+   "The report cards" below.
+
    Uses el() from main.js, which loads first.
    ========================================================================== */
 
@@ -332,12 +338,162 @@ async function showBrief(date, scroll) {
     article.textContent = "";
     article.append(el("p", "project-list__note", "This brief couldn't load. Pull down to refresh and try again."));
   }
+  addReportCard(date, article);
   openMonth(date.slice(0, 7), date);
 
   if (scroll) {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     document.getElementById("brief-heading").scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
   }
+}
+
+/* ---------- The report cards ----------
+   Written after each close by .github/scripts/postmarket-recap.mjs. Every
+   value is put on the page as text (never as HTML), and links only if
+   they're https web addresses. */
+
+const CARDS_DIR = "report-cards/";
+const cardMonths = new Map(); // "2026-11" -> promise of { date: card }
+
+function loadCards(month) {
+  if (!cardMonths.has(month)) {
+    const cards = fetch(`${CARDS_DIR}${month}.json`, { cache: "no-cache" })
+      .then((r) => (r.ok ? r.json() : {}))
+      .catch(() => {
+        cardMonths.delete(month); // try again next time
+        return {};
+      });
+    cardMonths.set(month, cards);
+  }
+  return cardMonths.get(month);
+}
+
+const GRADE_WORDS = {
+  hit: "Right",
+  partial: "Partly",
+  miss: "Wrong",
+  held: "Held",
+  broke: "Broke",
+  untested: "Not reached",
+  unknown: "Couldn't confirm",
+};
+
+function gradePill(grade) {
+  const g = GRADE_WORDS[grade] ? grade : "unknown";
+  return el("span", `grade grade--${g}`, GRADE_WORDS[g]);
+}
+
+// 884.7 -> "$884.70"; 1.234 -> "+1.23%"
+const money = (n) => (Number.isFinite(n) ? "$" + n.toFixed(2) : "couldn't confirm");
+const change = (n) => (Number.isFinite(n) ? `${n > 0 ? "+" : n < 0 ? "−" : ""}${Math.abs(n).toFixed(2)}%` : "");
+
+function cardRow(box, label, ...content) {
+  const row = el("div", "report-card__row");
+  const dd = el("dd");
+  dd.append(...content);
+  row.append(el("dt", "", label), dd);
+  box.append(row);
+}
+
+async function addReportCard(date, article) {
+  const cards = await loadCards(date.slice(0, 7));
+  if (shownDate !== date || !article.isConnected) return; // moved on meanwhile
+  article.querySelector(".report-card")?.remove();
+  const card = cards && cards[date];
+  const box = el("section", "report-card");
+  box.setAttribute("aria-label", "How it did");
+  box.append(el("h3", "report-card__title", "How it did"));
+
+  if (!card) {
+    // Only today's brief is still waiting for its grade.
+    // (Weekend briefs never get one.)
+    const day = new Date(date + "T12:00:00").getDay();
+    if (date !== skToday() || day === 0 || day === 6) return;
+    box.classList.add("report-card--waiting");
+    box.append(el("p", "report-card__summary", "Graded after the close, around 4:10 pm Saskatoon time."));
+  } else {
+    if (card.summary) box.append(el("p", "report-card__summary", card.summary));
+    const rows = el("dl", "report-card__rows");
+
+    const gap = card.gap || {};
+    const gapText = el("span", "", [gap.call && `Called: ${gap.call}.`, gap.result].filter(Boolean).join(" "));
+    cardRow(rows, "Gap call", gradePill(gap.grade), " ", gapText);
+
+    const mu = card.mu || {};
+    const muText = [
+      `Opened ${money(mu.open)}${mu.open_pct != null ? ` (${change(mu.open_pct)})` : ""}`,
+      `closed ${money(mu.close)}${mu.close_pct != null ? ` (${change(mu.close_pct)})` : ""}`,
+    ].join(", ");
+    cardRow(rows, "MU", el("span", "", `${muText}, from ${money(mu.prev_close)} the session before.`));
+
+    if (Array.isArray(card.levels) && card.levels.length) {
+      const list = el("ul", "report-card__levels");
+      card.levels.forEach((l) => {
+        const item = el("li");
+        item.append(gradePill(l.grade), " ", el("strong", "", l.level || ""));
+        if (l.result) item.append(" ", el("span", "", l.result));
+        list.append(item);
+      });
+      cardRow(rows, "Key levels", list);
+    }
+    box.append(rows);
+
+    const links = (card.sources || []).filter((s) => s && /^https:\/\//.test(s.url));
+    if (links.length) {
+      const p = el("p", "report-card__sources", "Checked against: ");
+      links.forEach((s, i) => {
+        const a = el("a", "", s.title || s.url);
+        a.href = s.url;
+        a.target = "_blank";
+        a.rel = "noopener";
+        p.append(i ? ", " : "", a);
+      });
+      box.append(p);
+    }
+    if (card.time) {
+      const at = new Intl.DateTimeFormat("en-US", { timeZone: SK_ZONE, hour: "numeric", minute: "2-digit" })
+        .format(new Date(card.time)).toLowerCase();
+      box.append(el("p", "report-card__stamp", `Graded after the close at ${at}, from web reports. Prices it couldn't confirm say so.`));
+    }
+  }
+  // Right under the TLDR line, so it's near the top of the brief.
+  const tldr = article.querySelector(".brief__tldr");
+  if (tldr) tldr.after(box);
+  else article.prepend(box);
+}
+
+// "Report card: gap call 7 right · 2 partly · 1 wrong, key levels 12 held
+// · 6 broke, over 10 graded days." Left hidden until there's a score.
+async function showTally() {
+  const line = document.querySelector("[data-report-tally]");
+  if (!line) return;
+  let data;
+  try {
+    const response = await fetch(CARDS_DIR + "index.json", { cache: "no-cache" });
+    if (!response.ok) return;
+    data = await response.json();
+  } catch (error) {
+    return;
+  }
+  if (!data || !(data.days > 0)) return;
+  const n = (v) => (Number.isFinite(v) ? v : 0);
+  const part = (label, items) => {
+    const group = el("span", "report-tally__group");
+    group.append(el("span", "report-tally__label", label));
+    items.filter(([, count]) => count > 0).forEach(([grade, count]) => {
+      group.append(" ", el("span", `grade grade--${grade}`, `${count} ${GRADE_WORDS[grade].toLowerCase()}`));
+    });
+    return group;
+  };
+  const gap = data.gap || {};
+  const levels = data.levels || {};
+  line.textContent = "";
+  line.append(el("strong", "", `Report card, ${data.days} graded day${data.days === 1 ? "" : "s"}:`), " ");
+  line.append(part("Gap call", [["hit", n(gap.hit)], ["partial", n(gap.partial)], ["miss", n(gap.miss)]]));
+  if (n(levels.held) + n(levels.broke) > 0) {
+    line.append(" ", part("Key levels", [["held", n(levels.held)], ["broke", n(levels.broke)]]));
+  }
+  line.hidden = false;
 }
 
 /* ---------- The archive: years, then months ----------
@@ -505,6 +661,7 @@ async function setUpBriefs() {
   }
   drawArchive();
   showFromHash();
+  showTally();
 }
 
 setUpBriefs();

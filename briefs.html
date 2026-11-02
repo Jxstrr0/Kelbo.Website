@@ -141,9 +141,14 @@
 
     <!-- 2. The brief. briefs.js reads briefs/index.json, then the newest
          briefs/YYYY-MM-DD.md (or the one named in the address, #2026-11-02)
-         and turns its Markdown into the card below. -->
+         and turns its Markdown into the card below. Once the market has
+         closed, a "How it did" box joins it from report-cards/. -->
     <section class="section wrap" aria-labelledby="brief-heading">
       <h2 id="brief-heading">The brief</h2>
+      <!-- The running score from the after-close report cards
+           (report-cards/index.json, written by postmarket-recap.mjs after
+           every close). briefs.js fills it in; hidden until there is one. -->
+      <p class="report-tally" data-report-tally hidden></p>
       <p class="brief-date" data-brief-date></p>
       <p class="brief-notice" data-brief-notice hidden></p>
       <article class="brief-card" data-brief aria-live="polite">

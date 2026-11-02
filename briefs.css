@@ -380,3 +380,155 @@ details[open] > .archive__fold::after {
     grid-column: 1;
   }
 }
+
+/* ---------- The after-close report card ----------
+   "How it did" inside the brief (under the TLDR), and the running score
+   above it. Filled in by briefs.js from report-cards/. The palette has no
+   green, so "right" is solid purple, "partly" a purple outline, "wrong"
+   clay, and anything unconfirmed a dashed grey outline. */
+.report-tally {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.9rem;
+  margin: -0.4rem 0 1rem;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.report-tally[hidden] {
+  display: none;
+}
+
+.report-tally strong {
+  color: var(--ink);
+}
+
+.report-tally__group {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.report-tally__label {
+  font-weight: 700;
+}
+
+.grade {
+  display: inline-block;
+  padding: 0.05rem 0.55rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.5;
+  white-space: nowrap;
+  vertical-align: 0.08em;
+}
+
+.grade--hit,
+.grade--held {
+  background: var(--secondary);
+  color: var(--card);
+}
+
+.grade--partial {
+  border-color: var(--secondary);
+  background: var(--secondary-soft);
+  color: var(--ink);
+}
+
+.grade--miss,
+.grade--broke {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 16%, var(--card));
+  color: var(--accent-ink);
+}
+
+.grade--untested,
+.grade--unknown {
+  border: 1px dashed var(--muted);
+  color: var(--muted);
+}
+
+.report-card {
+  margin: 0 0 1.5rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--rule);
+  border-left: 4px solid var(--secondary);
+  border-radius: calc(var(--radius) - 4px);
+  background: var(--surface);
+}
+
+.brief-card .report-card__title {
+  margin: 0 0 0.35rem;
+  padding-left: 0;
+  border-left: 0;
+  font-size: 1rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--secondary);
+}
+
+.brief-card .report-card__summary {
+  margin: 0 0 0.75rem;
+  font-weight: 700;
+}
+
+.brief-card .report-card--waiting .report-card__summary {
+  margin: 0;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.report-card__rows {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+}
+
+.report-card__row {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.report-card__row dt {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.report-card__row dd {
+  margin: 0;
+}
+
+.brief-card .report-card__levels {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.brief-card .report-card__sources,
+.brief-card .report-card__stamp {
+  margin: 0.75rem 0 0;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.brief-card .report-card__stamp {
+  margin-top: 0.25rem;
+}
+
+/* Wider screens: labels in a column on the left */
+@media (min-width: 40rem) {
+  .report-card__row {
+    grid-template-columns: 7.5rem 1fr;
+    gap: 0.75rem;
+  }
+}
