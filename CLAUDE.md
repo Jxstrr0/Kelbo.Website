@@ -158,7 +158,7 @@ keep the Co-Authored-By trailer for Claude in each message.
   (a V of small bots over the sun). Brief sits above the journal.
 - The live horizon (`[data-horizon]` in the home hero, every page head and
   the 404) puts the sun where the real sun is over Saskatoon (`YXE` in
-  `main.js`, no network; only the optional weather, air quality, aurora and ISS orbit fetches; the Trading page's USD/CAD line is the one other outside call), switches to the dark theme at real sunset, and
+  `main.js`, no network; only the optional weather, air quality, aurora, ISS orbit, forecast and alert fetches; the Trading page's USD/CAD line is the one other outside call), switches to the dark theme at real sunset, and
   warms the sky toward clay over the last 20 minutes before it (`--warm`).
   Preview any time with `?at=noon|sunrise|sunset|dusk|night` or
   `?at=2026-06-21T21:30`. The ray's reach scales with the season
@@ -467,6 +467,23 @@ keep the Co-Authored-By trailer for Claude in each message.
   solstices, `SHOWERS` peaks, `visibleEclipse` every 15 min, and the
   sunset trend. `skyGap` returns degrees. `showWishes` renders the wish
   count and `WISH_BADGES` (a badge also shows in the tap tip).
+  Forecasts (main.js, "Forecasts for Sky this week"): `loadKpCast`
+  (NOAA `noaa-planetary-k-index-forecast.json`, unmeasured 3-hour blocks
+  only, `KP_CAST_MS` 3 h) adds a "Northern lights possible/likely" row
+  per night whose dark block (sun below −12°) reaches `auroraKp()`;
+  `loadClouds` (Open-Meteo hourly `cloud_cover`, 8 days, kept as
+  `{start, cover}`, `CLOUDS_MS` 1 h; `cloudAt(ms)`) puts a Clear sky /
+  Some cloud / Cloudy tag on rows that carry a `look` time (`add`'s 4th
+  argument: planets tonight, moon and planet passes, showers, eclipses,
+  ISS passes, aurora). `setUpSkyWeek` redraws once they and the ISS
+  orbit settle, and the note names the sources. `loadAlerts`
+  (Environment Canada `api.weather.gc.ca` weather-alerts, `bbox` round
+  `YXE`, `skipGeometry`, deduped by name, warnings first, `ALERTS_MS`
+  15 min; Canada only) feeds `setUpAlert`: the `[data-horizon-alert]`
+  pill on the home sky (left, above the line; `--warning` solid clay)
+  linking to weather.gc.ca's page for those coordinates; it stops
+  pointer events reaching the sky. Previews: `?kpcast=5`, `?clouds=10`,
+  `?alert=warning|watch|advisory`; plain `?at=` skips all three.
 - Offline: `sw.js` (root, registered in `init`) precaches `CORE` and is
   network-first for same-origin GETs (saved copy on failure, `index.html`
   for unknown pages offline). Bump `CACHE`
