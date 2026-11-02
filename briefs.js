@@ -534,12 +534,31 @@ async function showBrief(date) {
     // renderMarkdown escapes everything first, so this HTML is only ever
     // the tags it makes itself.
     article.innerHTML = renderMarkdown(await loadBriefFile(date + ".md"));
+    groupParts(article);
   } catch (error) {
     article.textContent = "";
     article.append(el("p", "project-list__note", "This brief couldn't load. Pull down to refresh and try again."));
   }
   addCardLink(date, article);
   openMonth(preArchive, date);
+}
+
+// Wraps each "## section" heading and everything under it (up to the next
+// one, or the stamp) in a <section class="brief__part">, so wide screens
+// can set the sections side by side in a grid (briefs.css). Phones see no
+// difference. The Sources section gets brief__part--sources (full width).
+function groupParts(article) {
+  let part = null;
+  for (const node of [...article.children]) {
+    if (node.tagName === "H3") {
+      part = el("section", "brief__part");
+      if (node.classList.contains("brief__sources")) part.classList.add("brief__part--sources");
+      node.before(part);
+    } else if (node.classList.contains("brief__stamp")) {
+      part = null;
+    }
+    if (part) part.append(node);
+  }
 }
 
 // A one-line pointer under the brief's TLDR to its report card on the
