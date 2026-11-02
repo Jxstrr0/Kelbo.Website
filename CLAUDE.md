@@ -555,11 +555,16 @@ keep the Co-Authored-By trailer for Claude in each message.
   `## Sources` (the model lists its own; the script keeps only links that
   appear in that run's search results, plus inline citations, max 15) and a
   `<small>` stamp; if a heading is missing it asks once,
-  with search off, for a rewrite in the format) and prepends `{date, headline, tldr}`
-  to `briefs/index.json`, writes `briefs/latest.json` (`{date, time}`, the
-  only brief file every page fetches; index.json is its fallback), and
-  removes the oldest briefs while the folder is over `MAX_FOLDER_BYTES`
-  (30 MB, about 15 years) (`time` is the ISO send time: `setUpBriefAlert`
+  with search off, for a rewrite in the format), then calls `updateIndex`
+  in `.github/scripts/brief-index.mjs` (also runnable alone to rebuild):
+  it writes `{date, time, headline, tldr}` into `briefs/months/YYYY-MM.json`
+  (one month, newest first), `briefs/index.json` as `{latest, months:
+  [{month, count}]}` and `briefs/latest.json` (`{date, time}`, the
+  only brief file every page fetches; index.json's `latest` is its
+  fallback), and removes the oldest briefs while the folder is over
+  `MAX_FOLDER_BYTES` (30 MB, about 15 years). briefs.js folds Past briefs
+  by year then month and loads a month file only when its fold opens
+  (`time` is the ISO send time: `setUpBriefAlert`
   in main.js sets `data-brief-new` on `<html>` while `briefIsNew` (under
   `BRIEF_NEW_MS`, 1 h; rechecked every `BRIEF_CHECK_MS`), drawing a clay
   dot on the nav Trading link and a "New" badge on the brief's card in
