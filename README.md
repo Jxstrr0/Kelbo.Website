@@ -38,7 +38,7 @@ from their releases, then publishes the files as they are (see
 | `scan.js` | Shows the weekly scan on the Agent Fleet page |
 | `briefs.html` | **The pre-market brief** page: the latest brief, where the US trading day is in Saskatoon time, and the archive |
 | `briefs/` | The briefs themselves, one `YYYY-MM-DD.md` per weekday, plus `index.json` (the list of months the page reads), `months/` (one small list per month, e.g. `months/2026-11.json`) and `latest.json` (the newest one's time, for the alert dot). Written by the robot below, so you never need to edit them |
-| `briefs.js`, `briefs.css` | Show the brief, its "How it did" box and the archive |
+| `briefs.js`, `briefs.css` | Show the Pre-market and After close tabs, each with its archive |
 | `report-cards/` | The after-close grades of each brief: one `YYYY-MM.json` per month and `index.json` (the running score). Written by the report card robot below, so you never need to edit them |
 | `journal.html` | The AI Trading Journal page |
 | `journal.json` | **Your journal entries.** Edit this to add an update |
@@ -937,10 +937,15 @@ you can see how good the calls really are over time.
     works the percentages out itself from the prices.
   Anything it can't confirm says "couldn't confirm"; it never guesses a
   price, and it only lists links it really saw that run.
-- **Where it shows:** a "How it did" box under the TLDR of each brief, and
-  the running score ("Report card, 10 graded days: Gap call 7 right ...")
-  above the brief on `briefs.html`. Before the grade is in, today's brief
-  says "Graded after the close, around 4:10 pm".
+- **Where it shows:** `briefs.html` has two tabs. **Pre-market** is the
+  morning brief, with "Past briefs" at the bottom. **After close** is the
+  report card, with the running score ("Report card, 10 graded days: Gap
+  call 7 right ...") on top and "Past report cards" at the bottom. Once a
+  brief is graded, a "How it did" line under its TLDR links to its card,
+  and each card has a "Read that brief" link back. Before the grade is in,
+  today's brief says "Graded after the close, around 4:10 pm". Links:
+  `briefs.html#after` opens the After close tab, `#after-2026-11-02` a
+  past card, `#2026-11-02` a past brief.
 - **Where it's saved:** `report-cards/2026-11.json` (that month's grades)
   and `report-cards/index.json` (the totals). The brief files in `briefs/`
   are never touched.

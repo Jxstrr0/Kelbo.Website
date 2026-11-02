@@ -58,6 +58,54 @@
   font-weight: 700;
 }
 
+/* ---------- The two tabs: Pre-market and After close ----------
+   A pill pair, like the Projects filter buttons. The chosen one is solid
+   purple (ivory in dark), the other an outline. */
+.brief-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0 0 1.25rem;
+}
+
+.brief-tab {
+  min-height: 2.75rem;
+  padding: 0.5rem 1.15rem;
+  border: 1.5px solid var(--secondary);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--secondary);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.brief-tab[aria-selected="true"] {
+  background: var(--secondary);
+  color: var(--bg);
+}
+
+.brief-tab:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.brief-panel[hidden] {
+  display: none;
+}
+
+.brief-panel:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 6px;
+  border-radius: var(--radius);
+}
+
+/* "Past briefs" / "Past report cards" at the bottom of each tab */
+.brief-archive__title {
+  margin: 2.5rem 0 0.75rem;
+  font-size: 1.35rem;
+}
+
 /* ---------- The brief ---------- */
 .brief-date {
   margin: -0.5rem 0 1rem;
@@ -531,4 +579,47 @@ details[open] > .archive__fold::after {
     grid-template-columns: 7.5rem 1fr;
     gap: 0.75rem;
   }
+}
+
+/* The one-line pointer under a brief's TLDR to its report card on the
+   After close tab, and the "That morning's call" line on a report card. */
+.brief-card .report-link,
+.brief-card .report-card__from {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.5rem;
+  margin: 0 0 1.5rem;
+}
+
+.brief-card .report-link {
+  margin-top: -0.75rem;
+  color: var(--muted);
+}
+
+.brief-card .report-link strong {
+  color: var(--ink);
+}
+
+.report-link__go {
+  padding: 0.3rem 0;
+  border: 0;
+  background: none;
+  color: var(--secondary);
+  font: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+.report-link__go::after {
+  content: " \2192";
+}
+
+.report-link__go:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
 }
