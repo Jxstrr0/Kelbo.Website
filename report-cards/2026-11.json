@@ -1,0 +1,81 @@
+{
+  "2026-11-02": {
+    "date": "2026-11-02",
+    "time": "2026-11-02T23:09:47.661Z",
+    "summary": "The brief got the up-gap direction right, but the open was only about +0.7% against a 2–3% call, and MU then sold off to close down 5.8%, breaking both key supports.",
+    "gap": {
+      "call": "Up about 2–3% (roughly $900–$912)",
+      "result": "MU opened at 890.54, up about 0.66% from the 884.74 close, so direction was right but size was well short.",
+      "grade": "partial"
+    },
+    "mu": {
+      "prev_close": 884.74,
+      "open": 890.54,
+      "high": 892.08,
+      "low": 829.24,
+      "close": 833.59,
+      "open_pct": 0.66,
+      "close_pct": -5.78
+    },
+    "levels": [
+      {
+        "level": "Resistance $902.50–$906.54 (Benzinga technical level to Friday's high)",
+        "result": "Day high was 892.08, more than 0.5% below the zone.",
+        "grade": "untested"
+      },
+      {
+        "level": "Next resistance $934.27 (Thursday's close)",
+        "result": "Never approached; high was 892.08.",
+        "grade": "untested"
+      },
+      {
+        "level": "Higher resistance about $950.61 (20-day SMA)",
+        "result": "Never approached.",
+        "grade": "untested"
+      },
+      {
+        "level": "50-day average about $978.71",
+        "result": "Never approached.",
+        "grade": "untested"
+      },
+      {
+        "level": "Support $884.74 (Friday's close)",
+        "result": "Opened just above it, fell through it and closed at 833.59.",
+        "grade": "broke"
+      },
+      {
+        "level": "Next support $861.59 (Friday's low)",
+        "result": "Traded through it and closed well below at 833.59.",
+        "grade": "broke"
+      },
+      {
+        "level": "Support $858–$862 (Oct 23 and Oct 30 lows)",
+        "result": "Traded through the zone and closed below it at 833.59.",
+        "grade": "broke"
+      },
+      {
+        "level": "Bear-case reference about $800",
+        "result": "Low was 829.24, more than 0.5% above it.",
+        "grade": "untested"
+      }
+    ],
+    "sources": [
+      {
+        "title": "MU: Micron Technology, Inc. - Stock Price, Quote and News - CNBC",
+        "url": "https://www.cnbc.com/quotes/MU"
+      },
+      {
+        "title": "Micron Technology, Inc. (MU) Stock Price, Quote, News & Analysis - Seeking Alpha",
+        "url": "https://seekingalpha.com/symbol/MU"
+      },
+      {
+        "title": "Micron Stock Price Today - Investing.com",
+        "url": "https://www.investing.com/equities/micron-tech"
+      },
+      {
+        "title": "Micron Technology (NASDAQ:MU) Shares Down 5.8% - What's Next? - MarketBeat",
+        "url": "https://www.marketbeat.com/instant-alerts/price-micron-technology-nasdaq-mu-shares-down-58-whats-next-2026-11-02/"
+      }
+    ]
+  }
+}
