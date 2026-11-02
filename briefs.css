@@ -65,6 +65,20 @@
   color: var(--muted);
 }
 
+/* "New · posted 6:34 am" beside the date, for an hour after it goes out
+   (it flashes; the animation is in style.css's Motion block) */
+.brief-new {
+  display: inline-block;
+  margin-left: 0.4rem;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  background: var(--ll-clay);
+  color: var(--on-accent); /* slate on clay, like the buttons */
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  vertical-align: 0.1em;
+}
+
 /* "This is an older brief" / "No brief yet today" */
 .brief-notice {
   display: flex;

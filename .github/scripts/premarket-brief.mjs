@@ -217,7 +217,8 @@ await writeFile(briefPath, brief);
 
 let index = [];
 try { index = JSON.parse(await readFile(indexPath, "utf8")); } catch { /* new index */ }
-index = [{ date: isoDate, headline, tldr }, ...index.filter((e) => e.date !== isoDate)];
+// time: when this brief went out, so the site can flag it as new for an hour.
+index = [{ date: isoDate, time: new Date().toISOString(), headline, tldr }, ...index.filter((e) => e.date !== isoDate)];
 await writeFile(indexPath, JSON.stringify(index, null, 2) + "\n");
 
 console.log(`Wrote ${briefPath}: ${headline}`);

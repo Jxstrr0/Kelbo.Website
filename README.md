@@ -862,6 +862,11 @@ Saskatoon time. Each brief is a Markdown file in `briefs/`
   then Overnight and Asia, MU, Watchlist and Calendar, even on a holiday.
   If a brief comes back without them, the script asks Claude once to
   rewrite it in that format (no new searching) before saving it.
+- **New brief alert:** for an hour after a brief goes out, every page shows
+  a flashing dot on the Trading link at the top, the brief's card says
+  "New", and the brief page says "New · posted 6:34 am". The time comes
+  from `time` in `briefs/index.json`, which the robot fills in. The hour is
+  `BRIEF_NEW_MS` in `main.js`.
 - Prices and levels come from web reports, not live quotes, so every brief
   says they're estimates and lists its sources.
 
