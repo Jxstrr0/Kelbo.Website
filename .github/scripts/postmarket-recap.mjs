@@ -89,6 +89,25 @@ if (marketHolidays(Number(isoDate.slice(0, 4))).includes(isoDate)) {
   process.exit(0);
 }
 
+/* ---------- Has the market closed yet? ----------
+   The grade needs the day's final prices, so a run before the 4:00 pm
+   New York close stops here without asking Claude (it costs nothing).
+   Saskatchewan doesn't change its clocks but New York does, so that's
+   3:00 pm Saskatoon from November to March and 2:00 pm the rest of the
+   year. Ticking "redo today's grade" doesn't skip this check. On the few
+   half days (1:00 pm close) it still waits for 4:00 pm, which is fine. */
+const nyClock = new Intl.DateTimeFormat("en-US", {
+  timeZone: "America/New_York", hour: "numeric", minute: "numeric", hourCycle: "h23",
+}).formatToParts(now);
+const nyHour = Number(nyClock.find((part) => part.type === "hour").value);
+const nyMinute = Number(nyClock.find((part) => part.type === "minute").value);
+// Late at night New York reaches tomorrow before Saskatoon does; that's after the close too.
+const nyDate = new Intl.DateTimeFormat("en-CA", { timeZone: "America/New_York" }).format(now);
+if (nyDate === isoDate && nyHour * 60 + nyMinute < 16 * 60) {
+  console.log("The US market hasn't closed yet (4:00 pm New York time). Run this again after the close.");
+  process.exit(0);
+}
+
 /* ---------- Today's brief ---------- */
 let brief;
 try {
