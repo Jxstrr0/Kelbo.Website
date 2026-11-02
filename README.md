@@ -176,7 +176,9 @@ progress order.
   button goes straight to the game (the code link and the screenshots still
   work on their own).
 - **code**: the GitHub repo address, or `""`. Shows a "See the code" link.
-- **image**: a cover picture, like `assets/covers/my-game.jpg`, or `""`.
+- **image**: a cover picture, like `assets/covers/my-game.jpg`, or `""`
+  (a purple tile with the initials). The brief, the journal and Agent Fleet
+  use drawn covers in the five site colours, not screenshots.
   Without one, the card gets a coloured cover with the project's initials.
   Covers are shown 4:3 (640 × 480 is perfect) and should stay under 100 KB.
 - **featured**: `true` shows it as a big card under "Pick a game" on the home

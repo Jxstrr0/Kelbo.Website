@@ -192,18 +192,6 @@
     ]
   },
   {
-    "title": "AI Trading Journal",
-    "status": "Live",
-    "category": "Trading",
-    "summary": "My market views, the trades I take, and my running record, with notes from an AI coach on what to keep doing and what to fix.",
-    "version": "",
-    "latest": "",
-    "link": "journal.html",
-    "code": "",
-    "image": "",
-    "featured": false
-  },
-  {
     "title": "Pre-market brief",
     "status": "Live",
     "category": "Trading",
@@ -212,7 +200,19 @@
     "latest": "",
     "link": "briefs.html",
     "code": "",
-    "image": "",
+    "image": "assets/covers/pre-market-brief.jpg",
+    "featured": false
+  },
+  {
+    "title": "AI Trading Journal",
+    "status": "Live",
+    "category": "Trading",
+    "summary": "My market views, the trades I take, and my running record, with notes from an AI coach on what to keep doing and what to fix.",
+    "version": "",
+    "latest": "",
+    "link": "journal.html",
+    "code": "",
+    "image": "assets/covers/ai-trading-journal.jpg",
     "featured": false
   },
   {
@@ -224,7 +224,7 @@
     "latest": "Weekly scan and pre-market brief are live",
     "link": "agent-fleet.html",
     "code": "",
-    "image": "",
+    "image": "assets/covers/agent-fleet.jpg",
     "featured": false
   }
 ]
