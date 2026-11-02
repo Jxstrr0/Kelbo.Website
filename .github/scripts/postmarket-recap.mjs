@@ -10,7 +10,7 @@ import { readFile, writeFile, mkdir, readdir } from "node:fs/promises";
 
 const MODEL = "claude-sonnet-5-5"; // smaller and cheaper than the brief's model
 const MAX_SEARCHES = 15; // web searches a grade may run ($10 per 1,000)
-const MAX_FETCHES = 10; // whole pages it may open and read
+const MAX_FETCHES = 15; // whole pages it may open and read
 // List prices in US dollars per million tokens, for the cost line in the
 // run log. Cache reads are the cheap re-reads; writes cost 1.25x.
 const PRICE = { input: 2, output: 10, cacheRead: 0.2, cacheWrite: 2.5, search: 0.01 };
