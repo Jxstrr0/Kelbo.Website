@@ -38,7 +38,8 @@ from their releases, then publishes the files as they are (see
 | `scan.js` | Shows the weekly scan on the Agent Fleet page |
 | `briefs.html` | **The pre-market brief** page: the latest brief, where the US trading day is in Saskatoon time, and the archive |
 | `briefs/` | The briefs themselves, one `YYYY-MM-DD.md` per weekday, plus `index.json` (the list of months the page reads), `months/` (one small list per month, e.g. `months/2026-11.json`) and `latest.json` (the newest one's time, for the alert dot). Written by the robot below, so you never need to edit them |
-| `briefs.js`, `briefs.css` | Show the brief and the archive |
+| `briefs.js`, `briefs.css` | Show the brief, its "How it did" box and the archive |
+| `report-cards/` | The after-close grades of each brief: one `YYYY-MM.json` per month and `index.json` (the running score). Written by the report card robot below, so you never need to edit them |
 | `journal.html` | The AI Trading Journal page |
 | `journal.json` | **Your journal entries.** Edit this to add an update |
 | `options.json` | **Your options trades.** Edit this to log a trade |
@@ -46,8 +47,8 @@ from their releases, then publishes the files as they are (see
 | `tools/prediction-tracker/` | The Prediction Tracker tool, parked for now (not linked from the site) |
 | `404.html` | The "page not found" screen GitHub shows for any address that doesn't exist |
 | `.nojekyll` | Tells GitHub Pages to serve the files as-is. Leave it alone |
-| `.github/workflows/` | The three robots: `site-check.yml` (checks every pull request), `deploy.yml` (checks again, then puts the site live) and `premarket-brief.yml` (writes the morning brief, below) |
-| `.github/scripts/` | What they run: `check-site.mjs` (the mistake finder), `sync-releases.mjs` (fills in game versions from their releases), `make-game-pages.mjs` (makes each game's own page, below) and `premarket-brief.mjs` (asks Claude for the brief) |
+| `.github/workflows/` | The four robots: `site-check.yml` (checks every pull request), `deploy.yml` (checks again, then puts the site live), `premarket-brief.yml` (writes the morning brief, below) and `postmarket-recap.yml` (grades it after the close, below) |
+| `.github/scripts/` | What they run: `check-site.mjs` (the mistake finder), `sync-releases.mjs` (fills in game versions from their releases), `make-game-pages.mjs` (makes each game's own page, below) `premarket-brief.mjs` (asks Claude for the brief) and `postmarket-recap.mjs` (asks Claude how the brief did) |
 
 ## Editing on your phone
 
@@ -905,6 +906,44 @@ you open it.
   rebuilds them from the briefs in the folder.
 - Prices and levels come from web reports, not live quotes, so every brief
   says they're estimates and lists its sources.
+
+## The after-close report card
+
+After the market closes, a second robot grades that morning's brief, so
+you can see how good the calls really are over time.
+
+- **Who runs it:** the **After-close report card** robot
+  (`.github/workflows/postmarket-recap.yml`), every weekday at 4:07 pm
+  Saskatoon time, after the 4:00 pm ET close in summer and winter. It runs
+  `.github/scripts/postmarket-recap.mjs`, which asks Claude (with web
+  search) for MU's previous close, open, high, low and close, then grades:
+  - **Gap call:** Right, Partly or Wrong (rules in `SYSTEM` at the top of
+    the script: anything within ±0.5% counts as flat, and the size has to
+    be within 1 point of the brief's range to be Right).
+  - **Key levels:** each one Held, Broke or Not reached.
+  - **MU:** the open and close as a % of the previous close. The script
+    works the percentages out itself from the prices.
+  Anything it can't confirm says "couldn't confirm"; it never guesses a
+  price, and it only lists links it really saw that run.
+- **Where it shows:** a "How it did" box under the TLDR of each brief, and
+  the running score ("Report card, 10 graded days: Gap call 7 right ...")
+  above the brief on `briefs.html`. Before the grade is in, today's brief
+  says "Graded after the close, around 4:10 pm".
+- **Where it's saved:** `report-cards/2026-11.json` (that month's grades)
+  and `report-cards/index.json` (the totals). The brief files in `briefs/`
+  are never touched.
+- **Skips:** weekends, US market holidays (worked out in the script, no
+  list to update) and days with no brief.
+- **Cost:** it uses a smaller, cheaper model than the brief (`MODEL` at the
+  top of the script), up to 8 web searches (`MAX_SEARCHES`) and 4 page
+  reads (`MAX_FETCHES`). It uses the same `ANTHROPIC_API_KEY` secret as the
+  brief. The last line of each run's log is "Estimated cost: US$0.xx".
+- **Run it now:** Actions tab → After-close report card → Run workflow
+  (on a phone, switch to the desktop site if the button doesn't show).
+  Tick "Redo today's grade" to grade today again.
+- **Turn it off:** open it on the Actions tab, tap "..." at the top right,
+  then "Disable workflow". "Enable workflow" in the same place turns it
+  back on.
 
 ## The Prediction Tracker (parked)
 

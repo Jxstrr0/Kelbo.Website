@@ -52,8 +52,8 @@ keep the Co-Authored-By trailer for Claude in each message.
 - **No secrets.** The repo is public. Never commit API keys, tokens, or
   passwords. If a tool needs a key, talk through options with Kelbo first.
   The one key that exists is the `ANTHROPIC_API_KEY` repository secret for
-  the pre-market brief; it is only ever referenced as
-  `${{ secrets.ANTHROPIC_API_KEY }}` in that workflow.
+  the pre-market brief and the after-close report card; it is only ever
+  referenced as `${{ secrets.ANTHROPIC_API_KEY }}` in those two workflows.
 - Mobile first (works down to 360px wide), light and dark themes with
   every colour in CSS variables (`data-theme` on `<html>`, set by `main.js`
   from the real sun; `prefers-color-scheme` is only the fallback before JS
@@ -597,6 +597,32 @@ keep the Co-Authored-By trailer for Claude in each message.
   by `#YYYY-MM-DD`. The page speaks in Kelbo's first person; it is a
   Trading project in `projects.json`, in `sitemap.xml` and `sw.js` `CORE`.
   Don't hand-edit the files in `briefs/`.
+- The after-close report card: the **After-close report card** workflow
+  (`.github/workflows/postmarket-recap.yml`, weekdays 22:07 UTC = 4:07 pm
+  America/Regina, after the close all year, or by hand with a "redo
+  today's grade" box) runs `.github/scripts/postmarket-recap.mjs`: plain
+  Node `fetch`, the smaller model in `MODEL`, `web_search_20260209`
+  (`MAX_SEARCHES` 8) and `web_fetch_20260209` (`MAX_FETCHES` 4), the same
+  caching, `pause_turn` loop and cost log line as the brief. It skips
+  weekends, NYSE holidays (`marketHolidays`, computed, incl. Good Friday
+  and the Saturday/Sunday observance rules) and days without a brief, and
+  reads today's brief (minus Sources) to grade the MU gap call
+  (hit/partial/miss, ±0.5% = flat) and each key level
+  (held/broke/untested), with `unknown` whenever a price isn't confirmed.
+  The script validates everything (grades outside the list become
+  unknown, prices must be positive numbers or null, the gap is unknown
+  without both prices, `open_pct`/`close_pct` are computed from the
+  prices, sources must be https links seen that run) and writes
+  `report-cards/YYYY-MM.json` (`{date: card}`, newest first) plus
+  `report-cards/index.json` (`{latest, days, gap: {hit, partial, miss,
+  unknown}, levels: {held, broke, untested, unknown}, months}`, re-added
+  from every month file each run). It commits as postmarket-bot and runs
+  `gh workflow run deploy.yml`. Never write report cards into `briefs/`.
+  `briefs.js` adds the "How it did" `.report-card` under the brief's TLDR
+  (`addReportCard`; today's weekday brief shows a waiting note) and
+  `[data-report-tally]` above it (`showTally`), all as text nodes; the
+  `.grade--*` pills are purple (right/held), purple outline (partly), clay
+  (wrong/broke) and dashed grey (not reached/couldn't confirm).
 - The Prediction Tracker in `tools/prediction-tracker/` is parked: still in
   the repo but removed from `projects.json` (README has the block to
   restore it).
