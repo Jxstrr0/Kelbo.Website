@@ -743,6 +743,46 @@ img {
   right: calc(100% + 6px);
 }
 
+/* The space station (main.js placeIss): its own full-width layer over
+   the stars, so it shows whatever the theme (the real one only after
+   dark; ?critter=iss any time). A bright steady ivory dot, brighter than
+   any star, named "ISS" on the home sky. While it crosses the live sky it
+   moves every second and glides between (no glide with reduce motion). */
+.horizon__iss {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: var(--sky-height);
+  pointer-events: none;
+}
+
+.horizon__iss .iss {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  border-radius: 50%;
+  background: var(--ll-ivory);
+  box-shadow: 0 0 10px 3px rgba(250, 249, 245, 0.7);
+}
+
+.horizon__iss .iss[hidden] {
+  display: none;
+}
+
+.horizon__iss .iss span {
+  position: absolute;
+  left: calc(100% + 6px);
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--ll-ivory);
+  opacity: 0.8;
+}
+
 /* The brightest stars (Sirius, Vega, Rigel...) get a soft halo */
 .horizon__stars .star--bright {
   box-shadow: 0 0 8px 2px rgba(180, 140, 232, 0.75);
@@ -4358,8 +4398,14 @@ img {
      phone's tilt): the far-off things slide a little against the land,
      like looking through a window. Stars and meteors move most. */
   .horizon__stars,
+  .horizon__iss,
   .horizon__meteors {
     translate: calc(var(--tilt-x, 0) * -14px) calc(var(--tilt-y, 0) * -9px);
+  }
+
+  /* The space station glides between its once-a-second spots */
+  .horizon__iss .iss--glide {
+    transition: left 1s linear, top 1s linear;
   }
 
   .horizon__aurora {
