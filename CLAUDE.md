@@ -480,7 +480,9 @@ keep the Co-Authored-By trailer for Claude in each message.
   (Environment Canada `api.weather.gc.ca` weather-alerts, `bbox` round
   `YXE`, `skipGeometry`, deduped by name, warnings first, `ALERTS_MS`
   15 min; Canada only) feeds `setUpAlert`: the `[data-horizon-alert]`
-  pill on the home sky (left, above the line; `--warning` solid clay)
+  pill on the home sky (phones: in the ground strip on the right, the
+  readout kept clear by `--alert-room`; from 40rem: left, above the line;
+  `--warning` solid clay)
   linking to weather.gc.ca's page for those coordinates; it stops
   pointer events reaching the sky. Previews: `?kpcast=5`, `?clouds=10`,
   `?alert=warning|watch|advisory`; plain `?at=` skips all three.
