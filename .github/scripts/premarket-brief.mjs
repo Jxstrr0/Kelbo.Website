@@ -5,7 +5,7 @@
 import { readFile, writeFile, mkdir, access } from "node:fs/promises";
 
 const MODEL = "claude-sonnet-5-5";
-const MAX_SEARCHES = 10;
+const MAX_SEARCHES = 20;
 const BRIEFS_DIR = "briefs";
 const MARKER = "===BRIEF===";
 
@@ -48,9 +48,9 @@ Watchlist:
 - Power and networking: VRT, ANET
 - Overnight read-through: Samsung Electronics, SK Hynix, TSMC (Taipei), Kioxia; S&P 500 and Nasdaq 100 futures; the semiconductor index
 
-Use web search to get today's information: overnight news, Asian session moves, US futures, pre-market moves, analyst actions, scheduled economic data and earnings. Prefer sources from the last 24 hours. Search efficiently.
+Use web search to get today's information: overnight news, Asian session moves, US futures, pre-market moves, analyst actions, scheduled economic data and earnings. Prefer sources from the last 24 hours. You have up to ${MAX_SEARCHES} searches: cover futures, Asia, MU, the watchlist and the calendar before going deeper on any one.
 
-First check whether US stock markets are open today. If they are closed (holiday), write only a short brief saying so and when they reopen, with any notable news.
+First check whether US stock markets are open today. If they are closed (weekend or holiday), still use every heading below: say the market is closed and when it reopens under Overnight and Asia, give MU's last close and any news under MU with the gap call "Market closed", keep the Watchlist, and give the next session's calendar.
 
 Rules:
 - Prices move. Give every price with its approximate time in ET. Mark key levels as estimates drawn from reported data (prior close, recent highs and lows, pre-market range). Never present a level as certain.
@@ -59,7 +59,7 @@ Rules:
 - Be direct and specific. No hype, no filler, no financial-advice disclaimers beyond the levels note.
 - If you can't find something, say so in a few words rather than guessing.
 
-When you are done researching, output the line ${MARKER} and then the brief in exactly this Markdown format, with nothing after it:
+When you are done researching, output the line ${MARKER} and then the brief in exactly this Markdown format, with nothing after it. Use these headings word for word, in this order, every day: the "# " headline, the "TLDR:" line, then ## Overnight and Asia, ## MU, ## Watchlist, ## Calendar. Never rename, add or drop a heading; put extra notes inside the nearest section.
 
 # <headline: the single most important thing for today, under 12 words>
 TLDR: <one sentence summary>
@@ -83,7 +83,8 @@ TLDR: <one sentence summary>
 
 const tools = [{ type: "web_search_20260209", name: "web_search", max_uses: MAX_SEARCHES }];
 
-async function callClaude(messages, attempt = 1) {
+// withTools = false sends the request with web search turned off.
+async function callClaude(messages, withTools = true, attempt = 1) {
   const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: {
@@ -93,13 +94,13 @@ async function callClaude(messages, attempt = 1) {
     },
     // max_tokens covers the model's thinking as well as the brief itself, so
     // leave it roomy: a tight cap cuts the brief off mid-sentence.
-    body: JSON.stringify({ model: MODEL, max_tokens: 16000, system: SYSTEM, tools, messages }),
+    body: JSON.stringify({ model: MODEL, max_tokens: 16000, system: SYSTEM, messages, ...(withTools && { tools }) }),
   });
   if ((res.status === 429 || res.status >= 500) && attempt < 4) {
     const wait = 15000 * attempt;
     console.log(`API returned ${res.status}, retrying in ${wait / 1000}s`);
     await new Promise((r) => setTimeout(r, wait));
-    return callClaude(messages, attempt + 1);
+    return callClaude(messages, withTools, attempt + 1);
   }
   if (!res.ok) {
     throw new Error(`API error ${res.status}: ${await res.text()}`);
@@ -140,6 +141,30 @@ if (!brief.startsWith("#")) {
   if (h >= 0) brief = brief.slice(h + 1).trim();
 }
 if (!brief) throw new Error("Claude returned no brief text.");
+
+// The page expects the same headings every day. If any are missing, ask
+// once for the same brief rewritten in the format (no new searching).
+const REQUIRED = ["## Overnight and Asia", "## MU", "## Watchlist", "## Calendar"];
+const missing = () => [
+  ...(/^#\s+\S/m.test(brief) ? [] : ["# headline"]),
+  ...(/^TLDR:/m.test(brief) ? [] : ["TLDR:"]),
+  ...REQUIRED.filter((h) => !new RegExp(`^${h}\\s*$`, "m").test(brief)),
+];
+if (missing().length) {
+  console.warn(`Brief is missing ${missing().join(", ")}; asking for a reformat.`);
+  const fix = await callClaude([
+    messages[0],
+    { role: "assistant", content: brief },
+    { role: "user", content: `Rewrite that brief in the exact format from your instructions, using every heading word for word: # headline, TLDR:, ${REQUIRED.join(", ")}. Keep the same facts. Output ${MARKER} first.` },
+  ], false);
+  usage.input_tokens += fix.usage?.input_tokens ?? 0;
+  usage.output_tokens += fix.usage?.output_tokens ?? 0;
+  const fixed = fix.content.filter((b) => b.type === "text").map((b) => b.text).join("");
+  const at = fixed.lastIndexOf(MARKER);
+  const retry = (at >= 0 ? fixed.slice(at + MARKER.length) : fixed).trim();
+  if (retry.startsWith("#")) brief = retry;
+  if (missing().length) console.warn(`Still missing ${missing().join(", ")}; saving it as is.`);
+}
 
 const headline = (brief.match(/^#\s+(.+)$/m)?.[1] ?? "Pre-market brief").trim();
 const tldr = (brief.match(/^TLDR:\s*(.+)$/m)?.[1] ?? "").trim();
