@@ -452,6 +452,57 @@ details[open] > .archive__fold::after {
   color: var(--ink);
 }
 
+/* "What the brief is working on": a closed fold under the score, drawn
+   like the archive folds (summary line, count, chevron). Its lessons are
+   short lines with the evidence under each in muted type. */
+.lessons {
+  max-width: 44rem;
+  margin: 0 0 1.25rem;
+}
+
+.lessons[hidden] {
+  display: none;
+}
+
+.lessons__list {
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lessons__item {
+  padding: 0.55rem 0 0.55rem 0.9rem;
+  border-left: 3px solid var(--secondary);
+}
+
+.lessons__item + .lessons__item {
+  margin-top: 0.5rem;
+}
+
+.lessons__evidence {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.lessons__new {
+  display: inline-block;
+  padding: 0.05rem 0.5rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--secondary);
+  color: var(--secondary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  vertical-align: 0.1em;
+}
+
+.lessons__note {
+  margin: 0.6rem 0 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
 .report-tally__group {
   display: inline-flex;
   flex-wrap: wrap;

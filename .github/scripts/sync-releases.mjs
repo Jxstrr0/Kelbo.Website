@@ -9,8 +9,10 @@
 //   - No releases yet: leaves projects.json exactly as written.
 //   - The release is the same version or newer: uses the release.
 //       version = the tag without the "v"   (tag v1.2.0  ->  "1.2.0")
-//       latest  = the release title, minus any version at the front
-//                 ("v1.2.0 - Night mode"  ->  "Night mode")
+//       latest  = the player-friendly line for that exact release from
+//                 release-lines.json (written by release-lines.mjs), or
+//                 if there isn't one, the release title minus any
+//                 version at the front ("v1.2.0 - Night mode" -> "Night mode")
 //   - projects.json has a NEWER version than the newest release (you
 //     bumped it by hand but didn't publish a release): keeps the hand
 //     version and prints a reminder.
@@ -53,6 +55,15 @@ function cleanTitle(title, tag) {
     .trim();
 }
 
+// Player-friendly lines written by release-lines.mjs, keyed "<repo>@<tag>"
+// (Kelbo may have edited some by hand). Missing or broken: use the
+// release titles, as before.
+let lines = {};
+try {
+  const parsed = JSON.parse(readFileSync(join(ROOT, "release-lines.json"), "utf8"));
+  if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) lines = parsed;
+} catch { /* no lines yet */ }
+
 const report = [];
 let changed = 0;
 
@@ -81,7 +92,8 @@ for (const p of projects) {
     continue;
   }
 
-  const title = cleanTitle(release.name, tag);
+  const own = lines[`${m[2].replace(/\.git$/, "")}@${tag}`]?.line;
+  const title = typeof own === "string" && own.trim() ? own.trim() : cleanTitle(release.name, tag);
   const before = `${p.version} · ${p.latest}`;
   const versionMoved = compare(version, p.version || "0") !== 0;
   p.version = version;

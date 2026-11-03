@@ -1,0 +1,79 @@
+# Player-friendly "What's new" lines for game releases.
+#
+# Every 6 hours, this:
+#   1. runs .github/scripts/release-lines.mjs, which checks each game's
+#      newest GitHub Release. Any release without a line in
+#      release-lines.json goes to Claude (one call for all of them) to be
+#      rewritten as one short line for players. No new release: no call.
+#   2. commits release-lines.json to main,
+#   3. starts the "Deploy site" run, which shows the new line on the cards
+#      (sync-releases.mjs reads release-lines.json).
+# The deploy itself never calls Claude, so it stays key-free.
+#
+# It uses the ANTHROPIC_API_KEY repository secret. "Run workflow" on the
+# Actions tab runs it now; tick "dry run" to see the lines in the log
+# without saving them. To stop it, open it on the Actions tab, tap "..."
+# and choose "Disable workflow". To fix a line, edit it in
+# release-lines.json; this never overwrites one that's there.
+name: Release lines
+
+# :53 past every 6th hour (UTC), half an hour after the deploy's own check.
+on:
+  schedule:
+    - cron: "53 */6 * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run: print the new lines in the log, save nothing"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write # to commit release-lines.json
+  actions: write # to start the Deploy site run
+
+concurrency:
+  group: release-lines
+  cancel-in-progress: false
+
+jobs:
+  lines:
+    name: Write lines for new releases
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      - name: Check for new releases
+        run: node .github/scripts/release-lines.mjs
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GITHUB_TOKEN: ${{ github.token }}
+          DRY_RUN: ${{ inputs.dry_run == true && '1' || '' }}
+
+      - name: Commit them to main
+        id: commit
+        if: inputs.dry_run != true
+        run: |
+          git config user.name "release-lines-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add release-lines.json
+          if git diff --cached --quiet; then
+            echo "Nothing new to commit."
+            echo "pushed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git commit -m "Release lines $(TZ=America/Regina date +%F)"
+          git pull --rebase
+          git push
+          echo "pushed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Put the site live
+        if: steps.commit.outputs.pushed == 'true'
+        run: gh workflow run deploy.yml --ref main
+        env:
+          GH_TOKEN: ${{ github.token }}

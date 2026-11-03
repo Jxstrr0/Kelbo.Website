@@ -159,9 +159,26 @@ try {
   }
 } catch { /* no briefs folder yet */ }
 
+// This week's lessons from the report cards (brief-lessons.mjs), if the
+// file is under 14 days old. They go in this user message, not in SYSTEM,
+// so the cached instructions stay the same every day.
+let lessons = "";
+let lessonCount = 0;
+try {
+  const file = JSON.parse(await readFile("lessons/latest.json", "utf8"));
+  const age = Date.now() - Date.parse(file.updated);
+  const active = (file.lessons || []).filter((l) => l && l.status !== "retired" && typeof l.text === "string");
+  if (age >= 0 && age < 14 * 864e5 && active.length) {
+    lessonCount = active.length;
+    lessons = "\n\nLessons from your recent report cards — apply them:\n" +
+      active.map((l) => `- ${l.text}${l.evidence?.count ? ` (${l.evidence.count})` : ""}`).join("\n");
+  }
+} catch { /* no lessons yet: carry on without them */ }
+console.log(`Lessons used: ${lessonCount}`);
+
 const messages = [{
   role: "user",
-  content: `Today is ${longDate} (Saskatchewan date). Write today's pre-market brief.${previous || "\n\nThere is no previous brief."}`,
+  content: `Today is ${longDate} (Saskatchewan date). Write today's pre-market brief.${previous || "\n\nThere is no previous brief."}${lessons}`,
 }];
 const allBlocks = [];
 const usage = { input_tokens: 0, output_tokens: 0, cache_read: 0, cache_write: 0, searches: 0, fetches: 0 };

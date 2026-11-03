@@ -771,6 +771,49 @@ function showTally(data) {
   line.hidden = false;
 }
 
+/* ---------- What the brief is working on ----------
+   lessons/latest.json, written each Saturday by brief-lessons.mjs from the
+   report cards: { updated, window: {from, to}, cards, lessons: [{ text,
+   evidence: {count, dates}, status }] }. The fold lists the lessons that
+   aren't retired, as text. No file, or nothing active: it stays hidden. */
+async function setUpLessons() {
+  const box = document.querySelector("[data-lessons]");
+  if (!box) return;
+  let data;
+  try {
+    const response = await fetch("lessons/latest.json", { cache: "no-cache" });
+    data = response.ok ? await response.json() : null;
+  } catch (error) {
+    data = null;
+  }
+  const active = (data && Array.isArray(data.lessons) ? data.lessons : []).filter(
+    (l) => l && l.status !== "retired" && typeof l.text === "string" && l.text
+  );
+  if (!active.length) return;
+  const list = box.querySelector("[data-lessons-list]");
+  list.textContent = "";
+  active.forEach((l) => {
+    const item = el("li", "lessons__item");
+    item.append(el("span", "lessons__text", l.text));
+    if (l.status === "new") item.prepend(el("span", "lessons__new", "New"), " ");
+    const ev = l.evidence || {};
+    const dates = (Array.isArray(ev.dates) ? ev.dates : []).filter((d) => isEntry({ date: d }));
+    const when = dates.map((d) => briefDate(d, { month: "short", day: "numeric" })).join(", ");
+    const proof = [ev.count, when && `(${when})`].filter(Boolean).join(" ");
+    if (proof) item.append(el("span", "lessons__evidence", proof));
+    list.append(item);
+  });
+  box.querySelector("[data-lessons-count]").textContent = String(active.length);
+  const note = [];
+  if (Number.isFinite(data.cards)) note.push(`From ${data.cards} graded report card${data.cards === 1 ? "" : "s"}`);
+  if (data.window && isEntry({ date: data.window.from }) && isEntry({ date: data.window.to })) {
+    note.push(`${briefDate(data.window.from, { month: "short", day: "numeric" })} to ${briefDate(data.window.to, { month: "short", day: "numeric" })}`);
+  }
+  box.querySelector("[data-lessons-note]").textContent =
+    (note.length ? note.join(", ") + ". " : "") + "The morning brief reads these before it writes. Updated Saturdays.";
+  box.hidden = false;
+}
+
 async function setUpCards() {
   try {
     const response = await fetch(CARDS_DIR + "index.json", { cache: "no-cache" });
@@ -833,6 +876,7 @@ async function setUpBriefs() {
   } catch (error) {
     latest = null;
   }
+  setUpLessons(); // the weekly lessons fold; quietly stays hidden if missing
   await setUpCards();
 
   if (!latest) {

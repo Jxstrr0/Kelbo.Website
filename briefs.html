@@ -173,6 +173,13 @@
            report-cards/YYYY-MM.json). -->
       <div class="brief-panel" role="tabpanel" id="panel-post" aria-labelledby="tab-post" tabindex="0" hidden>
         <p class="report-tally" data-report-tally hidden></p>
+        <!-- The weekly lessons from lessons/latest.json (brief-lessons.mjs).
+             Stays hidden until that file exists. -->
+        <details class="lessons" data-lessons hidden>
+          <summary class="archive__fold"><span class="archive__label">What the brief is working on</span><span class="archive__count" data-lessons-count></span></summary>
+          <ul class="lessons__list" data-lessons-list></ul>
+          <p class="lessons__note" data-lessons-note></p>
+        </details>
         <p class="brief-date" data-card-date></p>
         <p class="brief-notice" data-card-notice hidden></p>
         <article class="brief-card" data-card aria-live="polite">
