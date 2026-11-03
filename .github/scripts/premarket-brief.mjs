@@ -5,6 +5,7 @@
 
 import { readFile, readdir, writeFile, mkdir, access } from "node:fs/promises";
 import { updateIndex, BRIEFS_DIR } from "./brief-index.mjs";
+import { costNote } from "./claude.mjs";
 
 const MODEL = "claude-opus-5-5";
 const MAX_SEARCHES = 30; // web searches a brief may run ($10 per 1,000)
@@ -301,3 +302,4 @@ console.log(`Searches: ${usage.searches} of ${MAX_SEARCHES}; pages read: ${usage
 const cost = (usage.input_tokens * PRICE.input + usage.output_tokens * PRICE.output +
   usage.cache_read * PRICE.cacheRead + usage.cache_write * PRICE.cacheWrite) / 1e6 + usage.searches * PRICE.search;
 console.log(`Estimated cost: US$${cost.toFixed(2)}`);
+costNote(cost, `${usage.searches} searches, ${usage.fetches} pages read`);

@@ -1013,6 +1013,13 @@ On the Actions tab each workflow shows as its name with what it does in
 brackets, and its commits are signed with its name (morning-writer,
 grader, coach, devlog-writer, release-writer).
 
+**What they cost:** every run that calls Claude pins a "Cost" note to its
+run page on the Actions tab (for example "US$0.90 · 25 searches, 8 pages
+read"). Those notes feed Kelbo's private Robot Cost Log on claude.ai,
+which a daily routine ("Robot cost log updater", 5:47 pm) fills in.
+The figures are estimates at list prices; the real bill is in the
+Anthropic console under Usage and Cost.
+
 ## The Coach, the Devlog Writer and the Release Writer (Claude, one call each)
 
 Three more robots use the same `ANTHROPIC_API_KEY` secret. Each asks
