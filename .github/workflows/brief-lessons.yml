@@ -14,7 +14,7 @@
 # Actions tab runs it now; tick "dry run" to see the lessons in the log
 # without saving them. To stop it, open it on the Actions tab, tap "..."
 # and choose "Disable workflow".
-name: Brief lessons
+name: Coach (brief lessons)
 
 # 15:37 UTC = 9:37 am Saskatoon, after the 8:55 am weekly scan.
 on:
@@ -57,7 +57,7 @@ jobs:
         id: commit
         if: inputs.dry_run != true
         run: |
-          git config user.name "lessons-bot"
+          git config user.name "coach"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           mkdir -p lessons
           git add lessons
