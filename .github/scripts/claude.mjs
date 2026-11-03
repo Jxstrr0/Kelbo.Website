@@ -88,6 +88,17 @@ export function logCost(model, u = {}) {
   console.log(`Tokens: ${input} in, ${read} cache reads, ${write} cache writes, ${output} out`);
   const cost = (input * p.input + output * p.output + read * p.cacheRead + write * p.cacheWrite) / 1e6;
   console.log(`Estimated cost: US$${cost.toFixed(2)} (${model})`);
+  costNote(cost, `${model}${DRY_RUN ? ", dry run" : ""}`);
+}
+
+// Pins the cost to the run as a GitHub note (shown on the run's page in the
+// Actions tab). Notes on a public repo can be read without logging in, which
+// is how the Robot Cost Log picks up each run's cost. Outside GitHub (a local
+// run) it prints nothing extra.
+export function costNote(cost, details = "") {
+  if (!process.env.GITHUB_ACTIONS) return;
+  const text = `US$${cost.toFixed(2)}${details ? ` · ${details}` : ""}`.replace(/[\r\n%]/g, " ");
+  console.log(`::notice title=Cost::${text}`);
 }
 
 // Pulls the JSON answer out of the reply: everything after the marker line,
