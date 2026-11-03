@@ -178,7 +178,7 @@ if (devlog !== undefined) {
 const YMD = /^\d{4}-\d{2}-\d{2}$/;
 const lessonFile = json["lessons/latest.json"];
 if (lessonFile === undefined) {
-  if (!exists("lessons/latest.json")) warn("lessons/latest.json", "No lessons yet. The Brief lessons robot writes them on Saturdays once there are 5 graded report cards; until then the After close tab just doesn't show them.");
+  if (!exists("lessons/latest.json")) warn("lessons/latest.json", "No lessons yet. The Coach writes them on Saturdays once there are 5 graded report cards; until then the After close tab just doesn't show them.");
 } else if (!lessonFile || typeof lessonFile !== "object") {
   error("lessons/latest.json", "Should be an object ({ ... }).");
 } else {
@@ -202,7 +202,7 @@ if (lessonFile === undefined) {
 // ---------------------------------------------------------------------
 const releaseLines = json["release-lines.json"];
 if (releaseLines === undefined) {
-  if (!exists("release-lines.json")) warn("release-lines.json", "Missing. The cards will use the release titles until the Release lines robot writes it.");
+  if (!exists("release-lines.json")) warn("release-lines.json", "Missing. The cards will use the release titles until the Release Writer writes it.");
 } else if (!releaseLines || typeof releaseLines !== "object" || Array.isArray(releaseLines)) {
   error("release-lines.json", "Should be an object ({ ... }), one entry per release.");
 } else {

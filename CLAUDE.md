@@ -52,8 +52,9 @@ keep the Co-Authored-By trailer for Claude in each message.
 - **No secrets.** The repo is public. Never commit API keys, tokens, or
   passwords. If a tool needs a key, talk through options with Kelbo first.
   The one key that exists is the `ANTHROPIC_API_KEY` repository secret,
-  used by five workflows: the pre-market brief, the after-close report
-  card, brief lessons, the devlog drafter and release lines. It is only
+  used by five workflows: the Morning Writer (pre-market brief), the
+  Grader (after-close report card), the Coach (brief lessons), the Devlog
+  Writer and the Release Writer. It is only
   ever referenced as `${{ secrets.ANTHROPIC_API_KEY }}` in those five
   workflows; `deploy.yml` and `site-check.yml` stay key-free.
 - Mobile first (works down to 360px wide), light and dark themes with
@@ -591,14 +592,14 @@ keep the Co-Authored-By trailer for Claude in each message.
   out contract counts and dollar P&L. When he sends new trades, add them
   oldest first, bump `updated`, and refresh the `ai` coach note honestly.
 - The weekly scan on `agent-fleet.html` is `scan.json` (fields at the top
-  of `scan.js`). A Claude Code routine on Kelbo's own Claude plan ("Longlight
+  of `scan.js`). The **Scanner**, a Claude Code routine on Kelbo's own Claude plan ("Longlight
   weekly scan", Saturdays 8:55 am America/Regina) rewrites it from web
   searches and merges it, so no API key exists for it. When running as that
   routine: only touch `scan.json`, use real figures from sources found that
   run (list them in `sources`), never guess a number, and leave out anything
   that can't be confirmed.
 - The pre-market brief is `briefs.html` + `briefs.js` + `briefs.css`. The
-  **Pre-market brief** workflow (`.github/workflows/premarket-brief.yml`,
+  **Morning Writer** workflow (`.github/workflows/premarket-brief.yml`,
   weekdays at 12:17, 12:43 and 13:11 UTC = 6:17, 6:43 and 7:11 am
   America/Regina, three tries because GitHub starts timed runs late or
   drops them; the first writes the brief and the others stop at the
@@ -630,7 +631,7 @@ keep the Co-Authored-By trailer for Claude in each message.
   `BRIEF_NEW_MS`, 1 h; rechecked every `BRIEF_CHECK_MS`), drawing a clay
   dot on the nav Trading link and a "New" badge on the brief's card in
   style.css, plus the `.brief-new` pill by the date on briefs.html; it
-  blinks only in the no-preference block). The workflow commits as premarket-bot, then runs
+  blinks only in the no-preference block). The workflow commits as morning-writer, then runs
   `gh workflow run deploy.yml` (a GITHUB_TOKEN push starts no workflows by
   itself). `briefs.js` renders the Markdown itself (escape first, then
   headings, lists, bold, italics, https links, simple tables; then
@@ -641,7 +642,7 @@ keep the Co-Authored-By trailer for Claude in each message.
   by `#YYYY-MM-DD`. The page speaks in Kelbo's first person; it is a
   Trading project in `projects.json`, in `sitemap.xml` and `sw.js` `CORE`.
   Don't hand-edit the files in `briefs/`.
-- The after-close report card: the **After-close report card** workflow
+- The after-close report card: the **Grader** workflow
   (`.github/workflows/postmarket-recap.yml`, weekdays 22:07 UTC = 4:07 pm
   America/Regina, after the close all year, or by hand with a "redo
   today's grade" box) runs `.github/scripts/postmarket-recap.mjs`: plain
@@ -668,7 +669,7 @@ keep the Co-Authored-By trailer for Claude in each message.
   `report-cards/index.json` (`{latest, days, gap: {hit, partial, miss,
   unknown}, levels: {held, broke, untested, unknown}, months, counts}`
   (counts = cards per month, for the folds), re-added
-  from every month file each run). It commits as postmarket-bot and runs
+  from every month file each run). It commits as grader and runs
   `gh workflow run deploy.yml`. Never write report cards into `briefs/`.
   `briefs.html` shows the two runs as tabs (`[data-tab]` buttons,
   `role="tablist"`, arrow keys; `showTab`/`pickTab`): Pre-market
@@ -682,13 +683,21 @@ keep the Co-Authored-By trailer for Claude in each message.
   Everything goes on the page as text nodes; the
   `.grade--*` pills are purple (right/held), purple outline (partly), clay
   (wrong/broke) and dashed grey (not reached/couldn't confirm).
-- The three one-call robots share `.github/scripts/claude.mjs` (`askClaude`:
+- Robot names (use them when talking to Kelbo): **Morning Writer** =
+  pre-market brief (`premarket-brief.yml`, commits as morning-writer),
+  **Grader** = after-close report card (`postmarket-recap.yml`, grader),
+  **Coach** = brief lessons (`brief-lessons.yml`, coach), **Devlog
+  Writer** = devlog drafts (`devlog-draft.yml`, devlog-writer), **Release
+  Writer** = release lines (`release-lines.yml`, release-writer),
+  **Scanner** = the "Longlight weekly scan" routine. Each workflow's
+  `name:` is "<Name> (<what it does>)".
+- The three one-call robots (Coach, Devlog Writer, Release Writer) share `.github/scripts/claude.mjs` (`askClaude`:
   fetch to the Messages API, `output_config.effort`, a cache marker on the
   system block plus top-level `cache_control`, 4 tries on network errors,
   429 and 5xx; `logCost` from `PRICES`; `readJson` after a marker line;
   `setOutput`; `DRY_RUN`). No tools, no web search. Each workflow has a
   `workflow_dispatch` "dry run" box (`DRY_RUN=1`: print, write nothing).
-- Brief lessons: `brief-lessons.yml` (Saturdays 15:37 UTC) runs
+- Coach (brief lessons): `brief-lessons.yml` (Saturdays 15:37 UTC) runs
   `brief-lessons.mjs` (`claude-opus-5-5`, effort high, one call): the last
   `WINDOW_DAYS` (28) of report cards from the month files, the briefs they
   graded minus Sources, `report-cards/index.json` totals and the previous
@@ -697,31 +706,31 @@ keep the Co-Authored-By trailer for Claude in each message.
   `evidence {count, dates}` with dates that are real cards, no `$` prices,
   at most `MAX_ACTIVE` 5 active) and writes `lessons/latest.json`
   (`{updated, window: {from, to}, cards, lessons}`) plus
-  `lessons/YYYY-MM-DD.json`; commits as lessons-bot, then runs deploy.yml.
+  `lessons/YYYY-MM-DD.json`; commits as coach, then runs deploy.yml.
   Never in `briefs/` or `report-cards/`. `premarket-brief.mjs` adds the
   active lessons to the USER message (not SYSTEM, to keep the cache) while
   `updated` is under 14 days old, and logs "Lessons used: N".
   `setUpLessons` in briefs.js fills the closed `.lessons` fold
   (`[data-lessons]`, "What the brief is working on") on the After close
   tab, text nodes only, hidden without the file or active lessons.
-- Devlog drafter: `devlog-draft.yml` (Sundays 17:23 UTC, `contents` and
+- Devlog Writer: `devlog-draft.yml` (Sundays 17:23 UTC, `contents` and
   `pull-requests: write`) runs `devlog-draft.mjs` (`claude-sonnet-5-5`,
   effort high): last 7 days of merged PRs (body cut to `BODY_CHARS`) and
   releases for each projects.json game with a GitHub `code` link, plus the
   5 newest devlog posts. No activity: no call. Validates 0..4 posts, one
   per game, `game` an exact title with activity, no PR numbers or GitHub
   logins, date = run date (America/Regina); prepends them to devlog.json,
-  runs check-site, pushes `devlog-draft/YYYY-MM-DD` as devlog-bot and
+  runs check-site, pushes `devlog-draft/YYYY-MM-DD` as devlog-writer and
   opens a PR "Devlog draft for the week of ..." with source links.
   **Never merge that PR yourself**: Kelbo reviews it. Needs the repo
   setting "Allow GitHub Actions to create and approve pull requests".
-- Release lines: `release-lines.yml` (cron `53 */6 * * *`) runs
+- Release Writer: `release-lines.yml` (cron `53 */6 * * *`) runs
   `release-lines.mjs` (`claude-sonnet-5-5`, effort high): each game's
   latest release; keys `<repo>@<tag>` missing from `release-lines.json`
   go to Claude in one batched call (no new ones: no call). Lines are ≤ 90
   characters, no version number; stored as `{line, title, at}`, existing
   entries never overwritten (Kelbo may hand-edit them; broken JSON stops
-  the script). Commits as release-lines-bot, then runs deploy.yml.
+  the script). Commits as release-writer, then runs deploy.yml.
   `sync-releases.mjs` uses that `line` for the exact repo@tag as `latest`,
   else the cleaned release title (missing/broken file = old behaviour).
   `check-site.mjs` validates `lessons/latest.json` and
