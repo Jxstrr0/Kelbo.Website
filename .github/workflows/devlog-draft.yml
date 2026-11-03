@@ -19,14 +19,21 @@
 # without opening a pull request. To stop it, open it on the Actions tab,
 # tap "..." and choose "Disable workflow".
 #
+# It asks Claude through the Batches API (half price) and waits for the
+# answer, usually within an hour. If that takes over 5 h 20, it saves its
+# place in .github/batches/devlog-writer.json (committed to main, never
+# published) and the 5:13 pm run picks the same answer up, so nothing is
+# paid twice. That second run stops at once if today's draft already exists.
+#
 # Needs Settings > Actions > General > "Allow GitHub Actions to create and
 # approve pull requests" switched on, or step 3 fails.
 name: Devlog Writer (weekly devlog draft)
 
-# 17:23 UTC = 11:23 am Saskatoon on Sundays.
+# 17:23 UTC = 11:23 am Saskatoon on Sundays; 23:13 UTC = 5:13 pm pickup.
 on:
   schedule:
     - cron: "23 17 * * 0"
+    - cron: "13 23 * * 0"
   workflow_dispatch:
     inputs:
       dry_run:
@@ -46,7 +53,7 @@ jobs:
   draft:
     name: Draft this week's posts
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 350 # a batch can take a while; the script stops waiting at 320
     steps:
       - uses: actions/checkout@v7
 
@@ -54,13 +61,40 @@ jobs:
         with:
           node-version: 22
 
+      # The 5:13 pm try: if today's draft branch is already there and no
+      # batch is waiting, there's nothing to do (and nothing to pay).
+      - name: Already drafted today?
+        id: done
+        run: |
+          branch="devlog-draft/$(TZ=America/Regina date +%F)"
+          if [ ! -f .github/batches/devlog-writer.json ] && git ls-remote --exit-code --heads origin "$branch" > /dev/null; then
+            echo "$branch already exists and no batch is waiting. Nothing to do."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Collect the week and draft posts
         id: draft
+        if: steps.done.outputs.skip != 'true'
         run: node .github/scripts/devlog-draft.mjs
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GITHUB_TOKEN: ${{ github.token }}
           DRY_RUN: ${{ inputs.dry_run == true && '1' || '' }}
+
+      # Saves (or clears) the batch's place on main, so the next run can
+      # pick it up. Only this file goes to main; the drafts never do.
+      - name: Save the batch's place
+        if: steps.done.outputs.skip != 'true' && inputs.dry_run != true
+        run: |
+          git config user.name "devlog-writer"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          mkdir -p .github/batches
+          git add -A .github/batches
+          if git diff --cached --quiet; then exit 0; fi
+          if [ -f .github/batches/devlog-writer.json ]; then msg="devlog-writer: batch still waiting, saved for the next run"; else msg="devlog-writer: batch picked up"; fi
+          git commit -m "$msg" -- .github/batches
+          git pull --rebase --autostash
+          git push
 
       - name: Check the site with the drafts in it
         if: steps.draft.outputs.posts > 0
