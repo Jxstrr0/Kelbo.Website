@@ -2,7 +2,9 @@
 // ONE CALL TO CLAUDE (shared by the weekly robots)
 // ---------------------------------------------------------------------
 // brief-lessons.mjs, devlog-draft.mjs and release-lines.mjs each ask
-// Claude one question with no web search. This file holds the parts they
+// Claude one question with no web search (askClaude). The two journal
+// robots (journal-forecast.mjs, journal-grade.mjs) use askClaudeWeb at the
+// bottom, with web search on. This file holds the parts they all
 // share, copied from the brief's script (premarket-brief.mjs):
 //   - plain Node fetch to the Anthropic Messages API (no packages),
 //   - output_config.effort,
@@ -123,3 +125,144 @@ export function setOutput(name, value) {
 
 // DRY_RUN=1: print what would be saved and change nothing.
 export const DRY_RUN = process.env.DRY_RUN === "1";
+
+/* =====================================================================
+   WITH WEB SEARCH (the Forecaster and the Scorekeeper)
+   ---------------------------------------------------------------------
+   The same call, with Claude's server-side web search and page reads
+   turned on, like the brief and the Grader use. Anthropic runs the
+   searches, so there's still no other key. A long search can come back
+   with "pause_turn"; the loop sends it back to carry on, up to 5 times.
+   Searches cost US$10 per 1,000 on top of the tokens.
+   ===================================================================== */
+const SEARCH_PRICE = 0.01; // US$ per web search
+
+// One request, with the same 4 tries as askClaude.
+async function send(body) {
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) {
+    throw new Error("Missing ANTHROPIC_API_KEY. Add it under repo Settings > Secrets and variables > Actions.");
+  }
+  for (let attempt = 1; ; attempt++) {
+    let res;
+    let why;
+    try {
+      res = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "content-type": "application/json", "x-api-key": apiKey, "anthropic-version": "2023-06-01" },
+        body: JSON.stringify(body),
+      });
+      if (res.status === 429 || res.status >= 500) why = `API returned ${res.status}`;
+    } catch (err) {
+      why = `Couldn't reach the API (${err.message})`;
+    }
+    if (why && attempt < 4) {
+      const wait = 15000 * attempt;
+      console.log(`${why}, retrying in ${wait / 1000}s`);
+      await new Promise((r) => setTimeout(r, wait));
+      continue;
+    }
+    if (!res) throw new Error(why);
+    if (!res.ok) throw new Error(`API error ${res.status}: ${await res.text()}`);
+    return res.json();
+  }
+}
+
+// Asks Claude with search on. Returns { text, blocks, usage }; usage adds
+// up every round: input, output, cacheRead, cacheWrite, searches, fetches.
+// If check(text) says the answer isn't usable, "fix" is sent once as a
+// follow-up with search off, asking for the same facts in the format.
+export async function askClaudeWeb({ model, system, user, maxTokens = 32000, effort = "high", maxSearches, maxFetches, check, fix }) {
+  const base = {
+    model,
+    // max_tokens covers thinking as well as the answer. It's only a ceiling.
+    max_tokens: maxTokens,
+    output_config: { effort },
+    system: [{ type: "text", text: system, cache_control: { type: "ephemeral" } }],
+    cache_control: { type: "ephemeral" },
+  };
+  const tools = [
+    { type: "web_search_20260209", name: "web_search", max_uses: maxSearches },
+    { type: "web_fetch_20260209", name: "web_fetch", max_uses: maxFetches },
+  ];
+  const usage = { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, searches: 0, fetches: 0 };
+  const add = (u = {}) => {
+    usage.input += u.input_tokens ?? 0;
+    usage.output += u.output_tokens ?? 0;
+    usage.cacheRead += u.cache_read_input_tokens ?? 0;
+    usage.cacheWrite += u.cache_creation_input_tokens ?? 0;
+    usage.searches += u.server_tool_use?.web_search_requests ?? 0;
+    usage.fetches += u.server_tool_use?.web_fetch_requests ?? 0;
+  };
+  const textOf = (list) => list.filter((b) => b.type === "text").map((b) => b.text).join("");
+
+  const messages = [{ role: "user", content: user }];
+  const blocks = [];
+  for (let i = 0; i < 6; i++) {
+    const data = await send({ ...base, tools, messages });
+    blocks.push(...(data.content || []));
+    add(data.usage);
+    if (data.stop_reason === "max_tokens") console.warn("Hit max_tokens: the answer may be cut short.");
+    if (data.stop_reason !== "pause_turn") break;
+    messages.push({ role: "assistant", content: data.content });
+  }
+  let text = textOf(blocks);
+  if (check && fix && !check(text)) {
+    console.warn("The answer wasn't in the expected format; asking once more with search off.");
+    const data = await send({
+      ...base,
+      messages: [messages[0], { role: "assistant", content: text || "(no answer)" }, { role: "user", content: fix }],
+    });
+    add(data.usage);
+    text = textOf(data.content || []);
+  }
+  return { text, blocks, usage };
+}
+
+// Prints the tokens, searches and estimated cost, and pins the cost note.
+export function logWebCost(model, u, maxSearches, maxFetches) {
+  const p = PRICES[model];
+  console.log(`Tokens: ${u.input} in, ${u.cacheRead} cache reads, ${u.cacheWrite} cache writes, ${u.output} out`);
+  console.log(`Searches: ${u.searches} of ${maxSearches}; pages read: ${u.fetches} of ${maxFetches}`);
+  const cost = (u.input * p.input + u.output * p.output + u.cacheRead * p.cacheRead + u.cacheWrite * p.cacheWrite) / 1e6 +
+    u.searches * SEARCH_PRICE;
+  console.log(`Estimated cost: US$${cost.toFixed(2)} (${model})`);
+  costNote(cost, `${model}, ${u.searches} searches, ${u.fetches} pages read${DRY_RUN ? ", dry run" : ""}`);
+}
+
+// Keeps only the sources whose links really came back from this run's
+// searches and page reads, so a made-up link never reaches the site.
+// list is [{ title, url }] from Claude's answer; at most `max` are kept.
+export function seenSources(blocks, list, max = 12) {
+  const norm = (u) => {
+    try {
+      const x = new URL(u);
+      return (x.host.replace(/^www\./, "") + x.pathname.replace(/\/+$/, "") + x.search).toLowerCase();
+    } catch {
+      return "";
+    }
+  };
+  const seen = new Set();
+  for (const block of blocks) {
+    if (block.type === "text") {
+      for (const c of block.citations ?? []) if (c.url) seen.add(norm(c.url));
+      continue;
+    }
+    for (const m of JSON.stringify(block).matchAll(/https?:\/\/[^\s"'<>\\)\]]+/g)) seen.add(norm(m[0]));
+  }
+  seen.delete("");
+  const kept = [];
+  for (const s of Array.isArray(list) ? list : []) {
+    const url = typeof s?.url === "string" ? s.url.trim() : "";
+    if (!/^https:\/\//.test(url) || url.length > 500) continue;
+    if (!seen.has(norm(url))) {
+      console.warn(`Dropped a source this run never saw: ${url}`);
+      continue;
+    }
+    if (kept.some((k) => k.url === url)) continue;
+    const title = typeof s.title === "string" && s.title.trim() ? s.title.replace(/\s+/g, " ").trim().slice(0, 140) : url;
+    kept.push({ title, url });
+    if (kept.length >= max) break;
+  }
+  return kept;
+}

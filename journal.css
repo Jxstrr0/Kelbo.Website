@@ -667,3 +667,15 @@
 .scan {
   max-width: 44rem;
 }
+
+/* ---------- Sources (robot entries) ---------- */
+.entry__sources {
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 0.9375rem;
+  overflow-wrap: anywhere;
+}
+
+.entry__sources li + li {
+  margin-top: 0.25rem;
+}
