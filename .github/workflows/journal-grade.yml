@@ -1,0 +1,88 @@
+# Grades the journal's weekly calls: the Scorekeeper.
+#
+# Every Friday after the close, this:
+#   1. runs .github/scripts/journal-grade.mjs, which finds the newest
+#      journal entry whose "gradeBy" day has closed and still has ungraded
+#      calls, asks Claude (the smaller model, effort high, with web
+#      search) what really happened, and fills in each call's grade and
+#      result, then the recap, the AI coach note and the lesson. A call
+#      whose prices can't be confirmed stays ungraded. Nothing waiting:
+#      no call.
+#   2. commits journal.json to main,
+#   3. starts the "Deploy site" run so the record updates.
+#
+# It uses the ANTHROPIC_API_KEY repository secret. "Run workflow" on the
+# Actions tab runs it now; tick "dry run" to see the grades in the log
+# without saving them. To stop it, open it on the Actions tab, tap "..."
+# and choose "Disable workflow".
+name: Scorekeeper (weekly journal grades)
+
+# Two tries in case GitHub starts one late or drops it: 4:23 and 5:47 pm
+# Friday, Saskatoon time (22:23 and 23:47 UTC), after the 4:00 pm New York
+# close in summer and winter. The second finds nothing left to grade and
+# stops before calling Claude.
+on:
+  schedule:
+    - cron: "23 22 * * 5"
+    - cron: "47 23 * * 5"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run: print the grades in the log, save nothing"
+        type: boolean
+        default: false
+      force:
+        description: "Grade the newest finished week again (replaces its grades)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write # to commit journal.json
+  actions: write # to start the Deploy site run
+
+concurrency:
+  group: journal-grade
+  cancel-in-progress: false
+
+jobs:
+  grade:
+    name: Grade the week's calls
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      - name: Look up the week and grade the calls
+        id: robot
+        run: node .github/scripts/journal-grade.mjs
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          DRY_RUN: ${{ inputs.dry_run == true && '1' || '' }}
+          FORCE: ${{ inputs.force == true && '1' || '' }}
+
+      - name: Commit them to main
+        id: commit
+        if: steps.robot.outputs.written == 'true'
+        run: |
+          git config user.name "scorekeeper"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add journal.json
+          if git diff --cached --quiet; then
+            echo "Nothing new to commit."
+            echo "pushed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git commit -m "Journal grades $(TZ=America/Regina date +%F)"
+          git pull --rebase
+          git push
+          echo "pushed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Put the site live
+        if: steps.commit.outputs.pushed == 'true'
+        run: gh workflow run deploy.yml --ref main
+        env:
+          GH_TOKEN: ${{ github.token }}

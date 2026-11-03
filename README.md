@@ -807,6 +807,32 @@ is optional except `date`.
 Only post what you're happy for anyone to read. The site is public, so
 percentages are safer than dollar amounts or account sizes.
 
+### The weekly robots: Forecaster and Scorekeeper
+
+Two robots now write and grade the weekly forecast for you, using the
+same `ANTHROPIC_API_KEY` secret as the brief:
+
+- **Forecaster** (Sunday night, 7:47 pm, with a back-up try at 9:13 pm):
+  Claude Opus 5.5 on high effort, with web search, writes "Forecast for the
+  week of ..." with the TLDR, view, sector board, 4 to 6 calls (each with a
+  "wrong if"), scenarios, levels, schedule and plan, and puts it at the top
+  of `journal.json`. Its note says it was written by the robot, and a
+  "Sources" fold lists the pages its numbers came from. If you've already
+  written an entry for that week, it leaves the week alone. About US$1 to
+  US$2 a run.
+- **Scorekeeper** (Friday after the close, 4:23 pm, back-up at 5:47 pm):
+  Claude Sonnet 5.5 on high effort, with web search, grades each call hit,
+  partial or miss with a one-line "What happened", then writes the recap,
+  the AI coach note and the lesson. It grades your own hand-written
+  entries too, if their `gradeBy` day has passed and a call is still
+  `null`. It never changes a grade that's already there, and a call it
+  can't confirm stays ungraded rather than guessed. About 15 to 40 cents
+  a run.
+
+Both have a **Run workflow** button on the Actions tab with a "dry run"
+box (shows the result in the log and saves nothing) and a box to redo
+the week. You can still edit anything they wrote in `journal.json`.
+
 ### Options trades
 
 Your options trades live in `options.json`, not in the entries. The page
@@ -1007,15 +1033,22 @@ you can see how good the calls really are over time.
 | **Coach** | Turns the report cards into lessons for the Morning Writer (`brief-lessons.yml`) | Saturdays 9:37 am |
 | **Devlog Writer** | Drafts devlog posts and opens a pull request for you (`devlog-draft.yml`) | Sundays 11:23 am |
 | **Release Writer** | Writes the player-friendly "What's new" line for game releases (`release-lines.yml`) | Every 6 hours |
+| **Forecaster** | Writes the journal's forecast for the coming week (`journal-forecast.yml`) | Sundays 7:47 pm |
+| **Scorekeeper** | Grades that week's journal calls after the close (`journal-grade.yml`) | Fridays 4:23 pm |
 | **Scanner** | The weekly market scan on Agent Fleet (a Claude routine on your own plan, not a workflow) | Saturdays 8:55 am |
 
 On the Actions tab each workflow shows as its name with what it does in
 brackets, and its commits are signed with its name (morning-writer,
-grader, coach, devlog-writer, release-writer).
+grader, coach, devlog-writer, release-writer, forecaster, scorekeeper).
+
+The **Morning Writer starter** is a Claude routine (weekdays 6:08 am) that
+presses "Run workflow" on the Morning Writer for you, because GitHub's own
+timed starts are often late. If the brief is already there, the extra start
+stops before calling Claude, so it costs nothing.
 
 **What they cost:** every run that calls Claude pins a "Cost" note to its
 run page on the Actions tab (for example "US$0.90 · 25 searches, 8 pages
-read"). Those notes feed Kelbo's private Robot Cost Log on claude.ai,
+read"). Those notes feed Kelbo's private API Call Log ($) on claude.ai,
 which a daily routine ("Robot cost log updater", 5:47 pm) fills in.
 The figures are estimates at list prices; the real bill is in the
 Anthropic console under Usage and Cost.
