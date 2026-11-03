@@ -694,9 +694,17 @@ keep the Co-Authored-By trailer for Claude in each message.
 - The three one-call robots (Coach, Devlog Writer, Release Writer) share `.github/scripts/claude.mjs` (`askClaude`:
   fetch to the Messages API, `output_config.effort`, a cache marker on the
   system block plus top-level `cache_control`, 4 tries on network errors,
-  429 and 5xx; `logCost` from `PRICES`; `readJson` after a marker line;
+  429 and 5xx; `logCost` from `PRICES`, which also calls `costNote`;
+  `readJson` after a marker line;
   `setOutput`; `DRY_RUN`). No tools, no web search. Each workflow has a
   `workflow_dispatch` "dry run" box (`DRY_RUN=1`: print, write nothing).
+- Cost notes: `costNote` (claude.mjs; also called by premarket-brief.mjs
+  and postmarket-recap.mjs) prints `::notice title=Cost::US$0.90 · ...`
+  in Actions, an annotation readable without a login via
+  `/check-runs/<job id>/annotations`. The "Robot cost log updater"
+  routine (daily 17:47 America/Regina) copies them into Kelbo's private
+  Robot Cost Log artifact (doc ids `gh-<run id>`). Keep the `US$<n>`
+  start of the note; the routine reads it.
 - Coach (brief lessons): `brief-lessons.yml` (Saturdays 15:37 UTC) runs
   `brief-lessons.mjs` (`claude-opus-5-5`, effort high, one call): the last
   `WINDOW_DAYS` (28) of report cards from the month files, the briefs they
