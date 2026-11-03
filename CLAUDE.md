@@ -734,8 +734,8 @@ keep the Co-Authored-By trailer for Claude in each message.
   with `force: false`, because GitHub's timed starts are often late or
   dropped; the workflow's own crons stay as back-ups, and every extra
   start stops at the "already exists" check before any API call.
-- Coach (brief lessons): `brief-lessons.yml` (Saturdays 15:37 UTC, plus
-  a 21:13 UTC pickup run that stops at once if today's lessons exist and
+- Coach (brief lessons): `brief-lessons.yml` (Sundays 17:47 UTC = 11:47 am,
+  beside the Devlog Writer and Scorekeeper, plus a 23:23 UTC pickup run that stops at once if today's lessons exist and
   no batch is saved) runs `brief-lessons.mjs` (`claude-opus-5-5`, effort
   high, one batched call): the last
   `WINDOW_DAYS` (28) of report cards from the month files, the briefs they

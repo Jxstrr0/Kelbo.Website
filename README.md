@@ -1040,7 +1040,7 @@ you can see how good the calls really are over time.
 |---|---|---|
 | **Morning Writer** | Writes the pre-market brief (`premarket-brief.yml`) | Weekdays 6:17 am |
 | **Grader** | Grades that brief after the close (`postmarket-recap.yml`) | Weekdays 4:07 pm |
-| **Coach** | Turns the report cards into lessons for the Morning Writer (`brief-lessons.yml`) | Saturdays 9:37 am (batch) |
+| **Coach** | Turns the report cards into lessons for the Morning Writer (`brief-lessons.yml`) | Sundays 11:47 am (batch) |
 | **Devlog Writer** | Drafts devlog posts and opens a pull request for you (`devlog-draft.yml`) | Sundays 11:23 am (batch) |
 | **Release Writer** | Writes the player-friendly "What's new" line for game releases (`release-lines.yml`) | Every 6 hours |
 | **Forecaster** | Writes the journal's forecast for the coming week (`journal-forecast.yml`) | Sundays 7:47 pm (batch) |
@@ -1079,8 +1079,9 @@ back on).
 
 ### The Coach (brief lessons, "What the brief is working on")
 
-- **When:** Saturdays at 9:37 am Saskatoon time (`brief-lessons.yml`), as
-  a half-price batch; a 3:13 pm try picks it up if it was slow.
+- **When:** Sundays at 11:47 am Saskatoon time (`brief-lessons.yml`), next
+  to the Devlog Writer and the Scorekeeper, as a half-price batch; a
+  5:23 pm try picks it up if it was slow. Monday's brief uses the lessons.
 - **What it does:** reads every report card from the last 28 days, the
   briefs they graded, the running score and last week's lessons, and asks
   Opus 5.5 for 3 to 5 lessons about *how the brief works*: gap sizes called
@@ -1100,7 +1101,7 @@ back on).
 - **Saved in:** `lessons/latest.json` plus `lessons/2026-11-07.json` for
   each week.
 - **Fix a bad lesson:** edit or delete it in `lessons/latest.json` (or set
-  its `"status"` to `"retired"`). Next Saturday's run starts from your
+  its `"status"` to `"retired"`). Next Sunday's run starts from your
   version.
 
 ### The Devlog Writer (weekly devlog drafts)

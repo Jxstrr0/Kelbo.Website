@@ -1,6 +1,6 @@
 # Weekly lessons for the pre-market brief from its report cards.
 #
-# Every Saturday morning, this:
+# Every Sunday around noon, this:
 #   1. runs .github/scripts/brief-lessons.mjs, which reads the last 28 days
 #      of report cards and the briefs they graded, and asks Claude (one
 #      call, no web search) for 3 to 5 lessons about how the brief works:
@@ -16,15 +16,17 @@
 # and choose "Disable workflow".
 name: Coach (brief lessons)
 
-# 15:37 UTC = 9:37 am Saskatoon, after the 8:55 am weekly scan.
-# It asks Claude through the Batches API (half price) and waits for the
-# answer, usually within an hour. The 3:13 pm try picks up a batch the
-# first had to leave waiting (.github/batches/coach.json), or stops before
-# calling Claude if today's lessons are already written.
+# 17:47 UTC = 11:47 am Sunday, Saskatoon time, beside the Devlog Writer and
+# the Scorekeeper, so the week's batches go out together. The lessons are
+# ready long before Monday's brief reads them. It asks Claude through the
+# Batches API (half price) and waits for the answer, usually within an
+# hour. The 5:23 pm try picks up a batch the first had to leave waiting
+# (.github/batches/coach.json), runs fresh if the first start was dropped,
+# or stops before calling Claude if today's lessons are already written.
 on:
   schedule:
-    - cron: "37 15 * * 6"
-    - cron: "13 21 * * 6" # 3:13 pm: picks up a batch that's still waiting
+    - cron: "47 17 * * 0"
+    - cron: "23 23 * * 0" # 5:23 pm: picks up a batch that's still waiting
   workflow_dispatch:
     inputs:
       dry_run:
