@@ -172,6 +172,50 @@ if (devlog !== undefined) {
 }
 
 // ---------------------------------------------------------------------
+// 4c. lessons/latest.json: the brief's weekly lessons (brief-lessons.mjs).
+//     Missing is fine: the robot writes it once there are enough report cards.
+// ---------------------------------------------------------------------
+const YMD = /^\d{4}-\d{2}-\d{2}$/;
+const lessonFile = json["lessons/latest.json"];
+if (lessonFile === undefined) {
+  if (!exists("lessons/latest.json")) warn("lessons/latest.json", "No lessons yet. The Brief lessons robot writes them on Saturdays once there are 5 graded report cards; until then the After close tab just doesn't show them.");
+} else if (!lessonFile || typeof lessonFile !== "object") {
+  error("lessons/latest.json", "Should be an object ({ ... }).");
+} else {
+  if (typeof lessonFile.updated !== "string" || isNaN(Date.parse(lessonFile.updated))) error("lessons/latest.json", '"updated" should be a date and time.');
+  if (!lessonFile.window || !YMD.test(lessonFile.window.from || "") || !YMD.test(lessonFile.window.to || "")) error("lessons/latest.json", '"window" needs "from" and "to" dates like 2026-11-07.');
+  if (!Number.isFinite(lessonFile.cards)) error("lessons/latest.json", '"cards" should be a number.');
+  if (!Array.isArray(lessonFile.lessons)) error("lessons/latest.json", 'Needs a "lessons" list.');
+  else lessonFile.lessons.forEach((l, i) => {
+    const name = `Lesson #${i + 1}`;
+    if (!l || typeof l.text !== "string" || !l.text.trim()) error("lessons/latest.json", `${name} has no "text".`);
+    if (!l || !["new", "kept", "retired"].includes(l.status)) error("lessons/latest.json", `${name}: "status" should be new, kept or retired.`);
+    if (!l || !l.evidence || typeof l.evidence.count !== "string" || !Array.isArray(l.evidence.dates) || !l.evidence.dates.every((d) => YMD.test(d))) {
+      error("lessons/latest.json", `${name}: "evidence" needs a "count" and a list of "dates" like 2026-11-07.`);
+    }
+  });
+}
+
+// ---------------------------------------------------------------------
+// 4d. release-lines.json: player-friendly "What's new" lines for game
+//     releases (release-lines.mjs), keyed "<repo>@<tag>".
+// ---------------------------------------------------------------------
+const releaseLines = json["release-lines.json"];
+if (releaseLines === undefined) {
+  if (!exists("release-lines.json")) warn("release-lines.json", "Missing. The cards will use the release titles until the Release lines robot writes it.");
+} else if (!releaseLines || typeof releaseLines !== "object" || Array.isArray(releaseLines)) {
+  error("release-lines.json", "Should be an object ({ ... }), one entry per release.");
+} else {
+  for (const [key, entry] of Object.entries(releaseLines)) {
+    if (!/^[^@\s]+@\S+$/.test(key)) error("release-lines.json", `"${key}" should look like "350Chev@v1.2.0" (the repo, @, the release tag).`);
+    if (!entry || typeof entry.line !== "string" || !entry.line.trim()) { error("release-lines.json", `"${key}" has no "line".`); continue; }
+    if (entry.line.length > 90) warn("release-lines.json", `"${key}": the line is ${entry.line.length} characters, over 90, so it may wrap on phones.`);
+    if (typeof entry.title !== "string") error("release-lines.json", `"${key}": "title" (the original release title) should be text.`);
+    if (typeof entry.at !== "string" || isNaN(Date.parse(entry.at))) error("release-lines.json", `"${key}": "at" should be a date and time.`);
+  }
+}
+
+// ---------------------------------------------------------------------
 // 5. Every local link and picture in the HTML pages must exist.
 //    (Web addresses like https://... are skipped; this only checks
 //    files inside the site.)
