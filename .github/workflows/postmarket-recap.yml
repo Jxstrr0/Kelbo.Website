@@ -16,7 +16,7 @@
 # workflow" on the Actions tab runs it right now; tick the box to grade
 # today again. To stop it, open it on the Actions tab, tap "..." and
 # choose "Disable workflow".
-name: After-close report card
+name: Grader (after-close report card)
 
 # GitHub starts timed runs late now and then, or drops one, so there are
 # three tries: 4:07, 4:37 and 5:13 pm Saskatoon time (22:07, 22:37 and
@@ -64,7 +64,7 @@ jobs:
       - name: Commit it to main
         id: commit
         run: |
-          git config user.name "postmarket-bot"
+          git config user.name "grader"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           mkdir -p report-cards
           git add report-cards

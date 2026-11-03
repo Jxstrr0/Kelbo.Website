@@ -37,11 +37,11 @@ from their releases, then publishes the files as they are (see
 | `scan.json` | **The weekly scan.** Rewritten every Saturday by a Claude routine |
 | `scan.js` | Shows the weekly scan on the Agent Fleet page |
 | `briefs.html` | **The pre-market brief** page: the latest brief, where the US trading day is in Saskatoon time, and the archive |
-| `briefs/` | The briefs themselves, one `YYYY-MM-DD.md` per weekday, plus `index.json` (the list of months the page reads), `months/` (one small list per month, e.g. `months/2026-11.json`) and `latest.json` (the newest one's time, for the alert dot). Written by the robot below, so you never need to edit them |
+| `briefs/` | The briefs themselves, one `YYYY-MM-DD.md` per weekday, plus `index.json` (the list of months the page reads), `months/` (one small list per month, e.g. `months/2026-11.json`) and `latest.json` (the newest one's time, for the alert dot). Written by the Morning Writer below, so you never need to edit them |
 | `briefs.js`, `briefs.css` | Show the Pre-market and After close tabs, each with its archive |
-| `report-cards/` | The after-close grades of each brief: one `YYYY-MM.json` per month and `index.json` (the running score). Written by the report card robot below, so you never need to edit them |
-| `lessons/` | **What the brief is working on**: `latest.json` (this week's lessons) plus a dated copy for each week. Written by the Brief lessons robot below |
-| `release-lines.json` | The short, player-friendly "What's new" line for each game release. Written by the Release lines robot below; you can fix any line by hand |
+| `report-cards/` | The after-close grades of each brief: one `YYYY-MM.json` per month and `index.json` (the running score). Written by the Grader below, so you never need to edit them |
+| `lessons/` | **What the brief is working on**: `latest.json` (this week's lessons) plus a dated copy for each week. Written by the Coach below |
+| `release-lines.json` | The short, player-friendly "What's new" line for each game release. Written by the Release Writer below; you can fix any line by hand |
 | `journal.html` | The AI Trading Journal page |
 | `journal.json` | **Your journal entries.** Edit this to add an update |
 | `options.json` | **Your options trades.** Edit this to log a trade |
@@ -49,8 +49,8 @@ from their releases, then publishes the files as they are (see
 | `tools/prediction-tracker/` | The Prediction Tracker tool, parked for now (not linked from the site) |
 | `404.html` | The "page not found" screen GitHub shows for any address that doesn't exist |
 | `.nojekyll` | Tells GitHub Pages to serve the files as-is. Leave it alone |
-| `.github/workflows/` | The robots: `site-check.yml` (checks every pull request), `deploy.yml` (checks again, then puts the site live), `premarket-brief.yml` (writes the morning brief, below), `postmarket-recap.yml` (grades it after the close, below), `brief-lessons.yml`, `devlog-draft.yml` and `release-lines.yml` (the weekly and release robots, below) |
-| `.github/scripts/` | What they run: `check-site.mjs` (the mistake finder), `sync-releases.mjs` (fills in game versions from their releases), `make-game-pages.mjs` (makes each game's own page, below), `premarket-brief.mjs` (asks Claude for the brief), `postmarket-recap.mjs` (asks Claude how the brief did), `brief-lessons.mjs`, `devlog-draft.mjs`, `release-lines.mjs` (the three robots below) and `claude.mjs` (the one-call-to-Claude code those three share) |
+| `.github/workflows/` | The robots: `site-check.yml` (checks every pull request), `deploy.yml` (checks again, then puts the site live), `premarket-brief.yml` (the Morning Writer), `postmarket-recap.yml` (the Grader), `brief-lessons.yml` (the Coach), `devlog-draft.yml` (the Devlog Writer) and `release-lines.yml` (the Release Writer), all below |
+| `.github/scripts/` | What they run: `check-site.mjs` (the mistake finder), `sync-releases.mjs` (fills in game versions from their releases), `make-game-pages.mjs` (makes each game's own page, below), `premarket-brief.mjs` (asks Claude for the brief), `postmarket-recap.mjs` (asks Claude how the brief did), `brief-lessons.mjs` (Coach), `devlog-draft.mjs` (Devlog Writer), `release-lines.mjs` (Release Writer) and `claude.mjs` (the one-call-to-Claude code those three share) |
 
 ## Editing on your phone
 
@@ -883,7 +883,7 @@ and `briefs/months/2026-11.json` holds one month's headlines. On the page,
 Past briefs folds by year, then month; a month's list only downloads when
 you open it.
 
-- **Who writes it:** the **Pre-market brief** robot
+- **Who writes it:** the **Morning Writer**
   (`.github/workflows/premarket-brief.yml`) runs every weekday morning,
   aiming for 6:17 am Saskatoon time, with back-up tries at 6:43 and 7:11
   in case GitHub starts it late or skips it. The first try that runs
@@ -896,7 +896,7 @@ you open it.
   The workflow only ever reads it from there. Never paste the key into a
   file. If it ever leaks, make a new key on the Anthropic console and
   replace the secret.
-- **Run it now:** Actions tab → Pre-market brief → Run workflow. It skips
+- **Run it now:** Actions tab → Morning Writer (pre-market brief) → Run workflow. It skips
   the day if today's brief already exists; tick the box to rewrite it.
 - **If it fails:** the run shows a red ❌ with the reason. "Missing
   ANTHROPIC_API_KEY" means the secret is gone or misnamed. An "API error
@@ -945,10 +945,10 @@ you open it.
 
 ## The after-close report card
 
-After the market closes, a second robot grades that morning's brief, so
+After the market closes, the **Grader** grades that morning's brief, so
 you can see how good the calls really are over time.
 
-- **Who runs it:** the **After-close report card** robot
+- **Who runs it:** the **Grader**
   (`.github/workflows/postmarket-recap.yml`), every weekday at 4:07 pm
   Saskatoon time (back-up tries at 4:37 and 5:13 if GitHub is late),
   after the 4:00 pm ET close in summer and winter. It runs
@@ -990,7 +990,7 @@ you can see how good the calls really are over time.
   top of the script), up to 15 web searches (`MAX_SEARCHES`) and 15 page
   reads (`MAX_FETCHES`). It uses the same `ANTHROPIC_API_KEY` secret as the
   brief. The last line of each run's log is "Estimated cost: US$0.xx".
-- **Run it now:** Actions tab → After-close report card → Run workflow
+- **Run it now:** Actions tab → Grader (after-close report card) → Run workflow
   (on a phone, switch to the desktop site if the button doesn't show).
   Tick "Redo today's grade" to grade today again. Before the close it just
   says the market hasn't closed yet.
@@ -998,7 +998,22 @@ you can see how good the calls really are over time.
   then "Disable workflow". "Enable workflow" in the same place turns it
   back on.
 
-## The three helper robots (Claude, one call each)
+## The robots' names
+
+| Name | What it does | When (Saskatoon time) |
+|---|---|---|
+| **Morning Writer** | Writes the pre-market brief (`premarket-brief.yml`) | Weekdays 6:17 am |
+| **Grader** | Grades that brief after the close (`postmarket-recap.yml`) | Weekdays 4:07 pm |
+| **Coach** | Turns the report cards into lessons for the Morning Writer (`brief-lessons.yml`) | Saturdays 9:37 am |
+| **Devlog Writer** | Drafts devlog posts and opens a pull request for you (`devlog-draft.yml`) | Sundays 11:23 am |
+| **Release Writer** | Writes the player-friendly "What's new" line for game releases (`release-lines.yml`) | Every 6 hours |
+| **Scanner** | The weekly market scan on Agent Fleet (a Claude routine on your own plan, not a workflow) | Saturdays 8:55 am |
+
+On the Actions tab each workflow shows as its name with what it does in
+brackets, and its commits are signed with its name (morning-writer,
+grader, coach, devlog-writer, release-writer).
+
+## The Coach, the Devlog Writer and the Release Writer (Claude, one call each)
 
 Three more robots use the same `ANTHROPIC_API_KEY` secret. Each asks
 Claude one question with no web search, and only when there's something
@@ -1012,7 +1027,7 @@ saves nothing. To **turn one off**: open it on the Actions tab, tap "..."
 at the top right, then "Disable workflow" ("Enable workflow" turns it
 back on).
 
-### Brief lessons ("What the brief is working on")
+### The Coach (brief lessons, "What the brief is working on")
 
 - **When:** Saturdays at 9:37 am Saskatoon time (`brief-lessons.yml`).
 - **What it does:** reads every report card from the last 28 days, the
@@ -1037,7 +1052,7 @@ back on).
   its `"status"` to `"retired"`). Next Saturday's run starts from your
   version.
 
-### Devlog drafter
+### The Devlog Writer (weekly devlog drafts)
 
 - **When:** Sundays at 11:23 am Saskatoon time (`devlog-draft.yml`).
 - **What it does:** looks at every game with a GitHub `code` link in
@@ -1054,7 +1069,7 @@ back on).
   branch. Then **merge** to publish, or **close** to skip the week (and
   delete the branch).
 
-### Release lines (the "What's new" line on each game card)
+### The Release Writer (the "What's new" line on each game card)
 
 - **When:** every 6 hours at :53 (`release-lines.yml`).
 - **What it does:** checks each game's newest GitHub Release. If

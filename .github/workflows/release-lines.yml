@@ -15,7 +15,7 @@
 # without saving them. To stop it, open it on the Actions tab, tap "..."
 # and choose "Disable workflow". To fix a line, edit it in
 # release-lines.json; this never overwrites one that's there.
-name: Release lines
+name: Release Writer (game release lines)
 
 # :53 past every 6th hour (UTC), half an hour after the deploy's own check.
 on:
@@ -59,7 +59,7 @@ jobs:
         id: commit
         if: inputs.dry_run != true
         run: |
-          git config user.name "release-lines-bot"
+          git config user.name "release-writer"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add release-lines.json
           if git diff --cached --quiet; then
