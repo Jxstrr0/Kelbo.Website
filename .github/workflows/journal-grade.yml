@@ -21,12 +21,16 @@ name: Scorekeeper (weekly journal grades)
 # come back before the Forecaster writes the next week that evening. Two
 # tries in case GitHub starts one late or drops it: 11:37 am and 1:13 pm
 # Sunday, Saskatoon time (17:37 and 19:13 UTC). The second either finds
-# nothing left to grade and stops before calling Claude, or picks up a
-# batch the first had to leave waiting (.github/batches/scorekeeper.json).
+# nothing left to grade and stops before calling Claude, or (if the first
+# is still waiting) queues behind it and picks up the batch it leaves
+# (.github/batches/scorekeeper.json). A third at 5:43 pm (23:43 UTC) picks
+# up a slow batch if the 1:13 pm start was dropped; it's still before the
+# Forecaster's 7:47 pm run.
 on:
   schedule:
     - cron: "37 17 * * 0"
     - cron: "13 19 * * 0"
+    - cron: "43 23 * * 0" # 5:43 pm: picks up a batch that's still waiting
   workflow_dispatch:
     inputs:
       dry_run:
