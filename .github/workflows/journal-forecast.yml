@@ -1,0 +1,88 @@
+# The journal's weekly forecast: the Forecaster.
+#
+# Every Sunday night, this:
+#   1. runs .github/scripts/journal-forecast.mjs, which asks Claude (the
+#      bigger model, effort high, with web search) for the coming week's
+#      forecast: TLDR, view, sectors, 4 to 6 calls with a "wrong if",
+#      scenarios, levels, schedule and plan, in the same shape as the
+#      entries Kelbo wrote by hand. It goes at the top of journal.json.
+#      A week that already has an entry is skipped before any call.
+#   2. commits journal.json to main,
+#   3. starts the "Deploy site" run so the journal page shows it.
+# The Scorekeeper (journal-grade.yml) grades the calls on Friday.
+#
+# It uses the ANTHROPIC_API_KEY repository secret. "Run workflow" on the
+# Actions tab runs it now; tick "dry run" to see the entry in the log
+# without saving it. To stop it, open it on the Actions tab, tap "..."
+# and choose "Disable workflow".
+name: Forecaster (weekly journal forecast)
+
+# GitHub starts timed runs late now and then, or drops one, so there are
+# two tries: 7:47 and 9:13 pm Sunday, Saskatoon time (01:47 and 03:13 UTC
+# Monday), after US futures open at 6 pm New York time. The second sees
+# the entry is already there and stops before calling Claude.
+on:
+  schedule:
+    - cron: "47 1 * * 1"
+    - cron: "13 3 * * 1"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run: print the entry in the log, save nothing"
+        type: boolean
+        default: false
+      force:
+        description: "Write this week's forecast again (replaces the robot's own entry only)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write # to commit journal.json
+  actions: write # to start the Deploy site run
+
+concurrency:
+  group: journal-forecast
+  cancel-in-progress: false
+
+jobs:
+  forecast:
+    name: Write next week's forecast
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      - name: Research the week and write the forecast
+        id: robot
+        run: node .github/scripts/journal-forecast.mjs
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          DRY_RUN: ${{ inputs.dry_run == true && '1' || '' }}
+          FORCE: ${{ inputs.force == true && '1' || '' }}
+
+      - name: Commit them to main
+        id: commit
+        if: steps.robot.outputs.written == 'true'
+        run: |
+          git config user.name "forecaster"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add journal.json
+          if git diff --cached --quiet; then
+            echo "Nothing new to commit."
+            echo "pushed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git commit -m "Journal forecast $(TZ=America/Regina date +%F)"
+          git pull --rebase
+          git push
+          echo "pushed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Put the site live
+        if: steps.commit.outputs.pushed == 'true'
+        run: gh workflow run deploy.yml --ref main
+        env:
+          GH_TOKEN: ${{ github.token }}
