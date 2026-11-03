@@ -17,9 +17,14 @@
 name: Coach (brief lessons)
 
 # 15:37 UTC = 9:37 am Saskatoon, after the 8:55 am weekly scan.
+# It asks Claude through the Batches API (half price) and waits for the
+# answer, usually within an hour. The 3:13 pm try picks up a batch the
+# first had to leave waiting (.github/batches/coach.json), or stops before
+# calling Claude if today's lessons are already written.
 on:
   schedule:
     - cron: "37 15 * * 6"
+    - cron: "13 21 * * 6" # 3:13 pm: picks up a batch that's still waiting
   workflow_dispatch:
     inputs:
       dry_run:
@@ -39,7 +44,7 @@ jobs:
   lessons:
     name: Write this week's lessons
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 350 # a batch can take a while; the script stops waiting at 320
     steps:
       - uses: actions/checkout@v7
 
@@ -59,17 +64,24 @@ jobs:
         run: |
           git config user.name "coach"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          mkdir -p lessons
-          git add lessons
+          mkdir -p .github/batches
+          git add -A lessons .github/batches
           if git diff --cached --quiet; then
             echo "Nothing new to commit."
             echo "pushed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          git commit -m "Brief lessons $(TZ=America/Regina date +%F)"
+          # Only a change to the site's own files needs a deploy; the saved
+          # batch file lives in .github, which is never published.
+          if git diff --cached --quiet -- lessons; then site=false; else site=true; fi
+          if [ "$site" = true ]; then
+            git commit -m "Brief lessons $(TZ=America/Regina date +%F)"
+          else
+            git commit -m "coach: batch still waiting, saved for the next run"
+          fi
           git pull --rebase
           git push
-          echo "pushed=true" >> "$GITHUB_OUTPUT"
+          echo "pushed=$site" >> "$GITHUB_OUTPUT"
 
       - name: Put the site live
         if: steps.commit.outputs.pushed == 'true'

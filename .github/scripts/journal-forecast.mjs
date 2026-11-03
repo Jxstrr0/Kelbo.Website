@@ -15,7 +15,7 @@
 // =====================================================================
 
 import { readFile, writeFile } from "node:fs/promises";
-import { askClaudeWeb, logWebCost, seenSources, readJson, setOutput, skDate, DRY_RUN } from "./claude.mjs";
+import { askClaudeWeb, logWebCost, seenSources, readJson, setOutput, skDate, pullLatest, DRY_RUN } from "./claude.mjs";
 import { isMarketDay, addDays } from "./market-days.mjs";
 
 const MODEL = "claude-opus-5-5"; // the bigger model, like the brief
@@ -52,7 +52,7 @@ const long = (ymd) => nice(ymd, { weekday: "long", month: "long", day: "numeric"
 
 /* ---------- The journal so far ---------- */
 const raw = await readFile(FILE, "utf8");
-const journal = JSON.parse(raw); // broken JSON stops here, before any call
+let journal = JSON.parse(raw); // broken JSON stops here, before any call
 if (!Array.isArray(journal)) throw new Error(`${FILE} should be a list of entries.`);
 if (journal.some((e) => e && e.date === first && e.by !== "forecaster")) {
   console.log(`Kelbo already wrote an entry for ${first}; leaving that week to him. No call made.`);
@@ -126,6 +126,8 @@ const { text, blocks, usage } = await askClaudeWeb({
   maxFetches: MAX_FETCHES,
   check: (t) => readJson(t, MARKER) !== null,
   fix: `Give that forecast again as the JSON object from your instructions, after the line ${MARKER}. Keep the same facts and numbers.`,
+  // Sent as a batch (half price): nobody needs it until Monday morning.
+  batch: { name: "forecaster", key: first },
 });
 logWebCost(MODEL, usage, MAX_SEARCHES, MAX_FETCHES);
 
@@ -192,6 +194,11 @@ if (DRY_RUN) {
   console.log(JSON.stringify(entry, null, 2));
   process.exit(0);
 }
+
+// The batch can take a while, so start from the newest journal.json in
+// case another robot (the Scorekeeper) saved to it in the meantime.
+pullLatest();
+journal = JSON.parse(await readFile(FILE, "utf8"));
 
 // A redo (FORCE) replaces only the robot's own entry for that week.
 const kept = journal.filter((e) => !(e && e.date === first && e.by === "forecaster"));
