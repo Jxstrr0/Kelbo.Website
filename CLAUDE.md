@@ -711,14 +711,33 @@ keep the Co-Authored-By trailer for Claude in each message.
   routine (daily 17:47 America/Regina) copies them into Kelbo's private
   API Call Log ($) artifact (doc ids `gh-<run id>`). Keep the `US$<n>`
   start of the note; the routine reads it. A new robot workflow must be
-  added to that routine's workflow list too.
+  added to that routine's workflow list too. Batch runs add ", batch" to
+  the note (the routine logs them with `batch: true`); a run with no Cost
+  note at all may be a batch that saved its place, so it's skipped.
+- Batches (since November 2026): the Coach, the Forecaster and the
+  Scorekeeper pass `batch: { name, key }` to `askClaude`/`askClaudeWeb`,
+  which then go through the Message Batches API (tokens half price,
+  searches full price; `logCost`/`logWebCost` halve them). `sendBatch`
+  (claude.mjs, "BATCHES") submits a batch of one and polls every
+  `BATCH_CHECK_MS`; past `BATCH_WAIT_MIN` (320) minutes `saveAndStop`
+  writes `.github/batches/<name>.json` (`{key, savedAt, state}`, the
+  round, messages and batch id), sets `waiting=true` and exits 0, and the
+  next run with the same key picks the same batch up (no second charge;
+  a different key throws the file away). Expired or canceled batches are
+  resubmitted. The workflows commit that folder too (`.github` is never
+  published), with `timeout-minutes: 350`, and only deploy when a site
+  file changed. `pullLatest` (git pull --ff-only, Actions only) runs
+  before the Forecaster and Scorekeeper write journal.json, since a batch
+  can take a while. There's no full-price fallback, by Kelbo's choice.
 - The "Morning Writer starter" routine (weekdays 6:08 am America/Regina,
   in a helper Claude Code session) starts `premarket-brief.yml` by hand
   with `force: false`, because GitHub's timed starts are often late or
   dropped; the workflow's own crons stay as back-ups, and every extra
   start stops at the "already exists" check before any API call.
-- Coach (brief lessons): `brief-lessons.yml` (Saturdays 15:37 UTC) runs
-  `brief-lessons.mjs` (`claude-opus-5-5`, effort high, one call): the last
+- Coach (brief lessons): `brief-lessons.yml` (Saturdays 15:37 UTC, plus
+  a 21:13 UTC pickup run that stops at once if today's lessons exist and
+  no batch is saved) runs `brief-lessons.mjs` (`claude-opus-5-5`, effort
+  high, one batched call): the last
   `WINDOW_DAYS` (28) of report cards from the month files, the briefs they
   graded minus Sources, `report-cards/index.json` totals and the previous
   `lessons/latest.json`. Under `MIN_CARDS` (5) cards with a graded gap
@@ -746,7 +765,8 @@ keep the Co-Authored-By trailer for Claude in each message.
   setting "Allow GitHub Actions to create and approve pull requests".
 - Forecaster (weekly journal forecast): `journal-forecast.yml` (Sunday
   night: crons `47 1 * * 1` and `13 3 * * 1` UTC = 7:47 and 9:13 pm
-  Sunday America/Regina) runs `journal-forecast.mjs` (`claude-opus-5-5`,
+  Sunday America/Regina, plus a `37 10 * * 1` 4:37 am Monday pickup;
+  batched) runs `journal-forecast.mjs` (`claude-opus-5-5`,
   effort high, `askClaudeWeb` with `MAX_SEARCHES` 25 and `MAX_FETCHES`
   12): the coming week's market days from `market-days.mjs` (shared
   with the Grader; `isMarketDay`, `addDays`), the base close (last market
@@ -759,8 +779,9 @@ keep the Co-Authored-By trailer for Claude in each message.
   last. Prepends to journal.json (rewritten with 2-space JSON), commits as
   forecaster, then runs deploy.yml. A weekday run by hand covers only today
   to Friday, measured from the last close before today.
-- Scorekeeper (weekly journal grades): `journal-grade.yml` (Friday after
-  the close: `23 22 * * 5` and `47 23 * * 5` UTC = 4:23 and 5:47 pm)
+- Scorekeeper (weekly journal grades): `journal-grade.yml` (Sunday
+  around noon, so the batch has the afternoon before the Forecaster:
+  `37 17 * * 0` and `13 19 * * 0` UTC = 11:37 am and 1:13 pm; batched)
   runs `journal-grade.mjs` (`claude-sonnet-5-5`, effort high,
   `MAX_SEARCHES` 20, `MAX_FETCHES` 15): the newest entry whose `gradeBy`
   has closed (past, or today after 4:00 pm New York), within

@@ -812,22 +812,32 @@ percentages are safer than dollar amounts or account sizes.
 Two robots now write and grade the weekly forecast for you, using the
 same `ANTHROPIC_API_KEY` secret as the brief:
 
-- **Forecaster** (Sunday night, 7:47 pm, with a back-up try at 9:13 pm):
+- **Forecaster** (Sunday night, 7:47 pm, with back-up tries at 9:13 pm
+  and 4:37 am Monday):
   Claude Opus 5.5 on high effort, with web search, writes "Forecast for the
   week of ..." with the TLDR, view, sector board, 4 to 6 calls (each with a
   "wrong if"), scenarios, levels, schedule and plan, and puts it at the top
   of `journal.json`. Its note says it was written by the robot, and a
   "Sources" fold lists the pages its numbers came from. If you've already
-  written an entry for that week, it leaves the week alone. About US$1 to
-  US$2 a run.
-- **Scorekeeper** (Friday after the close, 4:23 pm, back-up at 5:47 pm):
+  written an entry for that week, it leaves the week alone. About 50 cents
+  to US$1 a run (batch price, below).
+- **Scorekeeper** (Sunday around noon, 11:37 am, back-up at 1:13 pm, so
+  Friday's close is graded before the next forecast):
   Claude Sonnet 5.5 on high effort, with web search, grades each call hit,
   partial or miss with a one-line "What happened", then writes the recap,
   the AI coach note and the lesson. It grades your own hand-written
   entries too, if their `gradeBy` day has passed and a call is still
   `null`. It never changes a grade that's already there, and a call it
-  can't confirm stays ungraded rather than guessed. About 15 to 40 cents
-  a run.
+  can't confirm stays ungraded rather than guessed. About 10 to 20 cents
+  a run (batch price).
+
+**Batch price.** Neither result is needed straight away, so both (and the
+Coach) send their request as a "batch": Anthropic answers when it has
+room, at half the token price. The answer usually comes back within an
+hour while the run waits. If it takes longer than about 5 hours, the run
+saves its place in `.github/batches/` and the next try picks up the same
+request, so nothing is paid twice. You don't need to do anything. The API
+Call Log shows a dashed **Batch** tag on these robots.
 
 Both have a **Run workflow** button on the Actions tab with a "dry run"
 box (shows the result in the log and saves nothing) and a box to redo
@@ -1030,11 +1040,11 @@ you can see how good the calls really are over time.
 |---|---|---|
 | **Morning Writer** | Writes the pre-market brief (`premarket-brief.yml`) | Weekdays 6:17 am |
 | **Grader** | Grades that brief after the close (`postmarket-recap.yml`) | Weekdays 4:07 pm |
-| **Coach** | Turns the report cards into lessons for the Morning Writer (`brief-lessons.yml`) | Saturdays 9:37 am |
+| **Coach** | Turns the report cards into lessons for the Morning Writer (`brief-lessons.yml`) | Saturdays 9:37 am (batch) |
 | **Devlog Writer** | Drafts devlog posts and opens a pull request for you (`devlog-draft.yml`) | Sundays 11:23 am |
 | **Release Writer** | Writes the player-friendly "What's new" line for game releases (`release-lines.yml`) | Every 6 hours |
-| **Forecaster** | Writes the journal's forecast for the coming week (`journal-forecast.yml`) | Sundays 7:47 pm |
-| **Scorekeeper** | Grades that week's journal calls after the close (`journal-grade.yml`) | Fridays 4:23 pm |
+| **Forecaster** | Writes the journal's forecast for the coming week (`journal-forecast.yml`) | Sundays 7:47 pm (batch) |
+| **Scorekeeper** | Grades that week's journal calls (`journal-grade.yml`) | Sundays 11:37 am (batch) |
 | **Scanner** | The weekly market scan on Agent Fleet (a Claude routine on your own plan, not a workflow) | Saturdays 8:55 am |
 
 On the Actions tab each workflow shows as its name with what it does in
@@ -1069,7 +1079,8 @@ back on).
 
 ### The Coach (brief lessons, "What the brief is working on")
 
-- **When:** Saturdays at 9:37 am Saskatoon time (`brief-lessons.yml`).
+- **When:** Saturdays at 9:37 am Saskatoon time (`brief-lessons.yml`), as
+  a half-price batch; a 3:13 pm try picks it up if it was slow.
 - **What it does:** reads every report card from the last 28 days, the
   briefs they graded, the running score and last week's lessons, and asks
   Opus 5.5 for 3 to 5 lessons about *how the brief works*: gap sizes called

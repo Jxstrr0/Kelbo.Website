@@ -1,6 +1,6 @@
 # Grades the journal's weekly calls: the Scorekeeper.
 #
-# Every Friday after the close, this:
+# Every Sunday around noon (after Friday's close), this:
 #   1. runs .github/scripts/journal-grade.mjs, which finds the newest
 #      journal entry whose "gradeBy" day has closed and still has ungraded
 #      calls, asks Claude (the smaller model, effort high, with web
@@ -17,14 +17,16 @@
 # and choose "Disable workflow".
 name: Scorekeeper (weekly journal grades)
 
-# Two tries in case GitHub starts one late or drops it: 4:23 and 5:47 pm
-# Friday, Saskatoon time (22:23 and 23:47 UTC), after the 4:00 pm New York
-# close in summer and winter. The second finds nothing left to grade and
-# stops before calling Claude.
+# Sunday around noon, so the half-price batch has the whole afternoon to
+# come back before the Forecaster writes the next week that evening. Two
+# tries in case GitHub starts one late or drops it: 11:37 am and 1:13 pm
+# Sunday, Saskatoon time (17:37 and 19:13 UTC). The second either finds
+# nothing left to grade and stops before calling Claude, or picks up a
+# batch the first had to leave waiting (.github/batches/scorekeeper.json).
 on:
   schedule:
-    - cron: "23 22 * * 5"
-    - cron: "47 23 * * 5"
+    - cron: "37 17 * * 0"
+    - cron: "13 19 * * 0"
   workflow_dispatch:
     inputs:
       dry_run:
@@ -48,7 +50,7 @@ jobs:
   grade:
     name: Grade the week's calls
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 350 # a batch can take a while; the script stops waiting at 320
     steps:
       - uses: actions/checkout@v7
 
@@ -66,20 +68,28 @@ jobs:
 
       - name: Commit them to main
         id: commit
-        if: steps.robot.outputs.written == 'true'
+        if: inputs.dry_run != true
         run: |
           git config user.name "scorekeeper"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add journal.json
+          mkdir -p .github/batches
+          git add -A journal.json .github/batches
           if git diff --cached --quiet; then
             echo "Nothing new to commit."
             echo "pushed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          git commit -m "Journal grades $(TZ=America/Regina date +%F)"
+          # Only a change to the site's own files needs a deploy; the saved
+          # batch file lives in .github, which is never published.
+          if git diff --cached --quiet -- journal.json; then site=false; else site=true; fi
+          if [ "$site" = true ]; then
+            git commit -m "Journal grades $(TZ=America/Regina date +%F)"
+          else
+            git commit -m "scorekeeper: batch still waiting, saved for the next run"
+          fi
           git pull --rebase
           git push
-          echo "pushed=true" >> "$GITHUB_OUTPUT"
+          echo "pushed=$site" >> "$GITHUB_OUTPUT"
 
       - name: Put the site live
         if: steps.commit.outputs.pushed == 'true'

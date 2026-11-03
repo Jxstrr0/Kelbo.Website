@@ -22,6 +22,7 @@
 // DRY_RUN=1 prints the lessons without writing any files.
 // =====================================================================
 
+import { existsSync } from "node:fs";
 import { readFile, readdir, writeFile, mkdir } from "node:fs/promises";
 import { askClaude, logCost, readJson, skDate, DRY_RUN } from "./claude.mjs";
 
@@ -38,6 +39,13 @@ const GRADED = ["hit", "partial", "miss"]; // a gap call that really got a grade
 
 const today = skDate();
 const dayMs = 864e5;
+
+// It runs twice on Saturday (the second picks up a batch the first had to
+// leave waiting). Once today's lessons are written, there's nothing to do.
+if (existsSync(`${LESSONS_DIR}/${today}.json`) && !existsSync(".github/batches/coach.json") && !DRY_RUN) {
+  console.log(`Today's lessons (${LESSONS_DIR}/${today}.json) are already written. No call made.`);
+  process.exit(0);
+}
 const from = new Date(Date.parse(today + "T12:00:00Z") - (WINDOW_DAYS - 1) * dayMs).toISOString().slice(0, 10);
 
 /* ---------- The report cards in the window ---------- */
@@ -133,7 +141,8 @@ ${briefs.join("\n\n")}
 
 Write this week's lessons.`;
 
-const { text, usage } = await askClaude({ model: MODEL, system: SYSTEM, user, maxTokens: 16000 });
+// Sent as a batch (half price): nobody needs the lessons until Monday's brief.
+const { text, usage } = await askClaude({ model: MODEL, system: SYSTEM, user, maxTokens: 16000, batch: { name: "coach", key: today } });
 
 /* ---------- Check the answer ---------- */
 const answer = readJson(text, MARKER);
