@@ -1,7 +1,7 @@
 // =====================================================================
 // THE SCOREKEEPER: grades the journal's weekly calls
 // ---------------------------------------------------------------------
-// Runs on Friday after the close (journal-grade.yml). Finds the newest
+// Runs on Sunday around noon (journal-grade.yml), as a half-price batch. Finds the newest
 // journal entry whose "gradeBy" day has closed and that still has
 // ungraded calls, asks Claude, with web search, what really happened,
 // and fills in each call's grade (hit / partial / miss) with a one-line
@@ -16,7 +16,7 @@
 // =====================================================================
 
 import { readFile, writeFile } from "node:fs/promises";
-import { askClaudeWeb, logWebCost, seenSources, readJson, setOutput, skDate, DRY_RUN } from "./claude.mjs";
+import { askClaudeWeb, logWebCost, seenSources, readJson, setOutput, skDate, pullLatest, DRY_RUN } from "./claude.mjs";
 import { addDays } from "./market-days.mjs";
 
 const MODEL = "claude-sonnet-5-5"; // the smaller model, like the Grader
@@ -102,6 +102,8 @@ const res = await askClaudeWeb({
   maxFetches: MAX_FETCHES,
   check: (t) => readJson(t, MARKER) !== null,
   fix: `Give those grades again as the JSON object from your instructions, after the line ${MARKER}. Keep the same facts; use "unknown" for anything you didn't confirm.`,
+  // Sent as a batch (half price): the grades only need to be in by Sunday night.
+  batch: { name: "scorekeeper", key: entry.date },
 });
 logWebCost(MODEL, res.usage, MAX_SEARCHES, MAX_FETCHES);
 const answer = readJson(res.text, MARKER);
@@ -156,6 +158,12 @@ if (DRY_RUN) {
   console.log(JSON.stringify(updated, null, 2));
   process.exit(0);
 }
-journal[journal.indexOf(entry)] = updated;
-await writeFile(FILE, JSON.stringify(journal, null, 2) + "\n");
+// The batch can take a while, so write onto the newest journal.json in
+// case another robot (the Forecaster) saved to it in the meantime.
+pullLatest();
+const latest = JSON.parse(await readFile(FILE, "utf8"));
+const at = latest.findIndex((e) => e && e.date === entry.date && e.title === entry.title);
+if (at < 0) throw new Error(`The entry for ${entry.date} isn't in journal.json any more. Nothing saved.`);
+latest[at] = updated;
+await writeFile(FILE, JSON.stringify(latest, null, 2) + "\n");
 setOutput("written", "true");
