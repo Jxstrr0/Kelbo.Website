@@ -52,10 +52,11 @@ keep the Co-Authored-By trailer for Claude in each message.
 - **No secrets.** The repo is public. Never commit API keys, tokens, or
   passwords. If a tool needs a key, talk through options with Kelbo first.
   The one key that exists is the `ANTHROPIC_API_KEY` repository secret,
-  used by five workflows: the Morning Writer (pre-market brief), the
+  used by seven workflows: the Morning Writer (pre-market brief), the
   Grader (after-close report card), the Coach (brief lessons), the Devlog
-  Writer and the Release Writer. It is only
-  ever referenced as `${{ secrets.ANTHROPIC_API_KEY }}` in those five
+  Writer, the Release Writer, the Forecaster (weekly journal forecast) and
+  the Scorekeeper (weekly journal grades). It is only
+  ever referenced as `${{ secrets.ANTHROPIC_API_KEY }}` in those seven
   workflows; `deploy.yml` and `site-check.yml` stay key-free.
 - Mobile first (works down to 360px wide), light and dark themes with
   every colour in CSS variables (`data-theme` on `<html>`, set by `main.js`
@@ -575,9 +576,11 @@ keep the Co-Authored-By trailer for Claude in each message.
   top of the record also has `renderWeek`, a one-line hit/partial/miss tally
   of the newest entry that has graded calls (graded only, never invented). The
   field list is at the top of `journal.js`. Entries can be long forecasts
-  (calls, scenarios, levels, sectors, schedule, plan); copy their content
-  faithfully and only fill in grades and the recap when Kelbo reports them.
-  Kelbo updates it periodically; when he sends views or trades, write the
+  (calls, scenarios, levels, sectors, schedule, plan). Since November 2026
+  the weekly forecast and its grades come from two robots (the Forecaster
+  and the Scorekeeper, below); entries Kelbo sends by hand still get copied
+  faithfully, with grades and the recap only when he reports them or the
+  Scorekeeper fills them. When he sends views or trades, write the
   entry and an honest "ai" coach note. Never invent trades or results, and
   prefer percentages over dollar amounts. `journal.js` borrows `el()` and
   `reveal()` from `main.js`, so load `main.js` first.
@@ -689,6 +692,9 @@ keep the Co-Authored-By trailer for Claude in each message.
   **Coach** = brief lessons (`brief-lessons.yml`, coach), **Devlog
   Writer** = devlog drafts (`devlog-draft.yml`, devlog-writer), **Release
   Writer** = release lines (`release-lines.yml`, release-writer),
+  **Forecaster** = weekly journal forecast (`journal-forecast.yml`,
+  forecaster), **Scorekeeper** = weekly journal grades
+  (`journal-grade.yml`, scorekeeper),
   **Scanner** = the "Longlight weekly scan" routine. Each workflow's
   `name:` is "<Name> (<what it does>)".
 - The three one-call robots (Coach, Devlog Writer, Release Writer) share `.github/scripts/claude.mjs` (`askClaude`:
@@ -703,8 +709,14 @@ keep the Co-Authored-By trailer for Claude in each message.
   in Actions, an annotation readable without a login via
   `/check-runs/<job id>/annotations`. The "Robot cost log updater"
   routine (daily 17:47 America/Regina) copies them into Kelbo's private
-  Robot Cost Log artifact (doc ids `gh-<run id>`). Keep the `US$<n>`
-  start of the note; the routine reads it.
+  API Call Log ($) artifact (doc ids `gh-<run id>`). Keep the `US$<n>`
+  start of the note; the routine reads it. A new robot workflow must be
+  added to that routine's workflow list too.
+- The "Morning Writer starter" routine (weekdays 6:08 am America/Regina,
+  in a helper Claude Code session) starts `premarket-brief.yml` by hand
+  with `force: false`, because GitHub's timed starts are often late or
+  dropped; the workflow's own crons stay as back-ups, and every extra
+  start stops at the "already exists" check before any API call.
 - Coach (brief lessons): `brief-lessons.yml` (Saturdays 15:37 UTC) runs
   `brief-lessons.mjs` (`claude-opus-5-5`, effort high, one call): the last
   `WINDOW_DAYS` (28) of report cards from the month files, the briefs they
@@ -732,6 +744,34 @@ keep the Co-Authored-By trailer for Claude in each message.
   opens a PR "Devlog draft for the week of ..." with source links.
   **Never merge that PR yourself**: Kelbo reviews it. Needs the repo
   setting "Allow GitHub Actions to create and approve pull requests".
+- Forecaster (weekly journal forecast): `journal-forecast.yml` (Sunday
+  night: crons `47 1 * * 1` and `13 3 * * 1` UTC = 7:47 and 9:13 pm
+  Sunday America/Regina) runs `journal-forecast.mjs` (`claude-opus-5-5`,
+  effort high, `askClaudeWeb` with `MAX_SEARCHES` 25 and `MAX_FETCHES`
+  12): the coming week's market days from `market-days.mjs` (shared
+  with the Grader; `isMarketDay`, `addDays`), the base close (last market
+  day before), and the two newest entries minus trades for context. A week
+  that already has an entry (any author): no call, unless FORCE, which
+  only replaces the robot's own entry. Validates 3..6 calls (each needs a
+  `wrongIf`; grade null), odds, trends; em-dashes become commas; `sources`
+  only links seen that run (`seenSources`); `by: "forecaster"`; title
+  "Forecast for the week of <Mon>", `date` = first market day, `gradeBy` =
+  last. Prepends to journal.json (rewritten with 2-space JSON), commits as
+  forecaster, then runs deploy.yml.
+- Scorekeeper (weekly journal grades): `journal-grade.yml` (Friday after
+  the close: `23 22 * * 5` and `47 23 * * 5` UTC = 4:23 and 5:47 pm)
+  runs `journal-grade.mjs` (`claude-sonnet-5-5`, effort high,
+  `MAX_SEARCHES` 20, `MAX_FETCHES` 15): the newest entry whose `gradeBy`
+  has closed (past, or today after 4:00 pm New York), within
+  `LOOK_BACK_DAYS` 21, with ungraded calls (any author). Nothing waiting:
+  no call. Fills each call's `grade` (hit/partial/miss; "unknown" stays
+  null) and `result`, never overwriting a grade unless FORCE; `recap`,
+  `ai` (general voice, warns on "you") and `lesson` only once every call
+  is graded; `gradeSources`; `graded {by, at}`. Commits as scorekeeper,
+  runs deploy.yml. journal.js shows a graded call's `result` ("What
+  happened") and a closed "Sources (N)" fold from `sources` + `gradeSources`.
+  `askClaudeWeb`, `logWebCost` and `seenSources` live at the bottom of
+  `claude.mjs`.
 - Release Writer: `release-lines.yml` (cron `53 */6 * * *`) runs
   `release-lines.mjs` (`claude-sonnet-5-5`, effort high): each game's
   latest release; keys `<repo>@<tag>` missing from `release-lines.json`

@@ -25,6 +25,10 @@
      recap      what actually happened, written after grading
      ai         the AI coach's notes
      lesson     one thing to keep doing or fix
+     sources    [{ title, url }]: where a robot forecast's numbers came from
+     by         "forecaster" on entries the Forecaster robot wrote
+   The Scorekeeper robot also adds a "result" line to each call it grades,
+   plus gradeSources and graded { by, at }.
    A trade's "result" is its gain or loss in percent: 1.2 means +1.2%,
    -0.8 means -0.8%. Leave it out (or use null) while the trade is open.
    A call with no grade yet doesn't count in the record. The newest entry's
@@ -539,6 +543,8 @@ function renderEntry(entry) {
       );
       row.append(head);
       if (c.wrongIf) row.append(el("p", "call__wrong", "Wrong if: " + c.wrongIf));
+      // What really happened, filled in by the Scorekeeper robot with the grade.
+      if (grade && c.result) row.append(el("p", "call__wrong", "What happened: " + c.result));
       list.append(row);
     });
     item.append(list);
@@ -658,6 +664,25 @@ function renderEntry(entry) {
     const lesson = el("p", "entry__lesson");
     lesson.append(el("strong", null, "Lesson: "), document.createTextNode(entry.lesson));
     item.append(lesson);
+  }
+
+  // Where the robots' numbers came from (the forecast's sources, then the
+  // grading's). Only https links, shown as plain text links.
+  const links = [...listOf(entry, "sources"), ...listOf(entry, "gradeSources")].filter(
+    (s, i, all) => /^https:\/\//.test(String(s.url || "")) && all.findIndex((x) => x.url === s.url) === i
+  );
+  if (links.length) {
+    const box = foldout(item, `Sources (${links.length})`);
+    const list = el("ul", "entry__sources");
+    links.forEach((s) => {
+      const link = el("a", null, s.title || s.url);
+      link.href = s.url;
+      link.rel = "noopener";
+      const row = el("li");
+      row.append(link);
+      list.append(row);
+    });
+    box.append(list);
   }
 
   return item;
