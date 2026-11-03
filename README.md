@@ -821,8 +821,8 @@ same `ANTHROPIC_API_KEY` secret as the brief:
   "Sources" fold lists the pages its numbers came from. If you've already
   written an entry for that week, it leaves the week alone. About 50 cents
   to US$1 a run (batch price, below).
-- **Scorekeeper** (Sunday around noon, 11:37 am, back-up at 1:13 pm, so
-  Friday's close is graded before the next forecast):
+- **Scorekeeper** (Sunday around noon, 11:37 am, back-up at 1:13 pm and a
+  5:43 pm pickup for a slow batch, so Friday's close is graded before the next forecast):
   Claude Sonnet 5.5 on high effort, with web search, grades each call hit,
   partial or miss with a one-line "What happened", then writes the recap,
   the AI coach note and the lesson. It grades your own hand-written

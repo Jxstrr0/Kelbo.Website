@@ -783,7 +783,9 @@ keep the Co-Authored-By trailer for Claude in each message.
   to Friday, measured from the last close before today.
 - Scorekeeper (weekly journal grades): `journal-grade.yml` (Sunday
   around noon, so the batch has the afternoon before the Forecaster:
-  `37 17 * * 0` and `13 19 * * 0` UTC = 11:37 am and 1:13 pm; batched)
+  `37 17 * * 0`, `13 19 * * 0` and a `43 23 * * 0` pickup UTC = 11:37 am,
+  1:13 pm and 5:43 pm; batched; a back-up that starts while a run is
+  still waiting queues behind it, via the `concurrency` group)
   runs `journal-grade.mjs` (`claude-sonnet-5-5`, effort high,
   `MAX_SEARCHES` 20, `MAX_FETCHES` 15): the newest entry whose `gradeBy`
   has closed (past, or today after 4:00 pm New York), within
