@@ -1,0 +1,78 @@
+# Weekly lessons for the pre-market brief from its report cards.
+#
+# Every Saturday morning, this:
+#   1. runs .github/scripts/brief-lessons.mjs, which reads the last 28 days
+#      of report cards and the briefs they graded, and asks Claude (one
+#      call, no web search) for 3 to 5 lessons about how the brief works:
+#      its gap sizes, its levels, its confidence. Never market predictions.
+#      With fewer than 5 graded cards it stops before calling Claude.
+#   2. commits lessons/latest.json and lessons/YYYY-MM-DD.json to main,
+#   3. starts the "Deploy site" run so the After close tab shows them.
+# The next weekday brief reads the lessons (while they're under 14 days old).
+#
+# It uses the ANTHROPIC_API_KEY repository secret. "Run workflow" on the
+# Actions tab runs it now; tick "dry run" to see the lessons in the log
+# without saving them. To stop it, open it on the Actions tab, tap "..."
+# and choose "Disable workflow".
+name: Brief lessons
+
+# 15:37 UTC = 9:37 am Saskatoon, after the 8:55 am weekly scan.
+on:
+  schedule:
+    - cron: "37 15 * * 6"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run: print the lessons in the log, save nothing"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write # to commit the lessons
+  actions: write # to start the Deploy site run
+
+concurrency:
+  group: brief-lessons
+  cancel-in-progress: false
+
+jobs:
+  lessons:
+    name: Write this week's lessons
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      - name: Read the report cards and ask for lessons
+        run: node .github/scripts/brief-lessons.mjs
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          DRY_RUN: ${{ inputs.dry_run == true && '1' || '' }}
+
+      - name: Commit them to main
+        id: commit
+        if: inputs.dry_run != true
+        run: |
+          git config user.name "lessons-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          mkdir -p lessons
+          git add lessons
+          if git diff --cached --quiet; then
+            echo "Nothing new to commit."
+            echo "pushed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git commit -m "Brief lessons $(TZ=America/Regina date +%F)"
+          git pull --rebase
+          git push
+          echo "pushed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Put the site live
+        if: steps.commit.outputs.pushed == 'true'
+        run: gh workflow run deploy.yml --ref main
+        env:
+          GH_TOKEN: ${{ github.token }}

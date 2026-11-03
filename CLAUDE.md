@@ -51,9 +51,11 @@ keep the Co-Authored-By trailer for Claude in each message.
   `.github/scripts/` are plain Node with no packages; keep them that way.
 - **No secrets.** The repo is public. Never commit API keys, tokens, or
   passwords. If a tool needs a key, talk through options with Kelbo first.
-  The one key that exists is the `ANTHROPIC_API_KEY` repository secret for
-  the pre-market brief and the after-close report card; it is only ever
-  referenced as `${{ secrets.ANTHROPIC_API_KEY }}` in those two workflows.
+  The one key that exists is the `ANTHROPIC_API_KEY` repository secret,
+  used by five workflows: the pre-market brief, the after-close report
+  card, brief lessons, the devlog drafter and release lines. It is only
+  ever referenced as `${{ secrets.ANTHROPIC_API_KEY }}` in those five
+  workflows; `deploy.yml` and `site-check.yml` stay key-free.
 - Mobile first (works down to 360px wide), light and dark themes with
   every colour in CSS variables (`data-theme` on `<html>`, set by `main.js`
   from the real sun; `prefers-color-scheme` is only the fallback before JS
@@ -680,6 +682,50 @@ keep the Co-Authored-By trailer for Claude in each message.
   Everything goes on the page as text nodes; the
   `.grade--*` pills are purple (right/held), purple outline (partly), clay
   (wrong/broke) and dashed grey (not reached/couldn't confirm).
+- The three one-call robots share `.github/scripts/claude.mjs` (`askClaude`:
+  fetch to the Messages API, `output_config.effort`, a cache marker on the
+  system block plus top-level `cache_control`, 4 tries on network errors,
+  429 and 5xx; `logCost` from `PRICES`; `readJson` after a marker line;
+  `setOutput`; `DRY_RUN`). No tools, no web search. Each workflow has a
+  `workflow_dispatch` "dry run" box (`DRY_RUN=1`: print, write nothing).
+- Brief lessons: `brief-lessons.yml` (Saturdays 15:37 UTC) runs
+  `brief-lessons.mjs` (`claude-opus-5-5`, effort high, one call): the last
+  `WINDOW_DAYS` (28) of report cards from the month files, the briefs they
+  graded minus Sources, `report-cards/index.json` totals and the previous
+  `lessons/latest.json`. Under `MIN_CARDS` (5) cards with a graded gap
+  call: no call. It validates the answer (text, status new/kept/retired,
+  `evidence {count, dates}` with dates that are real cards, no `$` prices,
+  at most `MAX_ACTIVE` 5 active) and writes `lessons/latest.json`
+  (`{updated, window: {from, to}, cards, lessons}`) plus
+  `lessons/YYYY-MM-DD.json`; commits as lessons-bot, then runs deploy.yml.
+  Never in `briefs/` or `report-cards/`. `premarket-brief.mjs` adds the
+  active lessons to the USER message (not SYSTEM, to keep the cache) while
+  `updated` is under 14 days old, and logs "Lessons used: N".
+  `setUpLessons` in briefs.js fills the closed `.lessons` fold
+  (`[data-lessons]`, "What the brief is working on") on the After close
+  tab, text nodes only, hidden without the file or active lessons.
+- Devlog drafter: `devlog-draft.yml` (Sundays 17:23 UTC, `contents` and
+  `pull-requests: write`) runs `devlog-draft.mjs` (`claude-sonnet-5-5`,
+  effort high): last 7 days of merged PRs (body cut to `BODY_CHARS`) and
+  releases for each projects.json game with a GitHub `code` link, plus the
+  5 newest devlog posts. No activity: no call. Validates 0..4 posts, one
+  per game, `game` an exact title with activity, no PR numbers or GitHub
+  logins, date = run date (America/Regina); prepends them to devlog.json,
+  runs check-site, pushes `devlog-draft/YYYY-MM-DD` as devlog-bot and
+  opens a PR "Devlog draft for the week of ..." with source links.
+  **Never merge that PR yourself**: Kelbo reviews it. Needs the repo
+  setting "Allow GitHub Actions to create and approve pull requests".
+- Release lines: `release-lines.yml` (cron `53 */6 * * *`) runs
+  `release-lines.mjs` (`claude-sonnet-5-5`, effort high): each game's
+  latest release; keys `<repo>@<tag>` missing from `release-lines.json`
+  go to Claude in one batched call (no new ones: no call). Lines are ≤ 90
+  characters, no version number; stored as `{line, title, at}`, existing
+  entries never overwritten (Kelbo may hand-edit them; broken JSON stops
+  the script). Commits as release-lines-bot, then runs deploy.yml.
+  `sync-releases.mjs` uses that `line` for the exact repo@tag as `latest`,
+  else the cleaned release title (missing/broken file = old behaviour).
+  `check-site.mjs` validates `lessons/latest.json` and
+  `release-lines.json` (a missing file is only a warning).
 - The Prediction Tracker in `tools/prediction-tracker/` is parked: still in
   the repo but removed from `projects.json` (README has the block to
   restore it).

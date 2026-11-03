@@ -40,6 +40,8 @@ from their releases, then publishes the files as they are (see
 | `briefs/` | The briefs themselves, one `YYYY-MM-DD.md` per weekday, plus `index.json` (the list of months the page reads), `months/` (one small list per month, e.g. `months/2026-11.json`) and `latest.json` (the newest one's time, for the alert dot). Written by the robot below, so you never need to edit them |
 | `briefs.js`, `briefs.css` | Show the Pre-market and After close tabs, each with its archive |
 | `report-cards/` | The after-close grades of each brief: one `YYYY-MM.json` per month and `index.json` (the running score). Written by the report card robot below, so you never need to edit them |
+| `lessons/` | **What the brief is working on**: `latest.json` (this week's lessons) plus a dated copy for each week. Written by the Brief lessons robot below |
+| `release-lines.json` | The short, player-friendly "What's new" line for each game release. Written by the Release lines robot below; you can fix any line by hand |
 | `journal.html` | The AI Trading Journal page |
 | `journal.json` | **Your journal entries.** Edit this to add an update |
 | `options.json` | **Your options trades.** Edit this to log a trade |
@@ -47,8 +49,8 @@ from their releases, then publishes the files as they are (see
 | `tools/prediction-tracker/` | The Prediction Tracker tool, parked for now (not linked from the site) |
 | `404.html` | The "page not found" screen GitHub shows for any address that doesn't exist |
 | `.nojekyll` | Tells GitHub Pages to serve the files as-is. Leave it alone |
-| `.github/workflows/` | The four robots: `site-check.yml` (checks every pull request), `deploy.yml` (checks again, then puts the site live), `premarket-brief.yml` (writes the morning brief, below) and `postmarket-recap.yml` (grades it after the close, below) |
-| `.github/scripts/` | What they run: `check-site.mjs` (the mistake finder), `sync-releases.mjs` (fills in game versions from their releases), `make-game-pages.mjs` (makes each game's own page, below) `premarket-brief.mjs` (asks Claude for the brief) and `postmarket-recap.mjs` (asks Claude how the brief did) |
+| `.github/workflows/` | The robots: `site-check.yml` (checks every pull request), `deploy.yml` (checks again, then puts the site live), `premarket-brief.yml` (writes the morning brief, below), `postmarket-recap.yml` (grades it after the close, below), `brief-lessons.yml`, `devlog-draft.yml` and `release-lines.yml` (the weekly and release robots, below) |
+| `.github/scripts/` | What they run: `check-site.mjs` (the mistake finder), `sync-releases.mjs` (fills in game versions from their releases), `make-game-pages.mjs` (makes each game's own page, below), `premarket-brief.mjs` (asks Claude for the brief), `postmarket-recap.mjs` (asks Claude how the brief did), `brief-lessons.mjs`, `devlog-draft.mjs`, `release-lines.mjs` (the three robots below) and `claude.mjs` (the one-call-to-Claude code those three share) |
 
 ## Editing on your phone
 
@@ -995,6 +997,80 @@ you can see how good the calls really are over time.
 - **Turn it off:** open it on the Actions tab, tap "..." at the top right,
   then "Disable workflow". "Enable workflow" in the same place turns it
   back on.
+
+## The three helper robots (Claude, one call each)
+
+Three more robots use the same `ANTHROPIC_API_KEY` secret. Each asks
+Claude one question with no web search, and only when there's something
+to ask about, so most runs cost nothing. Every run's log ends with
+"Estimated cost: US$0.xx".
+
+All three have a **Run workflow** button on the Actions tab (on a phone,
+switch to the desktop site if it doesn't show) with a **Dry run** box:
+tick it and the robot prints what it would have saved in the log, and
+saves nothing. To **turn one off**: open it on the Actions tab, tap "..."
+at the top right, then "Disable workflow" ("Enable workflow" turns it
+back on).
+
+### Brief lessons ("What the brief is working on")
+
+- **When:** Saturdays at 9:37 am Saskatoon time (`brief-lessons.yml`).
+- **What it does:** reads every report card from the last 28 days, the
+  briefs they graded, the running score and last week's lessons, and asks
+  Opus 5.5 for 3 to 5 lessons about *how the brief works*: gap sizes called
+  too big, supports listed too close to the price, overconfidence after a
+  red day. Never market predictions. Each lesson is one instruction, its
+  evidence (a count like "4 of 5 gap calls too big" and the card dates)
+  and a status: New, Kept, or Retired once recent cards show it's fixed.
+- **Guardrails:** with fewer than 5 graded report cards in the window it
+  stops before asking (the log says why). The script checks the answer:
+  at most 5 active lessons, every evidence date must be a real report
+  card, no prices, and anything that fails is dropped. It never changes a
+  report card or a brief.
+- **Where it shows:** a closed "What the brief is working on" fold on the
+  After close tab of `briefs.html` (hidden until the first lessons exist).
+  The next weekday morning's brief reads them too, as long as they're
+  under 14 days old (its log says "Lessons used: N").
+- **Saved in:** `lessons/latest.json` plus `lessons/2026-11-07.json` for
+  each week.
+- **Fix a bad lesson:** edit or delete it in `lessons/latest.json` (or set
+  its `"status"` to `"retired"`). Next Saturday's run starts from your
+  version.
+
+### Devlog drafter
+
+- **When:** Sundays at 11:23 am Saskatoon time (`devlog-draft.yml`).
+- **What it does:** looks at every game with a GitHub `code` link in
+  `projects.json`, collects the last 7 days of merged pull requests and
+  releases, and asks Sonnet 5.5 to draft 0 to 4 devlog posts (at most one
+  per game) as Longlight, to players: only real changes, no code words,
+  no PR numbers, no names. No game activity that week: no call.
+- **What you get:** a pull request called "Devlog draft for the week of
+  ..." with the posts at the top of `devlog.json` on a
+  `devlog-draft/YYYY-MM-DD` branch. Its description shows each post with
+  links to the pull requests and releases it came from.
+- **It never merges itself.** Read it on your phone. To fix a post, open
+  the Files tab, tap "..." → Edit file on `devlog.json` and commit to that
+  branch. Then **merge** to publish, or **close** to skip the week (and
+  delete the branch).
+
+### Release lines (the "What's new" line on each game card)
+
+- **When:** every 6 hours at :53 (`release-lines.yml`).
+- **What it does:** checks each game's newest GitHub Release. If
+  `release-lines.json` has no line for it yet (keyed like
+  `"350Chev@v1.2.0"`), it asks Sonnet 5.5 to rewrite the release title and
+  notes as one line for players: 90 characters at most, no version number,
+  nothing the notes don't say ("fix sim tick drift" → "Races no longer
+  slow down late in a season."). All new releases go in one call; no new
+  release, no call. It then commits the file and runs the deploy.
+- **Where it shows:** the game cards' "v1.4 · ..." line, the What's new
+  page and the game page. The deploy uses the line for that exact release,
+  or the release title if there isn't one (or the file is missing or
+  broken). The deploy itself never calls Claude.
+- **Fix a bad line:** edit its `"line"` in `release-lines.json`. The robot
+  never overwrites a line that's already there. To have it write a new
+  one, delete that whole entry.
 
 ## The Prediction Tracker (parked)
 
