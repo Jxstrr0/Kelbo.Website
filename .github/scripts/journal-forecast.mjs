@@ -28,11 +28,13 @@ const FORCE = process.env.FORCE === "1";
 
 /* ---------- Which week ---------- */
 // On a Saturday or Sunday it's the coming week; on a weekday (a run by
-// hand) it's the week already under way.
+// hand) it's the rest of the week already under way, from today on, so
+// the calls never cover days that have already happened.
 const today = skDate();
 const dow = new Date(today + "T12:00:00Z").getUTCDay(); // 0 = Sunday
+const midWeek = dow >= 1 && dow <= 5;
 const monday = dow === 6 ? addDays(today, 2) : dow === 0 ? addDays(today, 1) : addDays(today, 1 - dow);
-const days = [0, 1, 2, 3, 4].map((n) => addDays(monday, n)).filter(isMarketDay);
+const days = [0, 1, 2, 3, 4].map((n) => addDays(monday, n)).filter(isMarketDay).filter((d) => !midWeek || d >= today);
 if (!days.length) {
   console.log(`The week of ${monday} has no market days. Nothing to forecast.`);
   process.exit(0);
@@ -108,7 +110,7 @@ When you are done, output the line ${MARKER} and then one JSON object, with noth
   "sources": [ { "title": "<page title>", "url": "<the exact URL from your search results or a page you fetched>" } ]
 }`;
 
-const USER = `Today is ${long(today)} (Saskatchewan date). Write the forecast for the week of ${long(monday)}. The market is open ${days.map(short).join(", ")}${days.length < 5 ? " (the other weekday is a US market holiday)" : ""}. Weekly calls are measured from the ${short(base)} close to the ${short(last)} close.
+const USER = `Today is ${long(today)} (Saskatchewan date). Write the forecast for the week of ${long(monday)}. The market is open ${days.map(short).join(", ")}${midWeek ? " (this is written partway through the week, so the forecast only covers today onward; today's session may already be under way, so treat any move since the last close as known, not as part of the forecast)" : days.length < 5 ? " (the other weekday is a US market holiday)" : ""}. Weekly calls are measured from the ${short(base)} close to the ${short(last)} close.
 
 The two newest journal entries, for context (newest first):
 <recent>

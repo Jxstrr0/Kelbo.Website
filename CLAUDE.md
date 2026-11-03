@@ -757,7 +757,8 @@ keep the Co-Authored-By trailer for Claude in each message.
   only links seen that run (`seenSources`); `by: "forecaster"`; title
   "Forecast for the week of <Mon>", `date` = first market day, `gradeBy` =
   last. Prepends to journal.json (rewritten with 2-space JSON), commits as
-  forecaster, then runs deploy.yml.
+  forecaster, then runs deploy.yml. A weekday run by hand covers only today
+  to Friday, measured from the last close before today.
 - Scorekeeper (weekly journal grades): `journal-grade.yml` (Friday after
   the close: `23 22 * * 5` and `47 23 * * 5` UTC = 4:23 and 5:47 pm)
   runs `journal-grade.mjs` (`claude-sonnet-5-5`, effort high,
