@@ -1,5 +1,226 @@
 [
   {
+    "date": "2026-11-03",
+    "title": "Forecast for the week of Nov 2",
+    "bias": "Neutral",
+    "gradeBy": "2026-11-06",
+    "summary": "I think this is a choppy week, and money is still moving out of the big tech names. I'd sell into tech bounces like today's until the S&P closes back over 7,632. I want equal weight to beat SPY and health care to beat tech, and I think the VIX falls once the election and Friday's jobs report are out of the way. MU should hold $800, but I'm not buying it until it gets back over $900.",
+    "view": "Writing this Tuesday morning, Election Day. Last week the S&P fell 0.57% to 7,580.07, the Nasdaq fell 2.00% and the Dow fell 0.85%, but the Russell 2000 rose 1.29% to 2,811.84. Health care (XLV +3.12%) and materials (XLB +2.79%) led. Communication services (XLC -5.32%) and tech (XLK -2.03%) were the only sectors down. Friday was the S&P's worst day since June: Intel fell 28.58% on its guidance and the SOX fell 7.20%. The VIX finished the week at 19.42, the 10-year at about 4.92%, and front-month Brent settled at $113.43. MU rose 0.8% on the week to $884.74.\n\nMonday kept the rotation going. The S&P fell 0.51% to 7,541.40, its lowest close since July 31, and the Nasdaq fell 1.07%. The Dow rose 0.41% and RSP rose 0.76%. Brent dropped 7.63% to $104.77 on talk of US-Iran diplomacy, so energy (-3.96%) fell along with tech (-2.95%). Oracle's $20 billion stock and bond sale brought back the worries about how AI spending gets paid for. MU fell 5.78% to $833.59 after Kioxia's cautious outlook, and the VIX closed at 21.15. This morning chips are bouncing: the S&P is up about 0.3%, the Nasdaq about 0.7%, and MU is near $859.\n\nThis week hinges on three things. The midterms come in tonight, and Kalshi had Democrats at 93.8% to win the House and 74% for the Senate. AMD reports after the close tonight with about an 8.95% move priced, and Qualcomm and Arm report Wednesday. Payrolls come out Friday. The consensus is 55K to 63K, against 29K last month, and December hike odds were 72% on Monday. My lean is that payrolls come in under consensus, since Continuum (50K) and KPMG (45K) both sit below it. A soft number helps bonds and equal weight more than megacap tech.\n\nMy lean is neutral on the index and bearish on AI hardware when it rallies. The last two entries taught me that rankings and thresholds that follow the trend hit, while range pins and implied-move caps missed. So my calls ride the rotation and give the lines room. The risk is that the RSP and XLV calls miss together if AMD sets off a real tech squeeze.",
+    "note": "Weekly figures are Friday Oct 30 closes from CappNotes, First Financial Trust and a sector ETF weekly recap. Monday's Nov 2 closes come from CappNotes, CNBC and quote pages. Tuesday's moves are mid-morning reads, not closes. The data consensus is from Investing.com's calendar as of Monday noon ET. Written by the Forecaster robot on Nov 3 from that day's web searches.",
+    "sectors": [
+      {
+        "sector": "Health Care",
+        "etf": "XLV",
+        "direction": "Leading",
+        "trend": "up",
+        "why": "Best sector last week (+3.12%), but a Democratic sweep could bring drug pricing pressure"
+      },
+      {
+        "sector": "Materials",
+        "etf": "XLB",
+        "direction": "Leading",
+        "trend": "up",
+        "why": "+2.79% last week and +1.76% Monday"
+      },
+      {
+        "sector": "Discretionary",
+        "etf": "XLY",
+        "direction": "Bouncing",
+        "trend": "up",
+        "why": "+2.02% last week, +2.41% Monday on cheaper oil"
+      },
+      {
+        "sector": "Staples",
+        "etf": "XLP",
+        "direction": "Firm",
+        "trend": "up",
+        "why": "+1.31% last week and +1.58% Monday, still getting defensive money"
+      },
+      {
+        "sector": "Energy",
+        "etf": "XLE",
+        "direction": "Rolling over",
+        "trend": "down",
+        "why": "-3.96% Monday as Brent fell 7.63% on US-Iran talk"
+      },
+      {
+        "sector": "Tech",
+        "etf": "XLK",
+        "direction": "Lagging",
+        "trend": "down",
+        "why": "-2.03% last week and -2.95% Monday on AI spending and funding worries"
+      },
+      {
+        "sector": "Semis / Memory",
+        "etf": "SMH, MU",
+        "direction": "Lagging, bouncing today",
+        "trend": "down",
+        "why": "SOX -7.20% Friday on Intel, and Kioxia's outlook hit memory Monday"
+      },
+      {
+        "sector": "Communication Services",
+        "etf": "XLC",
+        "direction": "Weakest",
+        "trend": "down",
+        "why": "-5.32% last week, Alphabet's record one-day drop"
+      }
+    ],
+    "calls": [
+      {
+        "call": "Equal weight keeps beating cap weight: RSP beats SPY on the week",
+        "wrongIf": "SPY finishes the week (Nov 6 close vs Nov 2 close) ahead of RSP.",
+        "grade": null
+      },
+      {
+        "call": "Health care beats tech on the week",
+        "wrongIf": "XLK finishes the week (Nov 6 close vs Nov 2 close) ahead of XLV.",
+        "grade": null
+      },
+      {
+        "call": "MU holds $800 on every close this week",
+        "wrongIf": "MU closes under $800 on any day from Nov 3 to Nov 6.",
+        "grade": null
+      },
+      {
+        "call": "The S&P stays capped under the broken support at 7,632",
+        "wrongIf": "The S&P 500 closes above 7,632 on any day from Nov 3 to Nov 6.",
+        "grade": null
+      },
+      {
+        "call": "The VIX comes down once the election and the jobs report are out of the way",
+        "wrongIf": "The VIX closes on Nov 6 at or above 21.15, its Nov 2 close.",
+        "grade": null
+      },
+      {
+        "call": "Brent stays under $110 while the Iran talks are alive",
+        "wrongIf": "Front-month Brent settles at or above $110 on any day from Nov 3 to Nov 6.",
+        "grade": null
+      }
+    ],
+    "scenarios": [
+      {
+        "odds": 45,
+        "name": "Base: chop under 7,632",
+        "text": "Tech bounces off AMD and the election fade, and the S&P stalls under 7,620 to 7,632. Equal weight and health care keep the lead and the VIX bleeds back under 20 after payrolls."
+      },
+      {
+        "odds": 30,
+        "name": "Bear: AI unwind resumes",
+        "text": "AMD or Qualcomm disappoints, or payrolls come in hot and push December hike odds up. The S&P closes under 7,500 and heads for the 200-day near 7,306 to 7,325, with MU testing $800."
+      },
+      {
+        "odds": 25,
+        "name": "Bull: relief rally",
+        "text": "A clean election result and a strong AMD report set off short covering in chips. The S&P closes over 7,632 and tech beats health care on the week."
+      }
+    ],
+    "levels": [
+      {
+        "symbol": "SPX",
+        "resistance": "7,620-7,632 (broken support), 7,675 (Oct 29 low)",
+        "support": "7,527.67 (Oct 30 intraday low), 7,500, 7,306-7,325 (200-day)",
+        "tell": "A close over 7,632 means the bounce is real. A close under 7,500 opens the 200-day"
+      },
+      {
+        "symbol": "MU",
+        "resistance": "$849-850, $900, $950.61 (20-day), $978.7 (50-day)",
+        "support": "$829.24 (Nov 2 low), $800, $738-747 (200-day area)",
+        "tell": "A close under $800 opens $738 to $747. A close over $900 would mean the memory sell-off is pausing"
+      },
+      {
+        "symbol": "Brent",
+        "resistance": "$110, $113.43 (Oct 30 settle)",
+        "support": "$104.77 (Nov 2 settle)",
+        "tell": "A settle over $110 means the Iran talks have stalled and energy is back in the lead"
+      }
+    ],
+    "schedule": [
+      {
+        "when": "Tue",
+        "what": "Midterms all day, results tonight. JOLTS at 9:00 a.m. Sask (7.11M expected vs 7.079M) and factory orders. Pfizer before the open"
+      },
+      {
+        "when": "Tue after close",
+        "what": "AMD (about 8.95% priced), Arista (10.19%), Super Micro (14.20%), Amgen, Skyworks, Booking"
+      },
+      {
+        "when": "Wed",
+        "what": "ADP at 7:15 a.m. Sask (68K vs 90K), ISM services at 9:00 a.m. (54.8 vs 54.9), Treasury quarterly refunding statement. Uber and McDonald's before the open. Okta joins the S&P 500"
+      },
+      {
+        "when": "Wed after close",
+        "what": "Qualcomm (about 9.96% priced) and Arm (12.44%)"
+      },
+      {
+        "when": "Thu",
+        "what": "Jobless claims at 7:30 a.m. Sask (197K vs 194K), productivity (2.8%) and unit labor costs (0.3%). Barkin in the morning, Logan in the evening. Airbnb (about 7.90% priced), DraftKings and IonQ"
+      },
+      {
+        "when": "Fri",
+        "what": "Payrolls at 7:30 a.m. Sask (55K to 63K vs 29K), unemployment (4.2%), hourly earnings (0.3%). Michigan sentiment at 9:00 a.m. (47.8). Williams early, Bowman at 11:15 a.m. Sask"
+      }
+    ],
+    "plan": [
+      "No new MU longs until it closes back over $900. I'll only buy dips in the $800 to $830 zone, with defined risk.",
+      "Defined-risk spreads only through AMD tonight and Qualcomm Wednesday. The implied move is a typical size, not a cap.",
+      "Fade S&P pops into 7,620 to 7,632, and stop fading if it closes over 7,632.",
+      "Small or flat into Friday's 7:30 a.m. payrolls print.",
+      "If the S&P closes under 7,500, I cut risk and stop looking for longs."
+    ],
+    "trades": [],
+    "sources": [
+      {
+        "title": "Closing Look — Friday, October 30, 2026",
+        "url": "https://cappnotes.substack.com/p/closing-look-friday-october-30-2026"
+      },
+      {
+        "title": "Closing Look — Monday, November 2, 2026",
+        "url": "https://cappnotes.substack.com/p/closing-look-monday-november-2-2026"
+      },
+      {
+        "title": "Market Week: November 2, 2026 - First Financial Trust",
+        "url": "https://www.firstfinancialtrust.com/2026/11/01/marketing-week-november-2-2026/"
+      },
+      {
+        "title": "Stock Market Weekly Recap: Sector Winners, Losers Oct 26-30",
+        "url": "https://currentlogic.substack.com/p/dispersion-brief-week-in-review-oct-7dd"
+      },
+      {
+        "title": "Stock market news for Nov. 2, 2026",
+        "url": "https://www.cnbc.com/2026/11/01/stock-market-today-live-updates.html"
+      },
+      {
+        "title": "Stock Market Close Nov 2, 2026: S&P 500, Dow, Nasdaq",
+        "url": "https://portfolio-terminal.com/markets/stock-market-close"
+      },
+      {
+        "title": "Micron Stock Price History - Investing.com",
+        "url": "https://www.investing.com/equities/micron-tech-historical-data"
+      },
+      {
+        "title": "Micron Stock (MU) Falls 5.8% as Memory Stocks Slide (Nov 2)",
+        "url": "https://www.heygotrade.com/en/news/micron-mu-stock-news-november-3-2026/"
+      },
+      {
+        "title": "MU Stock Falls 5.78% as Micron Tests $830 Support",
+        "url": "https://www.fxleaders.com/news/2026/11/03/mu-stock-falls-5-78-as-micron-tests-830-support/"
+      },
+      {
+        "title": "What's Going On With Micron Technology Stock Monday?",
+        "url": "https://www.benzinga.com/markets/tech/26/11/62772505/whats-going-on-with-micron-technology-stock-monday-8"
+      },
+      {
+        "title": "Indices Weekly Outlook: S&P 500 breaks support as wobbling AI trade weigh on stocks",
+        "url": "https://www.stonex.com/en-gb/news-and-analysis/indices-weekly-outlook-sandp-500-breaks-support-as-wobbling-ai-trade-weigh-on-stocks-2026-11-01/"
+      },
+      {
+        "title": "Midterms, Apple earnings, jobs report. Wall Street faces a big week ahead just as investors dump tech",
+        "url": "https://www.cnbc.com/2026/10/30/stock-market-next-week-outlook-for-nov-2-6-2026.html"
+      }
+    ],
+    "by": "forecaster"
+  },
+  {
     "date": "2026-10-19",
     "title": "Forecast for the week of Oct 19",
     "bias": "Neutral",
@@ -8,36 +229,133 @@
     "view": "Writing this Monday afternoon. Last week was a rotation more than a crash. The S&P fell 1.95% to 7,659.44 and the Nasdaq fell 4.48%, while the Dow rose 0.67%. Staples (XLP +5.02%), energy (XLE +4.86%) and health care (XLV +3.45%) led, and tech (XLK -7.70%) and small caps (Russell 2000 about -3.0%) took the hit. The SOX fell 8 sessions in a row, about 15.7%.\n\nMonday's rally is the bounce. The S&P is up about 0.65% near 7,709, the Nasdaq about 1.4%, and the VIX is down to about 18. But the S&P is still sitting on its 50-day (about 7,706 to 7,712), and sentiment was fearful but not panicked on Friday (VIX 19.99, Fear & Greed 30). I read that as a reflex rally, with a likely ceiling at 7,712 to 7,739.\n\nThis week is earnings, not the Fed. The Fed is in its blackout before the Oct 27-28 meeting, with about a 15% chance of an October hike priced and about 89% by December. The swing event is Meta and Tesla after the close Wednesday. Meta's 2026 capex guide is $130 to $145 billion and the options market is pricing a move of about 6%. IBM and Lam Research also report Wednesday.\n\nMy lean is neutral. Health care, staples and energy stay the higher-conviction leaders, small caps keep lagging while the 10-year sits near 5.1%, and Brent stays in the $100 to $110 range. If Meta reassures, tech can keep bouncing. If it doesn't, 7,567 is the line.",
     "note": "These numbers come from a third-party market outlook for Oct 19 to 23, not official closes. Monday's levels are mid-afternoon reads. Weekly figures differ a little by source (one release had the S&P at -1.43% and the Russell 2000 at -2.43% for last week).",
     "sectors": [
-      { "sector": "Energy", "etf": "XLE", "direction": "Leading", "trend": "up", "why": "Brent about $107.6 after a $109.86 settle Friday, Hormuz supply risk still alive" },
-      { "sector": "Staples", "etf": "XLP", "direction": "Leading", "trend": "up", "why": "Best sector last week (+5.02%), defensive money" },
-      { "sector": "Health Care", "etf": "XLV", "direction": "Leading", "trend": "up", "why": "Record high last week, +3.45%" },
-      { "sector": "Financials", "etf": "XLF", "direction": "Lukewarm", "trend": "down", "why": "Banks reported fine, but the ETF flows don't back it" },
-      { "sector": "Small Caps", "etf": "IWM", "direction": "Lagging", "trend": "down", "why": "Floating-rate debt, so they need yields to fall first" },
-      { "sector": "Tech / Semis", "etf": "XLK, SMH", "direction": "Bouncing, unproven", "trend": "down", "why": "Leads on bounce days (memory names jumped Monday), but it hangs on Meta" },
-      { "sector": "AI", "direction": "Bearish", "trend": "down", "why": "A general bearish lean on AI names, with no single trigger or level set" }
+      {
+        "sector": "Energy",
+        "etf": "XLE",
+        "direction": "Leading",
+        "trend": "up",
+        "why": "Brent about $107.6 after a $109.86 settle Friday, Hormuz supply risk still alive"
+      },
+      {
+        "sector": "Staples",
+        "etf": "XLP",
+        "direction": "Leading",
+        "trend": "up",
+        "why": "Best sector last week (+5.02%), defensive money"
+      },
+      {
+        "sector": "Health Care",
+        "etf": "XLV",
+        "direction": "Leading",
+        "trend": "up",
+        "why": "Record high last week, +3.45%"
+      },
+      {
+        "sector": "Financials",
+        "etf": "XLF",
+        "direction": "Lukewarm",
+        "trend": "down",
+        "why": "Banks reported fine, but the ETF flows don't back it"
+      },
+      {
+        "sector": "Small Caps",
+        "etf": "IWM",
+        "direction": "Lagging",
+        "trend": "down",
+        "why": "Floating-rate debt, so they need yields to fall first"
+      },
+      {
+        "sector": "Tech / Semis",
+        "etf": "XLK, SMH",
+        "direction": "Bouncing, unproven",
+        "trend": "down",
+        "why": "Leads on bounce days (memory names jumped Monday), but it hangs on Meta"
+      },
+      {
+        "sector": "AI",
+        "direction": "Bearish",
+        "trend": "down",
+        "why": "A general bearish lean on AI names, with no single trigger or level set"
+      }
     ],
     "calls": [
-      { "call": "Energy keeps leading: XLE beats XLK on the week", "wrongIf": "XLK finishes the week (Oct 23 close vs Oct 16 close) ahead of XLE.", "grade": "hit" },
-      { "call": "Small caps keep lagging: the Russell 2000 underperforms the S&P 500 on the week", "wrongIf": "The Russell 2000 beats the S&P 500 for the week (Oct 23 close vs Oct 16 close).", "grade": "miss" },
-      { "call": "Meta moves less than the roughly 6% the options market is pricing after Wednesday's report", "wrongIf": "Meta moves more than 6% either way on Thursday.", "grade": "miss" },
-      { "call": "Brent holds over $100 every day this week", "wrongIf": "Brent settles under $100 on any day.", "grade": "hit" }
+      {
+        "call": "Energy keeps leading: XLE beats XLK on the week",
+        "wrongIf": "XLK finishes the week (Oct 23 close vs Oct 16 close) ahead of XLE.",
+        "grade": "hit"
+      },
+      {
+        "call": "Small caps keep lagging: the Russell 2000 underperforms the S&P 500 on the week",
+        "wrongIf": "The Russell 2000 beats the S&P 500 for the week (Oct 23 close vs Oct 16 close).",
+        "grade": "miss"
+      },
+      {
+        "call": "Meta moves less than the roughly 6% the options market is pricing after Wednesday's report",
+        "wrongIf": "Meta moves more than 6% either way on Thursday.",
+        "grade": "miss"
+      },
+      {
+        "call": "Brent holds over $100 every day this week",
+        "wrongIf": "Brent settles under $100 on any day.",
+        "grade": "hit"
+      }
     ],
     "scenarios": [
-      { "odds": 40, "name": "Base: bounce, then chop", "text": "The reflex rally runs into 7,712 to 7,739 and stalls. Meta is fine but nothing special. Defensives and energy stay the stronger trend, small caps lag, Brent stays in the $100 to $110 range." },
-      { "odds": 35, "name": "Bear: AI unwind resumes", "text": "Meta's capex or tone brings the AI spending doubts back. Tech and semis roll over again and the S&P goes back to test 7,567. A close under it opens 7,500, with the 200-day near 7,276 below that." },
-      { "odds": 25, "name": "Bull: Meta reassures", "text": "Meta calms the AI spending worries and tech keeps bouncing. The S&P pushes through 7,739 and the VIX stays under 20. Defensives still hold their gains but stop leading." }
+      {
+        "odds": 40,
+        "name": "Base: bounce, then chop",
+        "text": "The reflex rally runs into 7,712 to 7,739 and stalls. Meta is fine but nothing special. Defensives and energy stay the stronger trend, small caps lag, Brent stays in the $100 to $110 range."
+      },
+      {
+        "odds": 35,
+        "name": "Bear: AI unwind resumes",
+        "text": "Meta's capex or tone brings the AI spending doubts back. Tech and semis roll over again and the S&P goes back to test 7,567. A close under it opens 7,500, with the 200-day near 7,276 below that."
+      },
+      {
+        "odds": 25,
+        "name": "Bull: Meta reassures",
+        "text": "Meta calms the AI spending worries and tech keeps bouncing. The S&P pushes through 7,739 and the VIX stays under 20. Defensives still hold their gains but stop leading."
+      }
     ],
     "levels": [
-      { "symbol": "SPX", "resistance": "7,706-7,712 (50-day), 7,739", "support": "7,567 (Sept 16 low), 7,500, 7,276 (200-day)", "tell": "Close under 7,567 = deeper AI unwind, cut risk" },
-      { "symbol": "Brent", "resistance": "$109.86 (Friday's settle), $110", "support": "$100", "tell": "A settle under $100 breaks the energy story" }
+      {
+        "symbol": "SPX",
+        "resistance": "7,706-7,712 (50-day), 7,739",
+        "support": "7,567 (Sept 16 low), 7,500, 7,276 (200-day)",
+        "tell": "Close under 7,567 = deeper AI unwind, cut risk"
+      },
+      {
+        "symbol": "Brent",
+        "resistance": "$109.86 (Friday's settle), $110",
+        "support": "$100",
+        "tell": "A settle under $100 breaks the energy story"
+      }
     ],
     "schedule": [
-      { "when": "Tue", "what": "GE Aerospace, RTX, Northrop, 3M, GM, Capital One, Intuitive Surgical, United, Halliburton report. Housing starts. Netflix after the close" },
-      { "when": "Wed", "what": "20-year Treasury auction (the last one priced at 5.42%) and EIA crude inventories" },
-      { "when": "Wed after close", "what": "Meta (2026 capex guide $130-145B, about a 6% move priced) and Tesla. IBM and Lam Research also report" },
-      { "when": "Thu", "what": "Jobless claims (about 200K expected), Procter & Gamble, Lockheed Martin" },
-      { "when": "Fri", "what": "Flash PMIs (services 58.0, manufacturing 55.5 expected), Michigan 1-year inflation expectations, American Express" },
-      { "when": "All week", "what": "Fed blackout before the Oct 27-28 meeting, so no Fed speakers" }
+      {
+        "when": "Tue",
+        "what": "GE Aerospace, RTX, Northrop, 3M, GM, Capital One, Intuitive Surgical, United, Halliburton report. Housing starts. Netflix after the close"
+      },
+      {
+        "when": "Wed",
+        "what": "20-year Treasury auction (the last one priced at 5.42%) and EIA crude inventories"
+      },
+      {
+        "when": "Wed after close",
+        "what": "Meta (2026 capex guide $130-145B, about a 6% move priced) and Tesla. IBM and Lam Research also report"
+      },
+      {
+        "when": "Thu",
+        "what": "Jobless claims (about 200K expected), Procter & Gamble, Lockheed Martin"
+      },
+      {
+        "when": "Fri",
+        "what": "Flash PMIs (services 58.0, manufacturing 55.5 expected), Michigan 1-year inflation expectations, American Express"
+      },
+      {
+        "when": "All week",
+        "what": "Fed blackout before the Oct 27-28 meeting, so no Fed speakers"
+      }
     ],
     "plan": [],
     "trades": [],
@@ -54,41 +372,162 @@
     "view": "Writing this Wednesday night after the hot CPI print. The market is leaning defensive and semis are taking the worst of it, so this entry is my plan and my calls for Thursday and Friday.\n\nThe S&P dropped about 1.2% today to around 7,710, which puts it right on the SMA50 (about 7,707). Nasdaq was down about 2%, the Russell about 2.1%, and the Dow barely moved.\n\nCPI came in at 3.7% vs 3.6% expected, and core was +0.3% m/m vs +0.2%. Odds of a hike at the Oct 27-28 meeting jumped to somewhere between 44% and 54% depending on the time of day. The 10 year is above 5.2%.\n\nThe SOX is down about 10% in six sessions. MU is down about 10% in three days (around $926) on the CXMT news, and NVDA is around $220 to $223. VIX is about 17, so people are hedging but nobody is panicking.",
     "note": "Today's numbers are late-session reads, not official closes. Levels are pulled from recent closes and ranges, not a published level map.",
     "sectors": [
-      { "sector": "Energy", "etf": "XLE", "direction": "Leading", "trend": "up", "why": "Middle East, Brent over $105. Overbought, so buy dips, don't chase" },
-      { "sector": "Staples", "etf": "XLP", "direction": "Leading", "trend": "up", "why": "Defensive money on hike risk" },
-      { "sector": "Health Care", "etf": "XLV", "direction": "Leading", "trend": "up", "why": "Defensive, bounced back after JNJ" },
-      { "sector": "Utilities", "etf": "XLU", "direction": "Firm", "trend": "up", "why": "Defensive, but yields over 5.2% cap it" },
-      { "sector": "Financials", "etf": "XLF", "direction": "Weak", "trend": "down", "why": "BAC miss, regional banks report Friday" },
-      { "sector": "Industrials", "etf": "XLI", "direction": "Weak", "trend": "down", "why": "AI power names hit (GE Vernova about -8%)" },
-      { "sector": "Discretionary", "etf": "XLY", "direction": "Weak", "trend": "down", "why": "Inflation and yields on the consumer" },
-      { "sector": "Tech / Semis", "etf": "XLK, SMH", "direction": "Weakest", "trend": "down", "why": "Hot CPI, CXMT, AI capex funding fears" }
+      {
+        "sector": "Energy",
+        "etf": "XLE",
+        "direction": "Leading",
+        "trend": "up",
+        "why": "Middle East, Brent over $105. Overbought, so buy dips, don't chase"
+      },
+      {
+        "sector": "Staples",
+        "etf": "XLP",
+        "direction": "Leading",
+        "trend": "up",
+        "why": "Defensive money on hike risk"
+      },
+      {
+        "sector": "Health Care",
+        "etf": "XLV",
+        "direction": "Leading",
+        "trend": "up",
+        "why": "Defensive, bounced back after JNJ"
+      },
+      {
+        "sector": "Utilities",
+        "etf": "XLU",
+        "direction": "Firm",
+        "trend": "up",
+        "why": "Defensive, but yields over 5.2% cap it"
+      },
+      {
+        "sector": "Financials",
+        "etf": "XLF",
+        "direction": "Weak",
+        "trend": "down",
+        "why": "BAC miss, regional banks report Friday"
+      },
+      {
+        "sector": "Industrials",
+        "etf": "XLI",
+        "direction": "Weak",
+        "trend": "down",
+        "why": "AI power names hit (GE Vernova about -8%)"
+      },
+      {
+        "sector": "Discretionary",
+        "etf": "XLY",
+        "direction": "Weak",
+        "trend": "down",
+        "why": "Inflation and yields on the consumer"
+      },
+      {
+        "sector": "Tech / Semis",
+        "etf": "XLK, SMH",
+        "direction": "Weakest",
+        "trend": "down",
+        "why": "Hot CPI, CXMT, AI capex funding fears"
+      }
     ],
     "calls": [
-      { "call": "TSMC gives semis a bounce Thursday morning, and it fades by the afternoon", "wrongIf": "SOX closes green Thursday and holds above about 12,200 (Tuesday's close).", "grade": "partial" },
-      { "call": "PPI lands around +0.5% and doesn't make things worse", "wrongIf": "PPI or core PPI comes in hot and hike odds go over 60%.", "grade": "miss" },
-      { "call": "S&P stays above 7,663 and pins 7,700 to 7,725 into Friday's close", "wrongIf": "It closes under 7,663 (the gamma flip) on either day.", "grade": "miss" },
-      { "call": "MU tests $950-955, gets rejected, and holds above $900", "wrongIf": "It closes over $955 with SOX green, or loses $900.", "grade": "miss" },
-      { "call": "NVDA outperforms MU over the two days", "wrongIf": "MU's two-day % move beats NVDA's.", "grade": "hit" },
-      { "call": "Staples and Health Care beat Tech over Thursday and Friday", "wrongIf": "XLK beats both XLP and XLV over the two days.", "grade": "hit" },
-      { "call": "VIX stays under 20", "wrongIf": "VIX closes over 20 on either day.", "grade": "hit" }
+      {
+        "call": "TSMC gives semis a bounce Thursday morning, and it fades by the afternoon",
+        "wrongIf": "SOX closes green Thursday and holds above about 12,200 (Tuesday's close).",
+        "grade": "partial"
+      },
+      {
+        "call": "PPI lands around +0.5% and doesn't make things worse",
+        "wrongIf": "PPI or core PPI comes in hot and hike odds go over 60%.",
+        "grade": "miss"
+      },
+      {
+        "call": "S&P stays above 7,663 and pins 7,700 to 7,725 into Friday's close",
+        "wrongIf": "It closes under 7,663 (the gamma flip) on either day.",
+        "grade": "miss"
+      },
+      {
+        "call": "MU tests $950-955, gets rejected, and holds above $900",
+        "wrongIf": "It closes over $955 with SOX green, or loses $900.",
+        "grade": "miss"
+      },
+      {
+        "call": "NVDA outperforms MU over the two days",
+        "wrongIf": "MU's two-day % move beats NVDA's.",
+        "grade": "hit"
+      },
+      {
+        "call": "Staples and Health Care beat Tech over Thursday and Friday",
+        "wrongIf": "XLK beats both XLP and XLV over the two days.",
+        "grade": "hit"
+      },
+      {
+        "call": "VIX stays under 20",
+        "wrongIf": "VIX closes over 20 on either day.",
+        "grade": "hit"
+      }
     ],
     "scenarios": [
-      { "odds": 50, "name": "Base: choppy and pinned", "text": "TSMC is solid but nothing special and PPI is in line. Semis try to bounce Thursday and fade into MU $950s and NVDA $228-230. S&P bounces between 7,663 and 7,750 and pins near 7,700 Friday. Defensives and energy stay firm." },
-      { "odds": 25, "name": "Bull: semis relief rally", "text": "TSMC raises Q4 guide or capex with strong AI comments, PPI is soft, and the 10 year drops under 5.2%. Short covering in the most beaten up names. I'd want to see SOX back over 12,200, S&P over 7,750 and VIX back toward 15. NVDA is the cleaner long here." },
-      { "odds": 25, "name": "Bear: rates break it", "text": "Hot PPI plus strong retail sales, hike odds over 60%, 10 year over 5.32%, or TSMC misses on margins. S&P closes under 7,663 and the SMA50, VIX goes over 19-20. MU heads for $900." }
+      {
+        "odds": 50,
+        "name": "Base: choppy and pinned",
+        "text": "TSMC is solid but nothing special and PPI is in line. Semis try to bounce Thursday and fade into MU $950s and NVDA $228-230. S&P bounces between 7,663 and 7,750 and pins near 7,700 Friday. Defensives and energy stay firm."
+      },
+      {
+        "odds": 25,
+        "name": "Bull: semis relief rally",
+        "text": "TSMC raises Q4 guide or capex with strong AI comments, PPI is soft, and the 10 year drops under 5.2%. Short covering in the most beaten up names. I'd want to see SOX back over 12,200, S&P over 7,750 and VIX back toward 15. NVDA is the cleaner long here."
+      },
+      {
+        "odds": 25,
+        "name": "Bear: rates break it",
+        "text": "Hot PPI plus strong retail sales, hike odds over 60%, 10 year over 5.32%, or TSMC misses on margins. S&P closes under 7,663 and the SMA50, VIX goes over 19-20. MU heads for $900."
+      }
     ],
     "levels": [
-      { "symbol": "MU", "resistance": "$950-955, $989, $1,000", "support": "$926, $900", "tell": "Hold over $955 with SOX green = bull" },
-      { "symbol": "NVDA", "resistance": "$228.5-229.4, $234, $237-239", "support": "$223, $220-221, $214-216", "tell": "Reclaim $229 = neutral to bullish. Close under $220 = mid $210s" },
-      { "symbol": "SPX", "resistance": "7,725 (call wall), 7,750", "support": "7,700 (put wall), 7,663 (flip)", "tell": "Under 7,663 moves can speed up" }
+      {
+        "symbol": "MU",
+        "resistance": "$950-955, $989, $1,000",
+        "support": "$926, $900",
+        "tell": "Hold over $955 with SOX green = bull"
+      },
+      {
+        "symbol": "NVDA",
+        "resistance": "$228.5-229.4, $234, $237-239",
+        "support": "$223, $220-221, $214-216",
+        "tell": "Reclaim $229 = neutral to bullish. Close under $220 = mid $210s"
+      },
+      {
+        "symbol": "SPX",
+        "resistance": "7,725 (call wall), 7,750",
+        "support": "7,700 (put wall), 7,663 (flip)",
+        "tell": "Under 7,663 moves can speed up"
+      }
     ],
     "schedule": [
-      { "when": "Thu ~12:00 a.m.", "what": "TSMC Q3 call. Revenue is already known, so it's all about the Q4 guide, margins and capex" },
-      { "when": "Thu 6:30 a.m.", "what": "PPI (est. +0.5%), retail sales (est. +0.3%), jobless claims, Philly Fed" },
-      { "when": "Thu 2:00 p.m.", "what": "Last trading day for AM-settled October SPX options" },
-      { "when": "Thu evening", "what": "Warsh speaking. Hits futures and Friday's open, not Thursday's session" },
-      { "when": "Fri pre-market", "what": "Regional banks (MTB, TFC, RF, CFG) and TRV" },
-      { "when": "Fri 2:00 p.m.", "what": "Monthly opex at the close. Watch round strikes for pinning" }
+      {
+        "when": "Thu ~12:00 a.m.",
+        "what": "TSMC Q3 call. Revenue is already known, so it's all about the Q4 guide, margins and capex"
+      },
+      {
+        "when": "Thu 6:30 a.m.",
+        "what": "PPI (est. +0.5%), retail sales (est. +0.3%), jobless claims, Philly Fed"
+      },
+      {
+        "when": "Thu 2:00 p.m.",
+        "what": "Last trading day for AM-settled October SPX options"
+      },
+      {
+        "when": "Thu evening",
+        "what": "Warsh speaking. Hits futures and Friday's open, not Thursday's session"
+      },
+      {
+        "when": "Fri pre-market",
+        "what": "Regional banks (MTB, TFC, RF, CFG) and TRV"
+      },
+      {
+        "when": "Fri 2:00 p.m.",
+        "what": "Monthly opex at the close. Watch round strikes for pinning"
+      }
     ],
     "plan": [
       "Not shorting the open if TSMC beats. Oversold names gap and squeeze.",
