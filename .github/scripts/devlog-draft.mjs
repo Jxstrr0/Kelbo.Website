@@ -180,7 +180,7 @@ await writeFile("devlog.json", JSON.stringify(devlog, null, 2) + "\n");
 // The pull request's description: each post with the links it came from.
 const week = new Intl.DateTimeFormat("en-US", { timeZone: "America/Regina", month: "long", day: "numeric", year: "numeric" }).format(since);
 const lines = [
-  `Draft devlog posts from the last 7 days of game updates, written by the devlog robot (\`devlog-draft.yml\`). **Not merged automatically.**`,
+  `Draft devlog posts from the last 7 days of game updates, written by the Devlog Writer (\`devlog-draft.yml\`). **Not merged automatically.**`,
   "",
   "Read them on the Files tab. To fix wording, edit `devlog.json` on this branch (pencil icon), then merge. To drop a post, delete it from the file. To skip the week, close this pull request.",
   "",

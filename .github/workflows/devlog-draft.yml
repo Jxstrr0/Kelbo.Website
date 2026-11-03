@@ -21,7 +21,7 @@
 #
 # Needs Settings > Actions > General > "Allow GitHub Actions to create and
 # approve pull requests" switched on, or step 3 fails.
-name: Devlog draft
+name: Devlog Writer (weekly devlog draft)
 
 # 17:23 UTC = 11:23 am Saskatoon on Sundays.
 on:
@@ -74,7 +74,7 @@ jobs:
             echo "$branch already exists (a draft was made earlier today). Close or merge it, delete the branch, then run this again."
             exit 0
           fi
-          git config user.name "devlog-bot"
+          git config user.name "devlog-writer"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git switch -c "$branch"
           git add devlog.json
