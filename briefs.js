@@ -772,7 +772,7 @@ function showTally(data) {
 }
 
 /* ---------- What the brief is working on ----------
-   lessons/latest.json, written each Saturday by brief-lessons.mjs from the
+   lessons/latest.json, written each Sunday by brief-lessons.mjs from the
    report cards: { updated, window: {from, to}, cards, lessons: [{ text,
    evidence: {count, dates}, status }] }. The fold lists the lessons that
    aren't retired, as text. No file, or nothing active: it stays hidden. */
@@ -810,7 +810,7 @@ async function setUpLessons() {
     note.push(`${briefDate(data.window.from, { month: "short", day: "numeric" })} to ${briefDate(data.window.to, { month: "short", day: "numeric" })}`);
   }
   box.querySelector("[data-lessons-note]").textContent =
-    (note.length ? note.join(", ") + ". " : "") + "The morning brief reads these before it writes. Updated Saturdays.";
+    (note.length ? note.join(", ") + ". " : "") + "The morning brief reads these before it writes. Updated Sundays.";
   box.hidden = false;
 }
 

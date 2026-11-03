@@ -40,7 +40,7 @@ const GRADED = ["hit", "partial", "miss"]; // a gap call that really got a grade
 const today = skDate();
 const dayMs = 864e5;
 
-// It runs twice on Saturday (the second picks up a batch the first had to
+// It runs twice on Sunday (the second picks up a batch the first had to
 // leave waiting). Once today's lessons are written, there's nothing to do.
 if (existsSync(`${LESSONS_DIR}/${today}.json`) && !existsSync(".github/batches/coach.json") && !DRY_RUN) {
   console.log(`Today's lessons (${LESSONS_DIR}/${today}.json) are already written. No call made.`);
