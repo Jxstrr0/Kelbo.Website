@@ -1,0 +1,87 @@
+# Weekly devlog drafts for Kelbo to review.
+#
+# Every Sunday, this:
+#   1. runs .github/scripts/devlog-draft.mjs, which collects the last 7 days
+#      of merged pull requests and releases from each game's repo and asks
+#      Claude (one call, no web search) to draft 0 to 4 devlog posts, at
+#      most one per game. No game activity: no call, nothing else happens.
+#   2. runs the site check on the drafts (a pull request opened by this
+#      workflow doesn't start the Site check by itself),
+#   3. puts them on a new branch, devlog-draft/YYYY-MM-DD, and opens a pull
+#      request "Devlog draft for the week of ..." listing each post with
+#      links to where it came from.
+# The pull request is NEVER merged automatically. Read it on your phone,
+# edit devlog.json on that branch if a post needs fixing, then merge it
+# (the site updates) or close it (nothing changes).
+#
+# It uses the ANTHROPIC_API_KEY repository secret. "Run workflow" on the
+# Actions tab runs it now; tick "dry run" to see the drafts in the log
+# without opening a pull request. To stop it, open it on the Actions tab,
+# tap "..." and choose "Disable workflow".
+#
+# Needs Settings > Actions > General > "Allow GitHub Actions to create and
+# approve pull requests" switched on, or step 3 fails.
+name: Devlog draft
+
+# 17:23 UTC = 11:23 am Saskatoon on Sundays.
+on:
+  schedule:
+    - cron: "23 17 * * 0"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run: print the drafts in the log, open no pull request"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write # to push the draft branch
+  pull-requests: write # to open the pull request
+
+concurrency:
+  group: devlog-draft
+  cancel-in-progress: false
+
+jobs:
+  draft:
+    name: Draft this week's posts
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      - name: Collect the week and draft posts
+        id: draft
+        run: node .github/scripts/devlog-draft.mjs
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GITHUB_TOKEN: ${{ github.token }}
+          DRY_RUN: ${{ inputs.dry_run == true && '1' || '' }}
+
+      - name: Check the site with the drafts in it
+        if: steps.draft.outputs.posts > 0
+        run: node .github/scripts/check-site.mjs
+
+      - name: Open a pull request for Kelbo (never merged automatically)
+        if: steps.draft.outputs.posts > 0
+        run: |
+          branch="devlog-draft/$(TZ=America/Regina date +%F)"
+          if git ls-remote --exit-code --heads origin "$branch" > /dev/null; then
+            echo "$branch already exists (a draft was made earlier today). Close or merge it, delete the branch, then run this again."
+            exit 0
+          fi
+          git config user.name "devlog-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$branch"
+          git add devlog.json
+          git commit -m "Devlog draft for the week of ${{ steps.draft.outputs.week }}"
+          git push -u origin "$branch"
+          gh pr create --base main --head "$branch" \
+            --title "Devlog draft for the week of ${{ steps.draft.outputs.week }}" \
+            --body-file "${{ steps.draft.outputs.body_file }}"
+        env:
+          GH_TOKEN: ${{ github.token }}
