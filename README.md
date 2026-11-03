@@ -832,7 +832,7 @@ same `ANTHROPIC_API_KEY` secret as the brief:
   a run (batch price).
 
 **Batch price.** Neither result is needed straight away, so both (and the
-Coach) send their request as a "batch": Anthropic answers when it has
+Coach and the Devlog Writer) send their request as a "batch": Anthropic answers when it has
 room, at half the token price. The answer usually comes back within an
 hour while the run waits. If it takes longer than about 5 hours, the run
 saves its place in `.github/batches/` and the next try picks up the same
@@ -1041,7 +1041,7 @@ you can see how good the calls really are over time.
 | **Morning Writer** | Writes the pre-market brief (`premarket-brief.yml`) | Weekdays 6:17 am |
 | **Grader** | Grades that brief after the close (`postmarket-recap.yml`) | Weekdays 4:07 pm |
 | **Coach** | Turns the report cards into lessons for the Morning Writer (`brief-lessons.yml`) | Saturdays 9:37 am (batch) |
-| **Devlog Writer** | Drafts devlog posts and opens a pull request for you (`devlog-draft.yml`) | Sundays 11:23 am |
+| **Devlog Writer** | Drafts devlog posts and opens a pull request for you (`devlog-draft.yml`) | Sundays 11:23 am (batch) |
 | **Release Writer** | Writes the player-friendly "What's new" line for game releases (`release-lines.yml`) | Every 6 hours |
 | **Forecaster** | Writes the journal's forecast for the coming week (`journal-forecast.yml`) | Sundays 7:47 pm (batch) |
 | **Scorekeeper** | Grades that week's journal calls (`journal-grade.yml`) | Sundays 11:37 am (batch) |
@@ -1105,7 +1105,9 @@ back on).
 
 ### The Devlog Writer (weekly devlog drafts)
 
-- **When:** Sundays at 11:23 am Saskatoon time (`devlog-draft.yml`).
+- **When:** Sundays at 11:23 am Saskatoon time (`devlog-draft.yml`), as a
+  half-price batch; a 5:13 pm try picks it up if it was slow (and stops
+  straight away if the draft is already there).
 - **What it does:** looks at every game with a GitHub `code` link in
   `projects.json`, collects the last 7 days of merged pull requests and
   releases, and asks Sonnet 5.5 to draft 0 to 4 devlog posts (at most one
