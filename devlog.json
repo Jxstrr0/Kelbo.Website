@@ -2,6 +2,12 @@
   "posts": [
     {
       "date": "2026-11-02",
+      "title": "Prairie Engine Works: more team offers, Real sound by default",
+      "game": "Prairie Engine Works",
+      "body": "The Team tab now shows five offers at once, and no two are the same kind of racing. Some teams are shoestring outfits and some are well funded. About half carry a rule, like pump fuel only, iron block, no power adders or an engine size cap. Rules pay a little more, and they go on your race-day checklist.\n\nReal recordings are now the default engine voice. If you picked Synth or Blend before, your choice stays. We also fixed the garage camera: zoomed all the way out, it no longer pokes through the walls or props. The panel now stays at whatever height you drag it to.\n\nOn Full and Ultra, cars now have open windows, a cabin and a driver. Belts and pulleys no longer look like they're running backwards at high revs. Ultra also now gets the shadowing and glow it was always meant to have."
+    },
+    {
+      "date": "2026-11-02",
       "title": "61 gets ten more boards",
       "game": "61 - A Trivia Game",
       "body": "61 now has 31 boards. The ten new ones add a second board to Science, History, Geography, Music, Screen, Words, Nature and Food & Drink, a third Sports board and an easy General #10.\n\nEvery board was checked against the others so answers and categories don't repeat, then fact-checked and proofread."
