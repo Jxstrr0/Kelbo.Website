@@ -17,14 +17,19 @@
 # and choose "Disable workflow".
 name: Forecaster (weekly journal forecast)
 
+# It asks Claude through the Batches API (half price): the answer usually
+# comes back within an hour, and the run waits for it (up to 5 hours 20).
 # GitHub starts timed runs late now and then, or drops one, so there are
-# two tries: 7:47 and 9:13 pm Sunday, Saskatoon time (01:47 and 03:13 UTC
-# Monday), after US futures open at 6 pm New York time. The second sees
-# the entry is already there and stops before calling Claude.
+# tries at 7:47 and 9:13 pm Sunday and 4:37 am Monday, Saskatoon time
+# (01:47, 03:13 and 10:37 UTC Monday), after US futures open at 6 pm New
+# York time. A later try that finds the entry already there stops before
+# calling Claude; one that finds a batch still waiting (saved in
+# .github/batches/forecaster.json) picks it up instead of paying again.
 on:
   schedule:
     - cron: "47 1 * * 1"
     - cron: "13 3 * * 1"
+    - cron: "37 10 * * 1" # 4:37 am Monday: picks up a batch that's still waiting
   workflow_dispatch:
     inputs:
       dry_run:
@@ -48,7 +53,7 @@ jobs:
   forecast:
     name: Write next week's forecast
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 350 # a batch can take a while; the script stops waiting at 320
     steps:
       - uses: actions/checkout@v7
 
@@ -66,20 +71,28 @@ jobs:
 
       - name: Commit them to main
         id: commit
-        if: steps.robot.outputs.written == 'true'
+        if: inputs.dry_run != true
         run: |
           git config user.name "forecaster"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add journal.json
+          mkdir -p .github/batches
+          git add -A journal.json .github/batches
           if git diff --cached --quiet; then
             echo "Nothing new to commit."
             echo "pushed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          git commit -m "Journal forecast $(TZ=America/Regina date +%F)"
+          # Only a change to the site's own files needs a deploy; the saved
+          # batch file lives in .github, which is never published.
+          if git diff --cached --quiet -- journal.json; then site=false; else site=true; fi
+          if [ "$site" = true ]; then
+            git commit -m "Journal forecast $(TZ=America/Regina date +%F)"
+          else
+            git commit -m "forecaster: batch still waiting, saved for the next run"
+          fi
           git pull --rebase
           git push
-          echo "pushed=true" >> "$GITHUB_OUTPUT"
+          echo "pushed=$site" >> "$GITHUB_OUTPUT"
 
       - name: Put the site live
         if: steps.commit.outputs.pushed == 'true'
