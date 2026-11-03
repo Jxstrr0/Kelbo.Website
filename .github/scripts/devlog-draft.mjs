@@ -129,7 +129,9 @@ ${JSON.stringify(recent, null, 1)}
 
 Draft this week's posts.`;
 
-const { text, usage } = await askClaude({ model: MODEL, system: SYSTEM, user, maxTokens: 16000 });
+// Sent as a batch (half price): Kelbo reads the draft whenever he gets to
+// it. A slow batch saves its place and the 5:13 pm run picks it up.
+const { text, usage } = await askClaude({ model: MODEL, system: SYSTEM, user, maxTokens: 16000, batch: { name: "devlog-writer", key: today } });
 const answer = readJson(text, MARKER);
 if (!answer || !Array.isArray(answer.posts)) {
   logCost(MODEL, usage);

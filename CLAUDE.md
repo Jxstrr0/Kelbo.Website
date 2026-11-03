@@ -714,8 +714,8 @@ keep the Co-Authored-By trailer for Claude in each message.
   added to that routine's workflow list too. Batch runs add ", batch" to
   the note (the routine logs them with `batch: true`); a run with no Cost
   note at all may be a batch that saved its place, so it's skipped.
-- Batches (since November 2026): the Coach, the Forecaster and the
-  Scorekeeper pass `batch: { name, key }` to `askClaude`/`askClaudeWeb`,
+- Batches (since November 2026): the Coach, the Devlog Writer, the
+  Forecaster and the Scorekeeper pass `batch: { name, key }` to `askClaude`/`askClaudeWeb`,
   which then go through the Message Batches API (tokens half price,
   searches full price; `logCost`/`logWebCost` halve them). `sendBatch`
   (claude.mjs, "BATCHES") submits a batch of one and polls every
@@ -752,9 +752,11 @@ keep the Co-Authored-By trailer for Claude in each message.
   `setUpLessons` in briefs.js fills the closed `.lessons` fold
   (`[data-lessons]`, "What the brief is working on") on the After close
   tab, text nodes only, hidden without the file or active lessons.
-- Devlog Writer: `devlog-draft.yml` (Sundays 17:23 UTC, `contents` and
-  `pull-requests: write`) runs `devlog-draft.mjs` (`claude-sonnet-5-5`,
-  effort high): last 7 days of merged PRs (body cut to `BODY_CHARS`) and
+- Devlog Writer: `devlog-draft.yml` (Sundays 17:23 UTC plus a 23:13 UTC
+  pickup that skips if today's `devlog-draft/` branch exists and no batch
+  is saved; `contents` and `pull-requests: write`) runs `devlog-draft.mjs`
+  (`claude-sonnet-5-5`, effort high, batched; only the batch file is
+  committed to main, by the "Save the batch's place" step): last 7 days of merged PRs (body cut to `BODY_CHARS`) and
   releases for each projects.json game with a GitHub `code` link, plus the
   5 newest devlog posts. No activity: no call. Validates 0..4 posts, one
   per game, `game` an exact title with activity, no PR numbers or GitHub
