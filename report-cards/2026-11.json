@@ -1,4 +1,82 @@
 {
+  "2026-11-03": {
+    "date": "2026-11-03",
+    "time": "2026-11-04T01:06:29.371Z",
+    "summary": "The gap call was right, with MU opening about 3.2% higher against a 2–3% call. The only level MU reached was the $858–$862 resistance zone, which held, and the other levels were never tested.",
+    "gap": {
+      "call": "Up about 2–3% (roughly $850–$860)",
+      "result": "MU opened at $859.93, up about 3.2% from $833.59, just above the range.",
+      "grade": "hit"
+    },
+    "mu": {
+      "prev_close": 833.59,
+      "open": 859.93,
+      "high": 871.49,
+      "low": 845.25,
+      "close": 855.1,
+      "open_pct": 3.16,
+      "close_pct": 2.58
+    },
+    "levels": [
+      {
+        "level": "Resistance about $858–$862 (Friday's low $861.59, Oct 23/30 lows)",
+        "result": "MU traded up to $871.49 but closed at $855.10, below the zone.",
+        "grade": "held"
+      },
+      {
+        "level": "Resistance $884.74 (Friday's close)",
+        "result": "The high of $871.49 stayed about 1.5% short of it.",
+        "grade": "untested"
+      },
+      {
+        "level": "Resistance $890.54–$892.08 (Monday's open and high)",
+        "result": "The high of $871.49 never came near it.",
+        "grade": "untested"
+      },
+      {
+        "level": "Support $833.59 (Monday's close)",
+        "result": "The low of $845.25 stayed about 1.4% above it.",
+        "grade": "untested"
+      },
+      {
+        "level": "Support $829.24 (Monday's low)",
+        "result": "The low of $845.25 stayed well above it.",
+        "grade": "untested"
+      },
+      {
+        "level": "Support about $800 (round-number bear reference)",
+        "result": "MU never traded near it.",
+        "grade": "untested"
+      },
+      {
+        "level": "Support about $747 (200-day average)",
+        "result": "MU never traded near it.",
+        "grade": "untested"
+      }
+    ],
+    "sources": [
+      {
+        "title": "Micron Stock Price Today",
+        "url": "https://www.investing.com/equities/micron-tech"
+      },
+      {
+        "title": "Micron Technology - MU - Stock Price & News",
+        "url": "https://www.fool.com/quote/nasdaq/mu/"
+      },
+      {
+        "title": "Micron Technology (NASDAQ:MU) Shares Climb 2.6% - Still a Buy?",
+        "url": "https://www.marketbeat.com/instant-alerts/price-micron-technology-nasdaq-mu-shares-climb-26-still-a-buy-2026-11-03/"
+      },
+      {
+        "title": "__symbol__ Stock Quote Price and Forecast",
+        "url": "https://www.cnn.com/markets/stocks/MU"
+      },
+      {
+        "title": "Closing Look — Tuesday, November 3, 2026",
+        "url": "https://cappnotes.substack.com/p/closing-look-tuesday-november-3-2026"
+      }
+    ]
+  },
   "2026-11-02": {
     "date": "2026-11-02",
     "time": "2026-11-02T23:17:46.510Z",
