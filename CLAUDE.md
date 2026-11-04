@@ -544,6 +544,11 @@ keep the Co-Authored-By trailer for Claude in each message.
   them via `link` (the pink Play it button) and `code` (the repo). The home
   page "Pick a game" cards are the `featured` projects (max 4); on phones
   all but the first are shortened (16:9 picture, two-line summary).
+  Each game keeps its own look (fonts, colours, art). The Longlight logo,
+  the five colours and Space Grotesk belong to studio pieces only (logo or
+  splash, credit line, studio block, links back here); every game repo's
+  CLAUDE.md has a "Longlight brand (studio pieces only)" section saying so,
+  and the official logo files are the press kit's `assets/press/` ones.
 - The logo is the horizon lockup: the sun on a line running under
   LONGLIGHT, INTERACTIVE justified to the same width below. It's inline SVG
   with the letters outlined to paths (don't swap them back to live text),
