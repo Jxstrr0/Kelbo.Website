@@ -1,22 +1,22 @@
 {
-  "latest": "2026-11-02",
-  "days": 1,
+  "latest": "2026-11-03",
+  "days": 2,
   "gap": {
-    "hit": 0,
+    "hit": 1,
     "partial": 1,
     "miss": 0,
     "unknown": 0
   },
   "levels": {
-    "held": 0,
+    "held": 1,
     "broke": 3,
-    "untested": 5,
+    "untested": 11,
     "unknown": 0
   },
   "months": [
     "2026-11"
   ],
   "counts": {
-    "2026-11": 1
+    "2026-11": 2
   }
 }
