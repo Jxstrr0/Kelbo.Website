@@ -4,14 +4,16 @@
 #   1. runs .github/scripts/devlog-draft.mjs, which collects the last 7 days
 #      of merged pull requests and releases from each game's repo and asks
 #      Claude (one call, no web search) to draft 0 to 4 devlog posts, at
-#      most one per game. No game activity: no call, nothing else happens.
+#      most one per game, plus 1 to 3 new lines for the "Now building"
+#      strip on the home page (now.json), in the same call. No game
+#      activity: no call, nothing else happens.
 #   2. runs the site check on the drafts (a pull request opened by this
 #      workflow doesn't start the Site check by itself),
 #   3. puts them on a new branch, devlog-draft/YYYY-MM-DD, and opens a pull
 #      request "Devlog draft for the week of ..." listing each post with
-#      links to where it came from.
+#      links to where it came from, and the new strip lines.
 # The pull request is NEVER merged automatically. Read it on your phone,
-# edit devlog.json on that branch if a post needs fixing, then merge it
+# edit devlog.json or now.json on that branch if something needs fixing, then merge it
 # (the site updates) or close it (nothing changes).
 #
 # It uses the ANTHROPIC_API_KEY repository secret. "Run workflow" on the
@@ -97,11 +99,11 @@ jobs:
           git push
 
       - name: Check the site with the drafts in it
-        if: steps.draft.outputs.posts > 0
+        if: steps.draft.outputs.posts > 0 || steps.draft.outputs.now == 'true'
         run: node .github/scripts/check-site.mjs
 
       - name: Open a pull request for Kelbo (never merged automatically)
-        if: steps.draft.outputs.posts > 0
+        if: steps.draft.outputs.posts > 0 || steps.draft.outputs.now == 'true'
         run: |
           branch="devlog-draft/$(TZ=America/Regina date +%F)"
           if git ls-remote --exit-code --heads origin "$branch" > /dev/null; then
@@ -111,7 +113,7 @@ jobs:
           git config user.name "devlog-writer"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git switch -c "$branch"
-          git add devlog.json
+          git add devlog.json now.json
           git commit -m "Devlog draft for the week of ${{ steps.draft.outputs.week }}"
           git push -u origin "$branch"
           gh pr create --base main --head "$branch" \
