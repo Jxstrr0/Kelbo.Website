@@ -6,6 +6,7 @@
 import { readFile, readdir, writeFile, mkdir, access } from "node:fs/promises";
 import { updateIndex, BRIEFS_DIR } from "./brief-index.mjs";
 import { costNote } from "./claude.mjs";
+import { request } from "node:https";
 
 const MODEL = "claude-opus-5-5";
 const MAX_SEARCHES = 30; // web searches a brief may run ($10 per 1,000)
@@ -118,15 +119,40 @@ const tools = [
   { type: "web_fetch_20260209", name: "web_fetch", max_uses: MAX_FETCHES },
 ];
 
+// Sends one request to the Messages API and returns {status, text}.
+// Node's built-in fetch gives up if the reply hasn't started after 5
+// minutes, and a brief with 30 searches can take longer than that (it did
+// on 2026-11-05), so this uses node:https, which waits up to TIMEOUT_MS.
+const TIMEOUT_MS = 20 * 60 * 1000;
+function post(body) {
+  return new Promise((resolve, reject) => {
+    const req = request("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "content-length": Buffer.byteLength(body),
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
+      },
+      timeout: TIMEOUT_MS,
+    }, (res) => {
+      let text = "";
+      res.setEncoding("utf8");
+      res.on("data", (chunk) => (text += chunk));
+      res.on("end", () => resolve({ status: res.statusCode, text }));
+      res.on("error", reject);
+    });
+    req.on("timeout", () => req.destroy(new Error(`no reply in ${TIMEOUT_MS / 60000} minutes`)));
+    req.on("error", reject);
+    req.end(body);
+  });
+}
+
 // withTools = false sends the request with web search turned off.
 async function callClaude(messages, withTools = true, attempt = 1) {
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: {
-      "content-type": "application/json",
-      "x-api-key": apiKey,
-      "anthropic-version": "2023-06-01",
-    },
+  let res;
+  try {
+    res = await post(JSON.stringify({
     // max_tokens covers the model's thinking as well as the brief itself, so
     // leave it roomy: a tight cap cuts the brief off mid-sentence. It's
     // only a ceiling; the brief is billed for what it really writes.
@@ -136,7 +162,6 @@ async function callClaude(messages, withTools = true, attempt = 1) {
     // far. Caching bills those re-reads at a twentieth of the price. The
     // marker on the instructions keeps them cached; the top-level one moves
     // along the conversation as it grows.
-    body: JSON.stringify({
       model: MODEL,
       max_tokens: 32000,
       output_config: { effort: "high" },
@@ -144,18 +169,24 @@ async function callClaude(messages, withTools = true, attempt = 1) {
       messages,
       cache_control: { type: "ephemeral" },
       ...(withTools && { tools }),
-    }),
-  });
+    }));
+  } catch (err) {
+    // A dropped connection: try again, like a 5xx.
+    if (attempt >= 4) throw err;
+    console.log(`Network error (${err.message}), retrying in ${15 * attempt}s`);
+    await new Promise((r) => setTimeout(r, 15000 * attempt));
+    return callClaude(messages, withTools, attempt + 1);
+  }
   if ((res.status === 429 || res.status >= 500) && attempt < 4) {
     const wait = 15000 * attempt;
     console.log(`API returned ${res.status}, retrying in ${wait / 1000}s`);
     await new Promise((r) => setTimeout(r, wait));
     return callClaude(messages, withTools, attempt + 1);
   }
-  if (!res.ok) {
-    throw new Error(`API error ${res.status}: ${await res.text()}`);
+  if (res.status < 200 || res.status >= 300) {
+    throw new Error(`API error ${res.status}: ${res.text}`);
   }
-  return res.json();
+  return JSON.parse(res.text);
 }
 
 // The newest brief before today's, without its Sources list, so the model
