@@ -1,4 +1,83 @@
 {
+  "2026-11-04": {
+    "date": "2026-11-04",
+    "time": "2026-11-05T02:15:06.123Z",
+    "summary": "The gap call hit (called down 2–3%, actual −3.75%) and the resistance levels held, but every support broke as MU fell 7% to close at 795.23.",
+    "gap": {
+      "call": "Down about 2–3%, roughly $830–$840",
+      "result": "Opened 823.00, down 3.75% from the 855.10 close, slightly bigger than called.",
+      "grade": "hit"
+    },
+    "mu": {
+      "prev_close": 855.1,
+      "open": 823,
+      "high": 853.34,
+      "low": 782,
+      "close": 795.23,
+      "open_pct": -3.75,
+      "close_pct": -7
+    },
+    "levels": [
+      {
+        "level": "Resistance $845.25 (Tuesday's low)",
+        "result": "High of 853.34 poked above it, but MU closed at 795.23, below.",
+        "grade": "held"
+      },
+      {
+        "level": "Resistance $855.10 (Tuesday's close, gap fill)",
+        "result": "High of 853.34 came within 0.5%, then MU closed far below.",
+        "grade": "held"
+      },
+      {
+        "level": "Resistance $858–$862 (Friday's low $861.59)",
+        "result": "High of 853.34 stayed more than 0.5% below the zone.",
+        "grade": "untested"
+      },
+      {
+        "level": "Resistance $871.49–$874.88 (Tuesday's high and after-hours high)",
+        "result": "Day's high of 853.34 never got close.",
+        "grade": "untested"
+      },
+      {
+        "level": "Support $832.78–$833.59 (8:30 pre-market print and Monday's close)",
+        "result": "MU fell through it and closed at 795.23.",
+        "grade": "broke"
+      },
+      {
+        "level": "Support $829.24 (Monday's low)",
+        "result": "MU closed 795.23, below it.",
+        "grade": "broke"
+      },
+      {
+        "level": "Support about $800 (round number)",
+        "result": "Low of 782.00 and close of 795.23 were both below it.",
+        "grade": "broke"
+      },
+      {
+        "level": "Support about $747 (200-day average)",
+        "result": "Low of 782.00 stayed well above it.",
+        "grade": "untested"
+      }
+    ],
+    "sources": [
+      {
+        "title": "Micron Stock Price Today - Investing.com",
+        "url": "https://www.investing.com/equities/micron-tech"
+      },
+      {
+        "title": "Micron Technology, Inc. (MU) Stock Price, Quote & News - Massive",
+        "url": "https://massive.com/quote/mu"
+      },
+      {
+        "title": "Micron Technology, Inc. (MU) stock price, news, quote and history - Yahoo Finance",
+        "url": "https://sg.finance.yahoo.com/quote/MU/"
+      },
+      {
+        "title": "Micron (MU) Stock Sinks As Market Gains: Here's Why",
+        "url": "https://finance.yahoo.com/markets/stocks/articles/micron-mu-stock-sinks-market-214502384.html"
+      }
+    ]
+  },
   "2026-11-03": {
     "date": "2026-11-03",
     "time": "2026-11-04T01:06:29.371Z",
