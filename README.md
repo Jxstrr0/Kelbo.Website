@@ -909,9 +909,10 @@ economic reports. It lives in `scan.json` and `scan.js` puts it on the page.
 
 ## The pre-market brief
 
-`briefs.html` shows a short brief on MU and the AI hardware names every
-weekday morning: overnight and Asia, the gap call and key levels for MU,
-one line per watchlist name, and the day's calendar in Eastern and
+`briefs.html` shows a short brief on MU, the SOX (the PHLX Semiconductor
+Index) and the AI hardware names every weekday morning: overnight and
+Asia, a gap call and key levels for MU and another for the SOX (since
+November 5, 2026), one line per watchlist name, and the day's calendar in Eastern and
 Saskatoon time. Each brief is a Markdown file in `briefs/`
 (`2026-11-02.md`). The archive list is split up so the page never loads
 all of it: `briefs/index.json` lists the months (and the latest brief),
@@ -947,20 +948,22 @@ you open it.
   busiest minutes.
   It can run up to 30 web searches a brief (`MAX_SEARCHES`) and open up to
   15 whole pages on any site to read the actual numbers (`MAX_FETCHES`),
-  following a rough search plan in `SYSTEM` (most of it on MU). It calls
+  following a rough search plan in `SYSTEM` (most of it on MU, 3 searches on the SOX). It calls
   the model named in `MODEL` (`claude-opus-5-5`), set to think harder
   than its default (`effort: "high"`), mostly for the gap call.
 - **Yesterday's call:** the robot hands it the previous brief, so it says
-  what changed overnight instead of repeating old news, and the MU
-  section opens with **Last call:** what the last brief predicted for the
-  open and what MU actually did.
+  what changed overnight instead of repeating old news, and the MU and SOX
+  sections each open with **Last call:** what the last brief predicted for
+  the open and what really happened. The SOX index itself doesn't trade
+  before the open, so its pre-market read comes from the SOXX and SMH
+  funds, which do.
 - **Cost:** it uses prompt caching, so re-reading what it already found
   costs a twentieth of the normal price. The end of each run's log says
   how many searches and page reads it used and an estimated cost in US
   dollars (`PRICE` near the top of the script; the Anthropic console has
   the real bill).
 - **Same headings every day:** the page expects `# headline`, `TLDR:`,
-  then Overnight and Asia, MU, Watchlist and Calendar, even on a holiday.
+  then Overnight and Asia, MU, SOX, Watchlist and Calendar, even on a holiday.
   If a brief comes back without them, the script asks Claude once to
   rewrite it in that format (no new searching) before saving it.
 - **New brief alert:** for an hour after a brief goes out, every page shows
@@ -989,13 +992,18 @@ you can see how good the calls really are over time.
   Saskatoon time (back-up tries at 4:37 and 5:13 if GitHub is late),
   after the 4:00 pm ET close in summer and winter. It runs
   `.github/scripts/postmarket-recap.mjs`, which asks Claude (with web
-  search) for MU's previous close, open, high, low and close, then grades:
+  search) for MU's previous close, open, high, low and close (and the
+  SOX's, in index points, when the brief has a SOX section), then grades
+  each one's calls the same way:
   - **Gap call:** Right, Partly or Wrong (rules in `SYSTEM` at the top of
     the script: anything within ±0.5% counts as flat, and the size has to
     be within 1 point of the brief's range to be Right).
   - **Key levels:** each one Held, Broke or Not reached.
-  - **MU:** the open and close as a % of the previous close. The script
-    works the percentages out itself from the prices.
+  - **MU and SOX:** the open and close as a % of the previous close. The
+    script works the percentages out itself from the prices.
+  Briefs from before November 5, 2026 have no SOX section, so their cards
+  grade MU only. The totals at the top of the After close tab keep MU's and
+  the SOX's apart; the SOX line says how many days it covers.
   Anything it can't confirm says "couldn't confirm"; it never guesses a
   price, and it only lists links it really saw that run.
   Claude finds the prices and copies the brief's numbers (the gap range,
