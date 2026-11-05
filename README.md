@@ -127,7 +127,7 @@ Paste it after the last one and change the values:
 **The order in this file is the order on the site.** The Games page,
 Projects page, What's new and the home cards all follow it from top to
 bottom, so it's your own ranking (games are Prairie Engine Works, Frontier Lab, Season
-Ticket, Lombard, The Whip, Red Skies).
+Ticket, Lombard, The Whip, Red Skies, Station Keeper).
 To move something up, cut its block and paste it higher. A new block pasted
 at the bottom shows up last. Only the Projects page's filter buttons run in
 progress order.
