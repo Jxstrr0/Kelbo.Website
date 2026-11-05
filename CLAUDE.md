@@ -618,10 +618,13 @@ keep the Co-Authored-By trailer for Claude in each message.
   with `MAX_FETCHES` 15, no domain limits, a per-section research plan in
   `SYSTEM`, prompt caching (a marker on the system block plus top-level
   `cache_control`), the previous brief minus its Sources in the user
-  message for the MU **Last call:** line, a usage and estimated-cost log
+  message for the MU and SOX **Last call:** lines, a usage and estimated-cost log
   line from `PRICE`, and a `pause_turn` loop), which writes
   `briefs/YYYY-MM-DD.md` (fixed headings: `# headline`, `TLDR:`,
-  `## Overnight and Asia`, `## MU`, `## Watchlist`, `## Calendar`, then
+  `## Overnight and Asia`, `## MU`, `## SOX` (since 2026-11-05: the PHLX
+  Semiconductor Index as a co-main ticker, its own Last call, gap call,
+  pre-market read from SOXX/SMH, levels in index points, drivers),
+  `## Watchlist`, `## Calendar`, then
   `## Sources` (the model lists its own; the script keeps only links that
   appear in that run's search results, plus inline citations, max 15) and a
   `<small>` stamp; if a heading is missing it asks once,
@@ -655,7 +658,7 @@ keep the Co-Authored-By trailer for Claude in each message.
   America/Regina, after the close all year, or by hand with a "redo
   today's grade" box) runs `.github/scripts/postmarket-recap.mjs`: plain
   Node `fetch`, the smaller model in `MODEL` (`claude-sonnet-5-5` at `output_config.effort` "high"), `web_search_20260209`
-  (`MAX_SEARCHES` 15) and `web_fetch_20260209` (`MAX_FETCHES` 15), the same
+  (`MAX_SEARCHES` 18) and `web_fetch_20260209` (`MAX_FETCHES` 15), the same
   caching, `pause_turn` loop and cost log line as the brief. It skips
   weekends, NYSE holidays (`marketHolidays`, computed, incl. Good Friday
   and the Saturday/Sunday observance rules), any run before 4:00 pm New
@@ -664,6 +667,9 @@ keep the Co-Authored-By trailer for Claude in each message.
   reads today's brief (minus Sources) to grade the MU gap call
   (hit/partial/miss, ±0.5% = flat) and each key level
   (held/broke/untested), with `unknown` whenever a price isn't confirmed.
+  When the brief has a `## SOX` section (`hasSox`) it grades the SOX the
+  same way (`gradeTicker`, prices from `dayPrices`) into the card's `sox:
+  {gap, levels, index}` (index points); older cards have no `sox`.
   Claude also copies the brief's numbers (`call_low_pct`/`call_high_pct`,
   each level's `kind`/`low`/`high`); `gapGrade` and `levelGrade` redo the
   grades from them and the prices (code wins, disagreements logged; the
@@ -675,7 +681,8 @@ keep the Co-Authored-By trailer for Claude in each message.
   prices, sources must be https links seen that run) and writes
   `report-cards/YYYY-MM.json` (`{date: card}`, newest first) plus
   `report-cards/index.json` (`{latest, days, gap: {hit, partial, miss,
-  unknown}, levels: {held, broke, untested, unknown}, months, counts}`
+  unknown}, levels: {held, broke, untested, unknown}, sox: {days, gap,
+  levels}, months, counts}`; top-level gap/levels are MU's
   (counts = cards per month, for the folds), re-added
   from every month file each run). It commits as grader and runs
   `gh workflow run deploy.yml`. Never write report cards into `briefs/`.

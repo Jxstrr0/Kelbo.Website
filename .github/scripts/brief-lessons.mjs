@@ -100,7 +100,7 @@ const cardText = dates
   .join("\n");
 
 /* ---------- Ask Claude ---------- */
-const SYSTEM = `You coach the writer of a daily pre-market trading brief. The brief is written each weekday morning before the US open for a part-time day trader in Saskatoon who mostly trades MU (Micron). Each brief gives a gap call (direction and size for MU's open) and key support and resistance levels. After the close, a report card grades it: the gap call as hit, partial or miss, and each level as held, broke, untested or unknown.
+const SYSTEM = `You coach the writer of a daily pre-market trading brief. The brief is written each weekday morning before the US open for a part-time day trader in Saskatoon who mostly trades MU (Micron). Each brief gives a gap call (direction and size for MU's open) and key support and resistance levels. Since November 2026 it gives the same for the SOX (PHLX Semiconductor Index) in its own section; those grades are under "sox" on the cards that have one. After the close, a report card grades it: each gap call as hit, partial or miss, and each level as held, broke, untested or unknown. A lesson may be about MU, the SOX or both; say which.
 
 Your job: read the report cards, the briefs they graded, the running totals and last week's lessons, and write 3 to 5 lessons about the brief's PROCESS and calibration. Good lessons are about how the brief works, for example:
 - the gap sizes it calls are too big or too small compared with the real opens,
@@ -109,7 +109,7 @@ Your job: read the report cards, the briefs they graded, the running totals and 
 - it leans on one kind of source or level too much.
 
 Rules:
-- Never predict the market or say where MU is going. No price targets, no prices at all.
+- Never predict the market or say where MU or the SOX is going. No price targets, no prices at all.
 - Never change, redo or question a grade. The report cards are final; take every grade as given.
 - Every lesson must come from patterns you can point to in these cards. Name the card dates that show it, and a count, like "5 of 7 gap calls too big". Only use dates from the cards you were given.
 - "text" is one plain sentence, written as an instruction the brief writer can follow tomorrow morning.
@@ -126,7 +126,7 @@ const lastWeek = previousActive.length
 const user = `Today is ${today}. Window: ${from} to ${today}, ${dates.length} report cards (${graded.length} with a graded gap call).
 
 Running totals for every card so far (report-cards/index.json):
-${totals ? JSON.stringify({ days: totals.days, gap: totals.gap, levels: totals.levels }) : "(not available)"}
+${totals ? JSON.stringify({ days: totals.days, gap: totals.gap, levels: totals.levels, ...(totals.sox ? { sox: totals.sox } : {}) }) : "(not available)"}
 
 Last week's active lessons:
 ${lastWeek}
