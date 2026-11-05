@@ -571,7 +571,8 @@ async function addCardLink(date, article) {
   const card = cards && cards[date];
   const line = el("p", "report-link");
   if (card) {
-    line.append(el("strong", "", "How it did:"), " gap call ", gradePill(card.gap?.grade), " ");
+    line.append(el("strong", "", "How it did:"), " MU gap call ", gradePill(card.gap?.grade), " ");
+    if (card.sox) line.append("SOX gap call ", gradePill(card.sox.gap?.grade), " ");
     const button = el("button", "report-link__go", "See the report card");
     button.type = "button";
     button.addEventListener("click", () => {
@@ -631,6 +632,9 @@ function gradePill(grade) {
 
 // 884.7 -> "$884.70"; 1.234 -> "+1.23%"
 const money = (n) => (Number.isFinite(n) ? "$" + n.toFixed(2) : "couldn't confirm");
+// Index points for the SOX: "7,123.45", no dollar sign.
+const points = (n) =>
+  Number.isFinite(n) ? n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "couldn't confirm";
 const change = (n) => (Number.isFinite(n) ? `${n > 0 ? "+" : n < 0 ? "−" : ""}${Math.abs(n).toFixed(2)}%` : "");
 
 function cardRow(box, label, ...content) {
@@ -652,7 +656,14 @@ const postArchive = {
       .filter((date) => isEntry({ date }))
       .sort()
       .reverse()
-      .map((date) => ({ date, title: [gradePill(cards[date].gap?.grade), " Gap call"], note: cards[date].summary }));
+      .map((date) => {
+        const c = cards[date];
+        // Cards from before the SOX section grade MU only.
+        const title = c.sox
+          ? ["MU ", gradePill(c.gap?.grade), " SOX ", gradePill(c.sox.gap?.grade)]
+          : [gradePill(c.gap?.grade), " Gap call"];
+        return { date, title, note: c.summary };
+      });
   },
   pick: (date) => {
     history.pushState(null, "", date === cardIndex.latest ? "#after" : "#after-" + date);
@@ -705,27 +716,30 @@ async function showCard(date) {
   if (card.summary) box.append(el("p", "report-card__summary", card.summary));
   const rows = el("dl", "report-card__rows");
 
-  const gap = card.gap || {};
-  const gapText = el("span", "", [gap.call && `Called: ${gap.call}.`, gap.result].filter(Boolean).join(" "));
-  cardRow(rows, "Gap call", gradePill(gap.grade), " ", gapText);
-
-  const mu = card.mu || {};
-  const muText = [
-    `Opened ${money(mu.open)}${mu.open_pct != null ? ` (${change(mu.open_pct)})` : ""}`,
-    `closed ${money(mu.close)}${mu.close_pct != null ? ` (${change(mu.close_pct)})` : ""}`,
-  ].join(", ");
-  cardRow(rows, "MU", el("span", "", `${muText}, from ${money(mu.prev_close)} the session before.`));
-
-  if (Array.isArray(card.levels) && card.levels.length) {
-    const list = el("ul", "report-card__levels");
-    card.levels.forEach((l) => {
-      const item = el("li");
-      item.append(gradePill(l.grade), " ", el("strong", "", l.level || ""));
-      if (l.result) item.append(" ", el("span", "", l.result));
-      list.append(item);
-    });
-    cardRow(rows, "Key levels", list);
-  }
+  // One ticker's rows: its gap call, how it traded, its key levels.
+  // `fmt` writes its prices (dollars for MU, index points for the SOX).
+  const tickerRows = (name, gap = {}, day = {}, levels, fmt) => {
+    const gapText = el("span", "", [gap.call && `Called: ${gap.call}.`, gap.result].filter(Boolean).join(" "));
+    cardRow(rows, `${name} gap call`, gradePill(gap.grade), " ", gapText);
+    const dayText = [
+      `Opened ${fmt(day.open)}${day.open_pct != null ? ` (${change(day.open_pct)})` : ""}`,
+      `closed ${fmt(day.close)}${day.close_pct != null ? ` (${change(day.close_pct)})` : ""}`,
+    ].join(", ");
+    cardRow(rows, name, el("span", "", `${dayText}, from ${fmt(day.prev_close)} the session before.`));
+    if (Array.isArray(levels) && levels.length) {
+      const list = el("ul", "report-card__levels");
+      levels.forEach((l) => {
+        const item = el("li");
+        item.append(gradePill(l.grade), " ", el("strong", "", l.level || ""));
+        if (l.result) item.append(" ", el("span", "", l.result));
+        list.append(item);
+      });
+      cardRow(rows, `${name} levels`, list);
+    }
+  };
+  tickerRows("MU", card.gap, card.mu, card.levels, money);
+  // Cards from before November 5, 2026 have no SOX part.
+  if (card.sox) tickerRows("SOX", card.sox.gap, card.sox.index, card.sox.levels, points);
   box.append(rows);
 
   const links = (card.sources || []).filter((s) => s && /^https:\/\//.test(s.url));
@@ -760,14 +774,21 @@ function showTally(data) {
     });
     return group;
   };
-  const gap = data.gap || {};
-  const levels = data.levels || {};
+  // MU's totals are data.gap and data.levels; the SOX's are data.sox
+  // (only the days since it was added, so it says how many).
+  const ticker = (name, t, days) => {
+    const gap = t.gap || {};
+    const levels = t.levels || {};
+    line.append(" ", part(`${name} gap call${days ? ` (${days} day${days === 1 ? "" : "s"})` : ""}`,
+      [["hit", n(gap.hit)], ["partial", n(gap.partial)], ["miss", n(gap.miss)]]));
+    if (n(levels.held) + n(levels.broke) > 0) {
+      line.append(" ", part(`${name} levels`, [["held", n(levels.held)], ["broke", n(levels.broke)]]));
+    }
+  };
   line.textContent = "";
-  line.append(el("strong", "", `Report card, ${data.days} graded day${data.days === 1 ? "" : "s"}:`), " ");
-  line.append(part("Gap call", [["hit", n(gap.hit)], ["partial", n(gap.partial)], ["miss", n(gap.miss)]]));
-  if (n(levels.held) + n(levels.broke) > 0) {
-    line.append(" ", part("Key levels", [["held", n(levels.held)], ["broke", n(levels.broke)]]));
-  }
+  line.append(el("strong", "", `Report card, ${data.days} graded day${data.days === 1 ? "" : "s"}:`));
+  ticker("MU", data, 0);
+  if (data.sox && data.sox.days > 0) ticker("SOX", data.sox, data.sox.days);
   line.hidden = false;
 }
 
