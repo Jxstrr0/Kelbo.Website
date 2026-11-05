@@ -134,7 +134,8 @@ keep the Co-Authored-By trailer for Claude in each message.
   `game.html` itself is not in `sitemap.xml`; it is in `sw.js` `CORE`.
 - `now.json` feeds the "Now building" strip under the home hero (`updated`
   date plus `items`, each `text` with an optional `link`). Empty items hide
-  the strip. Refresh it when Kelbo says what he's working on.
+  the strip. The Devlog Writer proposes new lines weekly in its draft PR;
+  also refresh it when Kelbo says what he's working on.
 - The status labels, progress-bar fill amounts and colour stages are in
   `STATUSES` at the top of `main.js`: Complete, Released (solid clay pill),
   Live (clay outline), Polishing, In development, Prototype (purple),
@@ -772,11 +773,15 @@ keep the Co-Authored-By trailer for Claude in each message.
   (`claude-sonnet-5-5`, effort high, batched; only the batch file is
   committed to main, by the "Save the batch's place" step): last 7 days of merged PRs (body cut to `BODY_CHARS`) and
   releases for each projects.json game with a GitHub `code` link, plus the
-  5 newest devlog posts. No activity: no call. Validates 0..4 posts, one
+  5 newest devlog posts and now.json. No activity: no call. Validates 0..4 posts, one
   per game, `game` an exact title with activity, no PR numbers or GitHub
   logins, date = run date (America/Regina); prepends them to devlog.json,
   runs check-site, pushes `devlog-draft/YYYY-MM-DD` as devlog-writer and
-  opens a PR "Devlog draft for the week of ..." with source links.
+  opens a PR "Devlog draft for the week of ..." with source links. The
+  same call returns `now` (1..`MAX_NOW` 3 lines, one per active game,
+  `NOW_CHARS` 70), written to now.json (`updated` = run date, `link` from
+  projects.json) in the same PR when it differs; posts or strip alone
+  each open the PR (workflow output `now`).
   **Never merge that PR yourself**: Kelbo reviews it. Needs the repo
   setting "Allow GitHub Actions to create and approve pull requests".
 - Forecaster (weekly journal forecast): `journal-forecast.yml` (Sunday
