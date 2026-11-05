@@ -118,61 +118,6 @@
     "featured": true
   },
   {
-    "title": "61 - A Trivia Game",
-    "status": "Released",
-    "category": "Game",
-    "summary": "A phone-first quiz-show game. Two boards of clues, hidden doubles, a wagered final and two computer opponents who race you to the buzzer. Type your answers, or handwrite the final one. Easy, Normal and Hard pools, a practice buzzer mode, and career stats kept on your phone.",
-    "version": "1.0.0",
-    "latest": "31 boards and a night-time studio with a sun host",
-    "link": "https://jxstrr0.github.io/61/",
-    "code": "https://github.com/Jxstrr0/61",
-    "image": "assets/covers/61-trivia.jpg",
-    "shots": [
-      {
-        "src": "assets/shots/61-trivia-1.jpg",
-        "alt": "The home screen with the 61 mark and the Quick Play button"
-      },
-      {
-        "src": "assets/shots/61-trivia-2.jpg",
-        "alt": "The round one board: six categories, five values each, with the three podiums below"
-      },
-      {
-        "src": "assets/shots/61-trivia-3.jpg",
-        "alt": "A clue open on the stage with the buzz prompt and the three podiums"
-      }
-    ]
-  },
-  {
-    "title": "Garage to Glory",
-    "status": "In development",
-    "category": "Game",
-    "summary": "A comedy band-career game. You're the drummer who started the band: play the gigs as rhythm games and steer the band through ten years, from your parents' garage in Saskatoon to arenas around the world, or a breakup in a parking lot.",
-    "version": "1.6",
-    "latest": "Animated gig highway and a Less motion setting",
-    "link": "https://jxstrr0.github.io/GarageToGlory/",
-    "code": "https://github.com/Jxstrr0/GarageToGlory",
-    "image": "assets/covers/garage-to-glory.jpg",
-    "featured": false,
-    "shots": [
-      {
-        "src": "assets/shots/garage-to-glory-1.jpg",
-        "alt": "The garage hub with the week ready to plan"
-      },
-      {
-        "src": "assets/shots/garage-to-glory-2.jpg",
-        "alt": "An event result: Marcel arrives as Lord Abyssus"
-      },
-      {
-        "src": "assets/shots/garage-to-glory-3.jpg",
-        "alt": "Picking a logo for the band, Hail Damage"
-      },
-      {
-        "src": "assets/shots/garage-to-glory-4.jpg",
-        "alt": "Picking your seat in the band: drums, bass, rhythm or lead guitar"
-      }
-    ]
-  },
-  {
     "title": "Red Skies",
     "status": "Complete",
     "category": "Game",
