@@ -93,8 +93,8 @@ keep the Co-Authored-By trailer for Claude in each message.
 - `projects.json` is the single source of truth for projects. `main.js`
   renders it. Its order is the display order everywhere (Games, Projects,
   What's new, home featured, "More games"): Kelbo's own ranking, games
-  first: Prairie Engine Works, Frontier Lab, The Whip, Season Ticket,
-  61 - A Trivia Game, Garage to Glory, Red Skies. Nothing sorts by progress except the
+  first: Prairie Engine Works, Frontier Lab, The Whip, Lombard,
+  Season Ticket, 61 - A Trivia Game, Garage to Glory, Red Skies. Nothing sorts by progress except the
   Projects page's filter buttons (`sortByProgress`). Adding a project should never need an HTML edit. Each project
   can carry a `version` ("1.4", no "v") and `latest` (what changed), shown
   as "v1.4 · Added night mode" under the summary; either may be "".
@@ -540,7 +540,9 @@ keep the Co-Authored-By trailer for Claude in each message.
   `projects.json` order, with no dates (the file has none). Linked from
   every footer ("What's new") and listed in `sitemap.xml`.
 - Games each live in their own repo with their own GitHub Pages site
-  (GarageToGlory, RedSkies, 350Chev, SeasonTicket, The-Whip, FrontierLab). This site only links to
+  (GarageToGlory, RedSkies, 350Chev, SeasonTicket, The-Whip, FrontierLab, 61,
+  Lombard). Lombard is design docs only so far: a Concept card with a drawn
+  cover and no `link` (no Play button) until its Pages site is live. This site only links to
   them via `link` (the pink Play it button) and `code` (the repo). The home
   page "Pick a game" cards are the `featured` projects (max 4); on phones
   all but the first are shortened (16:9 picture, two-line summary).

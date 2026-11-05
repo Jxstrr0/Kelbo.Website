@@ -72,6 +72,18 @@
     ]
   },
   {
+    "title": "Lombard",
+    "status": "Concept",
+    "category": "Game",
+    "summary": "A first-person pawn shop sim on a canal in Mostograd, a made-up Russian river city in the 2010s. Inspect what people bring in, spot the fakes, haggle, and decide how much trouble a good deal is worth.",
+    "version": "",
+    "latest": "",
+    "link": "",
+    "code": "https://github.com/Jxstrr0/Lombard",
+    "image": "assets/covers/lombard.jpg",
+    "featured": false
+  },
+  {
     "title": "Season Ticket",
     "status": "Released",
     "category": "Game",
