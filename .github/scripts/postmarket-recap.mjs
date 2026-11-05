@@ -1,7 +1,9 @@
 // After-close report card for Kelbo.Website
 // Runs in GitHub Actions after the US close. Reads today's pre-market brief
 // (briefs/YYYY-MM-DD.md, never changed here), asks Claude with web search
-// how MU really traded, and grades the brief's gap call and key levels.
+// how MU and the SOX (PHLX Semiconductor Index) really traded, and grades
+// the brief's gap call and key levels for each. Briefs from before the SOX
+// section was added get an MU-only card.
 // Writes report-cards/YYYY-MM.json (that month's cards, newest first) and
 // report-cards/index.json (the running totals briefs.html shows).
 // Needs ANTHROPIC_API_KEY in the environment.
@@ -11,7 +13,7 @@ import { costNote } from "./claude.mjs";
 import { marketHolidays } from "./market-days.mjs";
 
 const MODEL = "claude-sonnet-5-5"; // smaller and cheaper than the brief's model
-const MAX_SEARCHES = 15; // web searches a grade may run ($10 per 1,000)
+const MAX_SEARCHES = 18; // web searches a grade may run ($10 per 1,000)
 const MAX_FETCHES = 15; // whole pages it may open and read
 // List prices in US dollars per million tokens, for the cost line in the
 // run log. Cache reads are the cheap re-reads; writes cost 1.25x.
@@ -73,6 +75,8 @@ try {
   process.exit(0);
 }
 brief = brief.split(/^## Sources\s*$/m)[0].trim(); // its sources aren't needed
+// Briefs since November 2026 have a SOX section with its own calls.
+const hasSox = /^## SOX\s*$/m.test(brief);
 
 const month = isoDate.slice(0, 7);
 const monthPath = `${CARDS_DIR}/${month}.json`;
@@ -86,9 +90,9 @@ if (monthCards[isoDate] && process.env.FORCE !== "1") {
 }
 
 /* ---------- Ask Claude ---------- */
-const SYSTEM = `You grade a pre-market trading brief after the US market has closed. The brief was written this morning, before the open, for a part-time day trader in Saskatoon who mostly trades MU (Micron). Your job is to check it against what really happened today, honestly. A wrong call graded as wrong is useful; a flattering grade is not.
+const SYSTEM = `You grade a pre-market trading brief after the US market has closed. The brief was written this morning, before the open, for a part-time day trader in Saskatoon who mostly trades MU (Micron)${hasSox ? " and watches the SOX (PHLX Semiconductor Index) as closely" : ""}. Your job is to check it against what really happened today, honestly. A wrong call graded as wrong is useful; a flattering grade is not.
 
-You have up to ${MAX_SEARCHES} web searches and ${MAX_FETCHES} page reads (web_fetch opens a full page from any site). Find, for MU today:
+You have up to ${MAX_SEARCHES} web searches and ${MAX_FETCHES} page reads (web_fetch opens a full page from any site). Find, for MU${hasSox ? " and for the SOX index (the index itself, ^SOX, in points; not the SOXX or SMH ETFs)" : ""} today:
 - the previous session's close (the price the gap is measured from),
 - today's opening price (the 9:30 ET regular-session open),
 - today's regular-session high and low,
@@ -97,12 +101,12 @@ For the gap call, call_low_pct and call_high_pct are the brief's predicted range
 A daily price history page or a quote page usually has all of these at once: fetch one rather than searching for each number. Use a second source to cross-check the open and close if the first one looks odd.
 
 Grading rules.
-Gap call (the brief's "**Gap call:**" line). The gap is (open − previous close) ÷ previous close, in percent. Treat anything within ±0.5% as flat.
+Gap call (the "**Gap call:**" line${hasSox ? " in the MU section, and separately the one in the SOX section" : ""}). The gap is (open − previous close) ÷ previous close, in percent. Treat anything within ±0.5% as flat.
 - "hit": the direction was right (or the call was flat and the gap was flat) and the size was inside the brief's range, or within 1 percentage point of it.
 - "partial": the direction was right but the size was off by more than 1 point, or the call was flat and the gap was 0.5% to 1%.
 - "miss": the direction was wrong, or the call was flat and the gap was bigger than 1%.
 - "unknown": you couldn't confirm the open or the previous close.
-Key levels (every support and resistance price in the brief's "**Key levels**" part of the MU section, at most 8). Use the regular-session high, low and close:
+Key levels (every support and resistance price in the "**Key levels**" part of the brief's MU section, at most 8${hasSox ? ", and separately the SOX section's, at most 8" : ""}). Use the regular-session high, low and close:
 - "held": the price came within 0.5% of the level (or poked through it) but closed back on the expected side (above a support, below a resistance).
 - "broke": the price closed beyond the level (below a support, above a resistance).
 - "untested": the day's range never came within 0.5% of the level.
@@ -110,16 +114,21 @@ Key levels (every support and resistance price in the brief's "**Key levels**" p
 
 Rules:
 - Never guess or estimate a price. If you can't confirm a number from a source you found today, use null for it and say "couldn't confirm" in the text.
-- Prices are US dollars per share, as plain numbers (884.74, not "$884.74").
+- MU prices are US dollars per share, as plain numbers (884.74, not "$884.74").${hasSox ? " SOX values are index points, also plain numbers (7123.45)." : ""}
 - Keep every text field short and plain: one sentence at most.
 - Also copy the brief's own numbers into the fields below (call_low_pct, call_high_pct, kind, low, high). The script redoes the grade arithmetic from them and your prices, so copy them exactly as the brief gave them.
 
 When you are done, output the line ${MARKER} and then one JSON object, with nothing after it, in exactly this shape:
 {
-  "summary": "<one sentence: how the brief did today>",
+  "summary": "<one sentence: how the brief did today${hasSox ? " on MU and the SOX" : ""}>",
   "gap": { "call": "<what the brief called, in a few words>", "call_low_pct": <the low end of the brief's predicted gap in percent, negative for down, or null>, "call_high_pct": <the high end, or null>, "result": "<what MU actually did at the open>", "grade": "hit|partial|miss|unknown" },
   "mu": { "prev_close": <number or null>, "open": <number or null>, "high": <number or null>, "low": <number or null>, "close": <number or null> },
-  "levels": [ { "level": "<the level as the brief named it, e.g. Support $861.59 (Friday's low)>", "kind": "support|resistance", "low": <the level's price, or the bottom of its range>, "high": <the same price, or the top of its range>, "result": "<what the price did around it>", "grade": "held|broke|untested|unknown" } ],
+  "levels": [ { "level": "<the level as the brief named it, e.g. Support $861.59 (Friday's low)>", "kind": "support|resistance", "low": <the level's price, or the bottom of its range>, "high": <the same price, or the top of its range>, "result": "<what the price did around it>", "grade": "held|broke|untested|unknown" } ],${hasSox ? `
+  "sox": {
+    "gap": <the same shape as "gap" above, for the SOX section's gap call>,
+    "index": <the same shape as "mu" above, in index points>,
+    "levels": <the same shape as "levels" above, for the SOX section's key levels>
+  },` : ""}
   "sources": [ { "title": "<page title>", "url": "<the exact URL from your search results or a page you fetched>" } ]
 }`;
 
@@ -234,15 +243,20 @@ const price = (v) => (typeof v === "number" && Number.isFinite(v) && v > 0 ? Mat
 const oneOf = (v, list) => (list.includes(v) ? v : "unknown");
 const pct = (from, to) => (from && to ? Math.round(((to - from) / from) * 10000) / 100 : null);
 
-const mu = {
-  prev_close: price(raw.mu?.prev_close),
-  open: price(raw.mu?.open),
-  high: price(raw.mu?.high),
-  low: price(raw.mu?.low),
-  close: price(raw.mu?.close),
-};
-mu.open_pct = pct(mu.prev_close, mu.open); // the gap
-mu.close_pct = pct(mu.prev_close, mu.close); // the day's move
+// The day's prices for one ticker, with the gap and the day's move.
+function dayPrices(r) {
+  const day = {
+    prev_close: price(r?.prev_close),
+    open: price(r?.open),
+    high: price(r?.high),
+    low: price(r?.low),
+    close: price(r?.close),
+  };
+  day.open_pct = pct(day.prev_close, day.open); // the gap
+  day.close_pct = pct(day.prev_close, day.close); // the day's move
+  return day;
+}
+const mu = dayPrices(raw.mu);
 
 /* ---------- Redo the grade arithmetic ----------
    Claude finds the prices and copies the brief's numbers; the sums are
@@ -276,9 +290,38 @@ function levelGrade(kind, low, high, day) {
   return broke ? "broke" : "held";
 }
 
-const modelGap = oneOf(raw.gap?.grade, ["hit", "partial", "miss"]);
-const checkedGap = gapGrade(num(raw.gap?.call_low_pct), num(raw.gap?.call_high_pct), mu.open_pct);
-if (checkedGap && checkedGap !== modelGap) console.warn(`Gap: Claude said ${modelGap}, the arithmetic says ${checkedGap}. Using ${checkedGap}.`);
+// Grades one ticker's gap call and key levels from Claude's answer and
+// that ticker's prices. `name` labels the run log lines.
+function gradeTicker(name, rawGap, rawLevels, day) {
+  const modelGap = oneOf(rawGap?.grade, ["hit", "partial", "miss"]);
+  const checkedGap = gapGrade(num(rawGap?.call_low_pct), num(rawGap?.call_high_pct), day.open_pct);
+  if (checkedGap && checkedGap !== modelGap) console.warn(`${name} gap: Claude said ${modelGap}, the arithmetic says ${checkedGap}. Using ${checkedGap}.`);
+  const gap = {
+    call: text(rawGap?.call),
+    result: text(rawGap?.result),
+    // A gap can't be graded without both prices, whatever the model said.
+    grade: day.open_pct === null ? "unknown" : checkedGap ?? modelGap,
+  };
+  const levels = (Array.isArray(rawLevels) ? rawLevels : []).slice(0, 8).map((l) => {
+    const said = oneOf(l?.grade, ["held", "broke", "untested"]);
+    const checked = levelGrade(l?.kind, l?.low, l?.high, day);
+    if (checked && checked !== said) console.warn(`${name} ${text(l?.level, 60)}: Claude said ${said}, the arithmetic says ${checked}. Using ${checked}.`);
+    // Without the day's high, low and close no level can be graded.
+    const grade = !day.high || !day.low || !day.close ? "unknown" : checked ?? said;
+    return { level: text(l?.level, 120), result: text(l?.result), grade };
+  }).filter((l) => l.level);
+  return { gap, levels };
+}
+
+const muGrades = gradeTicker("MU", raw.gap, raw.levels, mu);
+// The SOX part only when the brief had a SOX section and Claude answered it.
+let sox = null;
+if (hasSox && raw.sox && typeof raw.sox === "object") {
+  const index = dayPrices(raw.sox.index);
+  sox = { ...gradeTicker("SOX", raw.sox.gap, raw.sox.levels, index), index };
+} else if (hasSox) {
+  console.warn("The brief had a SOX section but Claude returned no SOX grades.");
+}
 
 // Only links that really came back from this run's searches and page reads.
 const normUrl = (u) => {
@@ -311,21 +354,10 @@ const card = {
   date: isoDate,
   time: new Date().toISOString(),
   summary: text(raw.summary, 300),
-  gap: {
-    call: text(raw.gap?.call),
-    result: text(raw.gap?.result),
-    // A gap can't be graded without both prices, whatever the model said.
-    grade: mu.open_pct === null ? "unknown" : checkedGap ?? modelGap,
-  },
+  gap: muGrades.gap,
   mu,
-  levels: (Array.isArray(raw.levels) ? raw.levels : []).slice(0, 8).map((l) => {
-    const said = oneOf(l?.grade, ["held", "broke", "untested"]);
-    const checked = levelGrade(l?.kind, l?.low, l?.high, mu);
-    if (checked && checked !== said) console.warn(`${text(l?.level, 60)}: Claude said ${said}, the arithmetic says ${checked}. Using ${checked}.`);
-    // Without the day's high, low and close no level can be graded.
-    const grade = !mu.high || !mu.low || !mu.close ? "unknown" : checked ?? said;
-    return { level: text(l?.level, 120), result: text(l?.result), grade };
-  }).filter((l) => l.level),
+  levels: muGrades.levels,
+  ...(sox ? { sox } : {}),
   sources: sources.slice(0, 6),
 };
 
@@ -337,7 +369,14 @@ await writeFile(monthPath, JSON.stringify(sorted, null, 2) + "\n");
 
 // The running totals, added up again from every month file each time so
 // a redone grade never counts twice.
-const totals = { days: 0, gap: { hit: 0, partial: 0, miss: 0, unknown: 0 }, levels: { held: 0, broke: 0, untested: 0, unknown: 0 } };
+const tally = () => ({ gap: { hit: 0, partial: 0, miss: 0, unknown: 0 }, levels: { held: 0, broke: 0, untested: 0, unknown: 0 } });
+const add = (t, part) => {
+  t.gap[part.gap?.grade in t.gap ? part.gap.grade : "unknown"]++;
+  for (const l of part.levels ?? []) t.levels[l.grade in t.levels ? l.grade : "unknown"]++;
+};
+// gap and levels are MU's (the top-level names predate the SOX); sox has
+// its own, counting only the days that graded it.
+const totals = { days: 0, ...tally(), sox: { days: 0, ...tally() } };
 const months = (await readdir(CARDS_DIR)).filter((f) => /^\d{4}-\d{2}\.json$/.test(f)).map((f) => f.slice(0, 7)).sort().reverse();
 const counts = {}; // "2026-11" -> how many cards that month (for the page's folds)
 for (const m of months) {
@@ -345,14 +384,20 @@ for (const m of months) {
   counts[m] = Object.keys(cards).length;
   for (const c of Object.values(cards)) {
     totals.days++;
-    totals.gap[c.gap?.grade in totals.gap ? c.gap.grade : "unknown"]++;
-    for (const l of c.levels ?? []) totals.levels[l.grade in totals.levels ? l.grade : "unknown"]++;
+    add(totals, c);
+    if (c.sox) {
+      totals.sox.days++;
+      add(totals.sox, c.sox);
+    }
   }
 }
 await writeFile(`${CARDS_DIR}/index.json`, JSON.stringify({ latest: isoDate, ...totals, months, counts }, null, 2) + "\n");
 
-console.log(`Graded ${isoDate}: gap ${card.gap.grade}; levels ${card.levels.map((l) => l.grade).join(", ") || "none"}`);
-console.log(`MU: prev close ${mu.prev_close ?? "?"}, open ${mu.open ?? "?"} (${mu.open_pct ?? "?"}%), close ${mu.close ?? "?"} (${mu.close_pct ?? "?"}%)`);
+console.log(`Graded ${isoDate}: MU gap ${card.gap.grade}; levels ${card.levels.map((l) => l.grade).join(", ") || "none"}`);
+if (sox) console.log(`SOX gap ${sox.gap.grade}; levels ${sox.levels.map((l) => l.grade).join(", ") || "none"}`);
+const dayLine = (name, d) => `${name}: prev close ${d.prev_close ?? "?"}, open ${d.open ?? "?"} (${d.open_pct ?? "?"}%), close ${d.close ?? "?"} (${d.close_pct ?? "?"}%)`;
+console.log(dayLine("MU", mu));
+if (sox) console.log(dayLine("SOX", sox.index));
 console.log(`Tokens: ${usage.input_tokens} in, ${usage.cache_read} cache reads, ${usage.cache_write} cache writes, ${usage.output_tokens} out`);
 console.log(`Searches: ${usage.searches} of ${MAX_SEARCHES}; pages read: ${usage.fetches} of ${MAX_FETCHES}`);
 // An estimate at list prices; the Anthropic console has the real bill.
