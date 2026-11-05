@@ -77,12 +77,12 @@
   },
   {
     "title": "Lombard",
-    "status": "Concept",
+    "status": "In development",
     "category": "Game",
     "summary": "A first-person pawn shop sim on a canal in Mostograd, a made-up Russian river city in the 2010s. Inspect what people bring in, spot the fakes, haggle, and decide how much trouble a good deal is worth.",
     "version": "",
-    "latest": "",
-    "link": "",
+    "latest": "Playable: the counter loop and the shop economy, with the real art going in",
+    "link": "https://jxstrr0.github.io/Lombard/",
     "code": "https://github.com/Jxstrr0/Lombard",
     "image": "assets/covers/lombard.jpg",
     "featured": false
@@ -146,6 +146,18 @@
         "alt": "The same console a moment later, with the contact closer"
       }
     ]
+  },
+  {
+    "title": "Station Keeper",
+    "status": "In development",
+    "category": "Game",
+    "summary": "A space station tycoon. Build a commercial station module by module and keep it alive, solvent and full of paying guests. Power, cooling, air, crew and money all share one network, so when one thing fails, the rest follow.",
+    "version": "",
+    "latest": "Playable: build modules, ride out eclipses, keep the air and the guests happy",
+    "link": "https://jxstrr0.github.io/StationKeeper/",
+    "code": "https://github.com/Jxstrr0/StationKeeper",
+    "image": "assets/covers/station-keeper.jpg",
+    "featured": false
   },
   {
     "title": "Pre-market brief",
