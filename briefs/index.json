@@ -1,14 +1,14 @@
 {
   "latest": {
-    "date": "2026-11-04",
-    "time": "2026-11-04T13:48:14.928Z",
-    "headline": "Blue wave hits AI infrastructure; MU indicated about 2.5% lower",
-    "tldr": "Democrats won both chambers, and a Texas governor who has promised a data-center moratorium won too. That pulled money out of the AI build-out trade overnight. Nasdaq futures faded to about flat by 8:45 ET while the Dow rallied, and MU slid from +1.4% early to about −2.6% ($832.78) by 8:30 ET, even though AMD, Arista and Super Micro all beat."
+    "date": "2026-11-05",
+    "time": "2026-11-05T14:16:48.633Z",
+    "headline": "Chip selloff deepens; MU indicated about 5% lower, near 200-day average",
+    "tldr": "Asian memory stocks crashed for a second day, Qualcomm's weak guidance and a Bloomberg report that Micron paused its new Taiwan plant add to the pressure, and with Nasdaq 100 futures down about 1% and SMH down 3.7% at about 9:10 ET, MU (about $755) and SOX (about 9,900 implied) are set to open at fresh lows while the Dow keeps rallying."
   },
   "months": [
     {
       "month": "2026-11",
-      "count": 4
+      "count": 5
     }
   ]
 }
