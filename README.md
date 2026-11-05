@@ -239,6 +239,9 @@ week. It comes from `now.json`:
   "Updated today", "Updated 3 days ago", and so on.
 - Each item is a pill. `link` is optional.
 - To hide the strip, leave `items` as `[]`.
+- Every Sunday the Devlog Writer suggests new lines for it from the
+  week's game work, in the same pull request as its devlog drafts (see
+  below). You can still edit it by hand any time.
 
 ## Add or swap images
 
@@ -1049,7 +1052,7 @@ you can see how good the calls really are over time.
 | **Morning Writer** | Writes the pre-market brief (`premarket-brief.yml`) | Weekdays 6:17 am |
 | **Grader** | Grades that brief after the close (`postmarket-recap.yml`) | Weekdays 4:07 pm |
 | **Coach** | Turns the report cards into lessons for the Morning Writer (`brief-lessons.yml`) | Sundays 11:47 am (batch) |
-| **Devlog Writer** | Drafts devlog posts and opens a pull request for you (`devlog-draft.yml`) | Sundays 11:23 am (batch) |
+| **Devlog Writer** | Drafts devlog posts and "Now building" lines, and opens a pull request for you (`devlog-draft.yml`) | Sundays 11:23 am (batch) |
 | **Release Writer** | Writes the player-friendly "What's new" line for game releases (`release-lines.yml`) | Every 6 hours |
 | **Forecaster** | Writes the journal's forecast for the coming week (`journal-forecast.yml`) | Sundays 7:47 pm (batch) |
 | **Scorekeeper** | Grades that week's journal calls (`journal-grade.yml`) | Sundays 11:37 am (batch) |
@@ -1121,13 +1124,19 @@ back on).
   `projects.json`, collects the last 7 days of merged pull requests and
   releases, and asks Sonnet 5.5 to draft 0 to 4 devlog posts (at most one
   per game) as Longlight, to players: only real changes, no code words,
-  no PR numbers, no names. No game activity that week: no call.
+  no PR numbers, no names. In the same call (no extra cost) it writes 1
+  to 3 new lines for the "Now building" strip, one per game that had
+  work that week, each linking to the game. No game activity that week:
+  no call, and the strip keeps its old lines.
 - **What you get:** a pull request called "Devlog draft for the week of
   ..." with the posts at the top of `devlog.json` on a
   `devlog-draft/YYYY-MM-DD` branch. Its description shows each post with
-  links to the pull requests and releases it came from.
+  links to the pull requests and releases it came from. If the strip
+  lines changed, `now.json` is in the same pull request and the
+  description lists them. A week with strip lines but no posts still gets
+  a pull request.
 - **It never merges itself.** Read it on your phone. To fix a post, open
-  the Files tab, tap "..." → Edit file on `devlog.json` and commit to that
+  the Files tab, tap "..." → Edit file on `devlog.json` (or `now.json`) and commit to that
   branch. Then **merge** to publish, or **close** to skip the week (and
   delete the branch).
 
