@@ -7,11 +7,18 @@
 // search) to draft 0 to 4 devlog posts, at most one per game, written as
 // Longlight to players.
 //
+// The same call also rewrites the "Now building" strip on the home page
+// (now.json): 1 to 3 short lines naming the games that had work this
+// week, each linking to the game. It costs nothing extra, since Claude
+// is already reading the week's changes. If no line comes back, or they
+// match what's there, now.json stays as it is.
+//
 // It puts the drafts at the top of devlog.json. The workflow
 // (devlog-draft.yml) then opens a pull request for Kelbo to read, fix and
 // merge, or close. It is never merged automatically.
 //
-// No game with activity this week: no call, nothing written.
+// No game with activity this week: no call, nothing written (the strip
+// keeps its old lines).
 //
 // Run with:  node .github/scripts/devlog-draft.mjs
 // GITHUB_TOKEN reads the game repos (Actions provides it for free).
@@ -26,11 +33,15 @@ const DAYS = 7; // how far back to look
 const MAX_POSTS = 4;
 const BODY_CHARS = 1500; // each PR description is cut to about this long
 const MARKER = "===POSTS===";
+const MAX_NOW = 3; // lines in the "Now building" strip
+const NOW_CHARS = 70; // each line stays about this short
 
 const today = skDate();
 const since = new Date(Date.now() - DAYS * 864e5);
 const projects = JSON.parse(await readFile("projects.json", "utf8"));
 const devlog = JSON.parse(await readFile("devlog.json", "utf8"));
+// A missing or broken now.json just means the strip starts fresh.
+const nowFile = await readFile("now.json", "utf8").then(JSON.parse).catch(() => ({ items: [] }));
 const titles = projects.map((p) => p.title);
 
 const headers = { Accept: "application/vnd.github+json", "User-Agent": "longlight-devlog-draft" };
@@ -93,6 +104,7 @@ for (const p of projects) {
 if (!activity.length) {
   console.log("No game had merged pull requests or releases in the last 7 days. No call made, nothing written.");
   setOutput("posts", 0);
+  setOutput("now", "false");
   process.exit(0);
 }
 
@@ -115,19 +127,27 @@ Rules:
 
 Output the line ${MARKER} and then only this JSON, nothing after it:
 {"posts": [{"date": "${today}", "title": "...", "body": "...", "game": "..."}]}
-If nothing is worth a post, output {"posts": []}.`;
+If nothing is worth a post, use "posts": [].
+
+Also write the "Now building" strip for the studio's home page: 1 to ${MAX_NOW} short lines saying what is being worked on right now, one per game, only for games with activity this week, the busiest first. Each line is the game's title, a comma, then a few plain words about the work (for example "Frontier Lab, polishing the whole AI lab"). Under ${NOW_CHARS} characters, no full stop at the end, same rules as the posts (nothing invented, no jargon). Unlike posts, behind-the-scenes work can count here if it was the week's main work. Put them in the same JSON:
+{"posts": [...], "now": [{"game": "...", "text": "..."}]}`;
 
 const recent = (devlog.posts || []).slice(0, 5);
 const user = `Today is ${today}. This week's activity, game by game:
 
 ${activity.map((a) => `<game title="${a.game}">\n${JSON.stringify({ merged_pull_requests: a.prs.map(({ url, ...rest }) => rest), releases: a.releases.map(({ url, ...rest }) => rest) }, null, 1)}\n</game>`).join("\n\n")}
 
+The "Now building" strip as it is now:
+<now_building>
+${JSON.stringify(nowFile.items || [], null, 1)}
+</now_building>
+
 The newest devlog posts already published:
 <recent_posts>
 ${JSON.stringify(recent, null, 1)}
 </recent_posts>
 
-Draft this week's posts.`;
+Draft this week's posts and the "Now building" lines.`;
 
 // Sent as a batch (half price): Kelbo reads the draft whenever he gets to
 // it. A slow batch saves its place and the 5:13 pm run picks it up.
@@ -163,30 +183,60 @@ for (const [i, raw] of answer.posts.entries()) {
   if (posts.length === MAX_POSTS) break;
 }
 console.log(`Kept ${posts.length} of ${answer.posts.length} drafted post(s).`);
+
+/* ---------- Check the "Now building" lines ---------- */
+const nowItems = [];
+for (const [i, raw] of (Array.isArray(answer.now) ? answer.now : []).entries()) {
+  const label = `Now line ${i + 1}`;
+  const game = typeof raw?.game === "string" ? raw.game : "";
+  const text = typeof raw?.text === "string" ? raw.text.replace(/\s+/g, " ").trim().replace(/\.$/, "") : "";
+  if (!active.has(game)) { console.warn(`${label} dropped: "${game}" had no activity this week.`); continue; }
+  if (nowItems.some((it) => it.game === game)) { console.warn(`${label} dropped: already have a line for ${game}.`); continue; }
+  if (text.length < 5 || text.length > NOW_CHARS + 20) { console.warn(`${label} dropped: missing or too long.`); continue; }
+  if (/#\d+|\bpull request\b|\bPR\b/i.test(text)) { console.warn(`${label} dropped: it mentions a pull request.`); continue; }
+  nowItems.push({ game, text });
+  if (nowItems.length === MAX_NOW) break;
+}
+// Each line links to the game itself (its "link" in projects.json), if it has one.
+const newNow = nowItems.map(({ game, text }) => {
+  const link = projects.find((p) => p.title === game)?.link;
+  return link ? { text, link } : { text };
+});
+const nowChanged = newNow.length > 0 && JSON.stringify(newNow) !== JSON.stringify(nowFile.items || []);
+if (nowChanged) console.log("\n--- Now building ---\n" + newNow.map((it) => `- ${it.text}`).join("\n"));
+else console.log(newNow.length ? "\nNow building: same as before, not changed." : "\nNow building: no usable lines, not changed.");
 for (const post of posts) console.log(`\n--- ${post.game}: ${post.title} ---\n${post.body}`);
 logCost(MODEL, usage);
 setOutput("posts", DRY_RUN ? 0 : posts.length);
+setOutput("now", !DRY_RUN && nowChanged ? "true" : "false");
 
-if (!posts.length) {
+if (!posts.length && !nowChanged) {
   console.log("Nothing to add this week.");
   process.exit(0);
 }
 if (DRY_RUN) {
-  console.log("\nDry run: devlog.json not changed.");
+  console.log("\nDry run: devlog.json and now.json not changed.");
   process.exit(0);
 }
 
-devlog.posts = [...posts, ...(devlog.posts || [])];
-await writeFile("devlog.json", JSON.stringify(devlog, null, 2) + "\n");
+if (posts.length) {
+  devlog.posts = [...posts, ...(devlog.posts || [])];
+  await writeFile("devlog.json", JSON.stringify(devlog, null, 2) + "\n");
+}
+if (nowChanged) await writeFile("now.json", JSON.stringify({ updated: today, items: newNow }, null, 2) + "\n");
 
 // The pull request's description: each post with the links it came from.
 const week = new Intl.DateTimeFormat("en-US", { timeZone: "America/Regina", month: "long", day: "numeric", year: "numeric" }).format(since);
 const lines = [
-  `Draft devlog posts from the last 7 days of game updates, written by the Devlog Writer (\`devlog-draft.yml\`). **Not merged automatically.**`,
+  `Draft devlog posts and "Now building" lines from the last 7 days of game updates, written by the Devlog Writer (\`devlog-draft.yml\`). **Not merged automatically.**`,
   "",
-  "Read them on the Files tab. To fix wording, edit `devlog.json` on this branch (pencil icon), then merge. To drop a post, delete it from the file. To skip the week, close this pull request.",
+  "Read them on the Files tab. To fix wording, edit `devlog.json` or `now.json` on this branch (pencil icon), then merge. To drop a post, delete it from the file. To skip the week, close this pull request.",
   "",
 ];
+if (nowChanged) {
+  lines.push("### Now building (home page strip)", "", ...newNow.map((it) => `- ${it.text}`), "");
+}
+if (!posts.length) lines.push("No devlog posts this week, only the strip.", "");
 for (const post of posts) {
   const a = activity.find((x) => x.game === post.game);
   lines.push(`### ${post.game}: ${post.title}`, "", post.body.split("\n\n").map((p) => `> ${p}`).join("\n>\n"), "", "Sources:");
