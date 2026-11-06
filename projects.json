@@ -30,16 +30,40 @@
     ]
   },
   {
-    "title": "Frontier Lab",
+    "title": "Lombard",
     "status": "In development",
     "category": "Game",
-    "summary": "An AI-lab tycoon. Raise a seed round, open sales offices, buy compute or build data centers, train your own models and ship products, keep the safety regulator happy, then take the lab public and grow it across the world's tech capitals, all on an engraved isometric city map.",
-    "version": "0.1.61",
-    "latest": "Model launches, open weights, public tenders and an annual report",
-    "link": "https://jxstrr0.github.io/FrontierLab/",
-    "code": "https://github.com/Jxstrr0/FrontierLab",
-    "image": "assets/covers/frontier-lab.jpg",
-    "featured": true
+    "summary": "A first-person pawn shop sim on a canal in Mostograd, a made-up Russian river city in the 2010s. Inspect what people bring in, spot the fakes, haggle, and decide how much trouble a good deal is worth.",
+    "version": "",
+    "latest": "Playable: the counter loop and the shop economy, with the real art going in",
+    "link": "https://jxstrr0.github.io/Lombard/",
+    "code": "https://github.com/Jxstrr0/Lombard",
+    "image": "assets/covers/lombard.jpg",
+    "featured": false
+  },
+  {
+    "title": "Escapement",
+    "status": "Prototype",
+    "category": "Game",
+    "summary": "A watchmaking career game. Build mechanical movements part by part, put them on the timegrapher, chase chronometer certification and sell to collectors, until a shared repair bench in the Haldis becomes a manufacture making its own calibres.",
+    "version": "",
+    "latest": "First build: the workshop, the bench and a balance wheel ticking in 3D",
+    "link": "https://jxstrr0.github.io/Escapement/",
+    "code": "https://github.com/Jxstrr0/Escapement",
+    "image": "assets/covers/escapement.jpg",
+    "featured": false
+  },
+  {
+    "title": "Station Keeper",
+    "status": "In development",
+    "category": "Game",
+    "summary": "A space station tycoon. Build a commercial station module by module and keep it alive, solvent and full of paying guests. Power, cooling, air, crew and money all share one network, so when one thing fails, the rest follow.",
+    "version": "",
+    "latest": "Playable: build modules, ride out eclipses, keep the air and the guests happy",
+    "link": "https://jxstrr0.github.io/StationKeeper/",
+    "code": "https://github.com/Jxstrr0/StationKeeper",
+    "image": "assets/covers/station-keeper.jpg",
+    "featured": false
   },
   {
     "title": "Season Ticket",
@@ -76,16 +100,16 @@
     "featured": true
   },
   {
-    "title": "Lombard",
+    "title": "Frontier Lab",
     "status": "In development",
     "category": "Game",
-    "summary": "A first-person pawn shop sim on a canal in Mostograd, a made-up Russian river city in the 2010s. Inspect what people bring in, spot the fakes, haggle, and decide how much trouble a good deal is worth.",
-    "version": "",
-    "latest": "Playable: the counter loop and the shop economy, with the real art going in",
-    "link": "https://jxstrr0.github.io/Lombard/",
-    "code": "https://github.com/Jxstrr0/Lombard",
-    "image": "assets/covers/lombard.jpg",
-    "featured": false
+    "summary": "An AI-lab tycoon. Raise a seed round, open sales offices, buy compute or build data centers, train your own models and ship products, keep the safety regulator happy, then take the lab public and grow it across the world's tech capitals, all on an engraved isometric city map.",
+    "version": "0.1.61",
+    "latest": "Model launches, open weights, public tenders and an annual report",
+    "link": "https://jxstrr0.github.io/FrontierLab/",
+    "code": "https://github.com/Jxstrr0/FrontierLab",
+    "image": "assets/covers/frontier-lab.jpg",
+    "featured": true
   },
   {
     "title": "The Whip",
@@ -146,30 +170,6 @@
         "alt": "The same console a moment later, with the contact closer"
       }
     ]
-  },
-  {
-    "title": "Station Keeper",
-    "status": "In development",
-    "category": "Game",
-    "summary": "A space station tycoon. Build a commercial station module by module and keep it alive, solvent and full of paying guests. Power, cooling, air, crew and money all share one network, so when one thing fails, the rest follow.",
-    "version": "",
-    "latest": "Playable: build modules, ride out eclipses, keep the air and the guests happy",
-    "link": "https://jxstrr0.github.io/StationKeeper/",
-    "code": "https://github.com/Jxstrr0/StationKeeper",
-    "image": "assets/covers/station-keeper.jpg",
-    "featured": false
-  },
-  {
-    "title": "Escapement",
-    "status": "Prototype",
-    "category": "Game",
-    "summary": "A watchmaking career game. Build mechanical movements part by part, put them on the timegrapher, chase chronometer certification and sell to collectors, until a shared repair bench in the Haldis becomes a manufacture making its own calibres.",
-    "version": "",
-    "latest": "First build: the workshop, the bench and a balance wheel ticking in 3D",
-    "link": "https://jxstrr0.github.io/Escapement/",
-    "code": "https://github.com/Jxstrr0/Escapement",
-    "image": "assets/covers/escapement.jpg",
-    "featured": false
   },
   {
     "title": "Pre-market brief",
