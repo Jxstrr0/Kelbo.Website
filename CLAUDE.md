@@ -628,7 +628,7 @@ keep the Co-Authored-By trailer for Claude in each message.
   drops them; the first writes the brief and the others stop at the
   "already exists" check before any API call; or by hand with a "rewrite
   today's" box) runs `.github/scripts/premarket-brief.mjs`: plain Node
-  `fetch` to the Anthropic Messages API (`claude-opus-5-5` at `output_config.effort` "high", `max_tokens` 32000, server-side
+  `fetch` to the Anthropic Messages API (`claude-opus-5-5` at `output_config.effort` "xhigh", `max_tokens` 64000, server-side
   `web_search_20260209` with `MAX_SEARCHES` 30 and `web_fetch_20260209`
   with `MAX_FETCHES` 15, no domain limits, a per-section research plan in
   `SYSTEM`, prompt caching (a marker on the system block plus top-level
