@@ -127,7 +127,7 @@ Paste it after the last one and change the values:
 **The order in this file is the order on the site.** The Games page,
 Projects page, What's new and the home cards all follow it from top to
 bottom, so it's your own ranking (games are Prairie Engine Works, Frontier Lab, Season
-Ticket, Lombard, The Whip, Red Skies, Station Keeper).
+Ticket, Lombard, The Whip, Red Skies, Station Keeper, Escapement).
 To move something up, cut its block and paste it higher. A new block pasted
 at the bottom shows up last. Only the Projects page's filter buttons run in
 progress order.
@@ -717,6 +717,15 @@ signal. Online it always fetches the newest version first, so your edits
 show up as normal. If it ever seems stuck on an old version, change
 `CACHE` at the top of `sw.js` (for example `"longlight-2"`) and the old
 copies are thrown away.
+
+### Keeping game saves safe
+
+All your games live on the same `jxstrr0.github.io` address, so the
+phone keeps their saves in one shared pot. When someone taps Play, the
+site asks the browser to keep that pot even if the phone runs low on
+space (`keepStorage` in `main.js`). One "yes" covers every game. Each game
+also asks for itself, and each one can save its save code as a backup file
+and reminds players to do that now and then.
 
 ## Previewing on a computer
 

@@ -5458,6 +5458,21 @@ function notePlayed(title) {
   const played = readJSON(PLAYED_KEY) || [];
   if (!played.includes(title)) writeJSON(PLAYED_KEY, played.concat(title));
   checkBadges();
+  keepStorage();
+}
+
+// Ask the browser not to clear this site's storage when the phone runs low.
+// Every game lives on the same jxstrr0.github.io address, so they all share
+// one storage pot; one "yes" protects every game's saves at once. Asked
+// only when someone starts a game (Firefox shows a little prompt for it;
+// Chrome and Safari decide quietly), once per page, and never an error.
+let storageAsked = false;
+async function keepStorage() {
+  if (storageAsked || !navigator.storage || !navigator.storage.persist) return;
+  storageAsked = true;
+  try {
+    if (!(await navigator.storage.persisted())) await navigator.storage.persist();
+  } catch (e) { /* not allowed here; the games' backup files still cover it */ }
 }
 
 // Is each badge earned right now? Sun badges use the real time (never a
