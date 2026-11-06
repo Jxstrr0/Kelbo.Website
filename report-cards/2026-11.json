@@ -1,4 +1,129 @@
 {
+  "2026-11-05": {
+    "date": "2026-11-05",
+    "time": "2026-11-06T02:15:01.840Z",
+    "summary": "Direction and gap sizes were right for both MU (-5.3% open) and SOX (-4.5% open), but the brief badly understated the day: MU closed -17.5% and SOX -12.25%, breaking every support level.",
+    "gap": {
+      "call": "Down about 4–5%, roughly $750–$765",
+      "result": "MU opened at $752.86, down about 5.3% from $795.23.",
+      "grade": "hit"
+    },
+    "mu": {
+      "prev_close": 795.23,
+      "open": 752.86,
+      "high": 761.81,
+      "low": 650,
+      "close": 656.39,
+      "open_pct": -5.33,
+      "close_pct": -17.46
+    },
+    "levels": [
+      {
+        "level": "Resistance $776 (pre-market open)",
+        "result": "High was $761.81, never came within 0.5%.",
+        "grade": "untested"
+      },
+      {
+        "level": "Resistance $782.00 (Wednesday's low)",
+        "result": "High of $761.81 stayed well below it.",
+        "grade": "untested"
+      },
+      {
+        "level": "Resistance $795.23–$800 (Wednesday's close/round number)",
+        "result": "Never reached; high was $761.81.",
+        "grade": "untested"
+      },
+      {
+        "level": "Resistance $823 (Wednesday's open)",
+        "result": "Never reached; high was $761.81.",
+        "grade": "untested"
+      },
+      {
+        "level": "Support about $745–$752 (200-day average)",
+        "result": "Opened at $752.86, then fell through and closed at $656.39.",
+        "grade": "broke"
+      },
+      {
+        "level": "Support about $738 (FXLeaders downside target)",
+        "result": "Closed far below at $656.39.",
+        "grade": "broke"
+      },
+      {
+        "level": "Support $700 (round number)",
+        "result": "Closed below at $656.39.",
+        "grade": "broke"
+      }
+    ],
+    "sox": {
+      "gap": {
+        "call": "Down about 3–4%, roughly 9,850–9,950",
+        "result": "SOX opened at 9,806.31, down about 4.5% from 10,268.65.",
+        "grade": "hit"
+      },
+      "levels": [
+        {
+          "level": "Support 10,064.73 (Wednesday's low)",
+          "result": "Opened below it and closed at 9,011.14.",
+          "grade": "untested"
+        },
+        {
+          "level": "Support 10,000 (round number)",
+          "result": "Opened below it and closed at 9,011.14.",
+          "grade": "untested"
+        },
+        {
+          "level": "Resistance 10,268.65 (Wednesday's close)",
+          "result": "High was 9,838.13, never came within 0.5%.",
+          "grade": "untested"
+        },
+        {
+          "level": "Resistance 10,485.88 (Wednesday's open)",
+          "result": "Never reached; high was 9,838.13.",
+          "grade": "untested"
+        },
+        {
+          "level": "Resistance about 10,600–10,652 (Tuesday's close/Wednesday's high)",
+          "result": "Never reached; high was 9,838.13.",
+          "grade": "untested"
+        }
+      ],
+      "index": {
+        "prev_close": 10268.65,
+        "open": 9806.31,
+        "high": 9838.13,
+        "low": 8997.39,
+        "close": 9011.14,
+        "open_pct": -4.5,
+        "close_pct": -12.25
+      }
+    },
+    "sources": [
+      {
+        "title": "Micron Technology, Inc. (MU) - Yahoo Finance",
+        "url": "https://finance.yahoo.com/quote/MU/"
+      },
+      {
+        "title": "Micron Technology Inc (MU) - Investing.com",
+        "url": "https://www.investing.com/equities/micron-tech"
+      },
+      {
+        "title": "Micron Technology Inc MU - Morningstar",
+        "url": "https://www.morningstar.com/stocks/xnas/mu/quote"
+      },
+      {
+        "title": "MU Robinhood quote page",
+        "url": "https://robinhood.com/us/en/stocks/MU/"
+      },
+      {
+        "title": "Micron Shares Close Down More Than 17% as Chip Stocks Slide - TokenPost",
+        "url": "https://www.tokenpost.com/news/investing/49597"
+      },
+      {
+        "title": "Philadelphia Semiconductor Index (SOX) - iTiger",
+        "url": "https://www.itiger.com/stock/SOX"
+      }
+    ]
+  },
   "2026-11-04": {
     "date": "2026-11-04",
     "time": "2026-11-05T02:15:06.123Z",
