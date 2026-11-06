@@ -1049,8 +1049,8 @@ you can see how good the calls really are over time.
   list to update), days with no brief, and any run before the 4:00 pm New
   York close (3:00 pm Saskatoon in winter, 2:00 pm in summer). A skipped
   run stops before asking Claude, so it costs nothing.
-- **Cost:** it uses Sonnet 5.5 at high effort, a smaller, cheaper model than the brief (`MODEL` at the
-  top of the script), up to 15 web searches (`MAX_SEARCHES`) and 15 page
+- **Cost:** it uses Opus 5.5 at high effort, the same model as the brief (`MODEL` at the
+  top of the script; Sonnet 5.5 until Nov 6, 2026), up to 18 web searches (`MAX_SEARCHES`) and 15 page
   reads (`MAX_FETCHES`). It uses the same `ANTHROPIC_API_KEY` secret as the
   brief. The last line of each run's log is "Estimated cost: US$0.xx".
 - **Run it now:** Actions tab → Grader (after-close report card) → Run workflow
