@@ -54,6 +54,30 @@
     "featured": false
   },
   {
+    "title": "Scrapline",
+    "status": "In development",
+    "category": "Game",
+    "summary": "A combat robot builder. Design a fighting robot under a weight limit, test it on the bench, drive it in the arena, patch it in the pit and read the post-mortem, from a plywood box in a rented corner of a machine shop to the televised Scrapline Open.",
+    "version": "0.1.12.0",
+    "latest": "A balance pass on flippers, drums, lifters and the small-class pits",
+    "link": "https://jxstrr0.github.io/Scrapline/",
+    "code": "https://github.com/Jxstrr0/Scrapline",
+    "image": "assets/covers/scrapline.jpg",
+    "featured": false
+  },
+  {
+    "title": "Ink",
+    "status": "Prototype",
+    "category": "Game",
+    "summary": "A tattoo artist career game set in Mostograd. Start as an apprentice sweeping floors, learn on fake skin, build a client list and open your own studio, with every piece aging on people who keep walking back through your door.",
+    "version": "0.1.0.0",
+    "latest": "First build: the back room in 3D, five tabs and save codes",
+    "link": "https://jxstrr0.github.io/Ink/",
+    "code": "https://github.com/Jxstrr0/Ink",
+    "image": "assets/covers/ink.jpg",
+    "featured": false
+  },
+  {
     "title": "Station Keeper",
     "status": "In development",
     "category": "Game",
@@ -170,30 +194,6 @@
         "alt": "The same console a moment later, with the contact closer"
       }
     ]
-  },
-  {
-    "title": "Ink",
-    "status": "Prototype",
-    "category": "Game",
-    "summary": "A tattoo artist career game set in Mostograd. Start as an apprentice sweeping floors, learn on fake skin, build a client list and open your own studio, with every piece aging on people who keep walking back through your door.",
-    "version": "0.1.0.0",
-    "latest": "First build: the back room in 3D, five tabs and save codes",
-    "link": "https://jxstrr0.github.io/Ink/",
-    "code": "https://github.com/Jxstrr0/Ink",
-    "image": "assets/covers/ink.jpg",
-    "featured": false
-  },
-  {
-    "title": "Scrapline",
-    "status": "In development",
-    "category": "Game",
-    "summary": "A combat robot builder. Design a fighting robot under a weight limit, test it on the bench, drive it in the arena, patch it in the pit and read the post-mortem, from a plywood box in a rented corner of a machine shop to the televised Scrapline Open.",
-    "version": "0.1.12.0",
-    "latest": "A balance pass on flippers, drums, lifters and the small-class pits",
-    "link": "https://jxstrr0.github.io/Scrapline/",
-    "code": "https://github.com/Jxstrr0/Scrapline",
-    "image": "assets/covers/scrapline.jpg",
-    "featured": false
   },
   {
     "title": "Pre-market brief",
