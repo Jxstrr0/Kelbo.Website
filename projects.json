@@ -160,6 +160,18 @@
     "featured": false
   },
   {
+    "title": "Escapement",
+    "status": "Prototype",
+    "category": "Game",
+    "summary": "A watchmaking career game. Build mechanical movements part by part, put them on the timegrapher, chase chronometer certification and sell to collectors, until a shared repair bench in the Haldis becomes a manufacture making its own calibres.",
+    "version": "",
+    "latest": "First build: the workshop, the bench and a balance wheel ticking in 3D",
+    "link": "https://jxstrr0.github.io/Escapement/",
+    "code": "https://github.com/Jxstrr0/Escapement",
+    "image": "assets/covers/escapement.jpg",
+    "featured": false
+  },
+  {
     "title": "Pre-market brief",
     "status": "Live",
     "category": "Trading",
