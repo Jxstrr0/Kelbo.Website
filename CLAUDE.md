@@ -96,10 +96,13 @@ keep the Co-Authored-By trailer for Claude in each message.
   first: Prairie Engine Works, Lombard, Escapement, Station Keeper,
   Season Ticket, Frontier Lab, The Whip, Red Skies. Nothing sorts by progress except the
   Projects page's filter buttons (`sortByProgress`). Adding a project should never need an HTML edit. Each project
-  can carry a `version` ("1.4", no "v") and `latest` (what changed), shown
-  as "v1.4 · Added night mode" under the summary; either may be "".
+  can carry a `version` ("1.4.0.0", no "v") and `latest` (what changed),
+  shown as "v1.4.0.0 · Added night mode" under the summary; either may be
+  "". Every game uses four numbers, Major.Minor.Patch.Build (Kelbo's rule,
+  November 2026; check-site warns on fewer, `fourPart` in sync-releases
+  pads older tags).
   For games whose `code` repo has GitHub Releases, the deploy fills these
-  in from the newest release (tag `v1.4` → `"1.4"`, release title →
+  in from the newest release (tag `v1.4.0.0` → `"1.4.0.0"`, release title →
   `latest`), so the live values can be newer than this file. Don't "fix"
   that by hand. Prefer publishing a release in the game's repo; editing
   them here is the fallback for games without releases.
