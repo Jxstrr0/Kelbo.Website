@@ -172,6 +172,18 @@
     ]
   },
   {
+    "title": "Ink",
+    "status": "Prototype",
+    "category": "Game",
+    "summary": "A tattoo artist career game set in Mostograd. Start as an apprentice sweeping floors, learn on fake skin, build a client list and open your own studio, with every piece aging on people who keep walking back through your door.",
+    "version": "0.1.0.0",
+    "latest": "First build: the back room in 3D, five tabs and save codes",
+    "link": "https://jxstrr0.github.io/Ink/",
+    "code": "https://github.com/Jxstrr0/Ink",
+    "image": "assets/covers/ink.jpg",
+    "featured": false
+  },
+  {
     "title": "Pre-market brief",
     "status": "Live",
     "category": "Trading",
