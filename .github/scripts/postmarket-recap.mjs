@@ -12,12 +12,12 @@ import { readFile, writeFile, mkdir, readdir } from "node:fs/promises";
 import { costNote } from "./claude.mjs";
 import { marketHolidays } from "./market-days.mjs";
 
-const MODEL = "claude-sonnet-5-5"; // smaller and cheaper than the brief's model
+const MODEL = "claude-opus-5-5"; // the same model as the brief (Sonnet 5.5 until Nov 2026)
 const MAX_SEARCHES = 18; // web searches a grade may run ($10 per 1,000)
 const MAX_FETCHES = 15; // whole pages it may open and read
 // List prices in US dollars per million tokens, for the cost line in the
 // run log. Cache reads are the cheap re-reads; writes cost 1.25x.
-const PRICE = { input: 2, output: 10, cacheRead: 0.2, cacheWrite: 2.5, search: 0.01 };
+const PRICE = { input: 4, output: 20, cacheRead: 0.2, cacheWrite: 5, search: 0.01 };
 const MARKER = "===CARD===";
 const BRIEFS_DIR = "briefs";
 const CARDS_DIR = "report-cards";
@@ -157,11 +157,12 @@ async function callClaude(messages, withTools = true, attempt = 1) {
     // max_tokens covers the model's thinking as well as the card. The cache
     // markers bill the re-reads of everything found so far at a tenth of
     // the price (see the brief's script for the longer explanation).
-    // effort "high" is Sonnet's default today; writing it here keeps it
-    // high even if that default ever changes.
+    // effort "high" is written out so it stays high even if the model's
+    // default ever changes. Opus thinks at more length than Sonnet did, so
+    // max_tokens has room to spare.
     body: JSON.stringify({
       model: MODEL,
-      max_tokens: 16000,
+      max_tokens: 32000,
       output_config: { effort: "high" },
       system: [{ type: "text", text: SYSTEM, cache_control: { type: "ephemeral" } }],
       messages,
