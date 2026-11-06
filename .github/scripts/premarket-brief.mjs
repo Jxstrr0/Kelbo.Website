@@ -120,9 +120,12 @@ const tools = [
 ];
 
 // Sends one request to the Messages API and returns {status, text}.
-// Node's built-in fetch gives up if the reply hasn't started after 5
-// minutes, and a brief with 30 searches can take longer than that (it did
-// on 2026-11-05), so this uses node:https, which waits up to TIMEOUT_MS.
+// The reply is streamed (server-sent events): a brief with 30 searches can
+// take 10 minutes or more, and a connection that sits silent that long gets
+// cut off on the way (it did on 2026-11-05 and 11-06, about 4.5 minutes in,
+// four tries in a row). Streaming keeps bytes flowing the whole time.
+// buildMessage puts the events back together into the same message object a
+// normal reply would give, so the rest of the script doesn't change.
 const TIMEOUT_MS = 20 * 60 * 1000;
 function post(body) {
   return new Promise((resolve, reject) => {
@@ -139,13 +142,53 @@ function post(body) {
       let text = "";
       res.setEncoding("utf8");
       res.on("data", (chunk) => (text += chunk));
-      res.on("end", () => resolve({ status: res.statusCode, text }));
+      res.on("end", () => {
+        // An error before streaming starts comes back as plain JSON.
+        if (res.statusCode < 200 || res.statusCode >= 300) return resolve({ status: res.statusCode, text });
+        try {
+          resolve(buildMessage(text));
+        } catch (err) {
+          reject(err);
+        }
+      });
       res.on("error", reject);
     });
     req.on("timeout", () => req.destroy(new Error(`no reply in ${TIMEOUT_MS / 60000} minutes`)));
     req.on("error", reject);
     req.end(body);
   });
+}
+
+// Turns the streamed events back into one message: {content, stop_reason,
+// usage}. An "error" event part way (for example "overloaded") becomes a
+// 529 so callClaude retries it like any other busy reply.
+function buildMessage(stream) {
+  let msg = null;
+  const json = {};
+  for (const chunk of stream.split(/\r?\n\r?\n/)) {
+    const line = chunk.split(/\r?\n/).find((l) => l.startsWith("data:"));
+    if (!line) continue;
+    const ev = JSON.parse(line.slice(5));
+    if (ev.type === "message_start") msg = ev.message;
+    else if (ev.type === "error") return { status: 529, text: JSON.stringify(ev) };
+    else if (ev.type === "content_block_start") msg.content[ev.index] = ev.content_block;
+    else if (ev.type === "content_block_delta") {
+      const b = msg.content[ev.index];
+      const d = ev.delta;
+      if (d.type === "text_delta") b.text += d.text;
+      else if (d.type === "thinking_delta") b.thinking += d.thinking;
+      else if (d.type === "signature_delta") b.signature = (b.signature || "") + d.signature;
+      else if (d.type === "citations_delta") (b.citations ||= []).push(d.citation);
+      else if (d.type === "input_json_delta") json[ev.index] = (json[ev.index] || "") + d.partial_json;
+    } else if (ev.type === "content_block_stop") {
+      if (json[ev.index] !== undefined) msg.content[ev.index].input = json[ev.index] ? JSON.parse(json[ev.index]) : {};
+    } else if (ev.type === "message_delta") {
+      Object.assign(msg, ev.delta);
+      msg.usage = { ...msg.usage, ...ev.usage };
+    }
+  }
+  if (!msg || !msg.stop_reason) throw new Error("the streamed reply ended early");
+  return { status: 200, text: JSON.stringify(msg) };
 }
 
 // withTools = false sends the request with web search turned off.
@@ -164,6 +207,7 @@ async function callClaude(messages, withTools = true, attempt = 1) {
     // marker on the instructions keeps them cached; the top-level one moves
     // along the conversation as it grows.
       model: MODEL,
+      stream: true,
       max_tokens: 64000,
       output_config: { effort: "xhigh" },
       system: [{ type: "text", text: SYSTEM, cache_control: { type: "ephemeral" } }],
