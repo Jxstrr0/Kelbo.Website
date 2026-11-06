@@ -101,6 +101,8 @@ if (projects !== undefined) {
       for (const key of ["version", "latest"]) {
         if (p[key] !== undefined && typeof p[key] !== "string") error("projects.json", `${name}: "${key}" should be text in quotes.`);
       }
+      // Games use four numbers, Major.Minor.Patch.Build ("1.6.0.0").
+      if (p.category === "Game" && typeof p.version === "string" && p.version.trim() && !/^v?\d+\.\d+\.\d+\.\d+$/i.test(p.version.trim())) warn("projects.json", `${name}: game versions use four numbers, Major.Minor.Patch.Build (like "1.6.0.0"), not "${p.version}".`);
       if (typeof p.version === "string" && /^v/i.test(p.version)) warn("projects.json", `${name}: write the version without the "v" ("${p.version.slice(1)}"), the site adds it.`);
       if (p.featured !== undefined && typeof p.featured !== "boolean") error("projects.json", `${name}: "featured" should be true or false (no quotes).`);
       if (p.title) {
