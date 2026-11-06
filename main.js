@@ -100,6 +100,25 @@ function isGame(project) {
 }
 
 // "Trading OS" -> "TO". Shown on covers that don't have a screenshot.
+// Sharp pictures on high-density screens. Every cover and screenshot has a
+// twin at double size beside it, named with "@2x" ("frontier-lab.jpg" ->
+// "frontier-lab@2x.jpg"). This sets both: ordinary screens load the small
+// one, phones like a big iPhone (3 real pixels per CSS pixel) load the big
+// one, so pictures aren't stretched and blurry there. The shape is the same,
+// so nothing moves. If a twin is missing, it falls back to the small file.
+function twin(src) {
+  return String(src || "").replace(/(\.[a-z]+)$/i, "@2x$1");
+}
+function setPicture(img, src) {
+  img.src = src;
+  if (!src || /@2x\./.test(src)) return;
+  img.srcset = src + " 1x, " + twin(src) + " 2x";
+  img.addEventListener("error", function fallBack() {
+    img.removeEventListener("error", fallBack);
+    img.srcset = src; // just the small one, at its real size
+  });
+}
+
 function initials(title) {
   return title
     .split(/\s+/)
@@ -147,7 +166,7 @@ function renderProject(project) {
   }
   if (project.image) {
     const img = el("img");
-    img.src = project.image;
+    setPicture(img, project.image);
     img.alt = ""; // decoration: the title is right below
     img.width = 640;
     img.height = 480;
@@ -235,7 +254,7 @@ function renderProject(project) {
     strip.setAttribute("aria-label", title + " screenshots");
     project.shots.forEach((shot) => {
       const img = el("img");
-      img.src = shot.src;
+      setPicture(img, shot.src);
       img.alt = shot.alt || "";
       img.loading = "lazy";
       img.decoding = "async";
@@ -422,7 +441,7 @@ function setUpGame(box, projects) {
   cover.dataset.cat = String(project.category || "").trim().toLowerCase();
   if (project.image) {
     const img = el("img");
-    img.src = project.image;
+    setPicture(img, project.image);
     img.alt = "Cover of " + title;
     img.width = 640;
     img.height = 480;
@@ -500,7 +519,7 @@ function setUpGame(box, projects) {
     strip.setAttribute("aria-label", title + " screenshots");
     project.shots.forEach((shot) => {
       const img = el("img");
-      img.src = shot.src;
+      setPicture(img, shot.src);
       img.alt = shot.alt || "";
       img.loading = "lazy";
       img.decoding = "async";
@@ -771,7 +790,7 @@ function setUpPress(listEl, projects) {
       const cover = el("a", "press-game__cover");
       cover.href = project.image;
       const img = el("img");
-      img.src = project.image;
+      setPicture(img, project.image);
       img.alt = "Cover of " + title;
       img.width = 640;
       img.height = 480;
@@ -811,7 +830,7 @@ function setUpPress(listEl, projects) {
         const a = el("a");
         a.href = shot.src;
         const img = el("img");
-        img.src = shot.src;
+        setPicture(img, shot.src);
         img.alt = shot.alt || title + " screenshot " + (i + 1);
         img.loading = "lazy";
         img.decoding = "async";
@@ -840,7 +859,7 @@ function renderNews(project) {
   cover.dataset.cat = String(project.category || "").trim().toLowerCase();
   if (project.image) {
     const img = el("img");
-    img.src = project.image;
+    setPicture(img, project.image);
     img.alt = ""; // decoration: the title is right beside it
     img.width = 640;
     img.height = 480;
@@ -5232,7 +5251,7 @@ function setUpContinue() {
   box.querySelector("[data-continue-when]").textContent = `Last played ${agoText(Date.now() - last.at)}`;
   box.querySelector("[data-continue-visit]").textContent = visits > 1 ? `· visit #${visits}` : "";
   const cover = box.querySelector("[data-continue-cover]");
-  if (last.image) cover.src = last.image;
+  if (last.image) setPicture(cover, last.image);
   else cover.remove();
   const link = box.querySelector("[data-continue-link]");
   link.href = last.link;
