@@ -1,14 +1,14 @@
 {
   "latest": {
-    "date": "2026-11-05",
-    "time": "2026-11-05T14:16:48.633Z",
-    "headline": "Chip selloff deepens; MU indicated about 5% lower, near 200-day average",
-    "tldr": "Asian memory stocks crashed for a second day, Qualcomm's weak guidance and a Bloomberg report that Micron paused its new Taiwan plant add to the pressure, and with Nasdaq 100 futures down about 1% and SMH down 3.7% at about 9:10 ET, MU (about $755) and SOX (about 9,900 implied) are set to open at fresh lows while the Dow keeps rallying."
+    "date": "2026-11-06",
+    "time": "2026-11-06T14:11:22.769Z",
+    "headline": "Chips bounce about 5% pre-market after SOX's worst day since 2020",
+    "tldr": "SOX fell 12.25% to 9,011 Thursday and MU fell 17.5% to $656.39, and Asia sold off again overnight, but US chips are bouncing pre-market: SMH and SOXX are up about 5%, MU is about $703–$710 (+7–8%), and Nasdaq 100 futures are up about 1.5% even after a hot jobs report (+165K) pushed yields higher."
   },
   "months": [
     {
       "month": "2026-11",
-      "count": 5
+      "count": 6
     }
   ]
 }
