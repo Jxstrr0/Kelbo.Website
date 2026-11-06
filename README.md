@@ -967,8 +967,9 @@ you open it.
   It can run up to 30 web searches a brief (`MAX_SEARCHES`) and open up to
   15 whole pages on any site to read the actual numbers (`MAX_FETCHES`),
   following a rough search plan in `SYSTEM` (most of it on MU, 3 searches on the SOX). It calls
-  the model named in `MODEL` (`claude-opus-5-5`), set to think harder
-  than its default (`effort: "high"`), mostly for the gap call.
+  the model named in `MODEL` (`claude-opus-5-5`), set to think a lot harder
+  than its default (`effort: "xhigh"`, one step below the maximum), mostly
+  for the gap call.
 - **Yesterday's call:** the robot hands it the previous brief, so it says
   what changed overnight instead of repeating old news, and the MU and SOX
   sections each open with **Last call:** what the last brief predicted for
