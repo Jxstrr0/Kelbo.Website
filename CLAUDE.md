@@ -94,7 +94,7 @@ keep the Co-Authored-By trailer for Claude in each message.
   renders it. Its order is the display order everywhere (Games, Projects,
   What's new, home featured, "More games"): Kelbo's own ranking, games
   first: Prairie Engine Works, Lombard, Escapement, Station Keeper,
-  Season Ticket, Frontier Lab, The Whip, Red Skies. Nothing sorts by progress except the
+  Season Ticket, Frontier Lab, The Whip, Red Skies, Ink. Nothing sorts by progress except the
   Projects page's filter buttons (`sortByProgress`). Adding a project should never need an HTML edit. Each project
   can carry a `version` ("1.4.0.0", no "v") and `latest` (what changed),
   shown as "v1.4.0.0 · Added night mode" under the summary; either may be
@@ -554,11 +554,12 @@ keep the Co-Authored-By trailer for Claude in each message.
   every footer ("What's new") and listed in `sitemap.xml`.
 - Games each live in their own repo with their own GitHub Pages site
   (RedSkies, 350Chev, SeasonTicket, The-Whip, FrontierLab,
-  Lombard, StationKeeper, Escapement). Lombard keeps its drawn cover until its real art
+  Lombard, StationKeeper, Escapement, Ink). Lombard keeps its drawn cover until its real art
   pass is done; Station Keeper's cover is the live game in sunlight with the
   panels hidden; Escapement's is the live bench's balance wheel with the UI
   hidden (a placeholder in the game; retake it once real movements are on
-  the bench). This site only links to
+  the bench); Ink's is the live Studio tab's back room with the UI hidden
+  (the scaffold's placeholder room; retake it once the real studio is in). This site only links to
   them via `link` (the pink Play it button) and `code` (the repo). The home
   page "Pick a game" cards are the `featured` projects (max 4); on phones
   all but the first are shortened (16:9 picture, two-line summary).
