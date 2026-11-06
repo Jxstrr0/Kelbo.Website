@@ -77,12 +77,14 @@ finished; those never block anything.
 ships, publish a release in that game's repo:
 
 1. In the game's repo, tap **Releases** → **Draft a new release**.
-2. Tag: the version with a `v`, like `v1.2.0`. Title: what changed, like
+2. Tag: the version with a `v`, like `v1.2.0.0`. Every game uses four
+   numbers, Major.Minor.Patch.Build (an older short tag like `v1.5` shows
+   as `v1.5.0.0`). Title: what changed, like
    `Night mode and a new garage`. (**Generate release notes** fills in the
    description from the merged PRs.)
 3. Tap **Publish release**.
 
-Within 6 hours the site shows "v1.2.0 · Night mode and a new garage"
+Within 6 hours the site shows "v1.2.0.0 · Night mode and a new garage"
 for that game. For it right away, open **Actions** → **Deploy site** →
 **Run workflow**. Games with no releases yet just show what's in
 `projects.json`. If `projects.json` has a newer version than the newest
@@ -167,10 +169,12 @@ progress order.
   Everything shows on All.
   Anything else still shows on the Projects page, just not in a section.
 - **version** and **latest**: the version note under the summary, like
-  "v1.4 · Added night mode". `version` is just the number (`"1.4"`), and
-  `latest` is a few words on what changed. Either can stay `""`, and the
-  line disappears if both are empty. Red Skies and Prairie Engine Works
-  show the version number their game pages report; fill in `latest` when
+  "v1.4.0.0 · Added night mode". `version` is just the number
+  (`"1.4.0.0"`); games always use four numbers, Major.Minor.Patch.Build,
+  and the Site check warns about a game with fewer. `latest` is a few
+  words on what changed. Either can stay `""`, and the line disappears if
+  both are empty. Every game shows the version number its game reports;
+  fill in `latest` when
   you ship something. The What's new page (`whats-new.html`) lists every
   project that has a version or a `latest`, in the same order as this
   file, so updating these two fields updates that page too.

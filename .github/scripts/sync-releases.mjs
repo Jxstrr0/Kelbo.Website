@@ -8,7 +8,8 @@
 // How it decides, for every project with a GitHub "code" link:
 //   - No releases yet: leaves projects.json exactly as written.
 //   - The release is the same version or newer: uses the release.
-//       version = the tag without the "v"   (tag v1.2.0  ->  "1.2.0")
+//       version = the tag without the "v", padded to four numbers
+//                 (tag v1.2.0  ->  "1.2.0.0")
 //       latest  = the player-friendly line for that exact release from
 //                 release-lines.json (written by release-lines.mjs), or
 //                 if there isn't one, the release title minus any
@@ -44,6 +45,14 @@ function compare(a, b) {
     if (d) return d;
   }
   return 0;
+}
+
+// Every Longlight game uses four numbers, Major.Minor.Patch.Build, so an
+// older or shorter tag is padded with zeros: "1.5" -> "1.5.0.0".
+function fourPart(v) {
+  const parts = String(v).split(".");
+  while (parts.length < 4) parts.push("0");
+  return parts.join(".");
 }
 
 // Takes the version tag off the front of a release title.
@@ -84,7 +93,7 @@ for (const p of projects) {
   }
 
   const tag = release.tag_name || "";
-  const version = tag.replace(/^v/i, "");
+  const version = fourPart(tag.replace(/^v/i, ""));
   if (!/^\d/.test(version)) { report.push(`- ${p.title}: newest release tag "${tag}" isn't a version number, skipped`); continue; }
 
   if (p.version && compare(p.version, version) > 0) {
