@@ -127,6 +127,8 @@ const tools = [
 // buildMessage puts the events back together into the same message object a
 // normal reply would give, so the rest of the script doesn't change.
 const TIMEOUT_MS = 20 * 60 * 1000;
+// How many times to send a request whose connection drops (see callClaude).
+const NETWORK_TRIES = 2;
 function post(body) {
   return new Promise((resolve, reject) => {
     const req = request("https://api.anthropic.com/v1/messages", {
@@ -216,8 +218,12 @@ async function callClaude(messages, withTools = true, attempt = 1) {
       ...(withTools && { tools }),
     }));
   } catch (err) {
-    // A dropped connection: try again, like a 5xx.
-    if (attempt >= 4) throw err;
+    // A dropped connection: try once more, then give up. A connection
+    // usually drops partway through the research, after most of the
+    // searches are already paid for, so each extra try costs about as much
+    // as a whole brief (on 2026-11-06, four dropped tries cost $8.83 and
+    // saved nothing). The 6:43 and 7:11 back-up runs get another go.
+    if (attempt >= NETWORK_TRIES) throw err;
     console.log(`Network error (${err.message}), retrying in ${15 * attempt}s`);
     await new Promise((r) => setTimeout(r, 15000 * attempt));
     return callClaude(messages, withTools, attempt + 1);
