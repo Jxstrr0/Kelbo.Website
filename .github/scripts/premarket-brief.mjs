@@ -156,15 +156,16 @@ async function callClaude(messages, withTools = true, attempt = 1) {
     // max_tokens covers the model's thinking as well as the brief itself, so
     // leave it roomy: a tight cap cuts the brief off mid-sentence. It's
     // only a ceiling; the brief is billed for what it really writes.
-    // effort "high": think harder than Opus's default ("medium") about what
-    // the research found, mostly for the gap call.
+    // effort "xhigh": think a lot harder than Opus's default ("medium")
+    // about what the research found, mostly for the gap call. More thinking
+    // means more tokens, so max_tokens has room for it.
     // cache_control: every step of the research re-reads everything found so
     // far. Caching bills those re-reads at a twentieth of the price. The
     // marker on the instructions keeps them cached; the top-level one moves
     // along the conversation as it grows.
       model: MODEL,
-      max_tokens: 32000,
-      output_config: { effort: "high" },
+      max_tokens: 64000,
+      output_config: { effort: "xhigh" },
       system: [{ type: "text", text: SYSTEM, cache_control: { type: "ephemeral" } }],
       messages,
       cache_control: { type: "ephemeral" },
