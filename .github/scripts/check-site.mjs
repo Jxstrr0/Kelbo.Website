@@ -111,12 +111,17 @@ if (projects !== undefined) {
       else if (p.status && !KNOWN_STATUS.includes(p.status)) warn("projects.json", `${name} has the status "${p.status}", which the site hasn't seen before. Fine if it's on purpose.`);
       if (p.category && !KNOWN_CATEGORY.includes(p.category)) warn("projects.json", `${name} has the category "${p.category}", so it won't appear on the Games, Trading or Tools pages.`);
       if (p.image && !exists(p.image)) error("projects.json", `${name}: the cover image "${p.image}" doesn't exist.`);
+      // Each picture should have a double-size twin ("name@2x.jpg") for sharp
+      // phone screens. The site falls back to the small one, so only a warning.
+      const twin = (src) => String(src).replace(/(\.[a-z]+)$/i, "@2x$1");
+      if (p.image && exists(p.image) && !exists(twin(p.image))) warn("projects.json", `${name}: no sharp version "${twin(p.image)}" (1280x960) of the cover, so big phones show the small one stretched.`);
       if (p.link && !/^https?:\/\//.test(p.link) && !exists(p.link.split(/[?#]/)[0])) error("projects.json", `${name}: the link "${p.link}" points at a file that doesn't exist.`);
       if (p.shots !== undefined) {
         if (!Array.isArray(p.shots)) error("projects.json", `${name}: "shots" should be a list.`);
         else p.shots.forEach((s, j) => {
           if (!s || !s.src) error("projects.json", `${name}: screenshot #${j + 1} has no "src".`);
           else if (!exists(s.src)) error("projects.json", `${name}: the screenshot "${s.src}" doesn't exist.`);
+          else if (!exists(twin(s.src))) warn("projects.json", `${name}: no sharp version "${twin(s.src)}" (double size) of screenshot #${j + 1}.`);
           if (s && !s.alt) warn("projects.json", `${name}: screenshot #${j + 1} has no "alt" text (screen readers read this out).`);
         });
       }
