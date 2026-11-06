@@ -186,6 +186,10 @@ progress order.
   use drawn covers in the five site colours, not screenshots.
   Without one, the card gets a coloured cover with the project's initials.
   Covers are shown 4:3 (640 × 480 is perfect) and should stay under 100 KB.
+  Also add a sharp copy at double size with `@2x` before the `.jpg`
+  (`assets/covers/my-game@2x.jpg`, 1280 × 960). Big phones like an iPhone
+  16 Pro Max show that one, so the cover isn't stretched and blurry. If it's
+  missing the site uses the small one and the Site check gives a warning.
 - **featured**: `true` shows it as a big card under "Pick a game" on the home
   page (the first four only).
 - **shots** (optional): screenshots for the card's "Screenshots (4)" drawer.
@@ -196,6 +200,8 @@ progress order.
   40 KB each); portrait and landscape can mix, since they all show at the
   same height. The drawer shows on the Games and Projects pages, not on the
   home page's short cards, and the pictures only download when it's opened.
+  Each screenshot also gets an `@2x` copy at double size (about 720
+  pixels tall), the same way as covers.
 
 - **story** (optional): a longer write-up for the game's own page
   (`game.html?g=<name>`, where the name is the title in lowercase with dashes,

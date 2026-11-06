@@ -104,7 +104,8 @@ keep the Co-Authored-By trailer for Claude in each message.
   that by hand. Prefer publishing a release in the game's repo; editing
   them here is the fallback for games without releases.
   It can also carry `shots` (`[{src, alt}]`, files in `assets/shots/`,
-  about 360px tall JPG, under 40 KB): `renderProject` makes a closed
+  about 360px tall JPG, under 40 KB, plus an `@2x` twin about 720px tall
+  under 90 KB): `renderProject` makes a closed
   `<details class="shots">` "Screenshots (N)" with a scroll-snap strip of
   lazy images, all `12rem` tall so portrait and landscape mix. Hidden on
   the home featured list by CSS; the What's new rows don't show it.
@@ -151,7 +152,10 @@ keep the Co-Authored-By trailer for Claude in each message.
   purple sky (hero, page heads, header, footer) with ivory body; dark theme
   = slate. Clay text on the purple sky is too faint, so keep clay for the
   sun, buttons and underlines there. Game covers live in `assets/covers/`
-  (640×480 JPG, captured from each live game; Red Skies is portrait-only, so
+  (640×480 JPG plus a 1280×960 `name@2x.jpg` twin for sharp 3x phones; every
+  cover and shot `<img>` goes through `setPicture` in `main.js`, which adds
+  `srcset` "1x, @2x 2x" and drops it if the twin fails to load; check-site
+  warns when a twin is missing; captured from each live game; Red Skies is portrait-only, so
   it's shot at 600px wide mid-shift with a jet on the TV camera, cropped 4:3;
   Prairie Engine Works is the GM LT4 6.2 from the game's own studio render,
   `ENGINE_VIS.photoShot(1280, 960)`, so no stray parts show; Season Ticket is
