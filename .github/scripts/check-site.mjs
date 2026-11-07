@@ -263,7 +263,8 @@ if (exists("sitemap.xml")) {
   const sitemap = readFileSync(join(ROOT, "sitemap.xml"), "utf8");
   const pages = files.filter((f) => dirname(f) === ROOT && extname(f) === ".html").map(rel);
   for (const page of pages) {
-    if (["404.html", "index.html", "game.html"].includes(page)) continue;
+    // hidden.html is the password-locked page: unlisted on purpose.
+    if (["404.html", "index.html", "game.html", "hidden.html"].includes(page)) continue;
     if (!sitemap.includes(page)) warn("sitemap.xml", `${page} isn't in the sitemap.`);
   }
 }
