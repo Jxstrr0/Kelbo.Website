@@ -781,8 +781,7 @@ password itself isn't saved anywhere, not in the repo and not on the phone.
 2. Write a title and the text. A blank line starts a new paragraph, a
    line starting `# ` is a heading, lines starting `- ` make a list, and
    web links become tappable.
-3. Pick an access code (at least 12 characters; four random words like
-   `copper-moose-lantern-rain` is ideal) and tap **Lock it**.
+3. Pick an access code (at least 6 characters; a number code works) and tap **Lock it**.
 4. Tap **Copy**, then **Open hidden.json on GitHub**, select everything
    in the file, paste over it, and commit. The site updates in a minute
    or two.
@@ -794,8 +793,9 @@ Things to know:
 - **Forget the password and the text is gone.** There's no reset, so keep
   your own copy of what you wrote.
 - Someone could download the scrambled file and try guesses on their own
-  computer, which is why a long password matters. Every guess is made slow
-  on purpose, so a long one is safe; a short one like `kelbo2026` isn't.
+  computer. Every guess is made slow on purpose, but a 6-digit number code
+  can still be cracked by someone determined in a few days. That's fine for
+  "not for everyone" stuff; for anything more private, use a longer code.
 - Fine for previews, notes and links for friends. Not for anything
   seriously secret, and not for paid content (that needs a real login).
 
