@@ -47,7 +47,7 @@ from their releases, then publishes the files as they are (see
 | `options.json` | **Your options trades.** Edit this to log a trade |
 | `journal.js`, `journal.css` | Show the journal entries and options trades, and work out the record |
 | `tools/prediction-tracker/` | The Prediction Tracker tool, parked for now (not linked from the site) |
-| `hidden.html` + `hidden.json` | **The password-locked page** (see "The hidden page" below). Unlisted: not in the menu, the sitemap or search engines |
+| `hidden.html` + `hidden.json` | **The password-locked page** (see "The hidden page" below). Linked as "Log in" in every footer; kept out of the sitemap and search engines |
 | `hidden.js`, `hidden.css` | Lock, unlock and the writer for the hidden page |
 | `404.html` | The "page not found" screen GitHub shows for any address that doesn't exist |
 | `.nojekyll` | Tells GitHub Pages to serve the files as-is. Leave it alone |
@@ -766,8 +766,8 @@ and open http://localhost:8000.
 
 ## The hidden page
 
-`hidden.html` is a page that needs a password. Nothing links to it, so
-share the address yourself:
+`hidden.html` is a page that needs a password. Every footer links to it
+as **Log in**, and you can share the address directly:
 https://jxstrr0.github.io/Kelbo.Website/hidden.html
 
 What's inside is kept in `hidden.json`, **scrambled** (encrypted). The repo
