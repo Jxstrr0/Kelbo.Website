@@ -25,7 +25,7 @@
   "use strict";
 
   const ROUNDS = 600000;       // PBKDF2 rounds; stored in the file so it can change later
-  const MIN_PASS = 6;          // shortest access code the writer accepts (6, so a number code works)
+  const MIN_PASS = 12;         // shortest access code the writer accepts (short codes can be guessed offline)
   const $ = (sel) => document.querySelector(sel);
   const enc = new TextEncoder();
   const dec = new TextDecoder();
