@@ -506,7 +506,14 @@ keep the Co-Authored-By trailer for Claude in each message.
 - Offline: `sw.js` (root, registered in `init`) precaches `CORE` and is
   network-first for same-origin GETs (saved copy on failure, `index.html`
   for unknown pages offline). Bump `CACHE`
-  if it ever serves stale files; add new top-level pages to `CORE`.
+  if it ever serves stale files; add new top-level pages to `CORE`. Its
+  cleanup deletes only `longlight-*` caches: the games share this origin's
+  cache storage, so never delete their caches.
+- Studio catalogue: `.github/LONGLIGHT-STUDIO.md` is the master copy of the
+  public catalogue of every game (looks, names taken, storage prefixes,
+  reuse map, ideas), copied into each game repo's root. It lives in
+  `.github` so it isn't published; it never describes Kelbo's private repos.
+  Update it here first, then recopy.
 - Page changes: cross-document view transitions (`@view-transition`)
   with `.site-header` and `.page-head .horizon` named so they stay put;
   all inside the no-preference block.
