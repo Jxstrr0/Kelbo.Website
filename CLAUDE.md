@@ -860,5 +860,15 @@ keep the Co-Authored-By trailer for Claude in each message.
   `access_key` in `index.html` is public by design (it can only send him a
   message); never put his email address in the site. Web3Forms rejects
   server-side posts, so test it from a real browser on the live site.
+- `hidden.html` (+ `hidden.js`, `hidden.css`, `hidden.json`) is the
+  password-locked page: unlisted on purpose (no menu link, `noindex`, not in
+  `sitemap.xml` or `sw.js` `CORE`; `check-site.mjs` skips it in the sitemap
+  check). `hidden.json` is `{"locked": null}` or `{"locked": {v, rounds,
+  salt, iv, data}}`: AES-GCM 256 with a PBKDF2-SHA256 key (`ROUNDS`
+  600,000), all base64, made by the page's own writer in the browser;
+  Kelbo pastes it into GitHub. The plaintext is `{title, body}`, shown as
+  text nodes only (`render`: blank line = paragraph, `# `/`## ` heading,
+  `- ` list, https links). Never commit a password or the plaintext; never
+  hand-edit the scrambled file.
 - `README.md` is Kelbo's plain-English editing guide. Keep it up to date
   when how things work changes.

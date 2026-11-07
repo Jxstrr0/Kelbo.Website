@@ -47,6 +47,8 @@ from their releases, then publishes the files as they are (see
 | `options.json` | **Your options trades.** Edit this to log a trade |
 | `journal.js`, `journal.css` | Show the journal entries and options trades, and work out the record |
 | `tools/prediction-tracker/` | The Prediction Tracker tool, parked for now (not linked from the site) |
+| `hidden.html` + `hidden.json` | **The password-locked page** (see "The hidden page" below). Unlisted: not in the menu, the sitemap or search engines |
+| `hidden.js`, `hidden.css` | Lock, unlock and the writer for the hidden page |
 | `404.html` | The "page not found" screen GitHub shows for any address that doesn't exist |
 | `.nojekyll` | Tells GitHub Pages to serve the files as-is. Leave it alone |
 | `.github/workflows/` | The robots: `site-check.yml` (checks every pull request), `deploy.yml` (checks again, then puts the site live), `premarket-brief.yml` (the Morning Writer), `postmarket-recap.yml` (the Grader), `brief-lessons.yml` (the Coach), `devlog-draft.yml` (the Devlog Writer) and `release-lines.yml` (the Release Writer), all below |
@@ -761,6 +763,41 @@ and open http://localhost:8000.
   Interactive". You own the copyright on everything here automatically.
   If you ever register Longlight Interactive as a business name, the line
   can drop "Kelbo /".
+
+## The hidden page
+
+`hidden.html` is a page that needs a password. Nothing links to it, so
+share the address yourself:
+https://jxstrr0.github.io/Kelbo.Website/hidden.html
+
+What's inside is kept in `hidden.json`, **scrambled** (encrypted). The repo
+is public, but without the password that file is just gibberish. The
+password itself isn't saved anywhere, not in the repo and not on the phone.
+
+**To change what's inside (or lock it the first time):**
+
+1. Open the page. If nothing is locked yet, the writer shows straight
+   away. Otherwise unlock it and tap **Change what's inside**.
+2. Write a title and the text. A blank line starts a new paragraph, a
+   line starting `# ` is a heading, lines starting `- ` make a list, and
+   web links become tappable.
+3. Pick a password (at least 12 characters; four random words like
+   `copper-moose-lantern-rain` is ideal) and tap **Lock it**.
+4. Tap **Copy**, then **Open hidden.json on GitHub**, select everything
+   in the file, paste over it, and commit. The site updates in a minute
+   or two.
+
+Things to know:
+
+- **Everyone shares one password.** To shut someone out, lock it again
+  with a new password and only give out the new one.
+- **Forget the password and the text is gone.** There's no reset, so keep
+  your own copy of what you wrote.
+- Someone could download the scrambled file and try guesses on their own
+  computer, which is why a long password matters. Every guess is made slow
+  on purpose, so a long one is safe; a short one like `kelbo2026` isn't.
+- Fine for previews, notes and links for friends. Not for anything
+  seriously secret, and not for paid content (that needs a real login).
 
 ## The contact form
 
