@@ -794,8 +794,9 @@ Things to know:
 - **Forget the password and the text is gone.** There's no reset, so keep
   your own copy of what you wrote.
 - Someone could download the scrambled file and try guesses on their own
-  computer, which is why a long password matters. Every guess is made slow
-  on purpose, so a long one is safe; a short one like `kelbo2026` isn't.
+  computer. Every guess is made slow on purpose, so four random words would
+  take thousands of years; a short number code would fall in about a
+  minute, which is why the writer asks for at least 12 characters.
 - Fine for previews, notes and links for friends. Not for anything
   seriously secret, and not for paid content (that needs a real login).
 
