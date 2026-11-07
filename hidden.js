@@ -117,7 +117,7 @@
   function render(content) {
     const art = box.content;
     art.replaceChildren();
-    setHead("Unlocked", content.title || "Hidden", "Only for people with the password.");
+    setHead("Unlocked", content.title || "Hidden", "Only for people with the access code.");
     for (const block of String(content.body || "").split(/\n\s*\n/)) {
       const lines = block.split("\n").map((l) => l.trim()).filter(Boolean);
       if (!lines.length) continue;
@@ -153,7 +153,7 @@
       box.content.focus();
     } catch (err) {
       box.status.className = "contact-form__status is-error";
-      box.status.textContent = "That's not it.";
+      box.status.textContent = "That code didn't work.";
       box.pass.select();
     }
     button.disabled = false;
@@ -183,8 +183,8 @@
   box.writer.addEventListener("submit", async (e) => {
     e.preventDefault();
     const say = (msg, bad) => { box.wstatus.className = "contact-form__status" + (bad ? " is-error" : ""); box.wstatus.textContent = msg; };
-    if (box.newPass.value.length < MIN_PASS) return say(`The password needs at least ${MIN_PASS} characters.`, true);
-    if (box.newPass.value !== box.again.value) return say("The two passwords don't match.", true);
+    if (box.newPass.value.length < MIN_PASS) return say(`The access code needs at least ${MIN_PASS} characters.`, true);
+    if (box.newPass.value !== box.again.value) return say("The two access codes don't match.", true);
     say("Locking…");
     const content = { title: box.title.value.trim(), body: box.body.value };
     const entry = await lock(content, box.newPass.value);
