@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Log in · Longlight Interactive</title>
-  <!-- The members' page, linked as "Log in" in every footer. It stays
+  <title>Unlock access · Longlight Interactive</title>
+  <!-- The members' page, linked as "Unlock access" in every footer. It stays
        out of the sitemap and search engines are asked not to list it. What's
        inside is scrambled (encrypted) in hidden.json, so the public repo
        only ever holds gibberish. hidden.js unscrambles it in the browser
@@ -84,9 +84,9 @@
     <section class="page-head">
       <div class="wrap">
         <p class="eyebrow">Members</p>
-        <h1>Log in</h1>
+        <h1>Unlock access</h1>
         <p class="page-head__line">
-          Type the password to see what's inside.
+          Got an access code? Enter it to see what's inside.
         </p>
         <div class="horizon" data-horizon aria-hidden="true">
           <div class="horizon__stars">
@@ -114,11 +114,11 @@
       <!-- 1. The lock: type the password. -->
       <form class="contact-form hidden-lock" data-hidden-unlock hidden>
         <div class="form-row">
-          <label for="hidden-pass">Password</label>
+          <label for="hidden-pass">Access code</label>
           <input id="hidden-pass" type="password" autocomplete="current-password" required>
         </div>
         <div class="contact-form__actions">
-          <button class="button button--send" type="submit">Log in</button>
+          <button class="button button--send" type="submit">Unlock</button>
           <p class="contact-form__status" role="status" aria-live="polite" data-hidden-status></p>
         </div>
       </form>
@@ -134,7 +134,7 @@
            here, and gets back a new scrambled hidden.json to paste into
            GitHub. Nothing typed here leaves the phone. -->
       <form class="contact-form hidden-writer" data-hidden-writer hidden>
-        <p class="hidden-note" data-hidden-empty hidden>Nothing is locked here yet. Write something, pick a password, and lock it.</p>
+        <p class="hidden-note" data-hidden-empty hidden>Nothing is locked here yet. Write something, pick an access code, and lock it.</p>
         <div class="form-row">
           <label for="hidden-title">Title</label>
           <input id="hidden-title" type="text" maxlength="120" required>
@@ -144,11 +144,11 @@
           <textarea id="hidden-body" rows="10" required></textarea>
         </div>
         <div class="form-row">
-          <label for="hidden-new">Password <span class="form-row__hint">(at least 12 characters; four random words is best)</span></label>
+          <label for="hidden-new">Access code <span class="form-row__hint">(at least 12 characters; four random words is best)</span></label>
           <input id="hidden-new" type="password" autocomplete="new-password" minlength="12" required>
         </div>
         <div class="form-row">
-          <label for="hidden-again">Password again</label>
+          <label for="hidden-again">Access code again</label>
           <input id="hidden-again" type="password" autocomplete="new-password" minlength="12" required>
         </div>
         <div class="contact-form__actions">
@@ -196,7 +196,7 @@
         </svg>
       </a>
       <p>&copy; <span data-year>2026</span> Kelbo / Longlight Interactive. Built by hand and hosted on GitHub Pages.
-        <a href="about.html">About Kelbo</a> &middot; <a href="whats-new.html">What's new</a> &middot; <a href="devlog.html">Devlog</a> &middot; <a href="press.html">Press kit</a> &middot; <a href="hidden.html">Log in</a> &middot; <a href="https://github.com/Jxstrr0">GitHub</a></p>
+        <a href="about.html">About Kelbo</a> &middot; <a href="whats-new.html">What's new</a> &middot; <a href="devlog.html">Devlog</a> &middot; <a href="press.html">Press kit</a> &middot; <a href="hidden.html">Unlock access</a> &middot; <a href="https://github.com/Jxstrr0">GitHub</a></p>
     </div>
   </footer>
 </body>

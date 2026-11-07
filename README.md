@@ -47,7 +47,7 @@ from their releases, then publishes the files as they are (see
 | `options.json` | **Your options trades.** Edit this to log a trade |
 | `journal.js`, `journal.css` | Show the journal entries and options trades, and work out the record |
 | `tools/prediction-tracker/` | The Prediction Tracker tool, parked for now (not linked from the site) |
-| `hidden.html` + `hidden.json` | **The password-locked page** (see "The hidden page" below). Linked as "Log in" in every footer; kept out of the sitemap and search engines |
+| `hidden.html` + `hidden.json` | **The password-locked page** (see "The hidden page" below). Linked as "Unlock access" in every footer; kept out of the sitemap and search engines |
 | `hidden.js`, `hidden.css` | Lock, unlock and the writer for the hidden page |
 | `404.html` | The "page not found" screen GitHub shows for any address that doesn't exist |
 | `.nojekyll` | Tells GitHub Pages to serve the files as-is. Leave it alone |
@@ -767,7 +767,7 @@ and open http://localhost:8000.
 ## The hidden page
 
 `hidden.html` is a page that needs a password. Every footer links to it
-as **Log in**, and you can share the address directly:
+as **Unlock access**, and you can share the address directly:
 https://jxstrr0.github.io/Kelbo.Website/hidden.html
 
 What's inside is kept in `hidden.json`, **scrambled** (encrypted). The repo
@@ -781,7 +781,7 @@ password itself isn't saved anywhere, not in the repo and not on the phone.
 2. Write a title and the text. A blank line starts a new paragraph, a
    line starting `# ` is a heading, lines starting `- ` make a list, and
    web links become tappable.
-3. Pick a password (at least 12 characters; four random words like
+3. Pick an access code (at least 12 characters; four random words like
    `copper-moose-lantern-rain` is ideal) and tap **Lock it**.
 4. Tap **Copy**, then **Open hidden.json on GitHub**, select everything
    in the file, paste over it, and commit. The site updates in a minute
