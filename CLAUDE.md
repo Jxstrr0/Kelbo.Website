@@ -861,8 +861,8 @@ keep the Co-Authored-By trailer for Claude in each message.
   message); never put his email address in the site. Web3Forms rejects
   server-side posts, so test it from a real browser on the live site.
 - `hidden.html` (+ `hidden.js`, `hidden.css`, `hidden.json`) is the
-  password-locked page: unlisted on purpose (no menu link, `noindex`, not in
-  `sitemap.xml` or `sw.js` `CORE`; `check-site.mjs` skips it in the sitemap
+  password-locked page, linked as "Unlock access" in every footer (its `<h1>` says Unlock
+  access, the field "Access code"; `noindex`, not in `sitemap.xml` or `sw.js` `CORE`; `check-site.mjs` skips it in the sitemap
   check). `hidden.json` is `{"locked": null}` or `{"locked": {v, rounds,
   salt, iv, data}}`: AES-GCM 256 with a PBKDF2-SHA256 key (`ROUNDS`
   600,000), all base64, made by the page's own writer in the browser;
