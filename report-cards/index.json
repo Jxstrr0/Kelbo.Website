@@ -1,22 +1,22 @@
 {
-  "latest": "2026-11-05",
-  "days": 4,
+  "latest": "2026-11-06",
+  "days": 5,
   "gap": {
-    "hit": 3,
+    "hit": 4,
     "partial": 1,
     "miss": 0,
     "unknown": 0
   },
   "levels": {
-    "held": 3,
-    "broke": 9,
-    "untested": 18,
+    "held": 4,
+    "broke": 10,
+    "untested": 24,
     "unknown": 0
   },
   "sox": {
-    "days": 1,
+    "days": 2,
     "gap": {
-      "hit": 1,
+      "hit": 2,
       "partial": 0,
       "miss": 0,
       "unknown": 0
@@ -24,7 +24,7 @@
     "levels": {
       "held": 0,
       "broke": 0,
-      "untested": 5,
+      "untested": 11,
       "unknown": 0
     }
   },
@@ -32,6 +32,6 @@
     "2026-11"
   ],
   "counts": {
-    "2026-11": 4
+    "2026-11": 5
   }
 }

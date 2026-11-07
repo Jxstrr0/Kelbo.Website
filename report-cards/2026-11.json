@@ -1,4 +1,139 @@
 {
+  "2026-11-06": {
+    "date": "2026-11-06",
+    "time": "2026-11-07T01:47:30.427Z",
+    "summary": "Both gap calls hit (MU +7.9%, SOX +5.4%), but both faded after the open and MU closed below the $700 support the brief named.",
+    "gap": {
+      "call": "Up about 7–8% ($700–$712)",
+      "result": "Opened 708.35 vs 656.39 prior close, up 7.92%.",
+      "grade": "hit"
+    },
+    "mu": {
+      "prev_close": 656.39,
+      "open": 708.35,
+      "high": 724.8,
+      "low": 676,
+      "close": 690,
+      "open_pct": 7.92,
+      "close_pct": 5.12
+    },
+    "levels": [
+      {
+        "level": "Resistance about $717–$718 (highest pre-market prints)",
+        "result": "High of 724.80 poked through, but MU closed below at 690.",
+        "grade": "held"
+      },
+      {
+        "level": "Resistance about $745–$753 (200-day SMA and Thursday's open)",
+        "result": "The 724.80 high never came within 0.5%.",
+        "grade": "untested"
+      },
+      {
+        "level": "Resistance $761.81 (Thursday's high)",
+        "result": "Never reached.",
+        "grade": "untested"
+      },
+      {
+        "level": "Resistance about $770.53 (200-day EMA)",
+        "result": "Never reached.",
+        "grade": "untested"
+      },
+      {
+        "level": "Resistance $795.23 (Wednesday's close)",
+        "result": "Never reached.",
+        "grade": "untested"
+      },
+      {
+        "level": "Support about $700 (round number and 8:30 print)",
+        "result": "Opened above it but closed below at 690.",
+        "grade": "broke"
+      },
+      {
+        "level": "Support $656.39 (Thursday's close, gap fill)",
+        "result": "The 676 low stayed well above it.",
+        "grade": "untested"
+      },
+      {
+        "level": "Support $650.00 (Thursday's low)",
+        "result": "Never reached.",
+        "grade": "untested"
+      }
+    ],
+    "sox": {
+      "gap": {
+        "call": "Up about 4.5–5.5% (9,420–9,510)",
+        "result": "Opened 9,495.21 vs 9,011.14 prior close, up 5.37%.",
+        "grade": "hit"
+      },
+      "levels": [
+        {
+          "level": "Support 9,011.14 (Thursday's close, gap fill)",
+          "result": "The 9,221 low stayed well above it.",
+          "grade": "untested"
+        },
+        {
+          "level": "Support about 9,000 and 8,997.39 (round number and Thursday's low)",
+          "result": "Never reached.",
+          "grade": "untested"
+        },
+        {
+          "level": "Resistance about 9,806–9,838 (Thursday's open and high)",
+          "result": "The 9,627 high never came within 0.5%.",
+          "grade": "untested"
+        },
+        {
+          "level": "Resistance 10,000 (round number)",
+          "result": "Never reached.",
+          "grade": "untested"
+        },
+        {
+          "level": "Resistance 10,064.73 (Wednesday's low)",
+          "result": "Never reached.",
+          "grade": "untested"
+        },
+        {
+          "level": "Resistance 10,268.65 (Wednesday's close)",
+          "result": "Never reached.",
+          "grade": "untested"
+        }
+      ],
+      "index": {
+        "prev_close": 9011.14,
+        "open": 9495.21,
+        "high": 9627.26,
+        "low": 9221.35,
+        "close": 9367.73,
+        "open_pct": 5.37,
+        "close_pct": 3.96
+      }
+    },
+    "sources": [
+      {
+        "title": "Stock Market Today, Nov. 6: Micron Technology Jumps as Chip Stocks Rebound From Thursday's Rout",
+        "url": "https://www.fool.com/coverage/stock-market-today/2026/11/06/stock-market-today-nov-6-micron-technology-jumps-as-chip-stocks-rebound-from-thursday-s-rout/"
+      },
+      {
+        "title": "Micron Technology (MU) Stock Price, Chart & News",
+        "url": "https://stockanalysis.com/stocks/mu/"
+      },
+      {
+        "title": "Micron Technology Inc (MU) Stock Price & News - Google Finance",
+        "url": "https://www.google.com/finance/beta/quote/MU:NASDAQ"
+      },
+      {
+        "title": "Overview for SOX",
+        "url": "https://indexes.nasdaqomx.com/Index/Overview/SOX"
+      },
+      {
+        "title": "PHLX Semiconductor Sector Price, Real-time Quote & News - Google Finance",
+        "url": "https://www.google.com/finance/quote/SOX:INDEXNASDAQ"
+      },
+      {
+        "title": "PHLX Semiconductor (^SOX) Charts, Data & News - Yahoo Finance",
+        "url": "https://finance.yahoo.com/quote/%5ESOX/"
+      }
+    ]
+  },
   "2026-11-05": {
     "date": "2026-11-05",
     "time": "2026-11-06T02:15:01.840Z",
