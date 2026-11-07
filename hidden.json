@@ -1,3 +1,9 @@
 {
-  "locked": null
+  "locked": {
+    "v": 1,
+    "rounds": 600000,
+    "salt": "ucfRrQsR55i1Js39U2W8Cg==",
+    "iv": "Mqp7gMLAUdG9hjBb",
+    "data": "u+35vt6NiNYgif59Al/hhjttz6yEx+27yZPPs7Oxd1h/BM7yVxjfc6tBkL6R2sU0J5pj3J+zKt7e7CmS740/lcZaQuxlQF3UlgThWFme19rQa5ErksinPBGngQ2yg1cle0JlL9hexsOJ739wD3xupVAGMvArw4c+"
+  }
 }
