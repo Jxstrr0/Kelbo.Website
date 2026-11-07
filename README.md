@@ -726,7 +726,8 @@ visit, plus the main pages straight away, so it still opens with no
 signal. Online it always fetches the newest version first, so your edits
 show up as normal. If it ever seems stuck on an old version, change
 `CACHE` at the top of `sw.js` (for example `"longlight-2"`) and the old
-copies are thrown away.
+copies are thrown away. It only ever throws away the site's own
+`longlight-` copies, never the games' ones (they share the same space).
 
 ### Keeping game saves safe
 
