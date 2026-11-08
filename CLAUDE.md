@@ -9,7 +9,7 @@ Live at https://longlight.games/
 
 - **Auto-merge is allowed.** Once a change is pushed, the PR is open, and
   the **Site check** has passed (green), merge it yourself without asking
-  first. If it's red, read the run's summary, fix the problems on the same
+  first (squash-merge is fine). If it's red, read the run's summary, fix the problems on the same
   branch, and wait for green. Run `node .github/scripts/check-site.mjs`
   before pushing to catch them early.
 - After merging, the **Deploy site** run must go green before the live site
@@ -134,7 +134,8 @@ that part, and update it when how something works changes. The short map:
 - **Robots:** Morning Writer, Grader, Coach, Devlog Writer, Release Writer,
   Forecaster, Scorekeeper (workflows in `.github/workflows/`, scripts in
   `.github/scripts/`), plus the Scanner routine. Use their names with Kelbo.
-  **Never merge the Devlog Writer's PR yourself.** Keep the `US$<n>` start of
+  The Devlog Writer's PR can be merged like any other once it's green.
+  Keep the `US$<n>` start of
   each Cost note; add any new robot workflow to the cost-log routine. Notes:
   "The robots".
 - **Studio catalogue:** `.github/LONGLIGHT-STUDIO.md` is the master; update
