@@ -876,9 +876,6 @@ keep the Co-Authored-By trailer for Claude in each message.
   else the cleaned release title (missing/broken file = old behaviour).
   `check-site.mjs` validates `lessons/latest.json` and
   `release-lines.json` (a missing file is only a warning).
-- The Prediction Tracker in `tools/prediction-tracker/` is parked: still in
-  the repo but removed from `projects.json` (README has the block to
-  restore it).
 - The home page contact form posts to Web3Forms, which emails Kelbo. Its
   `access_key` in `index.html` is public by design (it can only send him a
   message); never put his email address in the site. Web3Forms rejects
