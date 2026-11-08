@@ -72,6 +72,15 @@ before every deploy (a problem stops the deploy). It also lists things
 worth a look, like the "Now building" strip naming a game that's marked
 finished; those never block anything.
 
+It also has a **privacy scan**, because the whole site is public. It goes
+red if any file holds an email address, a phone number, a long number that
+could be an account or card number, or anything shaped like an API key, and
+if `journal.json` or `options.json` holds a dollar amount of money ("made
+$450", "account balance $12,000"), a number of contracts or shares, or an
+account size. Stock price levels ("MU over $230") are fine. It can't
+recognise a name or a story, so still read before you merge. The full list
+of what must never go on the site is the "Privacy" section of `CLAUDE.md`.
+
 **Game versions** come from each game's own GitHub Releases. When a game
 ships, publish a release in that game's repo:
 
@@ -774,6 +783,16 @@ and open http://localhost:8000.
   tokens in any file, even "just for a minute". Anyone can read them, and git
   history keeps them after you delete them. Future AI tools that need a key
   will need a different setup, so plan that first.
+- **Nothing private, either.** Everything here is public, not just the
+  pages: every data file, the notes in `.github/`, commit messages, pull
+  request text and the robots' run logs. Never put your real name, email,
+  phone, address, birthday, school or employer names, family details,
+  broker or bank names, account numbers, account sizes, dollar profits or
+  losses, or anything from your email, Drive or brokerage anywhere in it.
+  The Site check catches the machine-shaped ones (see above); the rest is
+  a read before merging. If something private does land, tell Claude or
+  fix it straight away, but know that deleting it in a new commit isn't
+  enough: git history keeps it, and only rewriting the history removes it.
 - **Keep it static.** No servers or anything that has to keep running.
 - **The copyright line** in every footer says "Kelbo / Longlight
   Interactive". You own the copyright on everything here automatically.
