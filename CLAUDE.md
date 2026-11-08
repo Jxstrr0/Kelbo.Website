@@ -504,6 +504,14 @@ keep the Co-Authored-By trailer for Claude in each message.
   and has backup files (save code in a .txt) with a reminder. `notePlayed`
   still calls `keepStorage`, which asks once per page for the site's own
   storage (badges, last played). Old saves stay on `jxstrr0.github.io`.
+- Studio sting: `assets/sounds/longlight-sting.mp3` (2 s, made by Kelbo with
+  ElevenLabs; `assets/sounds/CREDITS.md`). `setUpSound` (main.js) adds a
+  "Sound off/on" button to the end of every footer line (`.sound-toggle`),
+  saved in `localStorage["kelbo.sound"]`; off by default, and the file is
+  only fetched once it's on. Turning it on plays the sting; with Sound on,
+  the first page of a visit (`sessionStorage["kelbo.stingPlayed"]`) plays it
+  as the logo rises, or at the first tap or key when the browser blocks
+  sound until then. Not in `sw.js` `CORE`. It's the site's only sound.
 - Offline: `sw.js` (root, registered in `init`) precaches `CORE` and is
   network-first for same-origin GETs (saved copy on failure, `index.html`
   for unknown pages offline). Bump `CACHE`

@@ -3938,6 +3938,22 @@ img {
   text-decoration-color: var(--accent);
 }
 
+/* The footer's Sound switch (setUpSound in main.js): looks like the links
+   beside it, with a tall enough tap area. */
+.sound-toggle {
+  font: inherit;
+  color: var(--sky-ink);
+  background: none;
+  border: 0;
+  padding: 0.6rem 0.2rem;
+  margin: -0.6rem 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+}
+.sound-toggle[aria-pressed="true"] { text-decoration-style: solid; font-weight: 700; }
+.sound-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
 /* ---------- Phones only: shorter game cards on the home page ----------
    The first "Pick a game" card stays full size; the rest get a wider,
    shorter picture and a two-line summary so four games don't take five
