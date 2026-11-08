@@ -3,7 +3,9 @@
 // ---------------------------------------------------------------------
 // Looks over the site for the mistakes that would break it once live:
 // a JSON file that won't load, a JavaScript file with a typo in it, a
-// picture or page that a link points at but doesn't exist.
+// picture or page that a link points at but doesn't exist. It also scans
+// for private things that must never be published (emails, phone and
+// account numbers, keys, dollar amounts in the trading data).
 //
 // It runs by itself on every pull request (site-check.yml) and again
 // right before every deploy (deploy.yml). If it finds an ERROR, the
@@ -291,6 +293,49 @@ for (const f of files.filter((f) => extname(f) === ".html")) {
   const ids = new Set([...html.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]));
   for (const m of html.matchAll(/(?:<use[^>]*\shref="#|url\(#)([^")]+)/g)) {
     if (!ids.has(m[1])) error(rel(f), `The logo uses "#${m[1]}", but nothing on this page has that id, so part of the logo won't show. Copy the footer's <defs> block from index.html.`);
+  }
+}
+
+// ---------------------------------------------------------------------
+// 8. Privacy scan. The site is public, so nothing personal or financial
+//    may slip into it. This catches the machine-recognisable kinds:
+//    email addresses, phone numbers, long account-like numbers, key-shaped
+//    strings, and dollar amounts or contract/share counts in the trading
+//    data (that record is percentages and per-contract prices only).
+//    It can't recognise a name or a story, so read the diff too
+//    (CLAUDE.md, "Privacy"). Pictures, fonts and sounds are skipped.
+// ---------------------------------------------------------------------
+const TEXT_EXT = [".html", ".css", ".js", ".json", ".md", ".txt", ".xml", ".webmanifest", ".svg"];
+// Fake addresses used as examples in the editing guide, and GitHub's no-reply ones.
+const EMAIL_OK = /@(example\.com|users\.noreply\.github\.com)$/;
+const PRIVACY = [
+  // Picture names like "cover@2x.jpg" look like emails to a loose pattern, so the part before @ must have 2+ characters and the end must be a real-looking domain.
+  { re: /\b[a-z0-9._%+-]{2,}@[a-z0-9-]+(?:\.[a-z0-9-]+)*\.(?:com|ca|net|org|io|me|dev|co|games)\b/gi, what: "an email address", ok: (s) => EMAIL_OK.test(s) },
+  { re: /(?<!\d)(?:\+?1[ .-]?)?\(?\b[2-9]\d{2}\)?[ .-]\d{3}[ .-]\d{4}\b(?!\d)/g, what: "a phone number" },
+  // Not numbers inside a web address (/2026110212345), an id (user+123) or a version.
+  { re: /(?<![\w.\-/+=:])\d{9,}(?![\w.\-/+=:])/g, what: "a long number that could be an account or card number" },
+  { re: /\b(?:sk-ant-[A-Za-z0-9_-]{8,}|sk-[A-Za-z0-9]{20,}|ghp_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}|AKIA[A-Z0-9]{16}|xox[baprs]-[A-Za-z0-9-]{10,})\b/g, what: "something shaped like an API key or token" },
+];
+// The trading record: percentages only, never money or position sizes.
+// Stock price levels ("MU over $230") are fine; a dollar amount next to a
+// money word (made, lost, profit, account, risked...) is not.
+const TRADING_FILES = ["journal.json", "options.json"];
+const MONEY_WORDS = "made|lost|profit(?:s|ed)?|loss(?:es)?|gain(?:s|ed)?|risk(?:ed|ing)?|account|balance|portfolio|deposit(?:s|ed)?|withdr[a-z]+|position|size[ds]?|p&l|pnl|net|earn(?:ed|ings)?|return(?:ed|s)?|income|savings|capital|equity|bankroll";
+const MONEY = [
+  { re: new RegExp(`\\b(?:${MONEY_WORDS})\\b[^.;\\n]{0,30}?(?:US|C|CA)?\\$\\s?\\d[\\d,]*(?:\\.\\d+)?\\s?[kKmM]?\\b`, "gi"), what: "a dollar amount of money (not a price level)" },
+  { re: new RegExp(`(?:US|C|CA)?\\$\\s?\\d[\\d,]*(?:\\.\\d+)?\\s?[kKmM]?\\s+(?:in\\s+)?(?:${MONEY_WORDS}|per\\s+trade|a\\s+(?:day|week|month|year))\\b`, "gi"), what: "a dollar amount of money (not a price level)" },
+  { re: /\b\d+\s*(?:contracts?|shares|lots?)\b/gi, what: "a number of contracts or shares" },
+  { re: /\b(?:account|portfolio|net liq(?:uidation)?)\s+(?:size|value|balance)\b/gi, what: "an account size or balance" },
+];
+for (const f of files.filter((f) => TEXT_EXT.includes(extname(f)))) {
+  const text = readFileSync(f, "utf8");
+  const checks = TRADING_FILES.includes(rel(f)) ? [...PRIVACY, ...MONEY] : PRIVACY;
+  for (const { re, what, ok } of checks) {
+    for (const m of text.matchAll(re)) {
+      if (ok && ok(m[0])) continue;
+      if (f.endsWith(".svg") && /^\d+$/.test(m[0])) continue; // long numbers in drawings are coordinates
+      error(rel(f), `Looks like ${what} ("${m[0]}"). The site is public, so this can't go live. If it's a false alarm, reword it or widen the check in check-site.mjs.`);
+    }
   }
 }
 

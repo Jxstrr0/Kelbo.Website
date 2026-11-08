@@ -816,5 +816,16 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   `access_key` in `index.html` is public by design (it can only send him a
   message); never put his email address in the site. Web3Forms rejects
   server-side posts, so test it from a real browser on the live site.
+- **Privacy scan** (`check-site.mjs`, section 8): errors on an email
+  address (`EMAIL_OK` allows example.com and GitHub no-reply ones), a phone
+  number, a 9+ digit number not inside a URL, id or version, or a
+  key-shaped string (`sk-ant-`, `sk-`, `ghp_`, `github_pat_`, `AKIA`,
+  `xox`), in every text file (`TEXT_EXT`; pictures, fonts and sounds are
+  skipped). In `TRADING_FILES` (`journal.json`, `options.json`) it also
+  errors on a dollar amount within 30 characters of a money word
+  (`MONEY_WORDS`: made, lost, profit, account, risked...), a count of
+  contracts or shares, and "account size/balance"; a bare price level
+  ("$230") is allowed. False alarm: reword, or widen the rule there. The
+  human rules it backs up are the "Privacy" section of `CLAUDE.md`.
 - `README.md` is Kelbo's plain-English editing guide. Keep it up to date
   when how things work changes.
