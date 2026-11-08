@@ -709,6 +709,17 @@ And one on the Trading page:
   hours (`FX_MS` in `main.js`). If the bank can't be reached, the line just
   doesn't show.
 
+## The studio sting (sound)
+
+The footer ends with a **Sound off / Sound on** switch. Sound is off for
+everyone until they tap it. Turning it on plays the Longlight sting, a
+2-second "sun coming up" sound you made with ElevenLabs
+(`assets/sounds/longlight-sting.mp3`, credited in
+`assets/sounds/CREDITS.md`). With Sound on, it plays once per visit as the
+logo rises. Phones don't allow sound before you touch the screen, so there
+it plays at your first tap instead. To swap the sound, replace that file
+(keep the name, or change `STING_URL` in `main.js`).
+
 ## Motion
 
 The animations are at the bottom of `style.css` under "Motion": pages fade
