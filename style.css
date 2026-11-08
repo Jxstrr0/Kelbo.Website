@@ -392,18 +392,15 @@ img {
   font-weight: 700;
   font-size: 0.85rem;
   text-decoration: none;
-  color: var(--sky-ink);
-  opacity: 0.85;
+  color: var(--sky-ink); /* full strength: faded text failed contrast */
 }
 
 .nav a:hover {
-  opacity: 1;
   color: var(--sky-ink);
   background: rgba(250, 249, 245, 0.12);
 }
 
 .nav a[aria-current="page"] {
-  opacity: 1;
   background: rgba(250, 249, 245, 0.16);
 }
 
@@ -2680,6 +2677,17 @@ img {
   list-style: none;
 }
 
+/* The badges box needs JavaScript, so it only shows once the <head> script
+   has added the "js" class. The count line keeps its height while it's
+   still empty, so nothing below it moves when main.js fills it in. */
+:root:not(.js) .badges {
+  display: none;
+}
+
+.badges__count:empty::before {
+  content: "\00a0";
+}
+
 .badges__summary::-webkit-details-marker {
   display: none;
 }
@@ -2882,6 +2890,14 @@ img {
   margin: 1.5rem 0 0;
   padding: 0;
   list-style: none;
+}
+
+/* While main.js is still filling a list or a game page, hold the space
+   (about a screen's worth), so the footer doesn't jump down when the cards
+   arrive. Only the "Loading..." placeholders in the HTML carry is-loading;
+   main.js replaces them, and the empty-list messages don't have it. */
+:is(.project-list, .game, .devlog):has(> .is-loading) {
+  min-height: 100svh;
 }
 
 .project-list__note {
@@ -4225,9 +4241,10 @@ img {
   }
 
   /* The header: the sky colour, a little see-through, so the page blurs
-     behind it as it scrolls under. Over the hero it looks the same as before. */
+     behind it as it scrolls under. Over the hero it looks the same as before.
+     88% (not less) keeps the ivory menu text readable over the light page. */
   .site-header {
-    background: color-mix(in srgb, var(--sky) 74%, transparent);
+    background: color-mix(in srgb, var(--sky) 88%, transparent);
     -webkit-backdrop-filter: blur(22px) saturate(180%);
     backdrop-filter: blur(22px) saturate(180%);
     box-shadow: inset 0 -1px 0 rgba(250, 249, 245, 0.16);

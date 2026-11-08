@@ -223,14 +223,15 @@ function renderProject(project) {
       ? el("a", "button button--play", "Play it")
       : el("a", "project__link project__main", "Take a look →");
     link.href = project.link;
-    // The arrow is decoration; give screen readers a clear name.
-    link.setAttribute("aria-label", (isGame(project) ? "Play " : "Take a look at ") + title);
+    // The arrow is decoration; give screen readers a clear name that starts
+    // with the words on the button (so "tap Play it" works by voice too).
+    link.setAttribute("aria-label", (isGame(project) ? "Play it: " : "Take a look at ") + title);
     links.append(link);
   }
   if (isGame(project)) {
     const more = el("a", "project__link project__main", "About this game →");
     more.href = gamePage(title);
-    more.setAttribute("aria-label", "About " + title);
+    more.setAttribute("aria-label", "About this game: " + title);
     links.append(more);
   }
   if (project.code) {
@@ -479,14 +480,14 @@ function setUpGame(box, projects) {
   if (project.link) {
     const play = el("a", "button button--play", "Play it");
     play.href = project.link;
-    play.setAttribute("aria-label", "Play " + title);
+    play.setAttribute("aria-label", "Play it: " + title);
     play.dataset.title = title;
     play.dataset.image = project.image || "";
     links.append(play);
     // "Play here" opens the game inside this page (see openPlayer).
     const here = el("button", "button button--ghost button--here", "Play here");
     here.type = "button";
-    here.setAttribute("aria-label", "Play " + title + " here on this page");
+    here.setAttribute("aria-label", "Play here: " + title + ", on this page");
     here.addEventListener("click", () => openPlayer(project, here));
     links.append(here);
   }
@@ -816,7 +817,7 @@ function setUpPress(listEl, projects) {
     if (project.link) {
       const play = el("a", "project__link", "Play it →");
       play.href = project.link;
-      play.setAttribute("aria-label", "Play " + title);
+      play.setAttribute("aria-label", "Play it: " + title);
       links.append(play);
     }
     body.append(links);
@@ -885,13 +886,13 @@ function renderNews(project) {
     const link = el("a", (isGame(project) ? "button button--play" : "project__link project__main"),
       isGame(project) ? "Play it" : "Take a look →");
     link.href = project.link;
-    link.setAttribute("aria-label", (isGame(project) ? "Play " : "Take a look at ") + title);
+    link.setAttribute("aria-label", (isGame(project) ? "Play it: " : "Take a look at ") + title);
     links.append(link);
   }
   if (isGame(project)) {
     const more = el("a", "project__link project__main", "About this game →");
     more.href = gamePage(title);
-    more.setAttribute("aria-label", "About " + title);
+    more.setAttribute("aria-label", "About this game: " + title);
     links.append(more);
   }
   if (project.code) {
