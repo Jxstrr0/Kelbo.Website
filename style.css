@@ -2896,7 +2896,7 @@ img {
    (about a screen's worth), so the footer doesn't jump down when the cards
    arrive. Only the "Loading..." placeholders in the HTML carry is-loading;
    main.js replaces them, and the empty-list messages don't have it. */
-:is(.project-list, .game, .devlog):has(> .is-loading) {
+:has(> .is-loading) {
   min-height: 100svh;
 }
 
