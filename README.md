@@ -8,7 +8,7 @@ or two: a GitHub Action checks the site for mistakes, fills in game versions
 from their releases, then publishes the files as they are (see
 **Automatic checks and game versions** below).
 
-**Live at:** https://jxstrr0.github.io/Kelbo.Website/
+**Live at:** https://longlight.games/
 
 ## What each file does
 
@@ -224,7 +224,7 @@ progress order.
 **Adding a game:** use `"category": "Game"` and it shows up on the Games
 page automatically, with a big clay "Play it" button. Each game lives in its
 own repo with GitHub Pages turned on, so `link` is that game's Pages address
-(like `https://jxstrr0.github.io/RedSkies/`) and `code` is the repo address.
+(like `https://redskies.longlight.games/`) and `code` is the repo address.
 
 **Watch the commas.** Every block needs a comma after its closing `}`,
 except the very last one. If the projects disappear and the page says
@@ -241,7 +241,7 @@ week. It comes from `now.json`:
 {
   "updated": "2026-10-15",
   "items": [
-    { "text": "Finishing touches on Prairie Engine Works", "link": "https://jxstrr0.github.io/350Chev/" },
+    { "text": "Finishing touches on Prairie Engine Works", "link": "https://pew.longlight.games/" },
     { "text": "Something with no link" }
   ]
 }
@@ -309,8 +309,8 @@ day or so to show up when you share the link.
 
 The preview's title and description come from the `og:` lines near the top
 of each page. Those are the one place on the site that uses full web
-addresses (`https://jxstrr0.github.io/...`), because the apps reading them
-aren't on this site. If the site ever moves to its own domain, update them.
+addresses (`https://longlight.games/...`), because the apps reading them
+aren't on this site. If the site ever moves to another domain, update them.
 
 ## Add a new section
 
@@ -733,12 +733,12 @@ copies are thrown away. It only ever throws away the site's own
 
 ### Keeping game saves safe
 
-All your games live on the same `jxstrr0.github.io` address, so the
-phone keeps their saves in one shared pot. When someone taps Play, the
-site asks the browser to keep that pot even if the phone runs low on
-space (`keepStorage` in `main.js`). One "yes" covers every game. Each game
-also asks for itself, and each one can save its save code as a backup file
-and reminds players to do that now and then.
+Each game has its own address (`pew.longlight.games` and so on), so the
+phone keeps each game's saves separately, and each game asks the browser
+to keep them even when space runs low. Each one can also save its save
+code as a backup file and reminds players to do that now and then. Saves
+from before the move (November 2026) stay on the old `jxstrr0.github.io`
+address.
 
 ## Previewing on a computer
 
@@ -768,7 +768,7 @@ and open http://localhost:8000.
 
 `hidden.html` is a page that needs a password. Every footer links to it
 as **Unlock access**, and you can share the address directly:
-https://jxstrr0.github.io/Kelbo.Website/hidden.html
+https://longlight.games/hidden.html
 
 What's inside is kept in `hidden.json`, **scrambled** (encrypted). The repo
 is public, but without the password that file is just gibberish. The

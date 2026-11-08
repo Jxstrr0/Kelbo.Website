@@ -3,7 +3,7 @@
 Kelbo's personal site, hosted on GitHub Pages. `.github/workflows/deploy.yml`
 publishes it on every push to `main` (and every 6 hours, to pick up game
 releases).
-Live at https://jxstrr0.github.io/Kelbo.Website/
+Live at https://longlight.games/
 
 ## Working on this repo
 
@@ -64,8 +64,8 @@ keep the Co-Authored-By trailer for Claude in each message.
   runs, so page CSS must handle both), accessible
   (semantic HTML, visible focus, good contrast, alt text,
   `prefers-reduced-motion`).
-- Use relative links only, because the site lives under `/Kelbo.Website/`
-  and may move to a custom domain later. The exceptions are the `og:`
+- Use relative links only, because the site is served both at
+  `https://longlight.games/` and (forwarding) under `/Kelbo.Website/`. The exceptions are the `og:`
   link-preview tags and the `canonical` tag in each page's `<head>`, plus
   `robots.txt` and `sitemap.xml`, which must be absolute; update them all
   if the domain changes. Add new pages to `sitemap.xml`. `404.html` is the other exception: GitHub
@@ -498,17 +498,18 @@ keep the Co-Authored-By trailer for Claude in each message.
   linking to weather.gc.ca's page for those coordinates; it stops
   pointer events reaching the sky. Previews: `?kpcast=5`, `?clouds=10`,
   `?alert=warning|watch|advisory`; plain `?at=` skips all three.
-- Saves: every game shares the `jxstrr0.github.io` origin (one storage
-  pot), so `notePlayed` calls `keepStorage`, which asks
-  `navigator.storage.persist()` once per page when a game is started (one
-  grant covers every game). Each game also asks for it itself and has backup
-  files (save code in a .txt) with a reminder.
+- Saves: since November 2026 each game has its own address
+  (`<game>.longlight.games`) and its own storage, so the studio site can't
+  protect their saves; each game asks `navigator.storage.persist()` itself
+  and has backup files (save code in a .txt) with a reminder. `notePlayed`
+  still calls `keepStorage`, which asks once per page for the site's own
+  storage (badges, last played). Old saves stay on `jxstrr0.github.io`.
 - Offline: `sw.js` (root, registered in `init`) precaches `CORE` and is
   network-first for same-origin GETs (saved copy on failure, `index.html`
   for unknown pages offline). Bump `CACHE`
   if it ever serves stale files; add new top-level pages to `CORE`. Its
-  cleanup deletes only `longlight-*` caches: the games share this origin's
-  cache storage, so never delete their caches.
+  cleanup deletes only `longlight-*` caches; keep it that way (never delete
+  another prefix).
 - Studio catalogue: `.github/LONGLIGHT-STUDIO.md` is the master copy of the
   public catalogue of every game (looks, names taken, storage prefixes,
   reuse map, ideas), copied into each game repo's root. It lives in

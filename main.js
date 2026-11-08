@@ -5480,9 +5480,9 @@ function notePlayed(title) {
   keepStorage();
 }
 
-// Ask the browser not to clear this site's storage when the phone runs low.
-// Every game lives on the same jxstrr0.github.io address, so they all share
-// one storage pot; one "yes" protects every game's saves at once. Asked
+// Ask the browser not to clear this site's storage (badges, last played)
+// when the phone runs low. Each game has its own address and asks for its own
+// saves itself. Asked
 // only when someone starts a game (Firefox shows a little prompt for it;
 // Chrome and Safari decide quietly), once per page, and never an error.
 let storageAsked = false;

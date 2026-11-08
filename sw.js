@@ -67,8 +67,8 @@ self.addEventListener("install", (event) => {
 
 self.addEventListener("activate", (event) => {
   // Throw away copies saved by an older version of this file.
-  // Only our own "longlight-" caches: every game on jxstrr0.github.io shares
-  // this cache storage, and their offline copies (pew-, esc-, ink-...) must stay.
+  // Only our own "longlight-" caches: never touch another prefix, in case
+  // anything else ever shares this origin.
   event.waitUntil(
     caches.keys()
       .then((keys) => Promise.all(keys
