@@ -69,32 +69,38 @@
       {
         "call": "Equal weight keeps beating cap weight: RSP beats SPY on the week",
         "wrongIf": "SPY finishes the week (Nov 6 close vs Nov 2 close) ahead of RSP.",
-        "grade": null
+        "grade": "hit",
+        "result": "RSP fell from 219.98 (Nov 2) to 216.05 (-1.79%) while the S&P 500 fell from 7,541.40 to 7,376.86 (-2.18%), so equal weight lost less."
       },
       {
         "call": "Health care beats tech on the week",
         "wrongIf": "XLK finishes the week (Nov 6 close vs Nov 2 close) ahead of XLV.",
-        "grade": null
+        "grade": "hit",
+        "result": "XLV went from 184.60 on Nov 2 to 184.80 on Nov 6 (+0.11%) while XLK fell from 174.22 to 164.74 (-5.44%)."
       },
       {
         "call": "MU holds $800 on every close this week",
         "wrongIf": "MU closes under $800 on any day from Nov 3 to Nov 6.",
-        "grade": null
+        "grade": "miss",
+        "result": "MU closed at 855.10 on Nov 3 but 795.23 on Nov 4, then 656.39 on Nov 5 and 690.00 on Nov 6, so it was under $800 on three of four days."
       },
       {
         "call": "The S&P stays capped under the broken support at 7,632",
         "wrongIf": "The S&P 500 closes above 7,632 on any day from Nov 3 to Nov 6.",
-        "grade": null
+        "grade": "miss",
+        "result": "The S&P 500 closed at 7,688.62 on Wed Nov 4, above 7,632, before the 4.4% drop to 7,353.73 on Thursday."
       },
       {
         "call": "The VIX comes down once the election and the jobs report are out of the way",
         "wrongIf": "The VIX closes on Nov 6 at or above 21.15, its Nov 2 close.",
-        "grade": null
+        "grade": "miss",
+        "result": "The VIX fell to 16.61 on Wednesday but spiked to 28.18 Thursday and closed Nov 6 at 25.64, well above the 21.15 line."
       },
       {
         "call": "Brent stays under $110 while the Iran talks are alive",
         "wrongIf": "Front-month Brent settles at or above $110 on any day from Nov 3 to Nov 6.",
-        "grade": null
+        "grade": "hit",
+        "result": "Brent settled at 103.60, 94.62, 98.29 and 98.32 from Nov 3 to Nov 6, never reaching $110."
       }
     ],
     "scenarios": [
@@ -218,7 +224,56 @@
         "url": "https://www.cnbc.com/2026/10/30/stock-market-next-week-outlook-for-nov-2-6-2026.html"
       }
     ],
-    "by": "forecaster"
+    "by": "forecaster",
+    "recap": "The week split into three parts. Monday and Tuesday were soft: the S&P 500 closed Nov 2 at 7,541.40 and about 7,569 on Tuesday. Democrats won Congress, oil collapsed (Brent 94.62 on Wednesday), and the Dow jumped about 3%. The S&P 500 closed Wednesday at 7,688.62, above the 7,632 line the forecast said would cap it. The VIX fell to 16.61.\n\nThursday wiped that out. The S&P 500 fell 4.4% to 7,353.73 and the Nasdaq Composite fell 5.5% to 24,315. The VIX jumped to 28.18 and MU fell 17.46% to $656.39. Friday's payrolls came in at +165,000 against a consensus near 59,000. Stocks bounced a little (S&P 500 7,376.86, VIX 25.64, MU $690.00). The S&P 500 lost 2.7% on the week. RSP fell about 1.8% from Monday's close, versus about 2.2% for the S&P 500. XLV was flat while XLK fell about 5.4%.\n\nThe rotation calls (RSP over SPY, XLV over XLK) and the Brent cap worked. The MU floor, the S&P cap and the VIX call did not. Score: 3 hits, 0 partials, 3 misses.",
+    "ai": "The relative-performance calls were the strongest part of the forecast. Equal weight and health care both beat their rivals by a clear margin, and the Brent cap held with room to spare. Those calls followed the trend and did not depend on one exact level. The Brent call was also easy, since Brent started the week at 104.77 and fell from there.\n\nThe level calls failed because they were too tight for a week with an election, an AI-capex scare and a payrolls print. The MU $800 floor sat only 4% under Monday's close, and the stock fell 7% in one day. The S&P cap at 7,632 was broken on Wednesday, only about 1% above Monday's close. The VIX call leaned on a soft payrolls print, and the report was far stronger than consensus. The bear scenario named a drop toward MU $800 and S&P 7,500, and the real move was much larger. The forecast's size of move was too small, and the calls did not allow for a one-day shock.",
+    "lesson": "Keep ranking calls like relative strength, and give single-day price floors and caps a wider cushion, or score them on the weekly close. In a high-VIX week with big events, a line only 1% to 4% away from the last close will probably break.",
+    "gradeSources": [
+      {
+        "title": "Micron Technology (MU) Stock Price History 1984-2026 - stockanalysis.com",
+        "url": "https://stockanalysis.com/stocks/mu/history/"
+      },
+      {
+        "title": "XLK Historical Stock Price Data - stockanalysis.com",
+        "url": "https://stockanalysis.com/etf/xlk/history/"
+      },
+      {
+        "title": "SPDR Health Care ETF (XLV) Stock Price: Nov 2 Close $184.60 - Gotrade",
+        "url": "https://www.heygotrade.com/en/us-stock/xlv/"
+      },
+      {
+        "title": "State Street Health Care Select Sector SPDR ETF (XLV) - Yahoo Finance",
+        "url": "https://finance.yahoo.com/quote/XLV/"
+      },
+      {
+        "title": "RSP ETF Stock Price History - Investing.com",
+        "url": "https://www.investing.com/etfs/rydex-s-p-equal-weight-historical-data"
+      },
+      {
+        "title": "Weekly Market Review: Nov 6, 2026 - The Glass Desk",
+        "url": "https://theglassdesk.substack.com/p/weekly-market-review-nov-6-2026"
+      },
+      {
+        "title": "Brent Oil Futures Historical Prices - Investing.com",
+        "url": "https://www.investing.com/commodities/brent-oil-historical-data"
+      },
+      {
+        "title": "Stock Market Today, Nov. 4: Dow Surges 3% in Biggest Post-Midterm Rally in 44 Years - Motley Fool",
+        "url": "https://www.fool.com/coverage/stock-market-today/2026/11/04/stock-market-today-nov-4-dow-surges-3-in-biggest-post-midterm-rally-in-44-years/"
+      },
+      {
+        "title": "Stock Market News for Nov 6, 2026 - Yahoo Finance",
+        "url": "https://finance.yahoo.com/markets/stocks/articles/stock-market-news-nov-6-132900980.html"
+      },
+      {
+        "title": "Closing Look — Friday, November 6, 2026 - CappNotes",
+        "url": "https://cappnotes.substack.com/p/closing-look-friday-november-6-2026"
+      }
+    ],
+    "graded": {
+      "by": "scorekeeper",
+      "at": "2026-11-08T18:01:22.288Z"
+    }
   },
   {
     "date": "2026-10-19",
