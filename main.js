@@ -5671,6 +5671,84 @@ function setUpLens() {
   document.documentElement.dataset.lens = "";
 }
 
+/* ---------- The studio sting ----------
+   A 2-second "sun coming up" sound (assets/sounds/longlight-sting.mp3,
+   made by Kelbo with ElevenLabs). Off unless the visitor turns Sound on
+   with the footer switch (saved in localStorage["kelbo.sound"]).
+   Turning it on plays the sting once. With Sound on, the first page of a
+   visit plays it as the logo rises; phones block sound until a tap, so if
+   that's refused it waits for the first tap or key on the page instead.
+   The file is only downloaded once Sound is on. */
+const SOUND_KEY = "kelbo.sound";
+const STING_URL = "assets/sounds/longlight-sting.mp3";
+const STING_DONE = "kelbo.stingPlayed"; // sessionStorage: once per visit
+
+function soundOn() {
+  try { return localStorage.getItem(SOUND_KEY) === "on"; } catch (e) { return false; }
+}
+
+let stingAudio = null;
+// Fetches the whole file (a plain 200, which sw.js can keep for offline),
+// then plays it from memory. Resolves true once it starts.
+async function playSting() {
+  try {
+    if (!stingAudio) {
+      const res = await fetch(STING_URL);
+      if (!res.ok) return false;
+      stingAudio = new Audio(URL.createObjectURL(await res.blob()));
+      stingAudio.volume = 0.6;
+    }
+    stingAudio.currentTime = 0;
+    await stingAudio.play();
+    return true;
+  } catch (e) {
+    return false; // blocked until a tap, or no file
+  }
+}
+
+function setUpSound() {
+  const line = document.querySelector(".site-footer p");
+  if (!line || typeof Audio === "undefined") return;
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "sound-toggle";
+  const paint = () => {
+    const on = soundOn();
+    btn.textContent = on ? "Sound on" : "Sound off";
+    btn.setAttribute("aria-pressed", on ? "true" : "false");
+  };
+  btn.addEventListener("click", () => {
+    const on = !soundOn();
+    try {
+      if (on) localStorage.setItem(SOUND_KEY, "on");
+      else localStorage.removeItem(SOUND_KEY);
+    } catch (e) {}
+    paint();
+    if (on) playSting();
+    else if (stingAudio) stingAudio.pause();
+  });
+  paint();
+  line.append(" \u00b7 ", btn);
+
+  // First page of the visit, Sound on: play it as the logo rises.
+  let done = false;
+  try { done = sessionStorage.getItem(STING_DONE) === "1"; } catch (e) {}
+  if (!soundOn() || done) return;
+  const mark = () => { try { sessionStorage.setItem(STING_DONE, "1"); } catch (e) {} };
+  playSting().then((ok) => {
+    if (ok) return mark();
+    // Refused (no tap yet): play on the first tap or key instead.
+    const once = (e) => {
+      if (e.target === btn || !soundOn()) return;
+      removeEventListener("pointerdown", once, true);
+      removeEventListener("keydown", once, true);
+      playSting().then((played) => played && mark());
+    };
+    addEventListener("pointerdown", once, true);
+    addEventListener("keydown", once, true);
+  });
+}
+
 async function init() {
   setUpLens();
   setUpHorizon();
@@ -5687,6 +5765,7 @@ async function init() {
   setUpDevlog();
   setUpBadges();
   setUpCoverTilt();
+  setUpSound();
 
   // The offline helper (sw.js): keeps a copy of the site on this phone so
   // it still opens with no signal.
