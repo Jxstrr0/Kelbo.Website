@@ -24,7 +24,7 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 const ROOT = process.argv[2] || ".";
-const SITE = "https://jxstrr0.github.io/Kelbo.Website/";
+const SITE = "https://longlight.games/";
 const projects = JSON.parse(readFileSync(join(ROOT, "projects.json"), "utf8"));
 const template = readFileSync(join(ROOT, "game.html"), "utf8");
 

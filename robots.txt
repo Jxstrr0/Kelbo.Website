@@ -2,4 +2,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://jxstrr0.github.io/Kelbo.Website/sitemap.xml
+Sitemap: https://longlight.games/sitemap.xml
