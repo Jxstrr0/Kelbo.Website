@@ -397,11 +397,13 @@ img {
 
 .nav a:hover {
   color: var(--sky-ink);
-  background: rgba(250, 249, 245, 0.12);
+  background: rgba(20, 20, 19, 0.14);
 }
 
+/* The "you are here" pill is a dark tint, not a light one: a light pill
+   made the purple behind the ivory text paler and failed contrast. */
 .nav a[aria-current="page"] {
-  background: rgba(250, 249, 245, 0.16);
+  background: rgba(20, 20, 19, 0.2);
 }
 
 /* New brief: for an hour after the pre-market brief goes out, a clay dot
