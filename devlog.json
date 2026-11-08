@@ -2,6 +2,30 @@
   "posts": [
     {
       "date": "2026-11-08",
+      "title": "Prairie Engine Works: more to tune, weather and a rival feud",
+      "game": "Prairie Engine Works",
+      "body": "The drag setup has a lot more to play with: two-step rpm and launch retard, custom gear ratios, a shift rpm slider, ride height and converter stall. Three saved tunes let you swap setups between passes, and the timing slip shows how each split changed from your last clean pass. The truck pull and the road course get their own new sliders, and the road and pull sheets now suggest a setup change. Hill and pull teams race with your setup.\n\nRoad, hill and pull days now have weather, rain included. A rival shop can start a feud with you, trash-talking and copying your build until you beat it in head-to-heads. You can also sell crate engines for side income.\n\nThere's a throttle slider next to Start, an announcer calls the drag strip, and real 3D props fill the garage, pull track and pits on Full and Ultra."
+    },
+    {
+      "date": "2026-11-08",
+      "title": "Scrapline: body styles, weapon bays and a voiced arena",
+      "game": "Scrapline",
+      "body": "Your robot's chassis now comes in seven body styles, from a plain box to a dome, pancake or invertible. Weapons sit in real bays cut into the body. An open bay is also a weak spot, so a hammer from above can hit your weapon first.\n\nThe fight screen is easier to read. The camera follows the action, and each bot gets a card showing its parts, bars and worst damage. An announcer and a commentator call the fights, and there's a crowd, bells and a set of new hit sounds.\n\nThere's a home screen with Career and Sandbox modes, plus a daily challenge that's the same for everyone and replay codes you can share. Opponents drive smarter, and flippers now throw bots further in the small classes."
+    },
+    {
+      "date": "2026-11-08",
+      "title": "Ink: tattoos that look like tattoos, and a calmer needle",
+      "game": "Ink",
+      "body": "Tattoos now look much more like the real thing. Lines are bolder, colour is packed in, and a fresh piece has a pink halo and a wet sheen that fade as it heals. Many motifs (roses, swallows, koi, anchors) have real colour areas now, and leaves and stems are always green. The mannequin has fingers and a face, and the shop's four rooms have their own ambient sound, plus a radio you can switch on.\n\nIn the chair, a short wait now comes between touching the skin and the machine starting, so you can aim first. There's a Restart button for a sitting. We also fixed phones stealing your touch mid-line and a crash at the end of a sitting.\n\nPrices, prizes and career gates were tuned too: fewer shop closures and a longer road to your own studio."
+    },
+    {
+      "date": "2026-11-08",
+      "title": "Lombard: voices, new sounds and more to buy",
+      "game": "Lombard",
+      "body": "Customers at Lombard's counter now talk. About half say hello when they walk in, and they react out loud to your offers. A handful of story characters have their own voices.\n\nThe shop sounds more alive: the shutter going up and down, the morning paper, a ringing phone, rain on the street, a tram bell and a wax-sealed stamp when you write a pawn.\n\nThere are 141 things to appraise now, with a new sports category: skates, a signed puck, boxing gloves and a chess clock. Each has its own 3D model. Pawn tickets, a landscape layout and keyboard shortcuts for desktop are in too."
+    },
+    {
+      "date": "2026-11-08",
       "title": "Five new games, new addresses and a studio sting",
       "body": "Five games joined the lineup this week. Lombard is a pawn shop sim on a canal in Mostograd: spot the fakes, haggle and decide how much trouble a good deal is worth. Escapement is a watchmaking career, from a shared repair bench to a manufacture making its own calibres. Scrapline has you design, drive and patch a combat robot. Ink follows a tattoo artist from sweeping floors to running a studio, also in Mostograd. Station Keeper is a space station tycoon where power, air, crew and money all share one network.\n\nThe studio now lives at longlight.games, and every game has its own address, like pew.longlight.games for Prairie Engine Works. Games also ask the browser to keep their saves when a phone runs low on space.\n\nCovers and screenshots are twice as sharp on big phones, and version numbers now have four parts, so every small build shows. There's a Sound switch at the bottom of every page too. It's off by default; turn it on and the Longlight sting plays once per visit as the logo's sun rises. The sun moves more now as well: its glow breathes, a low sun wobbles near sunset, and tapping it sends a lens flare across the sky."
     },
