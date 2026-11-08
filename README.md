@@ -1174,7 +1174,8 @@ back on).
   lines changed, `now.json` is in the same pull request and the
   description lists them. A week with strip lines but no posts still gets
   a pull request.
-- **It never merges itself.** Read it on your phone. To fix a post, open
+- **It never merges itself.** Claude may merge it for you once its
+  check is green, or read it on your phone. To fix a post, open
   the Files tab, tap "..." → Edit file on `devlog.json` (or `now.json`) and commit to that
   branch. Then **merge** to publish, or **close** to skip the week (and
   delete the branch).

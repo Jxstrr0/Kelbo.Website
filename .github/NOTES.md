@@ -763,7 +763,8 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   `NOW_CHARS` 70), written to now.json (`updated` = run date, `link` from
   projects.json) in the same PR when it differs; posts or strip alone
   each open the PR (workflow output `now`).
-  **Never merge that PR yourself**: Kelbo reviews it. Needs the repo
+  The workflow never merges the PR itself, but Claude may merge it once
+  it's green (Kelbo's OK, Nov 2026). Needs the repo
   setting "Allow GitHub Actions to create and approve pull requests".
 - Forecaster (weekly journal forecast): `journal-forecast.yml` (Sunday
   night: crons `47 1 * * 1` and `13 3 * * 1` UTC = 7:47 and 9:13 pm
