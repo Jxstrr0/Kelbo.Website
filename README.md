@@ -1239,12 +1239,12 @@ back on).
 
 - **More tools:** make a new folder `tools/my-tool/` with its own
   `index.html`, then set that project's `link` to the folder. Pages in there link back with `../../`.
-- **Custom domain:** type the domain (for example `kelbo.ca`) in
-  Settings → Pages → Custom domain, then point the domain at GitHub Pages in
-  your domain provider's settings. (Because the site deploys through an
-  Action, a `CNAME` file isn't needed.) All links on the site are relative, so they'll
-  keep working. The only full addresses to update are the `og:` and
-  `canonical` tags in each page's `<head>`, `robots.txt` and `sitemap.xml`.
+- **Changing the domain:** the site is live at `longlight.games` (set in
+  Settings → Pages → Custom domain; because the site deploys through an
+  Action, a `CNAME` file isn't needed). All links on the site are relative, so
+  they keep working if the domain ever changes. The only full addresses to
+  update are the `og:` and `canonical` tags in each page's `<head>`,
+  `robots.txt` and `sitemap.xml`.
 - **Home screen icon:** on a phone, "Add to Home Screen" in the browser
   menu puts the Longlight sun (with its glow and halo) on a purple tile on
   the home screen. The icon

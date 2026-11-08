@@ -185,7 +185,7 @@ if (devlog !== undefined) {
 const YMD = /^\d{4}-\d{2}-\d{2}$/;
 const lessonFile = json["lessons/latest.json"];
 if (lessonFile === undefined) {
-  if (!exists("lessons/latest.json")) warn("lessons/latest.json", "No lessons yet. The Coach writes them on Saturdays once there are 5 graded report cards; until then the After close tab just doesn't show them.");
+  if (!exists("lessons/latest.json")) warn("lessons/latest.json", "No lessons yet. The Coach writes them on Sundays once there are 5 graded report cards; until then the After close tab just doesn't show them.");
 } else if (!lessonFile || typeof lessonFile !== "object") {
   error("lessons/latest.json", "Should be an object ({ ... }).");
 } else {
