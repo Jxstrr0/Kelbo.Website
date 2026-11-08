@@ -72,6 +72,49 @@ later ones.
 If something paid starts by mistake, cancel it at once and tell Kelbo what
 ran and what it may have cost.
 
+## Privacy: what a visitor may see
+
+**Everything in this repo is public**, not just the pages: every JSON and
+Markdown file (including this one and `.github/`), commit messages, PR
+titles and bodies, the Actions logs (dry runs too) and the whole git
+history, forever. Treat all of it as the live site.
+
+**Never put these anywhere in the repo**, in any form (text, comments,
+alt text, file names, screenshots, logs):
+
+- Kelbo's real name or initials (see Hard rules), his email, phone, home
+  or mailing address, birthday, the names of his university, employers or
+  teams, photos of him, his home or his car, or anything that pins down
+  where he lives beyond "Saskatoon".
+- Family and friends: no names or details beyond what `about.html`
+  already says ("my brother").
+- Money: broker and bank names, account numbers, account sizes or
+  balances, deposits, dollar profit or loss, number of contracts or shares,
+  position sizes, income, debts, tax details. The trading pages show
+  percentages and per-contract prices only.
+- Anything from his email, calendar, Drive, messages, brokerage, other
+  repos or Claude conversations. Connected tools are read on request only;
+  never copy from them into the repo, a page, a PR, a commit message or a
+  log. Don't list on the site which accounts or tools Claude can reach.
+- Keys, tokens, passwords, recovery codes, Cloudflare account or zone IDs,
+  DNS records, device names, Wi-Fi names.
+
+**Robots and logs.** The scripts may print counts, grades, costs and text
+that is already going on the site, nothing else: never a prompt that holds
+private context, never an environment variable. Workflow logs on a public
+repo can be read by anyone.
+
+**Before every merge**, read the diff for the list above. The Site check
+has a privacy scan (emails, phone numbers, long account-like numbers,
+dollar amounts and share counts in the trading data, key-shaped strings),
+but it can't recognise a name or a story, so your own read is the real
+check.
+
+**If something private lands anyway**, don't just delete it in a new
+commit: history keeps it. Tell Kelbo at once and say what it was. Removing
+it for good means rewriting history and force-pushing `main`, which is his
+call. If it was a key, it must also be revoked and replaced.
+
 ## Commits
 
 Author commits as the owner so they count on their GitHub profile. At the
