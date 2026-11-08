@@ -1,6 +1,11 @@
 {
   "posts": [
     {
+      "date": "2026-11-08",
+      "title": "Five new games, new addresses and a studio sting",
+      "body": "Five games joined the lineup this week. Lombard is a pawn shop sim on a canal in Mostograd: spot the fakes, haggle and decide how much trouble a good deal is worth. Escapement is a watchmaking career, from a shared repair bench to a manufacture making its own calibres. Scrapline has you design, drive and patch a combat robot. Ink follows a tattoo artist from sweeping floors to running a studio, also in Mostograd. Station Keeper is a space station tycoon where power, air, crew and money all share one network.\n\nThe studio now lives at longlight.games, and every game has its own address, like pew.longlight.games for Prairie Engine Works. Games also ask the browser to keep their saves when a phone runs low on space.\n\nCovers and screenshots are twice as sharp on big phones, and version numbers now have four parts, so every small build shows. There's a Sound switch at the bottom of every page too. It's off by default; turn it on and the Longlight sting plays once per visit as the logo's sun rises. The sun moves more now as well: its glow breathes, a low sun wobbles near sunset, and tapping it sends a lens flare across the sky."
+    },
+    {
       "date": "2026-11-02",
       "title": "Prairie Engine Works: more team offers and a steadier garage camera",
       "game": "Prairie Engine Works",
