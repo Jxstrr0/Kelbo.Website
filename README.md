@@ -46,7 +46,6 @@ from their releases, then publishes the files as they are (see
 | `journal.json` | **Your journal entries.** Edit this to add an update |
 | `options.json` | **Your options trades.** Edit this to log a trade |
 | `journal.js`, `journal.css` | Show the journal entries and options trades, and work out the record |
-| `tools/prediction-tracker/` | The Prediction Tracker tool, parked for now (not linked from the site) |
 | `hidden.html` + `hidden.json` | **The password-locked page** (see "The hidden page" below). Linked as "Unlock access" in every footer; kept out of the sitemap and search engines |
 | `hidden.js`, `hidden.css` | Lock, unlock and the writer for the hidden page |
 | `404.html` | The "page not found" screen GitHub shows for any address that doesn't exist |
@@ -181,7 +180,7 @@ progress order.
   project that has a version or a `latest`, in the same order as this
   file, so updating these two fields updates that page too.
 - **link**: a web address, or leave it as `""` for no link. A link can
-  also point to a page in this repo later, like `tools/prediction-tracker/`.
+  also point to a page in this repo later, like `tools/my-tool/`.
   Tapping anywhere on a project card opens this link. On a game card,
   tapping the card opens the game's info page instead, and only the "Play it"
   button goes straight to the game (the code link and the screenshots still
@@ -1236,40 +1235,10 @@ back on).
   never overwrites a line that's already there. To have it write a new
   one, delete that whole entry.
 
-## The Prediction Tracker (parked)
-
-It's taken off the site for now, but its files are still in
-`tools/prediction-tracker/`. To bring it back, add this block to
-`projects.json`:
-
-```json
-  {
-    "title": "Prediction Tracker",
-    "status": "Released",
-    "category": "Trading",
-    "summary": "Log predictions with a confidence level, then see how well-calibrated those calls turn out to be over time.",
-    "link": "tools/prediction-tracker/",
-    "code": "",
-    "image": "",
-    "featured": false
-  }
-```
-
-It runs entirely in the visitor's browser:
-
-- Calls are saved with the browser's own storage (localStorage), on that
-  device only. Nothing is sent anywhere, so there's no server and no key.
-- Clearing browser data or switching phones loses them, which is what the
-  **Export backup** button is for. **Import backup** adds them back.
-- The words on the page are in `tools/prediction-tracker/index.html`.
-  The scorecard settings (confidence groups, how many calls before it
-  judges, what counts as "on target") are at the top of `tracker.js`.
-
 ## Later
 
-- **More tools:** copy the `tools/prediction-tracker/` folder setup: a new
-  folder with its own `index.html`, then set that project's `link` to the
-  folder, like `tools/my-tool/`. Pages in there link back with `../../`.
+- **More tools:** make a new folder `tools/my-tool/` with its own
+  `index.html`, then set that project's `link` to the folder. Pages in there link back with `../../`.
 - **Custom domain:** type the domain (for example `kelbo.ca`) in
   Settings → Pages → Custom domain, then point the domain at GitHub Pages in
   your domain provider's settings. (Because the site deploys through an
