@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- The list of pages for search engines. Add a line when you add a page. -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://jxstrr0.github.io/Kelbo.Website/</loc></url>
-  <url><loc>https://jxstrr0.github.io/Kelbo.Website/about.html</loc></url>
-  <url><loc>https://jxstrr0.github.io/Kelbo.Website/games.html</loc></url>
-  <url><loc>https://jxstrr0.github.io/Kelbo.Website/trading.html</loc></url>
-  <url><loc>https://jxstrr0.github.io/Kelbo.Website/tools.html</loc></url>
-  <url><loc>https://jxstrr0.github.io/Kelbo.Website/projects.html</loc></url>
-  <url><loc>https://jxstrr0.github.io/Kelbo.Website/whats-new.html</loc></url>
-  <url><loc>https://jxstrr0.github.io/Kelbo.Website/devlog.html</loc></url>
-  <url><loc>https://jxstrr0.github.io/Kelbo.Website/press.html</loc></url>
-  <url><loc>https://jxstrr0.github.io/Kelbo.Website/journal.html</loc></url>
-  <url><loc>https://jxstrr0.github.io/Kelbo.Website/agent-fleet.html</loc></url>
-  <url><loc>https://jxstrr0.github.io/Kelbo.Website/briefs.html</loc></url>
+  <url><loc>https://longlight.games/</loc></url>
+  <url><loc>https://longlight.games/about.html</loc></url>
+  <url><loc>https://longlight.games/games.html</loc></url>
+  <url><loc>https://longlight.games/trading.html</loc></url>
+  <url><loc>https://longlight.games/tools.html</loc></url>
+  <url><loc>https://longlight.games/projects.html</loc></url>
+  <url><loc>https://longlight.games/whats-new.html</loc></url>
+  <url><loc>https://longlight.games/devlog.html</loc></url>
+  <url><loc>https://longlight.games/press.html</loc></url>
+  <url><loc>https://longlight.games/journal.html</loc></url>
+  <url><loc>https://longlight.games/agent-fleet.html</loc></url>
+  <url><loc>https://longlight.games/briefs.html</loc></url>
 </urlset>
