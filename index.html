@@ -42,6 +42,9 @@
       var t = localStorage.getItem("kelbo.theme");
       if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
     } catch (e) {}
+    // JavaScript is on: show the badges box straight away (style.css), so
+    // the page doesn't jump down when main.js fills it in a moment later.
+    document.documentElement.classList.add("js");
   </script>
   <script src="main.js" defer></script>
 </head>
@@ -126,7 +129,7 @@
           <!-- Shown by main.js on the longest and shortest days of the year -->
           <p class="horizon__badge" data-horizon-badge hidden></p>
           <!-- Shown by main.js while Environment Canada has a weather alert out -->
-          <a class="horizon__alert" data-horizon-alert target="_blank" rel="noopener" hidden></a>
+          <a class="horizon__alert" data-horizon-alert href="https://weather.gc.ca/" target="_blank" rel="noopener" hidden></a>
         </div>
       </div>
     </section>
@@ -151,10 +154,11 @@
 
     <!-- Your badges: little goals for visitors (play games, visit at
          sunset, catch a shooting star...), saved on this phone only.
-         main.js fills it in (setUpBadges); hidden without JavaScript. It's
+         main.js fills it in (setUpBadges); hidden without JavaScript (the
+         "js" class from the script in the <head>). It's
          folded to its "2 of 12 earned" line until tapped; the choice is
          remembered. -->
-    <details class="sky-week badges wrap" data-badges hidden>
+    <details class="sky-week badges wrap" data-badges>
       <summary class="badges__summary">
         <h2 id="badges-heading" class="now__label">Your badges</h2>
         <p class="badges__count" data-badges-count></p>
