@@ -139,7 +139,4 @@ that part, and update it when how something works changes. The short map:
   "The robots".
 - **Studio catalogue:** `.github/LONGLIGHT-STUDIO.md` is the master; update
   it here first, then recopy to the game repos.
-- **Hidden page:** `hidden.html` + `hidden.json` (AES-GCM, made in the
-  browser). Never commit a password or the plaintext; never hand-edit the
-  scrambled file.
 - **`README.md`** is Kelbo's editing guide; keep it up to date.
