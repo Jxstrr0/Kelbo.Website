@@ -726,7 +726,15 @@ The animations are at the bottom of `style.css` under "Motion": pages fade
 into each other (the header and the page-top sky stay put while the rest
 changes, in browsers that support it, like Safari 18.2+ and Chrome), sections and cards slide up as you scroll, the sun glides
 to its new spot, and buttons and cards lift when you tap them. On the
-Projects page, cards glide into place when you tap a filter. Anyone whose
+Projects page, cards glide into place when you tap a filter.
+
+The sun moves too. The logo's sun gently glows, sits a little lower near
+sunrise, sunset and at night (matching the real sun), and rises in time
+with the sting when Sound is on. The big sun on the sky turns squashed and
+wobbly near the horizon, its edge ripples in the last minutes before it
+sets, its rays flicker on a windy day, and tapping it sends a lens flare
+across the sky. Preview the low sun with `?at=sunset` and the wind with
+`?weather=windy`. In Firefox the tab icon's sun glows too. Anyone whose
 phone is set to **Reduce Motion** (iPhone: Settings → Accessibility →
 Motion) sees the same site with nothing moving. Turn that setting on to
 check it.
