@@ -2,12 +2,16 @@
   "updated": "2026-11-08",
   "items": [
     {
-      "text": "Scrapline, combat robots with voices and sound effects",
-      "link": "https://scrapline.longlight.games/"
+      "text": "Lombard, voices, sound effects and more items for sale",
+      "link": "https://lombard.longlight.games/"
     },
     {
-      "text": "Frontier Lab, polishing the whole AI lab",
-      "link": "https://frontierlab.longlight.games/"
+      "text": "Prairie Engine Works, setup sliders, saved tunes and weather",
+      "link": "https://pew.longlight.games/"
+    },
+    {
+      "text": "Scrapline, daily challenge and smarter robot opponents",
+      "link": "https://scrapline.longlight.games/"
     }
   ]
 }
