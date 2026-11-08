@@ -9,7 +9,7 @@ Live at https://longlight.games/
 
 - **Auto-merge is allowed.** Once a change is pushed, the PR is open, and
   the **Site check** has passed (green), merge it yourself without asking
-  first. If it's red, read the run's summary, fix the problems on the same
+  first (squash-merge is fine). If it's red, read the run's summary, fix the problems on the same
   branch, and wait for green. Run `node .github/scripts/check-site.mjs`
   before pushing to catch them early.
 - After merging, the **Deploy site** run must go green before the live site
@@ -32,6 +32,45 @@ Live at https://longlight.games/
   on wide screens (`nav__wide`, 64rem+). Studio pages (home, Games, Tools,
   All) speak as Longlight; Trading, the journal and Agent Fleet stay in
   his own first-person voice.
+
+## Money and safety
+
+Kelbo pays for anything that isn't free, so keep his bill small and
+predictable. Free things need no asking: commits, PRs, merges, the Site
+check and Deploy site (GitHub Pages and Actions are free on this public
+repo), and running the site locally.
+
+**Ask first.** Say in plain words what it is and roughly what it costs, then
+wait for a yes in this conversation. A yes covers that one action, not
+later ones.
+
+- Running a robot that uses `ANTHROPIC_API_KEY` by hand ("Run workflow",
+  re-running a failed run), except a dry run. Check recent Cost notes
+  for a rough price instead of guessing.
+- Making a robot cost more: a new robot, a new or more frequent schedule,
+  a pricier model, higher effort or `max_tokens`, or more web searches.
+- Anything paid outside GitHub: Cloudflare paid plans or usage beyond the
+  free tier, buying a domain, image, voice or video credits, design-tool
+  credits, store or subscription sign-ups, any purchase.
+- Big Claude jobs that use up his plan: multi-agent workflows, more than a
+  couple of subagents at once, long loops, or scheduled routines that start
+  new sessions.
+- Sending email or messages for Kelbo, or posting anywhere public other
+  than this repo.
+- Any single task you expect to cost more than **US$5** in total: stop and
+  ask before starting, even if each step looks small.
+
+**Never:**
+
+- Place, send or set up trades, orders, alerts or flows in his brokerage
+  account. Read-only looks only, and only when he asks.
+- Retry a paid run or generation in a loop. One retry at most after a
+  failure, then tell Kelbo.
+- Change billing, plans, payment methods or spending limits on any account.
+- Commit keys, tokens or passwords (see Hard rules).
+
+If something paid starts by mistake, cancel it at once and tell Kelbo what
+ran and what it may have cost.
 
 ## Commits
 
@@ -134,7 +173,8 @@ that part, and update it when how something works changes. The short map:
 - **Robots:** Morning Writer, Grader, Coach, Devlog Writer, Release Writer,
   Forecaster, Scorekeeper (workflows in `.github/workflows/`, scripts in
   `.github/scripts/`), plus the Scanner routine. Use their names with Kelbo.
-  **Never merge the Devlog Writer's PR yourself.** Keep the `US$<n>` start of
+  The Devlog Writer's PR can be merged like any other once it's green.
+  Keep the `US$<n>` start of
   each Cost note; add any new robot workflow to the cost-log routine. Notes:
   "The robots".
 - **Studio catalogue:** `.github/LONGLIGHT-STUDIO.md` is the master; update
