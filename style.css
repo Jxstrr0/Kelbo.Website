@@ -332,6 +332,12 @@ img {
 /* The glow (a blurred copy of the sun, blur set in the footer's <defs>)
    and the thin halo ring around it. */
 .logo__glow { fill: var(--ll-clay); opacity: 0.85; }
+/* The logo's sun sits a touch lower near sunrise and sunset and all
+   night (--logo-dip, set by main.js from the real sun). The line drawn
+   in front of it hides the part that drops below. */
+.logo__sun,
+.logo__halo,
+.logo__glow { translate: 0 var(--logo-dip, 0px); }
 .logo__halo { fill: none; stroke: var(--ll-clay); stroke-width: 1.6; opacity: 0.6; }
 .logo--compact .logo__halo { stroke-width: 1.4; }
 .logo__ray  { fill: var(--ll-clay); opacity: 0.6; }
@@ -829,6 +835,39 @@ img {
   outline: 2px solid rgba(217, 119, 87, calc((0.45 + 0.3 * var(--sun-low, 0)) * var(--sun-show, 1) * (1 - var(--smoke, 0))));
   outline-offset: calc(var(--sun-size) * 0.13);
   transition: top 1200ms var(--ease), left 1200ms var(--ease);
+}
+
+/* A low sun is squashed top to bottom by the air (--sun-flat from
+   main.js: 0 high up, 1 on the horizon), and a touch wider. */
+.horizon--low-sun .horizon__sun {
+  scale: calc(1 + 0.03 * var(--sun-flat, 0)) calc(1 - 0.14 * var(--sun-flat, 0));
+}
+
+/* Tapping the sun: a lens flare (main.js sunFlare animates it). */
+.sun-flare {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.sun-flare__streak {
+  position: absolute;
+  width: 160%;
+  height: 3px;
+  border-radius: 50%;
+  background: linear-gradient(90deg, rgba(217, 119, 87, 0), rgba(217, 119, 87, 0.55) 35%, rgba(250, 249, 245, 0.9) 50%, rgba(217, 119, 87, 0.55) 65%, rgba(217, 119, 87, 0));
+  box-shadow: 0 0 8px rgba(217, 119, 87, 0.6);
+  opacity: 0;
+}
+
+.sun-flare__ring {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(217, 119, 87, 0.08), rgba(217, 119, 87, 0.22) 80%, rgba(217, 119, 87, 0));
+  border: 1px solid rgba(180, 140, 232, 0.35);
+  opacity: 0;
 }
 
 /* Fine rays all round the sun, long and short in turn, fading out
@@ -4785,6 +4824,42 @@ img {
     to { transform: rotate(360deg); }
   }
 
+  /* On a breezy day (main.js horizon--breezy) the rays flicker and
+     stretch, more in a stronger wind (--wind, 0..1) */
+  .horizon--breezy .horizon__sun::after {
+    animation: sun-rays 120s linear infinite, ray-flicker 1.9s ease-in-out infinite;
+  }
+
+  @keyframes ray-flicker {
+    0%, 100% { scale: 1; filter: opacity(1); }
+    20% { scale: calc(1 + 0.07 * var(--wind, 0.4)); filter: opacity(calc(1 - 0.3 * var(--wind, 0.4))); }
+    45% { scale: calc(1 - 0.03 * var(--wind, 0.4)); filter: opacity(1); }
+    70% { scale: calc(1 + 0.05 * var(--wind, 0.4)); filter: opacity(calc(1 - 0.45 * var(--wind, 0.4))); }
+  }
+
+  /* A low sun wobbles in the moving air near the ground */
+  .horizon--low-sun .horizon__sun {
+    animation: sun-wobble 2.8s ease-in-out infinite;
+  }
+
+  @keyframes sun-wobble {
+    0%, 100% { scale: calc(1 + 0.03 * var(--sun-flat, 0)) calc(1 - 0.14 * var(--sun-flat, 0)); }
+    30% { scale: calc(1 + 0.045 * var(--sun-flat, 0)) calc(1 - 0.18 * var(--sun-flat, 0)); }
+    65% { scale: calc(1 + 0.015 * var(--sun-flat, 0)) calc(1 - 0.1 * var(--sun-flat, 0)); }
+  }
+
+  /* The last few minutes before it sets, its edge ripples */
+  .horizon--rim .horizon__sun {
+    animation: sun-wobble 2.8s ease-in-out infinite, sun-rim 1.3s ease-in-out infinite;
+  }
+
+  @keyframes sun-rim {
+    0%, 100% { border-radius: 50%; }
+    25% { border-radius: 47% 53% 51% 49% / 52% 48% 53% 47%; }
+    50% { border-radius: 52% 48% 47% 53% / 48% 53% 47% 52%; }
+    75% { border-radius: 49% 51% 53% 47% / 51% 47% 52% 48%; }
+  }
+
   /* The light on the ground ripples and sways */
   .horizon__glint {
     animation: glint-flow 2.4s linear infinite, glint-sway 4.5s ease-in-out infinite alternate;
@@ -4835,12 +4910,62 @@ img {
     animation: logo-rise 900ms cubic-bezier(0.34, 1.4, 0.64, 1) 150ms backwards;
   }
 
-  .logo__halo {
-    animation: logo-rise 900ms cubic-bezier(0.34, 1.4, 0.64, 1) 400ms backwards;
+  .logo__glow {
+    animation: logo-fade 900ms var(--ease) 700ms backwards, logo-glow 7s ease-in-out 2.5s infinite;
   }
 
+  /* Once it's up, the logo's glow and halo slowly breathe */
+  .logo__halo {
+    animation: logo-rise 900ms cubic-bezier(0.34, 1.4, 0.64, 1) 400ms backwards, logo-halo 7s ease-in-out 2.5s infinite;
+  }
+
+  @keyframes logo-glow {
+    0%, 100% { opacity: 0.85; }
+    50% { opacity: 0.55; }
+  }
+
+  @keyframes logo-halo {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 0.85; }
+  }
+
+  /* The sting (main.js stingRise): the sun swells up slowly with the
+     sound and lands on its cut at 1.33 s, then the halo pops and the
+     ray shoots out. logo--hold keeps it down while the sound loads. */
+  .logo--sting .logo__sun {
+    animation: logo-swell 1330ms cubic-bezier(0.5, 0, 0.3, 1) backwards;
+  }
+
+  .logo--sting .logo__glow {
+    animation: logo-fade 1330ms ease-in backwards, logo-glow 7s ease-in-out 3s infinite;
+  }
+
+  .logo--sting .logo__halo {
+    animation: logo-rise 500ms cubic-bezier(0.34, 1.4, 0.64, 1) 1200ms backwards, logo-halo 7s ease-in-out 3s infinite;
+  }
+
+  .logo--sting .logo__ray {
+    animation: logo-ray 900ms cubic-bezier(0.22, 1, 0.36, 1) 1330ms backwards;
+  }
+
+  .logo--hold .logo__sun,
+  .logo--hold .logo__glow,
+  .logo--hold .logo__halo,
+  .logo--hold .logo__ray {
+    animation-play-state: paused;
+  }
+
+  @keyframes logo-swell {
+    0% { transform: scale(0.6, 0); }
+    92% { transform: scale(1.05); }
+    100% { transform: none; }
+  }
+
+  /* The logo's sun drifts with the real one (see --logo-dip) */
+  .logo__sun,
+  .logo__halo,
   .logo__glow {
-    animation: logo-fade 900ms var(--ease) 700ms backwards;
+    transition: transform 300ms var(--ease), opacity 300ms var(--ease), translate 1200ms var(--ease);
   }
 
   /* Once the sun is up, the ray shoots out from it to the right. */
