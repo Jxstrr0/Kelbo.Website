@@ -504,6 +504,20 @@ keep the Co-Authored-By trailer for Claude in each message.
   and has backup files (save code in a .txt) with a reminder. `notePlayed`
   still calls `keepStorage`, which asks once per page for the site's own
   storage (badges, last played). Old saves stay on `jxstrr0.github.io`.
+- Sun motion (November 2026): the logo's sun breathes (`logo-glow`,
+  `logo-halo`) and sits up to `LOGO_DIP` (3) logo units lower near sunrise,
+  sunset and at night (`--logo-dip` on `<html>`, set in `placeSun`, so it
+  follows swipes and the spin; the line in front hides the drop).
+  `stingRise` replays the rise on `.logo--sting` timed to the sting (swell,
+  lands on its cut at 1.33 s); `logo--hold` keeps the sun down while the
+  file loads (released after 1.2 s or on refusal). `placeLowSun` sets
+  `--sun-flat` below `LOW_SUN_DEG` (4°) with `horizon--low-sun` (squashed
+  `scale`, `sun-wobble`) and `horizon--rim` (setting, under `RIM_DEG` 1.5°:
+  `sun-rim` ripples the border-radius). `horizon--breezy` (known wind ≥
+  `BREEZY_KMH` 20, in `paintWeather`) adds `ray-flicker` to the rays.
+  Tapping the sun calls `sunFlare` (`.sun-flare`: streak and rings, WAAPI,
+  not with reduce motion). `skyIcon` adds SMIL `<animate>` to the tab
+  icon's glow (only Firefox animates tab icons).
 - Studio sting: `assets/sounds/longlight-sting.mp3` (2 s, made by Kelbo with
   ElevenLabs; `assets/sounds/CREDITS.md`). `setUpSound` (main.js) adds a
   "Sound off/on" button to the end of every footer line (`.sound-toggle`),
