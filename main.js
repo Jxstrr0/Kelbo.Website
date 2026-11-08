@@ -1328,12 +1328,39 @@ function placeSun(scene, t) {
   // The light on the ground fades in as the sun clears the horizon,
   // strongest when the sun is low.
   scene.style.setProperty("--glint-sun", (glint(y) * (0.55 + 0.45 * low)).toFixed(3));
+  placeLowSun(scene, t, alt, day);
+  // The logo's sun follows the real one a little: up to LOGO_DIP units
+  // lower near sunrise and sunset (and all night), right up at noon. The
+  // line in front of it hides the part that drops below. It follows
+  // swipes and the opening spin too.
+  const dip = LOGO_DIP * (1 - Math.max(0, Math.min(1, y / 0.92)));
+  document.documentElement.style.setProperty("--logo-dip", `${dip.toFixed(2)}px`);
   placeOptics(scene, t, x);
   placeShadow(scene, t);
   placeMoon(scene, t);
   placeEclipse(scene, t);
   placeStars(scene, t);
   placeIss(scene, t);
+}
+
+/* ---------- The sun near the horizon ----------
+   A low sun looks squashed: the air bends the light from its bottom edge
+   up more than from its top, so it's flatter top to bottom, and it
+   wobbles in the moving air. --sun-flat (0..1) is how much, from
+   LOW_SUN_DEG above the horizon down to just under it. In the last few
+   minutes before it sets (RIM_DEG and below), its edge ripples too
+   (horizon--rim). style.css does the shapes; the wobble and ripple are
+   motion only. */
+const LOGO_DIP = 3; // logo units; the line in front of the sun is 3.5 to 4 thick
+const LOW_SUN_DEG = 4;
+const RIM_DEG = 1.5;
+
+function placeLowSun(scene, t, alt, day) {
+  const flat = alt > LOW_SUN_DEG || alt < -1.2 ? 0 : Math.min(1, (LOW_SUN_DEG - alt) / LOW_SUN_DEG);
+  scene.style.setProperty("--sun-flat", flat.toFixed(3));
+  scene.classList.toggle("horizon--low-sun", flat > 0);
+  const setting = day.set && t <= day.set && t > (day.rise || 0) + (day.set - (day.rise || 0)) / 2;
+  scene.classList.toggle("horizon--rim", Boolean(setting) && alt < RIM_DEG && alt > -1.2);
 }
 
 /* ---------- The stars ----------
@@ -2309,6 +2336,47 @@ function hideTip(scene) {
   if (tip) tip.hidden = true;
 }
 
+/* Tapping the sun sends a soft clay lens flare across the sky: a long
+   streak through the sun and a few faint rings along a line from the sun
+   through the middle of the sky, like light bouncing inside a camera
+   lens. It fades out in a second or so. Only while the sun is up, and
+   not with "reduce motion". */
+function sunFlare(scene, sun, t) {
+  if (REDUCE_MOTION || sunAltitude(t) < 0 || typeof Element.prototype.animate !== "function") return;
+  const box = scene.getBoundingClientRect();
+  const x = sun.x - box.left, y = sun.y - box.top;
+  const flare = el("div", "sun-flare");
+  flare.setAttribute("aria-hidden", "true");
+  const streak = el("i", "sun-flare__streak");
+  streak.style.left = `${x}px`;
+  streak.style.top = `${y}px`;
+  flare.append(streak);
+  // Rings along the line from the sun through the middle and beyond
+  const mx = box.width / 2, my = box.height * 0.45;
+  [[0.55, 0.5], [1.25, 0.3], [1.7, 0.8], [2.2, 0.45]].forEach(([k, size]) => {
+    const ring = el("i", "sun-flare__ring");
+    const d = sun.r * 2 * size;
+    ring.style.width = ring.style.height = `${d.toFixed(1)}px`;
+    ring.style.left = `${(x + (mx - x) * k - d / 2).toFixed(1)}px`;
+    ring.style.top = `${(y + (my - y) * k - d / 2).toFixed(1)}px`;
+    flare.append(ring);
+  });
+  scene.append(flare);
+  streak.animate(
+    [{ transform: "translate(-50%, -50%) scaleX(0.1)", opacity: 0 },
+     { transform: "translate(-50%, -50%) scaleX(1)", opacity: 0.85, offset: 0.25 },
+     { transform: "translate(-50%, -50%) scaleX(1.15)", opacity: 0 }],
+    { duration: 1400, easing: "ease-out" }
+  );
+  flare.querySelectorAll(".sun-flare__ring").forEach((ring, i) => {
+    ring.animate(
+      [{ opacity: 0, transform: "scale(0.6)" }, { opacity: 1, transform: "scale(1)", offset: 0.3 }, { opacity: 0, transform: "scale(1.1)" }],
+      { duration: 1300, delay: 60 * i, easing: "ease-out", fill: "backwards" }
+    );
+  });
+  setTimeout(() => flare.remove(), 1700);
+}
+
 function setUpSkyTaps(scene, timeNow) {
   const tip = document.createElement("p");
   tip.className = "horizon__tip";
@@ -2476,6 +2544,7 @@ function setUpSkyTaps(scene, timeNow) {
     }
     // Seven quick taps on the sun start the secret parade
     if (best && best.title === "The Sun") {
+      sunFlare(scene, best, t);
       const at = performance.now();
       sunTaps = sunTaps.filter((s) => at - s < 5000).concat(at);
       if (sunTaps.length >= PARADE_TAPS) {
@@ -3402,6 +3471,8 @@ function setUpWeather(scene) {
   }
 }
 
+const BREEZY_KMH = 20;
+
 // Shows the weather, snow and northern lights for moment t.
 function paintWeather(scene, t) {
   if (!scene.clouds) return;
@@ -3409,6 +3480,8 @@ function paintWeather(scene, t) {
   scene.style.setProperty("--aurora", auroraStrength(t).toFixed(2));
   scene.style.setProperty("--smoke", smokeStrength().toFixed(2));
   scene.style.setProperty("--wind", Math.min(1, breeze().wind / 50).toFixed(2)); // sways the wheat
+  // A real breeze (BREEZY_KMH and up) makes the sun's rays flicker
+  scene.classList.toggle("horizon--breezy", breeze().known && breeze().wind >= BREEZY_KMH);
   scene.classList.toggle("horizon--hot", heatShimmer(t));
   scene.classList.toggle("horizon--frost", frostSparkle(t));
   scene.classList.toggle("horizon--drift", snowDrift(t));
@@ -4730,7 +4803,12 @@ function skyIcon(scene) {
       art += `<g transform="translate(${moon.x} ${moon.y}) scale(7)"><circle r="1" fill="#D97757" opacity="0.2"/><path d="${moonPath(phase)}" fill="#D97757"/></g>`;
     }
   } else if (sa > -0.3) {
-    art += `<circle cx="${sun.x}" cy="${sun.y}" r="15" fill="#D97757" opacity="0.3"/><circle cx="${sun.x}" cy="${sun.y}" r="10" fill="#D97757"/>`;
+    // The glow breathes, like the big sun's. Only browsers that animate
+    // tab icons (Firefox) show it; the rest draw the first frame.
+    const pulse = REDUCE_MOTION ? "" :
+      '<animate attributeName="r" values="14;17;14" dur="5s" repeatCount="indefinite"/>' +
+      '<animate attributeName="opacity" values="0.3;0.45;0.3" dur="5s" repeatCount="indefinite"/>';
+    art += `<circle cx="${sun.x}" cy="${sun.y}" r="15" fill="#D97757" opacity="0.3">${pulse}</circle><circle cx="${sun.x}" cy="${sun.y}" r="10" fill="#D97757"/>`;
   }
   if (cloud >= 50) {
     const puff = (x, y, k) => `<path transform="translate(${x} ${y}) scale(${k})" d="M-9 4H9A4 4 0 0 0 7 -3A6 6 0 0 0 -4 -4A5 5 0 0 0 -9 4Z" fill="#FAF9F5" opacity="${dark ? 0.35 : 0.92}"/>`;
@@ -5700,10 +5778,22 @@ async function playSting() {
     }
     stingAudio.currentTime = 0;
     await stingAudio.play();
+    stingRise();
     return true;
   } catch (e) {
     return false; // blocked until a tap, or no file
   }
+}
+
+// The logo's sun rises in time with the sting: it swells up slowly with
+// the sound and lands on the cut at about 1.33 s, then the ray shoots
+// out (style.css, .logo--sting, motion only). Restarting the class
+// plays it again from the start.
+function stingRise() {
+  const root = document.documentElement;
+  root.classList.remove("logo--sting", "logo--hold");
+  void root.offsetWidth;
+  root.classList.add("logo--sting");
 }
 
 function setUpSound() {
@@ -5735,8 +5825,18 @@ function setUpSound() {
   try { done = sessionStorage.getItem(STING_DONE) === "1"; } catch (e) {}
   if (!soundOn() || done) return;
   const mark = () => { try { sessionStorage.setItem(STING_DONE, "1"); } catch (e) {} };
+  // Hold the logo's sun down while the file loads, so it can rise with
+  // the sound. If it's slow or refused, let it rise the usual way.
+  const root = document.documentElement;
+  root.classList.add("logo--sting", "logo--hold");
+  const release = () => {
+    if (root.classList.contains("logo--hold")) root.classList.remove("logo--sting", "logo--hold");
+  };
+  const slow = setTimeout(release, 1200);
   playSting().then((ok) => {
+    clearTimeout(slow);
     if (ok) return mark();
+    release();
     // Refused (no tap yet): play on the first tap or key instead.
     const once = (e) => {
       if (e.target === btn || !soundOn()) return;
