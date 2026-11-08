@@ -33,6 +33,45 @@ Live at https://longlight.games/
   All) speak as Longlight; Trading, the journal and Agent Fleet stay in
   his own first-person voice.
 
+## Money and safety
+
+Kelbo pays for anything that isn't free, so keep his bill small and
+predictable. Free things need no asking: commits, PRs, merges, the Site
+check and Deploy site (GitHub Pages and Actions are free on this public
+repo), and running the site locally.
+
+**Ask first.** Say in plain words what it is and roughly what it costs, then
+wait for a yes in this conversation. A yes covers that one action, not
+later ones.
+
+- Running a robot that uses `ANTHROPIC_API_KEY` by hand ("Run workflow",
+  re-running a failed run), except a dry run. Check recent Cost notes
+  for a rough price instead of guessing.
+- Making a robot cost more: a new robot, a new or more frequent schedule,
+  a pricier model, higher effort or `max_tokens`, or more web searches.
+- Anything paid outside GitHub: Cloudflare paid plans or usage beyond the
+  free tier, buying a domain, image, voice or video credits, design-tool
+  credits, store or subscription sign-ups, any purchase.
+- Big Claude jobs that use up his plan: multi-agent workflows, more than a
+  couple of subagents at once, long loops, or scheduled routines that start
+  new sessions.
+- Sending email or messages for Kelbo, or posting anywhere public other
+  than this repo.
+- Any single task you expect to cost more than **US$5** in total: stop and
+  ask before starting, even if each step looks small.
+
+**Never:**
+
+- Place, send or set up trades, orders, alerts or flows in his brokerage
+  account. Read-only looks only, and only when he asks.
+- Retry a paid run or generation in a loop. One retry at most after a
+  failure, then tell Kelbo.
+- Change billing, plans, payment methods or spending limits on any account.
+- Commit keys, tokens or passwords (see Hard rules).
+
+If something paid starts by mistake, cancel it at once and tell Kelbo what
+ran and what it may have cost.
+
 ## Commits
 
 Author commits as the owner so they count on their GitHub profile. At the
