@@ -36,11 +36,13 @@ if (!game) { console.error("usage: node playtest.mjs pew|scrapline [--dry] [--mo
 const flag = (n, d) => { const i = args.indexOf(n); return i < 0 ? d : Number(args[i + 1]); };
 const DRY = args.includes("--dry");
 const MAX_MOVES = flag("--moves", 70);
-const BUDGET = flag("--budget", 4);
+const BUDGET = flag("--budget", 9);
 
-// Claude Opus 5.5 list prices, US$ per million tokens
-const MODEL = "claude-opus-5-5";
-const PRICE = { input: 4, output: 20, cacheWrite: 5, cacheRead: 0.2 };
+// Claude Fable 5.1 on high effort (Kelbo's pick for this one-off). List prices, US$ per million tokens.
+// Thinking is always on for this model, so there is no thinking setting; effort sets how hard it thinks.
+const MODEL = "claude-fable-5-1";
+const EFFORT = "high";
+const PRICE = { input: 10, output: 50, cacheWrite: 12.5, cacheRead: 0.25 };
 
 const OUT = path.join(process.cwd(), "playtest-out", gameId);
 fs.mkdirSync(OUT, { recursive: true });
@@ -163,7 +165,7 @@ const messages = [{ role: "user", content: [imageBlock(first.buf), { type: "text
 while (!finalReport) {
   const outOfMoves = moves >= MAX_MOVES || spent >= BUDGET * 0.9;
   const res = await callClaude({
-    model: MODEL, max_tokens: 6000, system, tools, messages,
+    model: MODEL, max_tokens: 16000, output_config: { effort: EFFORT }, system, tools, messages,
     cache_control: { type: "ephemeral" },   // re-reading the earlier turns from cache costs a twentieth of fresh input
   });
   addUsage(res.usage);
@@ -188,7 +190,7 @@ while (!finalReport) {
 }
 
 await browser.close();
-const report = { game: game.name, url: game.url, model: MODEL, moves, costUSD: Number(spent.toFixed(2)), usage: usageTotals,
+const report = { game: game.name, url: game.url, model: MODEL, effort: EFFORT, moves, costUSD: Number(spent.toFixed(2)), usage: usageTotals,
   consoleErrors: [...new Set(consoleErrors)].slice(0, 30), notes, final: finalReport };
 fs.writeFileSync(path.join(OUT, "report.json"), JSON.stringify(report, null, 2));
 console.log(`done: ${moves} moves, about US$${spent.toFixed(2)}, ${notes.length} notes -> ${path.join(OUT, "report.json")}`);
