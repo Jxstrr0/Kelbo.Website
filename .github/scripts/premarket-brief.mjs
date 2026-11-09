@@ -10,8 +10,8 @@ import { request } from "node:https";
 
 const MODEL = "claude-fable-5-1"; // the top model (Opus 5.5 at xhigh until Nov 9, 2026)
 const EFFORT = "high";
-const MAX_SEARCHES = 30; // web searches a brief may run ($10 per 1,000)
-const MAX_FETCHES = 15; // whole pages it may open and read (any site)
+const MAX_SEARCHES = 35; // web searches a brief may run ($10 per 1,000)
+const MAX_FETCHES = 20; // whole pages it may open and read (any site)
 // Fable 5.1 list prices in US dollars per million tokens, for the spending
 // cap and the cost line in the run log. Cache reads are the cheap re-reads;
 // writes cost 1.25x.
@@ -136,7 +136,7 @@ const tools = [
 ];
 
 // Sends one request to the Messages API and returns {status, text}.
-// The reply is streamed (server-sent events): a brief with 30 searches can
+// The reply is streamed (server-sent events): a brief with 35 searches can
 // take 10 minutes or more, and a connection that sits silent that long gets
 // cut off on the way (it did on 2026-11-05 and 11-06, about 4.5 minutes in,
 // four tries in a row). Streaming keeps bytes flowing the whole time.

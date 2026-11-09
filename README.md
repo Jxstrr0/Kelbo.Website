@@ -1001,8 +1001,8 @@ you open it.
 - **Changing it:** the watchlist, the rules and the layout of the brief are
   all in `SYSTEM` near the top of `premarket-brief.mjs`, in plain English.
   The times live in the Robot Timer (below), not in the workflow.
-  It can run up to 30 web searches a brief (`MAX_SEARCHES`) and open up to
-  15 whole pages on any site to read the actual numbers (`MAX_FETCHES`),
+  It can run up to 35 web searches a brief (`MAX_SEARCHES`) and open up to
+  20 whole pages on any site to read the actual numbers (`MAX_FETCHES`),
   following a rough search plan in `SYSTEM` (most of it on MU, 3 searches on the SOX). It calls
   the model named in `MODEL`: Claude Fable 5.1 (`claude-fable-5-1`), the
   top model, on high effort (`EFFORT`). Until Nov 9, 2026 it was Opus 5.5
