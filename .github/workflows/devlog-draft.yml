@@ -24,18 +24,17 @@
 # It asks Claude through the Batches API (half price) and waits for the
 # answer, usually within an hour. If that takes over 5 h 20, it saves its
 # place in .github/batches/devlog-writer.json (committed to main, never
-# published) and the 5:13 pm run picks the same answer up, so nothing is
+# published) and the 5:15 pm run picks the same answer up, so nothing is
 # paid twice. That second run stops at once if today's draft already exists.
 #
 # Needs Settings > Actions > General > "Allow GitHub Actions to create and
 # approve pull requests" switched on, or step 3 fails.
 name: Devlog Writer (weekly devlog draft)
 
-# 17:23 UTC = 11:23 am Saskatoon on Sundays; 23:13 UTC = 5:13 pm pickup.
+# Started by the Robot Timer, a Cloudflare Worker (.github/worker/robot-timer.js),
+# on Sundays at 11:20 am and 5:15 pm (pickup) Saskatoon time. GitHub's own
+# timer ran late, so it was removed.
 on:
-  schedule:
-    - cron: "23 17 * * 0"
-    - cron: "13 23 * * 0"
   workflow_dispatch:
     inputs:
       dry_run:
@@ -63,7 +62,7 @@ jobs:
         with:
           node-version: 22
 
-      # The 5:13 pm try: if today's draft branch is already there and no
+      # The 5:15 pm try: if today's draft branch is already there and no
       # batch is waiting, there's nothing to do (and nothing to pay).
       - name: Already drafted today?
         id: done
