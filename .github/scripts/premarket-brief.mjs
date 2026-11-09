@@ -8,12 +8,28 @@ import { updateIndex, BRIEFS_DIR } from "./brief-index.mjs";
 import { costNote } from "./claude.mjs";
 import { request } from "node:https";
 
-const MODEL = "claude-opus-5-5";
+const MODEL = "claude-fable-5-1"; // the top model (Opus 5.5 at xhigh until Nov 9, 2026)
+const EFFORT = "high";
 const MAX_SEARCHES = 30; // web searches a brief may run ($10 per 1,000)
 const MAX_FETCHES = 15; // whole pages it may open and read (any site)
-// Opus 5.5 list prices in US dollars per million tokens, for the cost line
-// in the run log. Cache reads are the cheap re-reads; writes cost 1.25x.
-const PRICE = { input: 4, output: 20, cacheRead: 0.2, cacheWrite: 5, search: 0.01 };
+// Fable 5.1 list prices in US dollars per million tokens, for the spending
+// cap and the cost line in the run log. Cache reads are the cheap re-reads;
+// writes cost 1.25x.
+const PRICE = { input: 10, output: 50, cacheRead: 0.25, cacheWrite: 12.5, search: 0.01 };
+// The spending cap for one brief, in US dollars (Kelbo, 2026-11-09: about
+// $5 to $6 at most). The API has no dollar limit of its own, so the script
+// keeps a running total from the token counts each reply reports:
+//   - past WRAP_UP_AT, no more research: Claude is told to write the brief
+//     from what it has found so far;
+//   - each reply's length (max_tokens) is cut so its writing can't push the
+//     total past HARD_CAP, and nothing more is sent once the total reaches it.
+// Search results read part way through one reply can't be stopped, so a
+// brief can land a little over HARD_CAP, never far over. A normal brief
+// (about $3.50 to $5) never gets near either line.
+const WRAP_UP_AT = 4;
+const HARD_CAP = 6;
+const MAX_REPLY = 48000; // the longest reply allowed, thinking included
+const MIN_REPLY = 8000; // enough room to write the brief itself
 const MARKER = "===BRIEF===";
 
 const apiKey = process.env.ANTHROPIC_API_KEY;
@@ -128,7 +144,9 @@ const tools = [
 // normal reply would give, so the rest of the script doesn't change.
 const TIMEOUT_MS = 20 * 60 * 1000;
 // How many times to send a request whose connection drops (see callClaude).
-const NETWORK_TRIES = 2;
+// Just once: on Fable a second try costs about as much as a whole brief
+// and would break the spending cap. The 7:15 back-up run gets another go.
+const NETWORK_TRIES = 1;
 function post(body) {
   return new Promise((resolve, reject) => {
     const req = request("https://api.anthropic.com/v1/messages", {
@@ -172,7 +190,9 @@ function buildMessage(stream) {
     if (!line) continue;
     const ev = JSON.parse(line.slice(5));
     if (ev.type === "message_start") msg = ev.message;
-    else if (ev.type === "error") return { status: 529, text: JSON.stringify(ev) };
+    // midStream: the research so far is already paid for, so callClaude
+    // treats it like a dropped connection, not a free busy reply.
+    else if (ev.type === "error") return { status: 529, midStream: true, text: JSON.stringify(ev) };
     else if (ev.type === "content_block_start") msg.content[ev.index] = ev.content_block;
     else if (ev.type === "content_block_delta") {
       const b = msg.content[ev.index];
@@ -194,24 +214,24 @@ function buildMessage(stream) {
 }
 
 // withTools = false sends the request with web search turned off.
-async function callClaude(messages, withTools = true, attempt = 1) {
+// maxTokens: this reply's length limit (see roomLeft below).
+async function callClaude(messages, { withTools = true, maxTokens = MAX_REPLY } = {}, attempt = 1) {
   let res;
   try {
     res = await post(JSON.stringify({
     // max_tokens covers the model's thinking as well as the brief itself, so
     // leave it roomy: a tight cap cuts the brief off mid-sentence. It's
     // only a ceiling; the brief is billed for what it really writes.
-    // effort "xhigh": think a lot harder than Opus's default ("medium")
-    // about what the research found, mostly for the gap call. More thinking
-    // means more tokens, so max_tokens has room for it.
+    // effort "high": Fable's default, written out so it stays high. Fable
+    // always thinks (there is no thinking setting to send).
     // cache_control: every step of the research re-reads everything found so
     // far. Caching bills those re-reads at a twentieth of the price. The
     // marker on the instructions keeps them cached; the top-level one moves
     // along the conversation as it grows.
       model: MODEL,
       stream: true,
-      max_tokens: 64000,
-      output_config: { effort: "xhigh" },
+      max_tokens: maxTokens,
+      output_config: { effort: EFFORT },
       system: [{ type: "text", text: SYSTEM, cache_control: { type: "ephemeral" } }],
       messages,
       cache_control: { type: "ephemeral" },
@@ -226,13 +246,17 @@ async function callClaude(messages, withTools = true, attempt = 1) {
     if (attempt >= NETWORK_TRIES) throw err;
     console.log(`Network error (${err.message}), retrying in ${15 * attempt}s`);
     await new Promise((r) => setTimeout(r, 15000 * attempt));
-    return callClaude(messages, withTools, attempt + 1);
+    return callClaude(messages, { withTools, maxTokens }, attempt + 1);
   }
-  if ((res.status === 429 || res.status >= 500) && attempt < 4) {
+  if (res.midStream && attempt < NETWORK_TRIES) {
+    console.log("The reply broke off part way; trying once more.");
+    return callClaude(messages, { withTools, maxTokens }, attempt + 1);
+  }
+  if (!res.midStream && (res.status === 429 || res.status >= 500) && attempt < 4) {
     const wait = 15000 * attempt;
     console.log(`API returned ${res.status}, retrying in ${wait / 1000}s`);
     await new Promise((r) => setTimeout(r, wait));
-    return callClaude(messages, withTools, attempt + 1);
+    return callClaude(messages, { withTools, maxTokens }, attempt + 1);
   }
   if (res.status < 200 || res.status >= 300) {
     throw new Error(`API error ${res.status}: ${res.text}`);
@@ -283,15 +307,49 @@ const addUsage = (u = {}) => {
   usage.searches += u.server_tool_use?.web_search_requests ?? 0;
   usage.fetches += u.server_tool_use?.web_fetch_requests ?? 0;
 };
+// The running total in US dollars, at list prices.
+const spent = () => (usage.input_tokens * PRICE.input + usage.output_tokens * PRICE.output +
+  usage.cache_read * PRICE.cacheRead + usage.cache_write * PRICE.cacheWrite) / 1e6 + usage.searches * PRICE.search;
+// The longest next reply that keeps the total under HARD_CAP, leaving
+// 50 cents for the text it reads.
+const roomLeft = () => Math.max(MIN_REPLY, Math.min(MAX_REPLY, Math.floor((HARD_CAP - spent() - 0.5) / (PRICE.output / 1e6))));
 
-// Server-side web search can pause long turns; continue up to 5 times.
+// Server-side web search can pause long turns; continue up to 5 times,
+// inside the spending cap (see WRAP_UP_AT and HARD_CAP at the top).
+let wrappedUp = false;
+let stoppedAtCap = false;
+let lastRound = 0; // what the latest reply cost, to guess the next one
 for (let i = 0; i < 6; i++) {
-  const data = await callClaude(messages);
+  const before = spent();
+  let data;
+  try {
+    data = await callClaude(messages, { maxTokens: roomLeft() });
+  } catch (err) {
+    // The wrap-up request is the only one with a message of ours after a
+    // paused turn. If the API turns it down (not billed), keep what's here.
+    if (!wrappedUp) throw err;
+    console.warn(`The wrap-up request failed (${err.message}); using what's written so far.`);
+    break;
+  }
   allBlocks.push(...data.content);
   addUsage(data.usage);
+  lastRound = spent() - before;
+  if (data.stop_reason === "refusal") throw new Error("Claude declined to write today's brief (stop reason: refusal).");
   if (data.stop_reason === "max_tokens") console.warn("Hit max_tokens: the brief may be cut short.");
   if (data.stop_reason !== "pause_turn") break;
   messages.push({ role: "assistant", content: data.content });
+  if (spent() >= HARD_CAP) {
+    stoppedAtCap = true;
+    console.warn(`Spent about US$${spent().toFixed(2)}: at the US$${HARD_CAP} cap, so nothing more is sent.`);
+    break;
+  }
+  // Wrap up past WRAP_UP_AT, or sooner if another round like the last one
+  // would go past HARD_CAP.
+  if ((spent() >= WRAP_UP_AT || spent() + lastRound >= HARD_CAP) && !wrappedUp) {
+    wrappedUp = true;
+    console.log(`Spent about US$${spent().toFixed(2)} on research; asking for the brief now.`);
+    messages.push({ role: "user", content: `That's the research budget used up. Don't search or open any more pages: write today's brief now from what you've found, in the exact format from your instructions, starting with ${MARKER}.` });
+  }
 }
 
 // Join text blocks, collect cited sources
@@ -329,6 +387,9 @@ if (!brief.startsWith("#")) {
   if (h >= 0) brief = brief.slice(h + 1).trim();
 }
 if (!brief) throw new Error("Claude returned no brief text.");
+// Stopped at the cap before the brief was written: don't save research notes
+// as if they were a brief. The run goes red and the 7:15 back-up tries again.
+if (stoppedAtCap && markerAt < 0) throw new Error(`Reached the US$${HARD_CAP} spending cap before the brief was written; nothing saved.`);
 
 // The page expects the same headings every day. If any are missing, ask
 // once for the same brief rewritten in the format (no new searching).
@@ -338,13 +399,15 @@ const missing = () => [
   ...(/^TLDR:/m.test(brief) ? [] : ["TLDR:"]),
   ...REQUIRED.filter((h) => !new RegExp(`^${h}\\s*$`, "m").test(brief)),
 ];
-if (missing().length) {
+if (missing().length && spent() >= HARD_CAP) {
+  console.warn(`Brief is missing ${missing().join(", ")}, but the spending cap is reached; saving it as is.`);
+} else if (missing().length) {
   console.warn(`Brief is missing ${missing().join(", ")}; asking for a reformat.`);
   const fix = await callClaude([
     messages[0],
     { role: "assistant", content: brief },
     { role: "user", content: `Rewrite that brief in the exact format from your instructions, using every heading word for word: # headline, TLDR:, ${REQUIRED.join(", ")}. Keep the same facts. Output ${MARKER} first.` },
-  ], false);
+  ], { withTools: false, maxTokens: roomLeft() });
   addUsage(fix.usage);
   const fixed = fix.content.filter((b) => b.type === "text").map((b) => b.text).join("");
   const at = fixed.lastIndexOf(MARKER);
@@ -391,7 +454,6 @@ console.log(`Wrote ${briefPath}: ${headline}`);
 console.log(`Tokens: ${usage.input_tokens} in, ${usage.cache_read} cache reads, ${usage.cache_write} cache writes, ${usage.output_tokens} out`);
 console.log(`Searches: ${usage.searches} of ${MAX_SEARCHES}; pages read: ${usage.fetches} of ${MAX_FETCHES}`);
 // An estimate at list prices; the Anthropic console has the real bill.
-const cost = (usage.input_tokens * PRICE.input + usage.output_tokens * PRICE.output +
-  usage.cache_read * PRICE.cacheRead + usage.cache_write * PRICE.cacheWrite) / 1e6 + usage.searches * PRICE.search;
-console.log(`Estimated cost: US$${cost.toFixed(2)}`);
-costNote(cost, `${usage.searches} searches, ${usage.fetches} pages read`);
+const cost = spent();
+console.log(`Estimated cost: US$${cost.toFixed(2)} (${MODEL}, cap US$${HARD_CAP})`);
+costNote(cost, `${MODEL}, ${usage.searches} searches, ${usage.fetches} pages read`);
