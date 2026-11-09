@@ -1080,10 +1080,16 @@ you can see how good the calls really are over time.
   and each card has a "Read that brief" link back. Before the grade is in,
   today's brief says "Graded after the close, around 4:10 pm". Links:
   `briefs.html#after` opens the After close tab, `#after-2026-11-02` a
-  past card, `#2026-11-02` a past brief. On a computer (64rem and wider)
-  the page uses the whole screen: the brief's sections (Overnight, MU,
-  Watchlist, Calendar) sit side by side, two to four across depending on
-  the width; phones keep one column.
+  past card, `#2026-11-02` a past brief. The brief itself is laid out as
+  colour-coded cards: a top card with the headline, TLDR and buttons that
+  jump to each section, then MU (clay, with the gap call first, bull and
+  bear side by side, and last session's call at the bottom), Overnight
+  (purple), Watchlist (lilac, a chip per ticker, "News" on the ones with
+  news), Calendar (a time column per day) and Sources (folded shut).
+  Price changes show purple when up and clay when down. The Morning
+  Writer's Markdown doesn't change; `briefs.js` does the sorting. On a
+  computer (64rem and wider) the cards sit side by side, two to four
+  across depending on the width; phones keep one column.
 - **Where it's saved:** `report-cards/2026-11.json` (that month's grades)
   and `report-cards/index.json` (the totals). The brief files in `briefs/`
   are never touched.

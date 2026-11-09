@@ -627,9 +627,24 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   `gh workflow run deploy.yml` (a GITHUB_TOKEN push starts no workflows by
   itself). `briefs.js` renders the Markdown itself (escape first, then
   headings, lists, bold, italics, https links, simple tables; then
-  `groupParts` wraps each `##` section in a `.brief__part`, so from 64rem
-  briefs.css sets the sections side by side in a grid, `--wrap` 120rem
-  on that page, Sources and the headline full width), draws the
+  `groupParts` wraps each `##` section in a `.brief__part` card named by
+  `PART_NAMES` (`data-part` mu, overnight, watchlist, calendar, sources,
+  sox for old briefs, other for anything new), puts the headline, TLDR,
+  "How it did" line and section buttons (`addJumps`, buttons not #links)
+  in a `.brief__lead` card and moves MU first. The dress functions only
+  rearrange HTML renderMarkdown already escaped: `dressCalls` turns MU's
+  `**Label:**` lines into boxes ordered by `CALL_ORDER` (gap call first in a
+  clay box with a confidence pill, bull/bear side by side, last session's
+  call last), resistance/support tinted clay/purple; `dressLeads` makes
+  Overnight's bold starts into labels; `dressWatchlist` ticker chips and a
+  News tag; `dressCalendar` day headers and an ET/SK time column;
+  `foldSources` folds Sources shut; `markChanges` colours signed % changes
+  purple (up) and clay (down). Section colours are `--tone`, `--tone-ink`,
+  `--tone-soft` per card in briefs.css (MU clay, Overnight purple,
+  Watchlist lilac, Calendar slate/ivory); `:has()` keeps the old single
+  card if a brief can't be sorted. From 64rem the cards sit side by side
+  in a grid, `--wrap` 120rem on that page, Sources and the lead full
+  width), draws the
   4 am to 8 pm ET session strip in Saskatoon time, and routes the archive
   by `#YYYY-MM-DD`. The page speaks in Kelbo's first person; it is a
   Trading project in `projects.json`, in `sitemap.xml` and `sw.js` `CORE`.

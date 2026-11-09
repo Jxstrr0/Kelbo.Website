@@ -287,6 +287,436 @@
   color: var(--muted);
 }
 
+/* ---------- The brief's sections ----------
+   briefs.js (groupParts and the dress* functions under it) sorts a brief
+   into a lead card and one card per section. Each section card sets three
+   colours, and everything inside it uses them:
+     --tone       the edge and the bars (any brand colour)
+     --tone-ink   its text in that colour (darkened where it needs the
+                  contrast on a white card)
+     --tone-soft  a pale wash of it behind boxes
+   MU clay · Overnight purple · Watchlist lilac · Calendar slate (ivory
+   after dark) · Sources and anything new: plain.
+   :has() keeps the old single card for a browser too old to know it, or
+   a brief briefs.js couldn't sort. */
+.brief-card[data-brief]:has(> .brief__part) {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+}
+
+.brief__lead,
+.brief__part {
+  --tone: var(--rule);
+  --tone-ink: var(--ink);
+  --tone-soft: color-mix(in srgb, var(--tone) 12%, var(--card));
+  padding: 1.1rem 1.15rem 1.2rem;
+  border: 1px solid var(--rule);
+  border-top: 4px solid var(--tone);
+  border-radius: var(--radius);
+  background: var(--card);
+  box-shadow: var(--shadow);
+  scroll-margin-top: 1rem;
+}
+
+.brief__lead {
+  --tone: var(--accent);
+  border-top-width: 1px;
+  border-left: 4px solid var(--accent);
+}
+
+.brief__lead > :last-child,
+.brief__part > :last-child {
+  margin-bottom: 0;
+}
+
+.brief__part--mu,
+.brief__part--sox {
+  --tone: var(--accent);
+  --tone-ink: var(--accent-ink);
+}
+
+.brief__part--overnight {
+  --tone: var(--ll-purple);
+  --tone-ink: var(--secondary);
+}
+
+.brief__part--watchlist {
+  --tone: var(--ll-lilac);
+  --tone-ink: var(--brief-lilac-ink);
+}
+
+.brief__part--calendar {
+  --tone: var(--brief-slate);
+  --tone-ink: var(--ink);
+}
+
+.brief__part--sources {
+  --tone: var(--rule);
+  --tone-ink: var(--muted);
+  box-shadow: none;
+}
+
+/* Lilac is too pale for text on a white card, so its text uses the deep
+   ground purple; slate vanishes on a dark card, so it turns ivory. */
+:root {
+  --brief-lilac-ink: #6A33AD;
+  --brief-slate: var(--ll-slate);
+}
+
+:root[data-theme="dark"] {
+  --brief-lilac-ink: var(--ll-lilac);
+  --brief-slate: #8E8A82;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --brief-lilac-ink: var(--ll-lilac);
+    --brief-slate: #8E8A82;
+  }
+}
+
+/* The section heading: a small coloured label, like a tab on a folder */
+.brief-card .brief__part > h3 {
+  margin: 0 0 0.85rem;
+  padding: 0;
+  border: 0;
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tone-ink);
+}
+
+.brief-card .brief__part--mu > h3,
+.brief-card .brief__part--sox > h3 {
+  font-size: 1.15rem;
+  letter-spacing: 0.04em;
+}
+
+/* Buttons that jump to each section, in each section's colour */
+.brief__jumps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.9rem;
+}
+
+.brief__jump {
+  --tone: var(--rule);
+  min-height: 2.25rem;
+  padding: 0.3rem 0.8rem;
+  border: 1px solid var(--rule);
+  border-left: 4px solid var(--tone);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.brief__jump:hover {
+  border-color: var(--tone);
+}
+
+.brief__jump:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.brief__jump--mu,
+.brief__jump--sox { --tone: var(--accent); }
+.brief__jump--overnight { --tone: var(--ll-purple); }
+.brief__jump--watchlist { --tone: var(--ll-lilac); }
+.brief__jump--calendar { --tone: var(--brief-slate); }
+
+/* ---- MU: the call boxes ---- */
+.brief__fields {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.brief__field {
+  padding: 0.7rem 0.85rem;
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.brief-card .brief__field p {
+  margin: 0 0 0.5rem;
+}
+
+.brief-card .brief__field > :last-child {
+  margin-bottom: 0;
+}
+
+.brief-card .brief__field ul {
+  margin: 0;
+}
+
+.brief-card .brief__label {
+  margin-bottom: 0.25rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* The gap call is the point of the brief: biggest box, clay wash */
+.brief__field--gap {
+  border: 1px solid var(--tone);
+  border-left-width: 5px;
+  background: var(--tone-soft);
+}
+
+.brief-card .brief__field--gap .brief__label {
+  color: var(--tone-ink);
+}
+
+.brief-card .brief__field--gap .brief__value:first-of-type {
+  font-size: 1.08rem;
+  font-weight: 500;
+}
+
+/* "Low confidence" as a pill */
+.brief__conf {
+  display: inline-block;
+  padding: 0 0.5rem;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.brief__conf--low { color: var(--accent-ink); }
+.brief__conf--medium,
+.brief__conf--moderate { color: var(--secondary); }
+.brief__conf--high {
+  border-color: var(--secondary);
+  background: var(--secondary);
+  color: var(--card);
+}
+
+/* Last session's call: a quieter look back */
+.brief__field--last {
+  border: 1px dashed var(--rule);
+  background: none;
+  font-size: 0.93rem;
+  color: var(--muted);
+}
+
+/* Key levels: resistance in clay above, support in purple below */
+.brief-card .brief__field--levels li {
+  list-style: none;
+  margin: 0 0 0.45rem -1.25rem;
+  padding: 0.15rem 0 0.15rem 0.7rem;
+  border-left: 3px solid var(--rule);
+}
+
+.brief-card .brief__field--levels li.brief__level--res {
+  border-left-color: var(--accent);
+}
+
+.brief-card .brief__field--levels li.brief__level--sup {
+  border-left-color: var(--secondary);
+}
+
+.brief__level--res > strong:first-child { color: var(--accent-ink); }
+.brief__level--sup > strong:first-child { color: var(--secondary); }
+
+/* Bull and bear, side by side once there's room */
+.brief__pair {
+  display: grid;
+  gap: 0.75rem;
+}
+
+@media (min-width: 36rem) {
+  .brief__pair {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.brief__field--bull {
+  border-top: 3px solid var(--secondary);
+  background: var(--secondary-soft);
+}
+
+.brief__field--bear {
+  border-top: 3px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, var(--card));
+}
+
+.brief-card .brief__field--bull .brief__label { color: var(--secondary); }
+.brief-card .brief__field--bear .brief__label { color: var(--accent-ink); }
+
+/* ---- Overnight: the bold start of each item as a small label ---- */
+.brief-card .brief__part--overnight ul {
+  padding: 0;
+  list-style: none;
+}
+
+.brief-card .brief__part--overnight li {
+  margin-bottom: 0.75rem;
+  padding-left: 0.75rem;
+  border-left: 2px solid var(--tone-soft);
+}
+
+.brief__kicker {
+  display: block;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--tone-ink);
+}
+
+/* ---- Watchlist: ticker chips ---- */
+.brief-card .brief__part--watchlist ul {
+  padding: 0;
+  list-style: none;
+}
+
+.brief-card .brief__ticker {
+  display: grid;
+  grid-template-columns: 4.25rem minmax(0, 1fr);
+  gap: 0.6rem;
+  align-items: start;
+  margin: 0;
+  padding: 0.55rem 0;
+  border-top: 1px solid var(--rule);
+}
+
+.brief-card .brief__ticker:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.brief__symbol {
+  padding: 0.1rem 0;
+  border-radius: 8px;
+  background: var(--tone-soft);
+  color: var(--tone-ink);
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  text-align: center;
+}
+
+.brief__ticker--news .brief__symbol {
+  background: var(--tone);
+  color: var(--ll-slate);
+}
+
+.brief__tag {
+  display: inline-block;
+  padding: 0 0.45rem;
+  border-radius: 999px;
+  background: var(--tone-soft);
+  color: var(--tone-ink);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  vertical-align: 0.1em;
+}
+
+/* ---- Calendar: days as headers, times in their own column ---- */
+.brief-card .brief__part--calendar ul {
+  padding: 0;
+  list-style: none;
+}
+
+.brief-card .brief__part--calendar li {
+  margin: 0 0 0.5rem;
+  padding-left: 0.7rem; /* lines under a day sit in from it */
+}
+
+.brief-card .brief__day {
+  margin-top: 0.9rem;
+  padding: 0.45rem 0.7rem;
+  border-radius: 10px;
+  background: var(--surface);
+}
+
+.brief-card .brief__day:first-child {
+  margin-top: 0;
+}
+
+.brief-card .brief__day--today {
+  border-left: 4px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, var(--card));
+}
+
+.brief-card .brief__day--alone {
+  margin-bottom: 0.25rem;
+  padding: 0.3rem 0.7rem;
+}
+
+.brief-card .brief__slot {
+  display: grid;
+  grid-template-columns: 6.6rem minmax(0, 1fr);
+  gap: 0.6rem;
+}
+
+.brief__when {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.brief__when small {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+/* ---- Sources: folded shut ---- */
+.brief__fold > summary {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.25rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.brief__fold > summary:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.brief__count {
+  padding: 0 0.45rem;
+  border-radius: 999px;
+  background: var(--surface);
+  letter-spacing: 0;
+}
+
+.brief-card .brief__fold ul {
+  margin: 0.6rem 0 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+/* Up in purple, down in clay: the same pair as the report card's grades */
+.brief__chg {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.brief__chg--up { color: var(--secondary); }
+.brief__chg--down { color: var(--accent-ink); }
+
 /* ---------- The archive ---------- */
 .archive {
   max-width: 44rem;
@@ -702,16 +1132,22 @@ details[open] > .archive__fold::after {
     padding: 1.75rem 2rem 2rem;
   }
 
-  .brief-card[data-brief] {
+  .brief-card[data-brief]:has(> .brief__part) {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(24rem, 1fr));
-    gap: 0 3rem;
+    gap: 1.25rem;
     align-items: start;
+    padding: 0;
   }
 
   .brief-card[data-brief] > :not(.brief__part),
   .brief-card[data-brief] > .brief__part--sources {
     grid-column: 1 / -1;
+  }
+
+  .brief__lead,
+  .brief__part {
+    padding: 1.4rem 1.6rem 1.5rem;
   }
 
   .brief__headline {
@@ -720,18 +1156,6 @@ details[open] > .archive__fold::after {
 
   .brief__tldr {
     max-width: 70rem;
-  }
-
-  .brief__part {
-    margin-bottom: 1.25rem;
-  }
-
-  .brief__part > h3 {
-    margin-top: 0;
-  }
-
-  .brief__part > :last-child {
-    margin-bottom: 0;
   }
 
   /* Sources: the links flow in columns, they're short */
