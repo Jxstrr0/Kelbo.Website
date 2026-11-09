@@ -758,7 +758,7 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
 - Devlog Writer: `devlog-draft.yml` (Robot Timer, Sundays 17:20 UTC plus a 23:15 UTC
   pickup that skips if today's `devlog-draft/` branch exists and no batch
   is saved; `contents` and `pull-requests: write`) runs `devlog-draft.mjs`
-  (`claude-sonnet-5-5`, effort high, batched; only the batch file is
+  (`claude-opus-5-5`, effort high, batched; only the batch file is
   committed to main, by the "Save the batch's place" step): last 7 days of merged PRs (body cut to `BODY_CHARS`) and
   releases for each projects.json game with a GitHub `code` link, plus the
   5 newest devlog posts and now.json. No activity: no call. Validates 0..4 posts, one
@@ -794,7 +794,7 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   Robot Timer at 17:35, 19:15 and a 23:45 pickup UTC Sunday = 11:35 am,
   1:15 pm and 5:45 pm; batched; a back-up that starts while a run is
   still waiting queues behind it, via the `concurrency` group)
-  runs `journal-grade.mjs` (`claude-sonnet-5-5`, effort high,
+  runs `journal-grade.mjs` (`claude-opus-5-5`, effort high,
   `MAX_SEARCHES` 20, `MAX_FETCHES` 15): the newest entry whose `gradeBy`
   has closed (past, or today after 4:00 pm New York), within
   `LOOK_BACK_DAYS` 21, with ungraded calls (any author). Nothing waiting:
