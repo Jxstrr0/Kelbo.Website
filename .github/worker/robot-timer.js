@@ -15,21 +15,6 @@
 // here, in a log or in a chat. It expires, so check its expiry date in GitHub
 // (Settings > Developer settings > Fine-grained tokens) and renew it before then.
 //
-// Cost reader (added Nov 2026): once an hour, at minute 55, the Worker also
-// asks Anthropic's cost report (the Admin API) how much the API has cost per
-// day and saves the answer in private Cloudflare storage: the COST_KV binding,
-// a KV namespace named robot-timer-data, under the key "cost-report". Only
-// Kelbo's Cloudflare account can read it; the daily dashboard update reads it
-// from there. Nothing is public, and nothing is logged except how many days
-// were saved, so no dollar amount ever reaches a log or this repo.
-//
-// Secret: ANTHROPIC_ADMIN_KEY, an organization-scope Claude Console key named
-// dashboard-cost-reader (Console > Keys & access > API keys). It acts as
-// Kelbo and can do more than read costs, so it lives only in the Worker's
-// settings, never here, in a log or in a chat. It is used for the cost report
-// and nothing else. It expires on 2027-12-31; make a new one before then.
-// Without it (or without COST_KV) the cost reader just skips.
-//
 // Safe to run twice: every robot skips without calling Claude when its work
 // for the day is already done, and each has a queue so two copies never run
 // at once. That's why each robot can have a backup try.
@@ -57,56 +42,6 @@ const TIMETABLE = [
   // batch that's still waiting. (All three are Monday in UTC.)
   { name: "Forecaster", file: "journal-forecast.yml", days: [1], at: ["01:45", "03:15", "10:35"] },
 ];
-
-// The cost reader's settings.
-const COST = {
-  minute: 55, // runs at hh:55 every hour (UTC), 24 small requests a day
-  since: "2026-09-01", // first day to fetch; before the robots' first API call
-  key: "cost-report", // where the result is saved in COST_KV
-};
-
-// Fetches the daily cost report from `COST.since` until now and returns
-// { "YYYY-MM-DD": dollars }. The API gives amounts in cents, as decimal
-// strings, one bucket per day, at most 31 days per page.
-async function readCosts(env) {
-  const days = {};
-  const base = "https://api.anthropic.com/v1/organizations/cost_report";
-  const params = new URLSearchParams({
-    starting_at: `${COST.since}T00:00:00Z`,
-    ending_at: new Date().toISOString(),
-    bucket_width: "1d",
-    limit: "31",
-  });
-  for (let page = null, n = 0; n < 24; n++) {
-    if (page) params.set("page", page);
-    const res = await fetch(`${base}?${params}`, {
-      headers: { "x-api-key": env.ANTHROPIC_ADMIN_KEY, "anthropic-version": "2023-06-01" },
-    });
-    // Never log the reply: it holds dollar amounts. The status code is enough.
-    if (!res.ok) throw new Error(`cost report failed (${res.status})`);
-    const body = await res.json();
-    for (const bucket of body.data || []) {
-      const day = String(bucket.starting_at).slice(0, 10);
-      const cents = (bucket.results || []).reduce((sum, r) => sum + Number(r.amount || 0), 0);
-      days[day] = Math.round(cents * 100) / 10000; // cents to dollars, 4 decimals
-    }
-    if (!body.has_more || !body.next_page) break;
-    page = body.next_page;
-  }
-  return days;
-}
-
-// Reads the costs and saves them in COST_KV. Logs only the day count.
-async function saveCosts(env) {
-  try {
-    const days = await readCosts(env);
-    const record = { updated: new Date().toISOString(), currency: "USD", days };
-    await env.COST_KV.put(COST.key, JSON.stringify(record));
-    console.log(`Cost reader: saved ${Object.keys(days).length} days`);
-  } catch (err) {
-    console.log(`Cost reader: ${err.message}`);
-  }
-}
 
 // Asks GitHub to run one workflow on main. Logs only the robot's name and
 // whether GitHub said yes, never the token.
@@ -136,13 +71,11 @@ export default {
     const day = when.getUTCDay();
     const hhmm = when.toISOString().slice(11, 16); // e.g. "12:30"
     const due = TIMETABLE.filter((r) => r.days.includes(day) && r.at.includes(hhmm));
-    const jobs = [];
-    if (due.length && !env.GH_TOKEN) console.log("GH_TOKEN secret is missing: nothing started");
-    if (env.GH_TOKEN) jobs.push(...due.map((r) => startRobot(r, env)));
-    if (when.getUTCMinutes() === COST.minute && env.ANTHROPIC_ADMIN_KEY && env.COST_KV) {
-      jobs.push(saveCosts(env));
+    if (!env.GH_TOKEN) {
+      if (due.length) console.log("GH_TOKEN secret is missing: nothing started");
+      return;
     }
-    ctx.waitUntil(Promise.all(jobs));
+    ctx.waitUntil(Promise.all(due.map((r) => startRobot(r, env))));
   },
 
   // The Worker has no web page. Visiting its address does nothing.
