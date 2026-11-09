@@ -43,7 +43,7 @@
   },
   {
     "title": "Escapement",
-    "status": "Prototype",
+    "status": "Released",
     "category": "Game",
     "summary": "A watchmaking career game. Build mechanical movements part by part, put them on the timegrapher, chase chronometer certification and sell to collectors, until a shared repair bench in the Haldis becomes a manufacture making its own calibres.",
     "version": "1.0.1.0",
@@ -51,11 +51,30 @@
     "link": "https://escapement.longlight.games/",
     "code": "https://github.com/Jxstrr0/Escapement",
     "image": "assets/covers/escapement.jpg",
-    "featured": false
+    "featured": false,
+    "clip": "assets/clips/escapement.mp4",
+    "shots": [
+      {
+        "src": "assets/shots/escapement-1.jpg",
+        "alt": "The bench: a finished movement ticking in 3D, with its beat rate and power reserve"
+      },
+      {
+        "src": "assets/shots/escapement-2.jpg",
+        "alt": "The loupe view, close on the balance wheel and escapement"
+      },
+      {
+        "src": "assets/shots/escapement-3.jpg",
+        "alt": "The build screen, where you design a movement part by part"
+      },
+      {
+        "src": "assets/shots/escapement-4.jpg",
+        "alt": "The timegrapher test, showing rate, amplitude and beat error"
+      }
+    ]
   },
   {
     "title": "Scrapline",
-    "status": "In development",
+    "status": "Polishing",
     "category": "Game",
     "summary": "A combat robot builder. Design a fighting robot under a weight limit, test it on the bench, drive it in the arena, patch it in the pit and read the post-mortem, from a plywood box in a rented corner of a machine shop to the televised Scrapline Open.",
     "version": "0.1.12.0",
@@ -63,11 +82,30 @@
     "link": "https://scrapline.longlight.games/",
     "code": "https://github.com/Jxstrr0/Scrapline",
     "image": "assets/covers/scrapline.jpg",
-    "featured": false
+    "featured": false,
+    "clip": "assets/clips/scrapline.mp4",
+    "shots": [
+      {
+        "src": "assets/shots/scrapline-1.jpg",
+        "alt": "The build screen: a beetleweight with a vertical spinner, 19 grams under the limit"
+      },
+      {
+        "src": "assets/shots/scrapline-2.jpg",
+        "alt": "The bench, where six tests prove a robot before it fights"
+      },
+      {
+        "src": "assets/shots/scrapline-3.jpg",
+        "alt": "A fight in the arena, seen from above, with both robots' damage panels"
+      },
+      {
+        "src": "assets/shots/scrapline-4.jpg",
+        "alt": "Two robots trading hits beside the pit"
+      }
+    ]
   },
   {
     "title": "Ink",
-    "status": "Prototype",
+    "status": "Polishing",
     "category": "Game",
     "summary": "A tattoo artist career game set in Mostograd. Start as an apprentice sweeping floors, learn on fake skin, build a client list and open your own studio, with every piece aging on people who keep walking back through your door.",
     "version": "0.1.0.0",
@@ -75,7 +113,26 @@
     "link": "https://ink.longlight.games/",
     "code": "https://github.com/Jxstrr0/Ink",
     "image": "assets/covers/ink.jpg",
-    "featured": false
+    "featured": false,
+    "clip": "assets/clips/ink.mp4",
+    "shots": [
+      {
+        "src": "assets/shots/ink-1.jpg",
+        "alt": "The rented chair: a client sitting in the studio in 3D"
+      },
+      {
+        "src": "assets/shots/ink-2.jpg",
+        "alt": "Picking a design element: rose, swallow, dagger, anchor and more"
+      },
+      {
+        "src": "assets/shots/ink-3.jpg",
+        "alt": "The design board with a rose placed on a forearm, and how it will age"
+      },
+      {
+        "src": "assets/shots/ink-4.jpg",
+        "alt": "Practising a rose on fake skin, following the line with the needle"
+      }
+    ]
   },
   {
     "title": "Station Keeper",

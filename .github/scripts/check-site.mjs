@@ -120,6 +120,16 @@ if (projects !== undefined) {
       const twin = (src) => String(src).replace(/(\.[a-z]+)$/i, "@2x$1");
       if (p.image && exists(p.image) && !exists(twin(p.image))) warn("projects.json", `${name}: no sharp version "${twin(p.image)}" (1280x960) of the cover, so big phones show the small one stretched.`);
       if (p.link && !/^https?:\/\//.test(p.link) && !exists(p.link.split(/[?#]/)[0])) error("projects.json", `${name}: the link "${p.link}" points at a file that doesn't exist.`);
+      // A game's short clip: an .mp4 with a same-named .jpg still beside it,
+      // small enough for a phone on mobile data.
+      if (p.clip !== undefined) {
+        if (typeof p.clip !== "string" || !/\.mp4$/i.test(p.clip)) error("projects.json", `${name}: "clip" should be the path of an .mp4 file.`);
+        else if (!exists(p.clip)) error("projects.json", `${name}: the clip "${p.clip}" doesn't exist.`);
+        else {
+          if (!exists(p.clip.replace(/\.mp4$/i, ".jpg"))) error("projects.json", `${name}: the clip needs a still picture beside it ("${p.clip.replace(/\.mp4$/i, ".jpg")}").`);
+          if (statSync(join(ROOT, p.clip)).size > 400 * 1024) warn("projects.json", `${name}: the clip "${p.clip}" is over 400 KB, heavy for a phone on mobile data.`);
+        }
+      }
       if (p.shots !== undefined) {
         if (!Array.isArray(p.shots)) error("projects.json", `${name}: "shots" should be a list.`);
         else p.shots.forEach((s, j) => {
