@@ -11,7 +11,7 @@ import { request } from "node:https";
 const MODEL = "claude-fable-5-1"; // the top model (Opus 5.5 at xhigh until Nov 9, 2026)
 const EFFORT = "high";
 const MAX_SEARCHES = 35; // web searches a brief may run ($10 per 1,000)
-const MAX_FETCHES = 20; // whole pages it may open and read (any site)
+const MAX_FETCHES = 25; // whole pages it may open and read (any site)
 // Fable 5.1 list prices in US dollars per million tokens, for the spending
 // cap and the cost line in the run log. Cache reads are the cheap re-reads;
 // writes cost 1.25x.
