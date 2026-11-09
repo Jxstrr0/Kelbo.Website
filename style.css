@@ -3371,9 +3371,102 @@ img {
   scroll-snap-align: start;
 }
 
-/* The home page shows the short cards, so no drawer there */
-[data-projects="featured"] .shots {
+/* ---------- Home page: the "Pick a game" swipe row ----------
+   Every game in one sideways row of small cards (main.js setUpGameRow).
+   They are the normal cards with the long parts hidden: the summary,
+   version line, progress bar, code link and screenshots are all on the
+   Games page and each game's own page. The row runs to the screen edges
+   on a phone, and the next card always peeks in to show there is more. */
+.project-list--row {
+  display: flex;
+  gap: 0.85rem;
+  margin-inline: calc(var(--gutter) * -1);
+  padding: 0.3rem var(--gutter) 0.9rem; /* room for the hover lift and shadow */
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  scroll-padding-inline: var(--gutter);
+  scrollbar-width: thin;
+}
+
+.project-list--row:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.project-list--row > .project {
+  flex: 0 0 min(70vw, 15rem);
+  scroll-snap-align: start;
+}
+
+.project-list--row .project__body {
+  flex: 1;
+  gap: 0.5rem;
+  padding: 0.8rem 0.9rem 0.95rem;
+}
+
+.project-list--row .project__title {
+  font-size: 1.15rem;
+}
+
+.project-list--row .project__links {
+  margin-top: auto; /* buttons line up along the bottom of every card */
+  padding-top: 0.3rem;
+  gap: 0.5rem 0.8rem;
+}
+
+.project-list--row .project__summary,
+.project-list--row .project__version,
+.project-list--row .project__category,
+.project-list--row .project__instant,
+.project-list--row .field,
+.project-list--row .shots,
+.project-list--row .project__links a:not(.button):not(.project__main) {
   display: none;
+}
+
+/* The arrows under the row: for mice, so hidden on phones */
+.row-nav {
+  display: none;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin: 0.25rem 0 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.row-nav__btn {
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.row-nav__btn:hover:not(:disabled) {
+  border-color: var(--secondary);
+  color: var(--secondary);
+}
+
+.row-nav__btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.row-nav__btn:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+@media (min-width: 40rem) {
+  .row-nav:not([hidden]) {
+    display: flex;
+  }
 }
 
 /* ---------- What's new page ----------
@@ -4565,59 +4658,10 @@ a.quest__top:focus-visible .quest__name {
 .sound-toggle[aria-pressed="true"] { text-decoration-style: solid; font-weight: 700; }
 .sound-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-/* ---------- Phones only: shorter game cards on the home page ----------
-   The first "Pick a game" card stays full size; the rest get a wider,
-   shorter picture and a two-line summary so four games don't take five
-   screens of scrolling. The full summary is on the Games page. */
-@media (max-width: 39.99rem) {
-  .project-list[data-projects="featured"] > .project + .project .project__cover {
-    aspect-ratio: 16 / 9;
-  }
-
-  .project-list[data-projects="featured"] > .project + .project .project__body {
-    gap: 0.5rem;
-    padding: 0.85rem 1rem 1rem;
-  }
-
-  .project-list[data-projects="featured"] > .project + .project .project__title {
-    font-size: 1.25rem;
-  }
-
-  .project-list[data-projects="featured"] > .project + .project .project__summary {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    overflow: hidden;
-  }
-}
-
 /* ---------- Wider screens ---------- */
 @media (min-width: 40rem) {
   .project-list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  /* On the home page the first featured game gets the whole top row */
-  .project-list[data-projects="featured"] > .project:first-child {
-    grid-column: 1 / -1;
-    flex-direction: row;
-  }
-
-  .project-list[data-projects="featured"] > .project:first-child .project__cover {
-    flex: 1 1 55%;
-    aspect-ratio: auto;
-    min-height: 18rem;
-  }
-
-  .project-list[data-projects="featured"] > .project:first-child .project__body {
-    flex: 1 1 45%;
-    justify-content: center;
-    padding: 1.5rem 1.6rem;
-  }
-
-  .project-list[data-projects="featured"] > .project:first-child .project__title {
-    font-size: 2rem;
   }
 
   .tiles {

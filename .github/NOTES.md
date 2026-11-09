@@ -11,7 +11,7 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
 
 - `projects.json` is the single source of truth for projects. `main.js`
   renders it. Its order is the display order everywhere (Games, Projects,
-  What's new, home featured, "More games"): Kelbo's own ranking, games
+  What's new, home swipe row, "More games"): Kelbo's own ranking, games
   first: Prairie Engine Works, Lombard, Escapement, Scrapline, Ink,
   Station Keeper, Season Ticket, Frontier Lab, The Whip, Red Skies. Nothing sorts by progress except the
   Projects page's filter buttons (`sortByProgress`). Adding a project should never need an HTML edit. Each project
@@ -30,7 +30,7 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   under 90 KB): `renderProject` makes a closed
   `<details class="shots">` "Screenshots (N)" with a scroll-snap strip of
   lazy images, all `12rem` tall so portrait and landscape mix. Hidden on
-  the home featured list by CSS; the What's new rows don't show it.
+  the home swipe row by CSS; the What's new rows don't show it.
 - A game can carry a `clip` (`assets/clips/<slug>.mp4`, silent H.264,
   360×720, about 14 seconds, under 400 KB, with a same-named `.jpg` still
   beside it). `setUpGame` shows it under "See it move" as a `<video>` with
@@ -601,8 +601,13 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   Scrapline's is the live workshop's bench bot (the default vertical
   spinner) with the UI hidden. This site only links to
   them via `link` (the pink Play it button) and `code` (the repo). The home
-  page "Pick a game" cards are the `featured` projects (max 4); on phones
-  all but the first are shortened (16:9 picture, two-line summary).
+  page "Pick a game" is a swipe row (2026-11-09): `setUpGameRow` fills
+  `.project-list--row` (`data-projects="row"`) with every game in
+  projects.json order, as normal `renderProject` cards whose summary,
+  version line, progress bar, code link and screenshots are hidden by CSS.
+  Scroll-snap, bleeds to the screen edges, focusable for arrow keys;
+  `[data-row-nav]` arrows show from 40rem up. `featured` no longer
+  affects the page; it only records the four covers in the link preview.
   Each game keeps its own look (fonts, colours, art). The Longlight logo,
   the five colours and Space Grotesk belong to studio pieces only (logo or
   splash, credit line, studio block, links back here); every game repo's

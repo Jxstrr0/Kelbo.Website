@@ -5,8 +5,7 @@
    You shouldn't need to edit this file to add or change a project.
    Just edit projects.json. This script:
      1. loads projects.json
-     2. on the home page, shows projects marked "featured": true (max 4)
-        as big cards
+     2. on the home page, shows every game in one sideways row
      3. on the projects page, shows every project with filter buttons
      4. on the Games, Trading, and Tools pages, shows every project in that
         "category"
@@ -53,8 +52,6 @@ const STATUSES = [
   { label: "Prototype", spot: 32, stage: "dev", old: ["Early stages"] },
   { label: "Concept", spot: 18, stage: "idea", old: ["Planned"] },
 ];
-
-const MAX_FEATURED = 4;
 
 // True if the visitor's device is set to "reduce motion".
 const REDUCE_MOTION = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -464,7 +461,6 @@ function sortByProgress(projects) {
     .map((x) => x.p);
 }
 
-// Home page: featured projects only.
 // A game's own page (game.html?g=the-whip): the cover, the story, every
 // screenshot open in a strip, the buttons, and links to the other games.
 // Everything comes from projects.json. Optional "story" in a project is a
@@ -826,9 +822,43 @@ function openPlayer(project, opener) {
   frame.focus();
 }
 
-function setUpFeatured(listEl, projects) {
-  const featured = projects.filter((p) => p.featured === true).slice(0, MAX_FEATURED);
-  fillList(listEl, featured, "No featured projects yet.");
+// Home page "Pick a game": every game in one sideways row of small
+// cards, in projects.json order. The cards are the normal ones
+// (renderProject); style.css (.project-list--row) hides the long parts.
+// The row scrolls by swipe, trackpad or arrow keys; on wider screens two
+// arrow buttons under it move it a screenful at a time.
+function setUpGameRow(listEl, projects) {
+  const games = projects.filter(isGame);
+  fillList(listEl, games, "No games yet.");
+  if (!games.length) return;
+
+  // Keyboard users can focus the row and scroll it with the arrow keys.
+  listEl.tabIndex = 0;
+  listEl.setAttribute("aria-label", games.length + " games. Swipe sideways to see them all");
+
+  const nav = document.querySelector("[data-row-nav]");
+  if (!nav) return;
+  const prev = nav.querySelector("[data-row-prev]");
+  const next = nav.querySelector("[data-row-next]");
+  const count = nav.querySelector("[data-row-count]");
+  if (count) count.textContent = games.length + " games";
+  nav.hidden = false;
+
+  const step = (dir) => {
+    listEl.scrollBy({ left: dir * listEl.clientWidth * 0.8, behavior: REDUCE_MOTION ? "auto" : "smooth" });
+  };
+  prev.addEventListener("click", () => step(-1));
+  next.addEventListener("click", () => step(1));
+
+  // Grey out an arrow when the row is already at that end.
+  const update = () => {
+    const max = listEl.scrollWidth - listEl.clientWidth;
+    prev.disabled = listEl.scrollLeft <= 2;
+    next.disabled = listEl.scrollLeft >= max - 2;
+  };
+  listEl.addEventListener("scroll", update, { passive: true });
+  window.addEventListener("resize", update);
+  update();
 }
 
 // Section pages (Games, Trading, Tools): every project in one category, in
@@ -6608,7 +6638,7 @@ async function init() {
   writeJSON(GAME_COUNT_KEY, projects.filter(isGame).length);
   checkBadges();
   lists.forEach((listEl) => {
-    if (listEl.dataset.projects === "featured") setUpFeatured(listEl, projects);
+    if (listEl.dataset.projects === "row") setUpGameRow(listEl, projects);
     else if (listEl.dataset.projects === "category") setUpCategory(listEl, projects);
     else if (listEl.dataset.projects === "news") setUpNews(listEl, projects);
     else if (listEl.dataset.projects === "press") setUpPress(listEl, projects);
