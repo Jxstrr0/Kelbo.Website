@@ -2291,6 +2291,35 @@ img {
   stroke: color-mix(in srgb, var(--ll-lilac) 45%, var(--ll-slate));
 }
 
+/* The secret stock car (main.js stockCar): a small silhouette with a clay
+   stripe, on the ground just under the rails, in the tumbleweed's lane. */
+.stockcar {
+  position: absolute;
+  left: 0;
+  top: calc(20px + 19px - var(--elevator-h) * 0.15);
+  width: calc(var(--elevator-h) * 0.39);
+  height: calc(var(--elevator-h) * 0.15);
+  overflow: visible;
+}
+
+.page-head .stockcar {
+  top: calc(20px + 14px - var(--elevator-h) * 0.15);
+}
+
+.stockcar path,
+.stockcar circle {
+  fill: color-mix(in srgb, var(--ll-slate) 72%, var(--ll-purple));
+}
+
+:root[data-theme="dark"] .stockcar path,
+:root[data-theme="dark"] .stockcar circle {
+  fill: color-mix(in srgb, var(--ll-slate) 55%, var(--ll-purple));
+}
+
+.stockcar .stockcar__stripe {
+  fill: var(--ll-clay);
+}
+
 /* Lightning bolts in a storm (main.js draws them from the clouds down
    to the horizon, on its own or where the sky is tapped) */
 .horizon__bolts {
@@ -3157,6 +3186,27 @@ img {
   object-fit: cover;
 }
 
+/* Moving covers: main.js lays a game's recorded clip over its cover
+   picture while the card is on screen, and fades it in once it plays. */
+.project__cover {
+  position: relative;
+}
+
+.project__clip {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 400ms var(--ease);
+  pointer-events: none;
+}
+
+.project__cover.is-playing .project__clip {
+  opacity: 1;
+}
+
 .project__cover[data-cat="trading"] {
   background: var(--ll-purple);
 }
@@ -3797,6 +3847,112 @@ img {
   max-width: 44rem;
   margin: 1.25rem auto 0;
   text-align: center;
+}
+
+/* The quest log under Status: one short row per project, with the same
+   progress bar the cards use (main.js setUpQuests). */
+.quests {
+  display: grid;
+  gap: 0.9rem;
+  margin: 1rem 0 0.35rem;
+  padding: 0;
+  list-style: none;
+}
+
+.quest__top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  color: inherit;
+  text-decoration: none;
+}
+
+.quest__name {
+  font-weight: 700;
+  min-width: 0;
+}
+
+a.quest__top:hover .quest__name,
+a.quest__top:focus-visible .quest__name {
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-underline-offset: 0.2em;
+}
+
+.quest__state {
+  flex: none;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.quest .field {
+  margin-top: 0.45rem;
+}
+
+/* ---------- The scroll sun ----------
+   A thin clay line down the right edge with a small sun that travels down
+   it as the page scrolls (main.js sets --p from 0 to 1) and sinks into a
+   little horizon at the bottom. It sits in the page's right gutter. */
+.scroll-sun {
+  position: fixed;
+  z-index: 5;
+  top: var(--top, 5rem);
+  bottom: max(1.25rem, env(safe-area-inset-bottom));
+  right: max(1px, env(safe-area-inset-right));
+  width: 16px;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 400ms var(--ease);
+  pointer-events: none;
+}
+
+.scroll-sun.is-shown {
+  opacity: 1;
+}
+
+/* the line */
+.scroll-sun::before {
+  content: "";
+  position: absolute;
+  left: 7px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  border-radius: 1px;
+  background: color-mix(in srgb, var(--ll-clay) 40%, transparent);
+}
+
+/* the little horizon it sets into */
+.scroll-sun::after {
+  content: "";
+  position: absolute;
+  left: 1px;
+  right: 1px;
+  bottom: 0;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--ll-clay);
+}
+
+.scroll-sun__sun {
+  position: absolute;
+  left: 3px;
+  top: calc(var(--p, 0) * (100% - 6px));
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--ll-clay);
+  box-shadow: 0 0 6px rgba(217, 119, 87, 0.75);
+}
+
+@media print {
+  .scroll-sun {
+    display: none;
+  }
 }
 
 /* ---------- Mode tiles (Games / Trading / All) ---------- */
@@ -4933,6 +5089,114 @@ img {
     animation-timing-function: var(--ease);
   }
 
+  /* The cover hop: a tapped game card's cover grows into the big cover on
+     the game's page (main.js setUpCoverHop gives the tapped cover the
+     same name just before the page changes). */
+  .game__cover {
+    view-transition-name: game-cover;
+  }
+
+  ::view-transition-group(game-cover) {
+    animation-duration: 420ms;
+    animation-timing-function: var(--ease);
+  }
+
+  /* A band of light sweeps across each cover once as its card arrives */
+  .project.reveal .project__cover::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(105deg, rgba(250, 249, 245, 0) 35%, rgba(250, 249, 245, 0.4) 50%, rgba(250, 249, 245, 0) 65%);
+    translate: -120% 0;
+    pointer-events: none;
+  }
+
+  .project.reveal.is-in .project__cover::before {
+    animation: cover-sheen 950ms var(--ease) calc(var(--i, 0) * 70ms + 350ms) both;
+  }
+
+  @keyframes cover-sheen {
+    from { translate: -120% 0; }
+    to { translate: 120% 0; }
+  }
+
+  /* The character sheet boots up (main.js setUpSheet adds sheet--boot,
+     then is-on when it scrolls into view): "Player 1" blinks on, the name
+     types in behind a clay cursor, then the stat boxes tick on. */
+  .sheet--boot .sheet__label,
+  .sheet--boot .sheet__ch,
+  .sheet--boot .sheet__stats div {
+    opacity: 0;
+  }
+
+  .sheet--boot.is-on .sheet__label {
+    animation: sheet-on 60ms steps(1) 100ms forwards;
+  }
+
+  .sheet--boot.is-on .sheet__ch {
+    animation: sheet-on 60ms steps(1) calc(var(--i, 0) * 120ms + 350ms) forwards;
+  }
+
+  @keyframes sheet-on {
+    to { opacity: 1; }
+  }
+
+  .sheet--boot .sheet__name::after {
+    content: "";
+    display: inline-block;
+    width: 0.09em;
+    height: 0.72em;
+    margin-left: 0.08em;
+    background: var(--ll-clay);
+    opacity: 0;
+  }
+
+  .sheet--boot.is-on .sheet__name::after {
+    animation: sheet-cursor 460ms steps(1) 100ms 5;
+  }
+
+  @keyframes sheet-cursor {
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  .sheet--boot.is-on .sheet__stats div {
+    animation: sheet-tick 480ms var(--ease) calc(var(--i, 0) * 150ms + 1100ms) forwards;
+  }
+
+  @keyframes sheet-tick {
+    0% { opacity: 0; scale: 0.92; background: rgba(217, 119, 87, 0.85); }
+    35% { opacity: 1; scale: 1.03; background: rgba(217, 119, 87, 0.6); }
+    100% { opacity: 1; scale: 1; }
+  }
+
+  /* Party members slide in from the left as each one scrolls into view;
+     the icon pops and the buff lines give two soft pulses. */
+  .party__member--slide.reveal {
+    translate: -28px 0;
+  }
+
+  .party__member--slide.reveal.is-in {
+    translate: 0 0;
+  }
+
+  .party__member--slide.is-in .party__icon {
+    animation: party-pop 520ms cubic-bezier(0.34, 1.4, 0.64, 1) 250ms backwards;
+  }
+
+  @keyframes party-pop {
+    from { scale: 0.4; opacity: 0; }
+  }
+
+  .party__member--slide.is-in .party__buff {
+    animation: buff-pulse 1100ms ease-in-out 750ms 2;
+  }
+
+  @keyframes buff-pulse {
+    50% { box-shadow: 0 0 0 4px color-mix(in srgb, var(--ll-clay) 40%, transparent); }
+  }
+
   /* Scroll reveal: main.js adds "reveal", then "is-in" when in view.
      Content is never hidden if JavaScript doesn't run. */
   .reveal {
@@ -5525,24 +5789,20 @@ img {
     from { opacity: 0; }
   }
 
-  /* On a computer, game cards tip toward the mouse with a glint */
-  @media (hover: hover) and (pointer: fine) {
-    .project.is-tilting {
-      transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(-3px);
-      transition: transform 90ms linear, box-shadow 260ms var(--ease), border-color 260ms;
-    }
+  /* Game cards tip toward the mouse (or a pressing finger) with a glint.
+     main.js setUpCoverTilt adds is-tilting and the numbers. */
+  .project.is-tilting {
+    transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(-3px);
+    transition: transform 90ms linear, box-shadow 260ms var(--ease), border-color 260ms;
+  }
 
-    .project.is-tilting .project__cover {
-      position: relative;
-    }
-
-    .project.is-tilting .project__cover::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(250, 249, 245, 0.3), rgba(250, 249, 245, 0) 55%);
-      pointer-events: none;
-    }
+  .project.is-tilting .project__cover::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(250, 249, 245, 0.3), rgba(250, 249, 245, 0) 55%);
+    pointer-events: none;
   }
 }
 
