@@ -9,6 +9,7 @@
     "link": "https://pew.longlight.games/",
     "code": "https://github.com/Jxstrr0/350Chev",
     "image": "assets/covers/prairie-engine-works.jpg",
+    "clip": "assets/clips/prairie-engine-works.mp4",
     "featured": true,
     "shots": [
       {
@@ -39,6 +40,7 @@
     "link": "https://lombard.longlight.games/",
     "code": "https://github.com/Jxstrr0/Lombard",
     "image": "assets/covers/lombard.jpg",
+    "clip": "assets/clips/lombard.mp4",
     "featured": false
   },
   {
@@ -144,6 +146,7 @@
     "link": "https://stationkeeper.longlight.games/",
     "code": "https://github.com/Jxstrr0/StationKeeper",
     "image": "assets/covers/station-keeper.jpg",
+    "clip": "assets/clips/station-keeper.mp4",
     "featured": false
   },
   {
@@ -156,6 +159,7 @@
     "link": "https://seasonticket.longlight.games/",
     "code": "https://github.com/Jxstrr0/SeasonTicket",
     "image": "assets/covers/season-ticket.jpg",
+    "clip": "assets/clips/season-ticket.mp4",
     "shots": [
       {
         "src": "assets/shots/season-ticket-1.jpg",
@@ -190,6 +194,7 @@
     "link": "https://frontierlab.longlight.games/",
     "code": "https://github.com/Jxstrr0/FrontierLab",
     "image": "assets/covers/frontier-lab.jpg",
+    "clip": "assets/clips/frontier-lab.mp4",
     "featured": true
   },
   {
@@ -202,6 +207,7 @@
     "link": "https://thewhip.longlight.games/",
     "code": "https://github.com/Jxstrr0/The-Whip",
     "image": "assets/covers/the-whip.jpg",
+    "clip": "assets/clips/the-whip.mp4",
     "featured": true,
     "shots": [
       {
@@ -232,6 +238,7 @@
     "link": "https://redskies.longlight.games/",
     "code": "https://github.com/Jxstrr0/RedSkies",
     "image": "assets/covers/red-skies.jpg",
+    "clip": "assets/clips/red-skies.mp4",
     "featured": false,
     "shots": [
       {
