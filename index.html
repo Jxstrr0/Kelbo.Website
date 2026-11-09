@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Longlight Interactive</title>
-  <meta name="description" content="Longlight Interactive makes browser games, tools, and AI projects in Saskatoon, Saskatchewan.">
+  <meta name="description" content="Longlight Interactive makes browser games and AI projects in Saskatoon, Saskatchewan.">
   <!-- Link preview: the card that shows up when this page is shared in a
        text, Discord, X, etc. These links have to be full web addresses
        (not relative), because the apps that read them aren't on this site.
@@ -12,7 +12,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Longlight Interactive">
   <meta property="og:title" content="Longlight Interactive">
-  <meta property="og:description" content="Longlight Interactive makes browser games, tools, and AI projects in Saskatoon, Saskatchewan.">
+  <meta property="og:description" content="Longlight Interactive makes browser games and AI projects in Saskatoon, Saskatchewan.">
   <meta property="og:url" content="https://longlight.games/">
   <meta property="og:image" content="https://longlight.games/assets/social-preview.jpg?v=18">
   <meta property="og:image:width" content="1200">
@@ -102,7 +102,7 @@
         <p class="eyebrow"><span data-sky-place>Saskatoon, SK</span> <button type="button" class="eyebrow__switch" data-sky-switch hidden>See your sky</button> <button type="button" class="eyebrow__switch" data-motion-switch aria-pressed="false" hidden>Tilt sky</button></p>
         <h1 id="hero-name" class="hero__name">Longlight Interactive</h1>
         <p class="hero__by">by <a href="about.html">Kelbo</a></p>
-        <p class="hero__line">Browser games, tools, and AI projects.</p>
+        <p class="hero__line">Browser games and AI projects.</p>
         <div class="hero__actions">
           <a class="button button--start" href="#games-heading">Play a game</a>
           <a class="button button--ghost" href="projects.html">See everything</a>
@@ -143,13 +143,18 @@
 
     <!-- Sky this week: what's coming up in the sky, worked out by main.js,
          plus the cloud and northern lights forecasts when they load and
-         the shooting-star wish counter. Hidden without JavaScript. -->
-    <section class="sky-week wrap" aria-labelledby="sky-week-heading" data-sky-week hidden>
-      <h2 id="sky-week-heading" class="now__label">Sky this week</h2>
+         the shooting-star wish counter. Hidden without JavaScript. It's
+         folded to the next thing coming up until tapped (it borrows the
+         badges box's fold styles); the choice is remembered. -->
+    <details class="sky-week badges wrap" data-sky-week hidden>
+      <summary class="badges__summary">
+        <h2 id="sky-week-heading" class="now__label">Sky this week</h2>
+        <p class="badges__count badges__count--line" data-sky-week-next></p>
+      </summary>
       <ol class="sky-week__list" data-sky-week-list></ol>
       <p class="sky-week__wishes" data-wishes></p>
       <p class="sky-week__note" data-sky-week-note></p>
-    </section>
+    </details>
 
     <!-- Your badges: little goals for visitors (play games, visit at
          sunset, catch a shooting star...), saved on this phone only.

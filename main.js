@@ -147,6 +147,12 @@ function gamePage(title) {
 }
 
 // Build the card for one project.
+// True for a game with a link: every Longlight game runs in the browser,
+// so its card can promise "Plays in your browser".
+function playsInBrowser(project) {
+  return isGame(project) && Boolean(project.link);
+}
+
 function renderProject(project) {
   const status = findStatus(project.status);
   const title = project.title || "Untitled";
@@ -184,6 +190,7 @@ function renderProject(project) {
   const meta = el("p", "project__meta");
   meta.append(statusPill(status));
   if (project.category) meta.append(el("span", "project__category", project.category));
+  if (playsInBrowser(project)) meta.append(el("span", "project__instant", "Plays in your browser"));
   body.append(meta);
 
   if (project.summary) {
@@ -456,6 +463,7 @@ function setUpGame(box, projects) {
   const meta = el("p", "project__meta");
   meta.append(statusPill(status));
   if (project.category) meta.append(el("span", "project__category", project.category));
+  if (playsInBrowser(project)) meta.append(el("span", "project__instant", "Plays in your browser, no download"));
   info.append(meta);
   if (project.summary) info.append(el("p", "game__summary", project.summary));
 
@@ -507,6 +515,27 @@ function setUpGame(box, projects) {
     const section = el("section", "game__story");
     section.append(el("h2", null, "The story"));
     story.split(/\n\s*\n/).forEach((para) => section.append(el("p", null, para.trim())));
+    box.append(section);
+  }
+
+  // A short silent clip of the game ("clip" in projects.json, an .mp4 in
+  // assets/clips/ with a same-named .jpg still beside it). Nothing but the
+  // still downloads until the visitor presses play (preload="none").
+  if (project.clip) {
+    const section = el("section", "game__clip");
+    section.append(el("h2", null, "See it move"));
+    const video = el("video");
+    video.src = project.clip;
+    video.poster = String(project.clip).replace(/\.mp4$/i, ".jpg");
+    video.preload = "none";
+    video.controls = true;
+    video.muted = true;
+    video.loop = true;
+    video.playsInline = true;
+    video.width = 360;
+    video.height = 720;
+    video.setAttribute("aria-label", "A short silent clip of " + title);
+    section.append(video, el("p", "game__clip-note", "A short silent clip, recorded from the game on a phone-sized screen."));
     box.append(section);
   }
 
@@ -5549,11 +5578,14 @@ function showWishes(node) {
   );
 }
 
+const SKY_WEEK_OPEN_KEY = "kelbo.skyWeekOpen";
+
 function setUpSkyWeek() {
   const box = document.querySelector("[data-sky-week]");
   if (!box) return;
   const list = box.querySelector("[data-sky-week-list]");
   const note = box.querySelector("[data-sky-week-note]");
+  const next = box.querySelector("[data-sky-week-next]");
   const draw = () => {
     list.replaceChildren(...skyWeek(now()).map((e) => {
       const row = el("li", "sky-week__item");
@@ -5576,7 +5608,23 @@ function setUpSkyWeek() {
     if (cloudCast) words += " Cloud forecast from Open-Meteo.";
     if (kpCast) words += " Northern lights forecast from NOAA.";
     if (note) note.textContent = words;
+    // The folded box shows the first thing coming up as its one line
+    const first = list.firstElementChild;
+    if (next && first) next.textContent = first.children[0].textContent + ": " + first.children[1].firstChild.textContent;
   };
+  // The box folds to that one line; remember whether it was left open.
+  try {
+    box.open = localStorage.getItem(SKY_WEEK_OPEN_KEY) === "1";
+    box.addEventListener("toggle", () => {
+      try {
+        localStorage.setItem(SKY_WEEK_OPEN_KEY, box.open ? "1" : "0");
+      } catch (e) {
+        /* storage blocked: it just won't be remembered */
+      }
+    });
+  } catch (e) {
+    /* storage blocked: stays folded */
+  }
   // After the page has drawn, so it doesn't hold up the opening spin
   setTimeout(() => {
     draw();
