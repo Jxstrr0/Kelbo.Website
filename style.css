@@ -1970,6 +1970,38 @@ img {
   filter: drop-shadow(0 0 2px rgba(217, 119, 87, 0.9));
 }
 
+/* Valentine's Day: the elevator's windows glow lilac instead of clay */
+:root[data-theme="dark"] .horizon--valentines .horizon__elevator .elevator__light {
+  fill: var(--ll-lilac);
+  filter: drop-shadow(0 0 2px rgba(180, 140, 232, 0.9));
+}
+
+/* The small heart that floats up from the Home Base window and from a
+   rare wish (floatHeart in main.js moves and fades it) */
+.horizon__heart {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  overflow: visible;
+  fill: var(--ll-lilac);
+  filter: drop-shadow(0 0 3px rgba(180, 140, 232, 0.8));
+  pointer-events: none;
+}
+
+/* Valentine's Day hearts drifting up the sky: lilac after dark, and a
+   paler lilac by day so they show against the purple daytime sky */
+.valentine-heart {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: visible;
+  fill: color-mix(in srgb, var(--ll-lilac) 55%, var(--ll-ivory));
+}
+
+:root[data-theme="dark"] .valentine-heart {
+  fill: var(--ll-lilac);
+}
+
 /* Its shadow, on the ground strip (--land-shadow: 0..1 from main.js),
    drawn over the snow band so it stays joined to the elevator's foot */
 .horizon__shadow {
@@ -3935,6 +3967,58 @@ img {
 
 .party__dog .dog-wisp { stroke: var(--dog-tan); stroke-width: 0.9; }
 .party__dog .dog-mouth { stroke: var(--dog-nose); stroke-width: 0.9; }
+
+/* A secret: his portrait can be tapped (setUpMooseAttack in main.js).
+   Each tap is a small headbutt toward the finger; the fifth quick one
+   earns a happy wiggle. Nothing moves with "reduce motion". */
+.party__icon:has(.party__dog) {
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* More specific than the slide-in pop, so a tap always plays */
+  .party .party__member .party__icon.party__icon--bump {
+    animation: moose-bump 250ms ease-out;
+  }
+
+  .party .party__member .party__icon.party__icon--petted {
+    animation: moose-petted 600ms ease-in-out;
+  }
+
+  @keyframes moose-bump {
+    35% { transform: translate(var(--bump-x, 0), var(--bump-y, -4px)) rotate(-6deg); }
+    70% { transform: translate(calc(var(--bump-x, 0) * -0.25), calc(var(--bump-y, -4px) * -0.25)) rotate(2deg); }
+  }
+
+  @keyframes moose-petted {
+    15% { transform: rotate(-12deg) scale(1.08); }
+    35% { transform: rotate(10deg) scale(1.1); }
+    55% { transform: rotate(-8deg) scale(1.08); }
+    75% { transform: rotate(6deg) scale(1.04); }
+  }
+}
+
+/* The 404 page: the same portrait, bigger, beside "Lost?" */
+.lost__head {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.lost__head .hero__name {
+  margin-bottom: 0;
+}
+
+.lost__dog {
+  width: 3.5rem;
+  height: 3.5rem;
+  flex: none;
+}
 
 .party__name {
   margin: 0;

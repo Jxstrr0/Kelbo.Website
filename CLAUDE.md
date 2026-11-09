@@ -88,8 +88,9 @@ alt text, file names, screenshots, logs):
   where he lives beyond "Saskatoon".
 - Family and friends: no names, ever, and no details beyond what Kelbo
   wrote himself for the character sheet on `about.html` (his brother, his
-  girlfriend and his dog, unnamed). Keep that wording exactly; add nothing
-  about them anywhere else.
+  girlfriend and his dog, unnamed). Keep that wording exactly. Elsewhere
+  on the site they may be mentioned, unnamed, using only details already
+  written on the character sheet; never add a new detail about them.
 - Money: broker and bank names, account numbers, account sizes or
   balances, deposits, dollar profit or loss, number of contracts or shares,
   position sizes, income, debts, tax details. The trading pages show

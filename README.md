@@ -19,7 +19,7 @@ from their releases, then publishes the files as they are (see
 | `projects.html` | The full projects page with status filters |
 | `whats-new.html` | The newest version and latest change for each project, built from `projects.json` (no dates, since the file has none) |
 | `devlog.html` + `devlog.json` | **Devlog**: dated studio posts, newest first. To add one, put it at the top of `"posts"` in `devlog.json` with a `date` (like `2026-10-24`), a `title`, a `body` (a blank line, written `\n\n`, starts a new paragraph) and, if it's about one game, `game` with that game's exact title. Posts about a game also show on that game's page |
-| Badges | The "Your badges" box on the home page (folded to its "2 of 16 earned" line until tapped): small goals like playing 3 games, visiting at sunset or catching a shooting star. Each visitor's badges are saved in their own browser only. The list is `BADGES` in `main.js` |
+| Badges | The "Your badges" box on the home page (folded to its "2 of 18 earned" line until tapped): small goals like playing 3 games, visiting at sunset or catching a shooting star. Each visitor's badges are saved in their own browser only. The list is `BADGES` in `main.js` |
 | `press.html` | **Press kit**: the fact sheet, logo downloads (`assets/press/`), brand colours, and every game's cover, summary and screenshots, built from `projects.json`. Linked from every footer |
 | `games.html` | The Games section: every project with `"category": "Game"` |
 | `trading.html` | The Trading section: every project with `"category": "Trading"` |
@@ -622,9 +622,11 @@ from the optional weather, air quality and northern lights, below).
   after dusk, a jack-o'-lantern sits at the elevator's foot and the
   windows flicker like candles. Through **December** the elevator wears a
   string of lights that twinkle after dark. **Canada Day** (after dark)
-  and **New Year's** (11 PM to 1 AM) get fireworks. Preview with
-  `?holiday=halloween`, `christmas`, `canada` or `newyear`, plus
-  `&at=night` for the dark.
+  and **New Year's** (11 PM to 1 AM) get fireworks. On **Valentine's
+  Day** small hearts drift up the sky all day, and the elevator's windows
+  glow lilac after dark. Preview with
+  `?holiday=halloween`, `christmas`, `canada`, `newyear` or `valentines`,
+  plus `&at=night` for the dark.
 - **Thunderstorms:** a bolt of lightning comes down every so often, and
   tapping the sky calls one down where you tapped. A few seconds later
   the thunder: the label says how far away that was (3 seconds a

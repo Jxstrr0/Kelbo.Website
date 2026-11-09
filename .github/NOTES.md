@@ -367,7 +367,7 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   spins at `--mill-s` from `breeze()`, paused by `horizon--calm` under
   3 km/h, flipped downwind by `--mill-flip`; tap: `windmillFact`),
   `.horizon__pumpkin` and `.elevator__xmas` (lights sampled along
-  `ELEVATOR`). `holidayAt` (`?holiday=halloween|christmas|canada|newyear`)
+  `ELEVATOR`). `holidayAt` (`?holiday=halloween|christmas|canada|newyear|valentines`)
   toggles `horizon--halloween/christmas` in `paintWeather`; `setUpCritters`
   adds `bats()` (`batsTime`), `firework()` (`fireworksTime`, Canada Day
   after dark and 11 PM to 1 AM at New Year), `tumbleweed()` (`tumbleTime`:
@@ -401,7 +401,36 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   Northern lights is earned when `auroraStrength` is above 0 at the real
   time. `setUpLogoSecret` (home page only): the header logo scrolls to
   the top, and `LOGO_TAPS` taps in 3 s run `stingRise` and `confetti` and
-  set `kelbo.logoSecret` (hidden Lightkeeper). 16 badges in all.
+  set `kelbo.logoSecret` (hidden Lightkeeper). 18 badges in all.
+- Party-member secrets (2026-11-09). They nod to the Girlfriend and the
+  Chihuahua on `about.html`, unnamed, using only wording from that
+  character sheet (see the Privacy rule in `CLAUDE.md`); never add a new
+  detail about either. One heart, `HEART_PATH`, is shared; `floatHeart(scene,
+  x, y)` floats a lilac `.horizon__heart` up from a page point (off with
+  reduce motion).
+  - Home Base: `setUpLand` keeps the elevator's top window as
+    `scene.homeLight`; `targets` in `setUpSkyTaps` lists it (r 10, before
+    the elevator so it wins the tap) only in the dark theme on the home
+    page (`[data-badges]`). Its `onTap` floats a heart and calls
+    `spot("home")` (hidden Home Base badge). Preview `?at=night`.
+  - Wish twist: in `wish`, after the milestone label, a wish past the
+    first has a `WISH_TRUE_CHANCE` (1 in 12) of "Wish granted" and a
+    heart. `?wish=true` forces it. No badge, not in the README.
+  - Valentine's Day: `holidayAt` returns `valentines` on February 14
+    (`?holiday=valentines`); `heartsTime` and `valentineHeart()` in
+    `setUpCritters` send a tappable `.valentine-heart` up every
+    `HEARTS_EVERY_S` (`?critter=hearts`); `horizon--valentines` turns the
+    elevator's windows lilac after dark. No badge, not in the parade.
+  - Moose Attack: `setUpMooseAttack` (About page) on the `.party__icon`
+    holding `.party__dog`. Each tap adds `party__icon--bump` (leaning by
+    `--bump-x/y` toward the finger); `MOOSE_TAPS` taps in 3 s add
+    `party__icon--petted`, run `confetti` and set `kelbo.mooseAttack`
+    (hidden "Petting achieved" badge). The keyframes are motion-only.
+  - The third dog: `thirdDogLine` follows `sunDogLine` in the daytime
+    readout, on the same `sunDogStrength` days.
+  - `404.html`: `.lost__head` puts a second copy of the portrait SVG
+    (`.party__dog.lost__dog`) beside "Lost?". It is plain HTML so it shows
+    with no script; a change to his markings goes in both files.
 - Glass (2026-10-30): the "Glass" section of `style.css` (just before
   Motion) turns the header, cards (`.now`, `.sky-week`, `.continue__card`,
   `.project`, `.news`, `.tile`, `.facts li`, `.post`, `.press-game`, the
