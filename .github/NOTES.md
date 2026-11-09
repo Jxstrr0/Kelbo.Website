@@ -599,12 +599,12 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   with `MAX_FETCHES` 20, no domain limits, a per-section research plan in
   `SYSTEM`, prompt caching (a marker on the system block plus top-level
   `cache_control`), the previous brief minus its Sources in the user
-  message for the MU and SOX **Last call:** lines, a usage and estimated-cost log
+  message for the MU **Last call:** line, a usage and estimated-cost log
   line from `PRICE`, and a `pause_turn` loop), which writes
   `briefs/YYYY-MM-DD.md` (fixed headings: `# headline`, `TLDR:`,
-  `## Overnight and Asia`, `## MU`, `## SOX` (since 2026-11-05: the PHLX
-  Semiconductor Index as a co-main ticker, its own Last call, gap call,
-  pre-market read from SOXX/SMH, levels in index points, drivers),
+  `## Overnight and Asia`, `## MU` (2026-11-05 to 11-06 briefs also had a
+  `## SOX` section, the PHLX Semiconductor Index as a co-main ticker;
+  dropped 2026-11-09, MU stays the headline),
   `## Watchlist`, `## Calendar`, then
   `## Sources` (the model lists its own; the script keeps only links that
   appear in that run's search results, plus inline citations, max 15) and a

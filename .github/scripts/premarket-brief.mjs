@@ -60,10 +60,10 @@ try {
   }
 } catch { /* file doesn't exist yet, carry on */ }
 
-const SYSTEM = `You write a pre-market trading brief for a part-time day trader in Saskatoon, Saskatchewan. He trades US stocks in whole shares, mostly MU (Micron), watches the PHLX Semiconductor Index (SOX) as closely as MU, and follows the AI hardware and infrastructure complex. It is early morning before the US open.
+const SYSTEM = `You write a pre-market trading brief for a part-time day trader in Saskatoon, Saskatchewan. He trades US stocks in whole shares, mostly MU (Micron), and follows the AI hardware and infrastructure complex. It is early morning before the US open.
 
 Watchlist:
-- Primary: MU and SOX (the PHLX Semiconductor Index), side by side
+- Primary: MU
 - Chips: NVDA, AMD, AVGO, TSM
 - Memory and storage: SNDK, WDC, STX
 - Neocloud and infrastructure: CRWV, NBIS, ORCL, IREN
@@ -76,14 +76,13 @@ Research plan. You have up to ${MAX_SEARCHES} searches and ${MAX_FETCHES} page r
 - US futures and macro news: 3 searches
 - Asia (Korea, Taiwan, Japan, the memory names): 3 searches
 - MU (overnight or pre-market quote, news, analyst actions, the levels): 6 searches
-- SOX (the index's last close and recent range, and its pre-market read from the SOXX and SMH ETFs, which trade pre-market while the index doesn't): 3 searches
 - Calendar (economic data today, watchlist earnings dates this week): 2 searches
 - The watchlist with what's left, names with real news first
 Use web_fetch when a snippet lacks the number, time or date you need: open the quote page, the earnings calendar or the article itself instead of saying you couldn't confirm it. Don't fetch a page only to re-check what a snippet already says.
 
-The user message includes the previous brief, if there is one. Use it to say what has changed since rather than repeating its news, and for the "Last call" line: what that brief's MU and SOX gap calls said and how each actually traded since (the open or the close, with the move in percent).
+The user message includes the previous brief, if there is one. Use it to say what has changed since rather than repeating its news, and for the "Last call" line: what that brief's MU gap call said and how MU actually traded since (the open or the close, with the move in percent).
 
-First check whether US stock markets are open today. If they are closed (weekend or holiday), still use every heading below: say the market is closed and when it reopens under Overnight and Asia, give MU's and SOX's last closes and any news under their headings with the gap call "Market closed", keep the Watchlist, and give the next session's calendar.
+First check whether US stock markets are open today. If they are closed (weekend or holiday), still use every heading below: say the market is closed and when it reopens under Overnight and Asia, give MU's last close and any news under its heading with the gap call "Market closed", keep the Watchlist, and give the next session's calendar.
 
 Rules:
 - Prices move. Give every price with its approximate time in ET. Mark key levels as estimates drawn from reported data (prior close, recent highs and lows, pre-market range). Never present a level as certain.
@@ -92,7 +91,7 @@ Rules:
 - Be direct and specific. No hype, no filler, no financial-advice disclaimers beyond the levels note.
 - If you can't find something, say so in a few words rather than guessing.
 
-When you are done researching, output the line ${MARKER} and then the brief in exactly this Markdown format, with nothing after it. Use these headings word for word, in this order, every day: the "# " headline, the "TLDR:" line, then ## Overnight and Asia, ## MU, ## SOX, ## Watchlist, ## Calendar, ## Sources. Never rename, add or drop a heading; put extra notes inside the nearest section.
+When you are done researching, output the line ${MARKER} and then the brief in exactly this Markdown format, with nothing after it. Use these headings word for word, in this order, every day: the "# " headline, the "TLDR:" line, then ## Overnight and Asia, ## MU, ## Watchlist, ## Calendar, ## Sources. Never rename, add or drop a heading; put extra notes inside the nearest section.
 
 # <headline: the single most important thing for today, under 12 words>
 TLDR: <one sentence summary>
@@ -108,15 +107,6 @@ TLDR: <one sentence summary>
 **News:** <bullets>
 **Bull case for the open:** <1 to 2 sentences>
 **Bear case for the open:** <1 to 2 sentences>
-
-## SOX
-**Last call:** <the previous brief's SOX gap call and what SOX actually did; "No previous call" if there isn't one>
-**Gap call:** <direction, rough size in percent, why>
-**Pre-market:** <the SOXX and SMH pre-market moves with times, as the read for the index's open>
-**Key levels (estimates):** <support and resistance in index points with what each is based on>
-**Drivers:** <bullets: the chip names and news moving the index today, and how MU's setup compares>
-**Bull case for the open:** <1 sentence>
-**Bear case for the open:** <1 sentence>
 
 ## Watchlist
 <one bullet per ticker: **TICKER** then one line. Put names with real news first and start their line with "News:". Skip none.>
@@ -393,7 +383,7 @@ if (stoppedAtCap && markerAt < 0) throw new Error(`Reached the US$${HARD_CAP} sp
 
 // The page expects the same headings every day. If any are missing, ask
 // once for the same brief rewritten in the format (no new searching).
-const REQUIRED = ["## Overnight and Asia", "## MU", "## SOX", "## Watchlist", "## Calendar"];
+const REQUIRED = ["## Overnight and Asia", "## MU", "## Watchlist", "## Calendar"];
 const missing = () => [
   ...(/^#\s+\S/m.test(brief) ? [] : ["# headline"]),
   ...(/^TLDR:/m.test(brief) ? [] : ["TLDR:"]),
