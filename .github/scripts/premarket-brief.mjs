@@ -8,14 +8,14 @@ import { updateIndex, BRIEFS_DIR } from "./brief-index.mjs";
 import { costNote } from "./claude.mjs";
 import { request } from "node:https";
 
-const MODEL = "claude-fable-5-1"; // the top model (Opus 5.5 at xhigh until Nov 9, 2026)
+const MODEL = "claude-fable-5-2"; // the top model (Fable 5.1 on Nov 9, 2026; Opus 5.5 at xhigh before that)
 const EFFORT = "high";
 const MAX_SEARCHES = 35; // web searches a brief may run ($10 per 1,000)
 const MAX_FETCHES = 25; // whole pages it may open and read (any site)
-// Fable 5.1 list prices in US dollars per million tokens, for the spending
+// Fable 5.2 list prices in US dollars per million tokens, for the spending
 // cap and the cost line in the run log. Cache reads are the cheap re-reads;
 // writes cost 1.25x.
-const PRICE = { input: 10, output: 50, cacheRead: 0.25, cacheWrite: 12.5, search: 0.01 };
+const PRICE = { input: 8, output: 40, cacheRead: 0.2, cacheWrite: 10, search: 0.01 };
 // The spending cap for one brief, in US dollars (Kelbo, 2026-11-09: about
 // $5 to $6 at most). The API has no dollar limit of its own, so the script
 // keeps a running total from the token counts each reply reports:
@@ -217,7 +217,7 @@ async function callClaude(messages, { withTools = true, maxTokens = MAX_REPLY } 
     // effort "high": Fable's default, written out so it stays high. Fable
     // always thinks (there is no thinking setting to send).
     // cache_control: every step of the research re-reads everything found so
-    // far. Caching bills those re-reads at a twentieth of the price. The
+    // far. Caching bills those re-reads at a fortieth of the price. The
     // marker on the instructions keeps them cached; the top-level one moves
     // along the conversation as it grows.
       model: MODEL,

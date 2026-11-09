@@ -1032,9 +1032,10 @@ you open it.
   It can run up to 35 web searches a brief (`MAX_SEARCHES`) and open up to
   25 whole pages on any site to read the actual numbers (`MAX_FETCHES`),
   following a rough search plan in `SYSTEM` (most of it on MU). It calls
-  the model named in `MODEL`: Claude Fable 5.1 (`claude-fable-5-1`), the
-  top model, on high effort (`EFFORT`). Until Nov 9, 2026 it was Opus 5.5
-  on xhigh.
+  the model named in `MODEL`: Claude Fable 5.2 (`claude-fable-5-2`), the
+  top model, on high effort (`EFFORT`). It costs a fifth less per word
+  than Fable 5.1, which wrote the Nov 9, 2026 brief; before that it was
+  Opus 5.5 on xhigh.
 - **Yesterday's call:** the robot hands it the previous brief, so it says
   what changed overnight instead of repeating old news, and the MU section
   opens with **Last call:** what the last brief predicted for the open and
