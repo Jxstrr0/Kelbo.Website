@@ -635,11 +635,22 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   rearrange HTML renderMarkdown already escaped: `dressCalls` turns MU's
   `**Label:**` lines into boxes ordered by `CALL_ORDER` (gap call first in a
   clay box with a confidence pill, bull/bear side by side, last session's
-  call last), resistance/support tinted clay/purple; `dressLeads` makes
+  call last), resistance/support tinted clay/purple, and the
+  `**Ladder:**` line (`prior | pre | call | support | resistance`, plain
+  numbers, ranges as low-high, n/a) drawn by `drawLadder`/`parseLadder`
+  as a price scale (dropped if it can't be read); `dressLeads` makes
   Overnight's bold starts into labels; `dressWatchlist` ticker chips and a
-  News tag; `dressCalendar` day headers and an ET/SK time column;
-  `foldSources` folds Sources shut; `markChanges` colours signed % changes
-  purple (up) and clay (down). Section colours are `--tone`, `--tone-ink`,
+  News tag, plus close/pre columns from `| close <price> <%> | pre <price>
+  <%> |` lines with sort buttons (`addWatchSort`; old briefs keep chips);
+  `dressCalendar` day headers and a time column, SK first (`swapTimes`
+  turns "ET (SK)" round inside lines too); `foldSources` folds Sources
+  shut; `markChanges` colours signed % changes purple (up) and clay
+  (down); `addFolds` makes each heading a fold button, remembered in
+  localStorage `kelbo.briefFolds`; `markNew` loads the brief before
+  (`briefBefore`) and tags Overnight, MU news and watchlist news lines
+  whose words (`wordSet`, `SAME_SHARE` 0.45) weren't mostly in one of its
+  lines, skipping futures/close lines. The Grader is told to ignore the
+  Ladder line. Section colours are `--tone`, `--tone-ink`,
   `--tone-soft` per card in briefs.css (MU clay, Overnight purple,
   Watchlist lilac, Calendar slate/ivory); `:has()` keeps the old single
   card if a brief can't be sorted. From 64rem the cards sit side by side

@@ -90,6 +90,7 @@ Rules:
 - Times for scheduled events: give ET and Saskatchewan time (today Saskatchewan time is ET minus ${skBehindEt} hour${skBehindEt === 1 ? "" : "s"}, so the 9:30 ET open is ${9 - skBehindEt}:30 SK).
 - Be direct and specific. No hype, no filler, no financial-advice disclaimers beyond the levels note.
 - If you can't find something, say so in a few words rather than guessing.
+- The "Ladder:" line and the watchlist's "close" and "pre" columns are read by the website, which draws them, so keep their exact form: plain numbers with no $ sign or thousands commas, a range as low-high, a signed percent such as +2.8% or -5.1%, and n/a for anything you couldn't find (for example "pre n/a +1.4%" when you have the move but not the price). The Ladder only repeats prices already given in the MU section (the last close, the pre-market price, the gap call's price range and the key levels); never add a new one there. In the watchlist line, don't repeat the close and pre-market numbers already in the columns.
 
 When you are done researching, output the line ${MARKER} and then the brief in exactly this Markdown format, with nothing after it. Use these headings word for word, in this order, every day: the "# " headline, the "TLDR:" line, then ## Overnight and Asia, ## MU, ## Watchlist, ## Calendar, ## Sources. Never rename, add or drop a heading; put extra notes inside the nearest section.
 
@@ -104,12 +105,13 @@ TLDR: <one sentence summary>
 **Gap call:** <direction, rough size, why>
 **Pre-market:** <price and time if found>
 **Key levels (estimates):** <support and resistance with what each is based on>
+**Ladder:** prior <last close> | pre <pre-market price> | call <low>-<high> | support <price>, <price> | resistance <price>, <price>
 **News:** <bullets>
 **Bull case for the open:** <1 to 2 sentences>
 **Bear case for the open:** <1 to 2 sentences>
 
 ## Watchlist
-<one bullet per ticker: **TICKER** then one line. Put names with real news first and start their line with "News:". Skip none.>
+<one bullet per ticker, in this exact form: "- **TICKER** | close <last close price> <its % change that day> | pre <pre-market price> <% vs last close> | <one line>". Put names with real news first and start their line with "News:". Skip none.>
 
 ## Calendar
 <bullets: economic data and earnings today, with ET and SK times. Mention watchlist earnings this week too.>
