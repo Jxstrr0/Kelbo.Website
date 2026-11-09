@@ -171,8 +171,9 @@
       <p class="sky-week__note">Saved on this phone only. Nothing is sent anywhere.</p>
     </details>
 
-    <!-- 3. Games: big cards for every project with "featured": true in
-         projects.json (up to four). main.js fills this list. -->
+    <!-- 3. Games: one sideways row of small cards, every game in
+         projects.json in its order there. Swipe (or use the arrows on a
+         computer) to see them all. main.js fills this list. -->
     <section class="section wrap" aria-labelledby="games-heading">
       <div class="section__head">
         <h2 id="games-heading">Pick a game</h2>
@@ -196,9 +197,15 @@
         </div>
       </div>
 
-      <ul class="project-list" data-projects="featured">
+      <ul class="project-list project-list--row" data-projects="row">
         <li class="project-list__note">Loading games&hellip;</li>
       </ul>
+      <!-- Arrow buttons for the row: main.js shows them on wider screens -->
+      <p class="row-nav" data-row-nav hidden>
+        <button class="row-nav__btn" type="button" data-row-prev aria-label="Earlier games">&larr;</button>
+        <span class="row-nav__count" data-row-count></span>
+        <button class="row-nav__btn" type="button" data-row-next aria-label="More games">&rarr;</button>
+      </p>
       <noscript>
         <p>Turn on JavaScript to see the games, or <a href="games.html">open the games page</a>.</p>
       </noscript>
