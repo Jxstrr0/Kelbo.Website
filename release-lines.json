@@ -18,5 +18,15 @@
     "line": "Fast taps on a phone no longer zoom the page or highlight text.",
     "title": "v0.1.25.2 - no double-tap zoom or hold-to-highlight on phones",
     "at": "2026-11-09T21:30:00.000Z"
+  },
+  "350Chev@v1.76.108.0": {
+    "line": "Turbos now have an air rush, and blowers get gears and a throb.",
+    "title": "v1.76.108.0 - turbos get an air rush, blowers get gears and a throb",
+    "at": "2026-11-09T22:44:40.858Z"
+  },
+  "Scrapline@v0.1.41.0": {
+    "line": "Bots now have wheel wells, tyres, running tracks, bolts and deck fittings.",
+    "title": "v0.1.41.0 - the bots' parts (wheel wells, tyres, running tracks, bolts, deck fittings)",
+    "at": "2026-11-09T22:44:40.858Z"
   }
 }
