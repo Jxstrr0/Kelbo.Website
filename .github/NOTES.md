@@ -590,11 +590,10 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   that can't be confirmed.
 - The pre-market brief is `briefs.html` + `briefs.js` + `briefs.css`. The
   **Morning Writer** workflow (`.github/workflows/premarket-brief.yml`,
-  weekdays at 12:17, 12:43 and 13:11 UTC = 6:17, 6:43 and 7:11 am
-  America/Regina, three tries because GitHub starts timed runs late or
-  drops them; the first writes the brief and the others stop at the
-  "already exists" check before any API call; or by hand with a "rewrite
-  today's" box) runs `.github/scripts/premarket-brief.mjs`: plain Node
+  started by the Robot Timer weekdays at 12:30 and 13:15 UTC = 6:30 and
+  7:15 am America/Regina; the first writes the brief and the backup stops
+  at the "already exists" check before any API call; or by hand with a
+  "rewrite today's" box) runs `.github/scripts/premarket-brief.mjs`: plain Node
   `fetch` to the Anthropic Messages API (`claude-opus-5-5` at `output_config.effort` "xhigh", `max_tokens` 64000, server-side
   `web_search_20260209` with `MAX_SEARCHES` 30 and `web_fetch_20260209`
   with `MAX_FETCHES` 15, no domain limits, a per-section research plan in
@@ -636,8 +635,9 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   Trading project in `projects.json`, in `sitemap.xml` and `sw.js` `CORE`.
   Don't hand-edit the files in `briefs/`.
 - The after-close report card: the **Grader** workflow
-  (`.github/workflows/postmarket-recap.yml`, weekdays 22:07 UTC = 4:07 pm
-  America/Regina, after the close all year, or by hand with a "redo
+  (`.github/workflows/postmarket-recap.yml`, started by the Robot Timer
+  weekdays at 22:45 and 23:45 UTC = 4:45 and 5:45 pm America/Regina, after
+  the close all year, or by hand with a "redo
   today's grade" box) runs `.github/scripts/postmarket-recap.mjs`: plain
   Node `fetch`, the model in `MODEL` (`claude-opus-5-5` at `output_config.effort` "high", `max_tokens` 32000), `web_search_20260209`
   (`MAX_SEARCHES` 18) and `web_fetch_20260209` (`MAX_FETCHES` 15), the same
@@ -725,13 +725,20 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   file changed. `pullLatest` (git pull --ff-only, Actions only) runs
   before the Forecaster and Scorekeeper write journal.json, since a batch
   can take a while. There's no full-price fallback, by Kelbo's choice.
-- The "Morning Writer starter" routine (weekdays 6:08 am America/Regina,
-  in a helper Claude Code session) starts `premarket-brief.yml` by hand
-  with `force: false`, because GitHub's timed starts are often late or
-  dropped; the workflow's own crons stay as back-ups, and every extra
-  start stops at the "already exists" check before any API call.
-- Coach (brief lessons): `brief-lessons.yml` (Sundays 17:47 UTC = 11:47 am,
-  beside the Devlog Writer and Scorekeeper, plus a 23:23 UTC pickup run that stops at once if today's lessons exist and
+- **Robot Timer** (Nov 2026): GitHub's `schedule:` starts ran 3.5 to 7
+  hours late, so the six robots above have no crons. A free Cloudflare
+  Worker, `robot-timer` (code: `.github/worker/robot-timer.js`, kept the
+  same as the live copy), wakes on one Cron Trigger `*/5 * * * *` and
+  POSTs `workflow_dispatch` (ref `main`, default inputs) for each robot
+  whose UTC day and `HH:MM` in `TIMETABLE` match the trigger's
+  `scheduledTime`. It needs the Worker secret `GH_TOKEN` (fine-grained
+  token, this repo only, Actions read/write, renewed yearly) and logs only
+  "<robot>: started / failed (status)". Every extra start stops at the
+  "already exists" check (or picks up a saved batch) before any API call.
+  Release Writer and Deploy site keep their own crons. To change a time,
+  edit `TIMETABLE` in both copies (times on a 5-minute mark, in UTC).
+- Coach (brief lessons): `brief-lessons.yml` (Sundays 17:45 UTC = 11:45 am,
+  beside the Devlog Writer and Scorekeeper, plus a 23:25 UTC pickup run that stops at once if today's lessons exist and
   no batch is saved) runs `brief-lessons.mjs` (`claude-opus-5-5`, effort
   high, one batched call): the last
   `WINDOW_DAYS` (28) of report cards from the month files, the briefs they
@@ -748,7 +755,7 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   `setUpLessons` in briefs.js fills the closed `.lessons` fold
   (`[data-lessons]`, "What the brief is working on") on the After close
   tab, text nodes only, hidden without the file or active lessons.
-- Devlog Writer: `devlog-draft.yml` (Sundays 17:23 UTC plus a 23:13 UTC
+- Devlog Writer: `devlog-draft.yml` (Robot Timer, Sundays 17:20 UTC plus a 23:15 UTC
   pickup that skips if today's `devlog-draft/` branch exists and no batch
   is saved; `contents` and `pull-requests: write`) runs `devlog-draft.mjs`
   (`claude-sonnet-5-5`, effort high, batched; only the batch file is
@@ -767,8 +774,8 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   it's green (Kelbo's OK, Nov 2026). Needs the repo
   setting "Allow GitHub Actions to create and approve pull requests".
 - Forecaster (weekly journal forecast): `journal-forecast.yml` (Sunday
-  night: crons `47 1 * * 1` and `13 3 * * 1` UTC = 7:47 and 9:13 pm
-  Sunday America/Regina, plus a `37 10 * * 1` 4:37 am Monday pickup;
+  night: Robot Timer at 01:45 and 03:15 UTC Monday = 7:45 and 9:15 pm
+  Sunday America/Regina, plus a 10:35 UTC 4:35 am Monday pickup;
   batched) runs `journal-forecast.mjs` (`claude-opus-5-5`,
   effort high, `askClaudeWeb` with `MAX_SEARCHES` 25 and `MAX_FETCHES`
   12): the coming week's market days from `market-days.mjs` (shared
@@ -784,8 +791,8 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   to Friday, measured from the last close before today.
 - Scorekeeper (weekly journal grades): `journal-grade.yml` (Sunday
   around noon, so the batch has the afternoon before the Forecaster:
-  `37 17 * * 0`, `13 19 * * 0` and a `43 23 * * 0` pickup UTC = 11:37 am,
-  1:13 pm and 5:43 pm; batched; a back-up that starts while a run is
+  Robot Timer at 17:35, 19:15 and a 23:45 pickup UTC Sunday = 11:35 am,
+  1:15 pm and 5:45 pm; batched; a back-up that starts while a run is
   still waiting queues behind it, via the `concurrency` group)
   runs `journal-grade.mjs` (`claude-sonnet-5-5`, effort high,
   `MAX_SEARCHES` 20, `MAX_FETCHES` 15): the newest entry whose `gradeBy`
