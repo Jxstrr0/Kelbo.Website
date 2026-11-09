@@ -114,58 +114,103 @@
       </div>
     </section>
 
-    <!-- About: the prose on the left, the player card on the right.
-         This used to be on the home page. -->
+    <!-- About: Kelbo's character sheet, laid out like a character-select
+         card. The wording is Kelbo's own; change it only when he asks. -->
     <section class="section wrap" aria-labelledby="about-heading" data-reveal>
-      <h2 id="about-heading" class="visually-hidden">About Kelbo</h2>
-      <div class="about-grid">
-        <div class="prose">
+      <article class="sheet">
+        <header class="sheet__head">
+          <p class="sheet__label">Player 1</p>
+          <h2 id="about-heading" class="sheet__name">KELBO</h2>
+          <dl class="sheet__stats">
+            <div><dt>Class</dt><dd>Builder</dd></div>
+            <div><dt>Home base</dt><dd>Saskatoon, SK</dd></div>
+            <div><dt>Studio</dt><dd>Longlight Interactive</dd></div>
+          </dl>
+        </header>
+
+        <section class="sheet__block" aria-labelledby="sheet-backstory">
+          <h3 id="sheet-backstory" class="sheet__title">Backstory</h3>
           <p>
-            I'm Kelbo, and I'm based in Saskatoon, Saskatchewan. I've always
-            had a huge love for video games, and making my own games grew out
-            of that, along with my
-            interest in engineering of all kinds. Building games gives my overactive
-            mind somewhere to go, and I get to make them play the way I want
-            them to. I make them under the name Longlight Interactive,
-            mostly for fun, for myself and for anyone who enjoys the same style
-            of game.
-          </p>
-          <p>
-            I'm also in my first year of day trading part-time. I like
-            high-pressure situations, and I enjoy digging into the data and
-            building a thesis before I take a trade. I post my calls and trades
-            in my <a href="journal.html">trading journal</a>, wins and losses
-            both.
-          </p>
-          <p>
-            Outside of games and trading, I'm building small tools and AI
-            projects. This site is a collection of my active projects and
-            passions. Some of it is mostly done and some of it is still just a
-            plan, so if you check back every once in a while, you should see
-            things move down the field.
-          </p>
-          <p>
-            Before all this, I played university football on a scholarship.
-            These days I'm usually watching football or F1 when I'm not
-            building or trading. I used to race stock cars too, which is where
+            Former scholarship football player. Former stock-car racer, which
+            is where
             <a href="https://pew.longlight.games/">Prairie Engine Works</a>
-            comes from. I'm also a big Survivor and Big Brother fan.
+            comes from. Now in year one of part-time day trading, building a
+            thesis before every trade and posting the results in my
+            <a href="journal.html">trading journal</a>, wins and losses both.
           </p>
+        </section>
+
+        <section class="sheet__block" aria-labelledby="sheet-abilities">
+          <h3 id="sheet-abilities" class="sheet__title">Abilities</h3>
           <p>
-            Play a game or two, and have a look at my trading theses. If
-            anything here catches your eye, feel free to
-            <a href="./#contact-heading">reach out</a>.
+            I build browser games, small tools, and AI projects, mostly because
+            my mind needs something to chew on. Thrives under pressure.
           </p>
-        </div>
-        <!-- Player card -->
-        <ul class="facts" aria-label="Quick facts">
-          <li><span class="facts__k">Studio</span><span class="facts__v">Longlight Interactive</span></li>
-          <li><span class="facts__k">Side quest</span><span class="facts__v">Day trading, year one</span></li>
-          <li><span class="facts__k">Football</span><span class="facts__v">University, on scholarship</span></li>
-          <li><span class="facts__k">Base</span><span class="facts__v">Saskatoon, SK</span></li>
-          <li><span class="facts__k">Watching</span><span class="facts__v">F1, football, Survivor</span></li>
-        </ul>
-      </div>
+        </section>
+
+        <section class="sheet__block" aria-labelledby="sheet-party">
+          <h3 id="sheet-party" class="sheet__title">Party members</h3>
+          <ul class="party">
+            <li class="party__member">
+              <span class="party__icon" aria-hidden="true">🎮</span>
+              <div>
+                <h4 class="party__name">The Brother</h4>
+                <p>
+                  Player 2 since day one. We started gaming together as kids,
+                  and he’s a big part of why I love games at all. When he got
+                  into coding, I followed him down that road, and Longlight
+                  wouldn’t exist without that push.
+                </p>
+              </div>
+            </li>
+            <li class="party__member">
+              <span class="party__icon" aria-hidden="true">💜</span>
+              <div>
+                <h4 class="party__name">The Girlfriend</h4>
+                <p>
+                  My #1 best friend and life partner. Friends through high
+                  school, partners since graduation. She’s the reason I chase
+                  my passions at all, because she’s always behind me, loving
+                  and supporting every idea I take on.
+                </p>
+                <p class="party__buff">Permanent buff: she believes in me before I do.</p>
+              </div>
+            </li>
+            <li class="party__member">
+              <span class="party__icon" aria-hidden="true">🐶</span>
+              <div>
+                <h4 class="party__name">The Chihuahua</h4>
+                <p>
+                  (Kinda) small dog, big appetite, bigger heart. Built like a
+                  loaf of bread and proud of it. Mostly provides moral support
+                  from the bed. Tank class: absorbs belly rubs, deals zero
+                  damage.
+                </p>
+                <p class="party__buff">Passive buff: +10 morale, −1 snack per hour.</p>
+                <p class="party__buff">Status effect: permanently in bulking season.</p>
+              </div>
+            </li>
+          </ul>
+        </section>
+
+        <section class="sheet__block" aria-labelledby="sheet-quests">
+          <h3 id="sheet-quests" class="sheet__title">Side quests</h3>
+          <p>F1, football, and far too much Survivor and Big Brother.</p>
+        </section>
+
+        <section class="sheet__block" aria-labelledby="sheet-status">
+          <h3 id="sheet-status" class="sheet__title">Status</h3>
+          <p>
+            Some projects complete, some still on the quest log. Check back to
+            see progress.
+          </p>
+        </section>
+      </article>
+
+      <p class="sheet__after">
+        If anything here catches your eye, feel free to
+        <a href="./#contact-heading">reach out</a>.
+      </p>
     </section>
   </main>
 
