@@ -8,7 +8,7 @@ import { updateIndex, BRIEFS_DIR } from "./brief-index.mjs";
 import { costNote } from "./claude.mjs";
 import { request } from "node:https";
 
-const MODEL = "claude-fable-5-2"; // the top model (Fable 5.1 on Nov 9, 2026; Opus 5.5 at xhigh before that)
+const MODEL = "claude-fable-5-2"; // the top model (history: Fable 5.1 wrote the Nov 9, 2026 brief; Opus 5.5 at xhigh before that)
 const EFFORT = "high";
 const MAX_SEARCHES = 35; // web searches a brief may run ($10 per 1,000)
 const MAX_FETCHES = 25; // whole pages it may open and read (any site)
