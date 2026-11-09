@@ -1342,6 +1342,7 @@ function placeSun(scene, t) {
   placeEclipse(scene, t);
   placeStars(scene, t);
   placeIss(scene, t);
+  placeDayVenus(scene, t);
 }
 
 /* ---------- The sun near the horizon ----------
@@ -1886,6 +1887,30 @@ function placeIss(scene, t) {
   }
   clearTimeout(it.timer);
   if (seen && live) it.timer = setTimeout(() => placeIss(scene, new Date()), REDUCE_MOTION ? 5000 : 1000);
+}
+
+// Venus by day (see dayVenus): a faint ivory pinprick at its real spot,
+// in its own layer because the stars' layer is hidden by day. It only
+// shows in the light theme; after dark the planets layer has it.
+// ?critter=venus shows it any time, at a made-up spot.
+function placeDayVenus(scene, t) {
+  if (!scene.dayVenus) {
+    const box = el("div", "horizon__day-venus");
+    const dot = el("b", "day-venus planet"); // .planet: its name label looks like the night planets'
+    if (!scene.closest(".page-head")) dot.append(el("span", "", "Venus"));
+    box.append(dot);
+    (scene.iss ? scene.iss.box : scene.querySelector(".horizon__stars")).after(box);
+    scene.dayVenus = { dot, look: null };
+  }
+  const look = CRITTER === "venus" ? { alt: 40, az: 150, gap: 35, preview: true } : dayVenus(t);
+  const across = look ? skyX(look.az) : -1;
+  const seen = Boolean(look) && across >= 0 && across <= 1;
+  scene.dayVenus.look = seen ? look : null;
+  scene.dayVenus.dot.hidden = !seen;
+  if (!seen) return;
+  scene.dayVenus.dot.style.left = `${(across * 100).toFixed(2)}%`;
+  scene.dayVenus.dot.style.top = `${((1 - Math.min(look.alt, STAR_TOP_ALT) / STAR_TOP_ALT) * 100).toFixed(2)}%`;
+  scene.dayVenus.dot.classList.toggle("planet--flip", across > 0.85);
 }
 
 // "Space station overhead · look southwest" for the readout while it's up.
@@ -2452,6 +2477,17 @@ function setUpSkyTaps(scene, timeNow) {
       const span = moonSpanAt(t);
       list.push({ ...centre(moon), title: `${moonName(phase)} moon`, detail: `${Math.round(moonLit(phase) * 100)}% lit · sets ${clock(new Date(span.next))}` });
     }
+    if (scene.dayVenus && scene.dayVenus.look && document.documentElement.dataset.theme !== "dark") {
+      const v = scene.dayVenus.look;
+      list.push({
+        ...centre(scene.dayVenus.dot), r: 6, title: "Venus, in daylight",
+        detail: v.preview ? "Pretend spot · it really is bright enough to see by day" : `${Math.round(v.gap)}° from the Sun · hide the Sun behind a roof edge, then look here`,
+      });
+    }
+    // Birds and balloons that say what they are (setUpCritters keeps the list)
+    for (const c of scene.tapCritters || []) {
+      if (c.node.isConnected) list.push({ ...centre(c.node), r: c.r || Math.max(8, centre(c.node).r), title: c.title, detail: typeof c.detail === "function" ? c.detail() : c.detail });
+    }
     if (scene.iss && scene.iss.look) {
       const look = scene.iss.look;
       list.push({
@@ -2575,8 +2611,8 @@ function setUpSkyTaps(scene, timeNow) {
 /* ---------- The secret parade ----------
    Tap the sun seven times in a row (or type "longlight" on a keyboard)
    and everything comes out at once: geese, a jet, the train, a hawk, a
-   kite, bats, tumbleweeds, leaves, shooting stars, the northern lights
-   and fireworks. It earns the hidden Parade marshal badge. */
+   kite, pelicans, a balloon, snow buntings, bats, tumbleweeds, leaves,
+   shooting stars, the northern lights and fireworks. It earns the hidden Parade marshal badge. */
 const PARADE_TAPS = 7;
 const PARADE_KEY = "kelbo.parade";
 let sunTaps = [];
@@ -2683,6 +2719,7 @@ const WEATHER_PREVIEWS = {
   windy: [1, 25, false, { temp: 16, wind: 38, windFrom: 290 }],
   frost: [0, 5, true, { temp: -22 }], drift: [1, 25, true, { temp: -12, wind: 42, windFrom: 290 }],
   calm: [0, 5, false, { temp: 18, wind: 0, windFrom: 290 }],
+  pillar: [0, 10, true, { temp: -27, high: 15, damp: 80 }], warm: [1, 10, false, { temp: 26, wind: 8, windFrom: 290 }],
 };
 
 // The ?weather= preview asked for, or null
@@ -3076,6 +3113,83 @@ function heatShimmer(t) {
   return Boolean(weather && Number.isFinite(weather.temp) && weather.temp >= HOT_C && sunAltitude(t) > 0);
 }
 
+// A clear-enough sky for the twilight colours and day Venus: the weather
+// is known, nothing is falling, and the cloud is under maxCloud %.
+function clearSky(maxCloud) {
+  return Boolean(weather && !weatherKind(weather.code) && weather.cloud < maxCloud);
+}
+
+// The Belt of Venus: on a clear evening, just after the sun sets, a pink
+// band sits low on the far side of the sky from the sun, with the
+// darker blue-grey shadow of the Earth itself rising under it. Same at
+// dawn, the other way round. 0..1: it comes in as the sun touches the
+// horizon, is at its best with the sun 1° to 4° down, and is gone by
+// about 7° down, as the Earth's shadow climbs up into the dark.
+function beltStrength(t) {
+  if (!clearSky(50)) return 0;
+  const alt = sunAltitude(t);
+  if (alt > 1 || alt < -7) return 0;
+  return Math.max(0, Math.min(1, (1 - alt) / 2, (alt + 7) / 3));
+}
+
+// "Belt of Venus in the east": where to look (away from the sun).
+function beltLine(t) {
+  if (beltStrength(t) < 0.3) return "";
+  const p = sunPosition(t);
+  const away = (altAz(p.ra * R2D, p.dec * R2D, t).az + 180) % 360;
+  return `Belt of Venus · the pink band in the ${compassName(away)}`;
+}
+
+// A sun pillar: a column of light standing straight up from a low sun on
+// a bitterly cold day, from flat ice crystals floating in the air. It
+// needs the same air as sun dogs (-10°C or colder with some high cloud,
+// or -20°C on its own, when the air itself sparkles) and the sun within
+// a few degrees of the horizon, and it lasts a little after sunset.
+function pillarStrength(t) {
+  if (!weather || !Number.isFinite(weather.temp) || weather.temp > -10 || sunHidden()) return 0;
+  const high = Number.isFinite(weather.high) ? weather.high : 0;
+  if (high < 10 && weather.temp > -20) return 0;
+  const alt = sunAltitude(t);
+  if (alt < -3 || alt > 7) return 0;
+  return Math.min(1, (alt + 3) / 2, (7 - alt) / 3);
+}
+
+function pillarLine(t) {
+  return pillarStrength(t) > 0.3 ? "Sun pillar · ice crystals in the cold air" : "";
+}
+
+// Venus in broad daylight. It's bright enough to see by day if you know
+// exactly where to look: well clear of the sun's glare (DAY_VENUS_GAP°),
+// at least DAY_VENUS_ALT° up, the sun up, and a clear sky. Returns
+// { alt, az, gap } or null.
+const DAY_VENUS_GAP = 20;
+const DAY_VENUS_ALT = 10;
+function dayVenus(t) {
+  if (sunAltitude(t) < 4 || !clearSky(40)) return null;
+  const venus = PLANETS.find((p) => p.name === "Venus");
+  const [ra, dec] = planetRaDec(venus.orbit, t);
+  const sun = sunPosition(t);
+  const gap = skyGap(ra * D2R, dec * D2R, sun.ra, sun.dec);
+  const at = altAz(ra, dec, t);
+  if (gap < DAY_VENUS_GAP || at.alt < DAY_VENUS_ALT) return null;
+  return { alt: at.alt, az: at.az, gap };
+}
+
+function dayVenusLine(t) {
+  const v = dayVenus(t);
+  return v ? `Venus is up in daylight · look ${compassName(v.az)}, ${Math.round(v.alt)}° high` : "";
+}
+
+// Cloud shadows sliding over the fields: a sky that's partly cloudy
+// (CLOUD_SHADOW_MIN to CLOUD_SHADOW_MAX %, so there's sun between them),
+// nothing falling, and the sun high enough to cast them.
+const CLOUD_SHADOW_MIN = 20;
+const CLOUD_SHADOW_MAX = 80;
+function cloudShadowTime(t) {
+  if (!weather || weatherKind(weather.code)) return false;
+  return weather.cloud >= CLOUD_SHADOW_MIN && weather.cloud < CLOUD_SHADOW_MAX && sunAltitude(t) > 5;
+}
+
 // The wind: its speed (km/h, a gentle 12 if it isn't known) and which
 // way it blows across the sky, 1 to the right or -1 to the left. The sky
 // faces south, so a wind from the west (the usual northwest wind in
@@ -3170,6 +3284,22 @@ function windmillFact() {
 function placeOptics(scene, t, sunX) {
   if (!scene.optics) return;
   scene.style.setProperty("--sundogs", sunDogStrength(t).toFixed(2));
+  scene.style.setProperty("--pillar", pillarStrength(t).toFixed(2));
+  // The Belt of Venus: brightest on the side of the sky away from the
+  // sun (kept on screen, so it shows even when that's behind you), and
+  // the Earth's shadow under it climbs as the sun sinks.
+  const belt = beltStrength(t);
+  scene.style.setProperty("--belt", belt.toFixed(2));
+  if (belt) {
+    const p = sunPosition(t);
+    const away = (altAz(p.ra * R2D, p.dec * R2D, t).az + 180) % 360;
+    // The band runs the full width of the screen, so its brightest spot
+    // is given as a share of the screen's width, not the sky's
+    const box = scene.getBoundingClientRect();
+    const across = Math.max(0.1, Math.min(0.9, skyX(away)));
+    scene.style.setProperty("--belt-x", ((box.left + across * box.width) / (innerWidth || 1)).toFixed(3));
+    scene.style.setProperty("--belt-rise", Math.max(0, Math.min(1, -sunAltitude(t) / 6)).toFixed(3));
+  }
   let bow = rainbowStrength(t);
   if (bow && !scene.sky) {
     // Sizes in pixels, measured once (and again after a resize)
@@ -3444,13 +3574,16 @@ function setUpWeather(scene) {
   scene.precip = layer("horizon__precip");
   // Smoke haze, the rainbow and sun dogs, under the clouds and rain
   scene.optics = layer("horizon__optics");
-  scene.optics.append(el("div", "horizon__rainbow"), el("div", "horizon__sundogs"));
+  scene.optics.append(el("div", "horizon__belt"), el("div", "horizon__pillar"), el("div", "horizon__rainbow"), el("div", "horizon__sundogs"));
   scene.snowline = el("div", "horizon__snowline");
   scene.querySelector(".horizon__ground").after(scene.snowline);
   // Winter ground: frost glitter over the snow, and snow blowing along the line
   scene.frost = el("div", "horizon__frost");
   scene.drift = el("div", "horizon__drift");
   scene.snowline.after(scene.frost, scene.drift);
+  // Cloud shadows drifting over the fields (and the snow) on a partly cloudy day
+  scene.cloudShadows = el("div", "horizon__cloud-shadows");
+  scene.drift.after(scene.cloudShadows);
   const refresh = () => Promise.all([loadWeather(), loadKp(), loadAir()]);
   refresh();
   setInterval(() => { if (!document.hidden) refresh(); }, WEATHER_MS);
@@ -3486,6 +3619,7 @@ function paintWeather(scene, t) {
   scene.classList.toggle("horizon--hot", heatShimmer(t));
   scene.classList.toggle("horizon--frost", frostSparkle(t));
   scene.classList.toggle("horizon--drift", snowDrift(t));
+  scene.classList.toggle("horizon--cloud-shadows", cloudShadowTime(t));
   scene.style.setProperty("--drift-dir", String(breeze().dir)); // 1 blows right, -1 left
   const field = groundSeason(t);
   scene.classList.toggle("horizon--crocus", field === "crocus");
@@ -3528,6 +3662,22 @@ function paintWeather(scene, t) {
     clouds.push(c);
   }
   scene.clouds.replaceChildren(...clouds);
+  // Their shadows on the ground: soft dark patches drifting the same way
+  // as the clouds (left to right), one for about every other cloud.
+  // style.css only shows them while cloudShadowTime is true.
+  const patches = [];
+  const shadows = Math.round(count * 0.6);
+  for (let i = 0; i < shadows; i++) {
+    const s = el("i", "cloud-shadow");
+    const slow = 60 + Math.random() * 50; // seconds to cross: they're near, so they look quicker
+    s.style.setProperty("--w", `${(18 + Math.random() * 22).toFixed(0)}vw`);
+    s.style.top = `${(10 + Math.random() * 45).toFixed(0)}%`;
+    s.style.left = `${((i + Math.random() * 0.6) / shadows * 100).toFixed(0)}%`;
+    s.style.animationDuration = `${slow.toFixed(0)}s`;
+    s.style.animationDelay = `${(-slow * ((i + 0.5) / shadows)).toFixed(0)}s`;
+    patches.push(s);
+  }
+  if (scene.cloudShadows) scene.cloudShadows.replaceChildren(...patches);
 }
 
 /* ---------- Prairie seasons ----------
@@ -3537,9 +3687,12 @@ function paintWeather(scene, t) {
    summer nights, and autumn leaves blowing across in September and
    October (faster in a real wind). With them, a jet now and then by day,
    its contrail hanging about longer on cold, damp days, and on windy
-   afternoons a hawk circling (or, at weekends, someone's kite). Off for
+   afternoons a hawk circling (or, at weekends, someone's kite). On warm,
+   settled summer afternoons, pelicans circle up a thermal; on calm summer
+   weekend mornings and evenings, a hot-air balloon drifts over; in
+   winter, flocks of snow buntings wheel low over the snow. Off for
    "reduce motion". Preview one with
-   ?critter=geese|fireflies|leaves|jet|hawk|kite. */
+   ?critter=geese|fireflies|leaves|jet|hawk|kite|pelicans|balloon|buntings. */
 const GEESE_EVERY_S = 40; // a flock every 40 seconds on average, in season
 const JET_EVERY_S = 90; // a jet every minute and a half on average, by day
 const TRAIN_EVERY_S = 150; // a freight train along the rails every couple of minutes, any hour
@@ -3547,6 +3700,9 @@ const HAWK_EVERY_S = 60; // how often a hawk turns up on a windy afternoon
 const BATS_EVERY_S = 6; // a few bats every few seconds on Halloween night
 const TUMBLE_EVERY_S = 12; // how often a tumbleweed rolls by on a dry, windy day
 const COMBINE_EVERY_S = 120; // how often the combine comes out in the harvest
+const PELICAN_EVERY_S = 75; // a group of pelicans on a warm, settled summer afternoon
+const BALLOON_EVERY_S = 120; // a hot-air balloon, on a calm summer weekend morning or evening
+const BUNTING_EVERY_S = 35; // a flock of snow buntings over the snow in winter
 const CRITTER = new URLSearchParams(location.search).get("critter"); // a ?critter= preview
 
 // Is it goose season (mid September to mid November, and late March to
@@ -3601,6 +3757,42 @@ function hawkTime(t) {
 function kiteTime(t) {
   const p = localParts(t);
   return windyAfternoon(t) && (p.weekday === "Sat" || p.weekday === "Sun");
+}
+
+// American white pelicans: Saskatoon's summer birds (they fish below the
+// weir on the river). They ride warm air up in slow circles, so they come
+// out on warm, settled afternoons, May to September, with the wind under
+// 20 km/h: never at the same time as the hawk or the kite, which need it
+// windier.
+function pelicanTime(t) {
+  const p = localParts(t);
+  if (!YXE.home || p.m < 5 || p.m > 9 || p.h < 11 || p.h >= 19 || sunAltitude(t) < 15 || sunHidden()) return false;
+  const { wind, known } = breeze();
+  if (known && wind >= 20) return false;
+  return !weather || !Number.isFinite(weather.temp) || weather.temp >= 15;
+}
+
+// A hot-air balloon: only in a real calm (under BALLOON_WIND km/h), on a
+// summer weekend, in the low light of early morning or evening (the sun
+// 3° to 20° up), dry and not overcast. The calm-day opposite of the kite.
+const BALLOON_WIND = 8;
+function balloonTime(t) {
+  const p = localParts(t);
+  const { wind, known } = breeze();
+  if (!YXE.home || !known || wind >= BALLOON_WIND || p.m < 5 || p.m > 9) return false;
+  if (p.weekday !== "Sat" && p.weekday !== "Sun") return false;
+  const alt = sunAltitude(t);
+  return alt >= 3 && alt <= 20 && !sunHidden();
+}
+
+// Snow buntings: little white birds down from the Arctic for the winter.
+// Flocks wheel low over snowy fields, November to March, by day, when it
+// isn't snowing hard or foggy.
+function buntingTime(t) {
+  const p = localParts(t);
+  if (!YXE.home || (p.m > 3 && p.m < 11) || !snowOnGround(t) || sunAltitude(t) < 2) return false;
+  const kind = weather ? weatherKind(weather.code) : "";
+  return kind !== "storm" && kind !== "fog" && !(weather && weather.code >= 73 && kind === "snow");
 }
 
 function setUpCritters(scene, timeNow) {
@@ -4006,6 +4198,142 @@ function setUpCritters(scene, timeNow) {
     };
   }
 
+  // Things in the sky that say what they are when tapped (setUpSkyTaps
+  // reads this list). Each entry is removed with its node.
+  scene.tapCritters = new Set();
+  const tappable = (node, title, detail, r) => {
+    const entry = { node, title, detail, r };
+    scene.tapCritters.add(entry);
+    return () => scene.tapCritters.delete(entry);
+  };
+
+  // A group of pelicans riding a thermal: each one circles (a flattened
+  // ring, as seen from below) at its own pace and size, the whole group
+  // climbing slowly while the breeze carries it across. White with black
+  // wingtips, like the real ones; lilac-white in the dark theme.
+  let pelicansUp = false;
+  function pelicans() {
+    const w = box.clientWidth, h = box.clientHeight;
+    if (!w || !h) return;
+    pelicansUp = true;
+    const small = h < 140;
+    const { dir } = breeze();
+    const group = el("div", "pelicans");
+    const y0 = h * (0.3 + Math.random() * 0.25);
+    group.style.top = `${y0.toFixed(0)}px`;
+    const birds = 5 + Math.floor(Math.random() * 6);
+    const spread = small ? 22 : 38; // how wide the thermal is
+    for (let i = 0; i < birds; i++) {
+      const bird = svgNode("svg", { class: "pelican", viewBox: "-12 -3 24 6" });
+      bird.append(
+        svgNode("path", { class: "pelican__wing", d: "M-11 -0.6Q-5 -1.6 0 -0.4Q5 -1.6 11 -0.6L11.4 0.4Q5 -0.2 0 1Q-5 -0.2 -11.4 0.4Z" }),
+        svgNode("path", { class: "pelican__tips", d: "M-11 -0.6L-7.5 -1.1L-7.6 0.1L-11.4 0.4ZM11 -0.6L7.5 -1.1L7.6 0.1L11.4 0.4Z" }),
+        svgNode("path", { class: "pelican__body", d: "M-0.6 -0.6L0.6 -0.6L0.6 2.2L-0.6 2.2ZM0 -0.6L0 -2.6L1.2 -2.2Z" }) // body and the long bill
+      );
+      group.append(bird);
+      const rx = spread * (0.35 + Math.random() * 0.65), ry = rx * 0.3;
+      const turn = Math.random() < 0.85 ? 1 : -1; // nearly all circle the same way
+      const lap = 9000 + Math.random() * 5000;
+      const frames = [];
+      for (let k = 0; k <= 16; k++) {
+        const a = (k / 16) * 2 * Math.PI * turn;
+        frames.push({ transform: `translate(${(Math.cos(a) * rx).toFixed(1)}px, ${(Math.sin(a) * ry).toFixed(1)}px) rotate(${(-Math.sin(a) * 10 * turn).toFixed(1)}deg)` });
+      }
+      bird.animate(frames, { duration: lap, iterations: Infinity, delay: -Math.random() * lap });
+    }
+    box.append(group);
+    const done = tappable(group, "American white pelicans", "Saskatoon's summer birds, riding warm air up in circles", spread);
+    const x0 = dir > 0 ? -spread - 20 : w + spread + 20;
+    group.animate(
+      [{ translate: `${x0}px 0` }, { translate: `${x0 + dir * (w + spread * 2 + 40)}px ${-(h * 0.18).toFixed(0)}px` }],
+      { duration: (small ? 50000 : 70000) + Math.random() * 20000, easing: "linear" }
+    ).onfinish = () => {
+      group.remove();
+      done();
+      pelicansUp = false;
+    };
+  }
+
+  // A hot-air balloon drifting very slowly on the calm air, bobbing a
+  // little and lighting its burner now and then (style.css).
+  let balloonUp = false;
+  function balloon() {
+    const w = box.clientWidth, h = box.clientHeight;
+    if (!w || !h) return;
+    balloonUp = true;
+    const small = h < 140;
+    const { wind, dir } = breeze();
+    const ship = svgNode("svg", { class: "balloon", viewBox: "-12 -15 24 32" });
+    ship.append(
+      svgNode("path", { class: "balloon__body", d: "M0 -14C7.5 -14 11 -8.5 11 -3.5C11 2.5 5.5 6.5 3.2 10H-3.2C-5.5 6.5 -11 2.5 -11 -3.5C-11 -8.5 -7.5 -14 0 -14Z" }),
+      svgNode("path", { class: "balloon__gore", d: "M0 -14C-4.2 -10 -4.6 2 -1.6 10H1.6C4.6 2 4.2 -10 0 -14Z" }), // the middle panel
+      svgNode("path", { class: "balloon__band", d: "M-10.6 -1H10.6L10 1.6H-10Z" }), // a band round its widest part
+      svgNode("path", { class: "balloon__ropes", d: "M-3 10L-2 13.2M3 10L2 13.2" }),
+      svgNode("path", { class: "balloon__flame", d: "M0 13.2Q-1 11.6 0 10.2Q1 11.6 0 13.2Z" }),
+      svgNode("rect", { class: "balloon__basket", x: -2.2, y: 13.2, width: 4.4, height: 3.2, rx: 0.5 })
+    );
+    ship.style.width = `${small ? 18 : 28}px`;
+    const y = h * (0.25 + Math.random() * 0.35);
+    ship.style.top = `${y.toFixed(0)}px`;
+    box.append(ship);
+    const done = tappable(ship, "Hot-air balloon", () => {
+      const air = breeze();
+      return air.wind < 1 ? "Not a breath of wind: perfect for a flight" : `A calm ${Math.round(air.wind)} km/h: perfect for a flight`;
+    });
+    // Mostly across with the breeze, but it starts somewhere in the sky
+    // (it took off from a field) and rises a little first
+    const x0 = w * (dir > 0 ? Math.random() * 0.3 : 0.7 + Math.random() * 0.3);
+    const x1 = dir > 0 ? w + 30 : -30;
+    const dur = Math.max(120000, (Math.abs(x1 - x0) / Math.max(2, wind)) * 6000);
+    const rise = Math.min(0.08, 5000 / dur); // fades in over about 5 seconds
+    ship.animate(
+      [{ translate: `${x0.toFixed(0)}px 14px`, opacity: 0 }, { translate: `${(x0 + (x1 - x0) * rise).toFixed(0)}px 0px`, opacity: 1, offset: rise }, { translate: `${x1}px -12px`, opacity: 1 }],
+      { duration: dur, easing: "linear" }
+    ).onfinish = () => {
+      ship.remove();
+      done();
+      balloonUp = false;
+    };
+  }
+
+  // A flock of snow buntings: small white birds that fly tight together,
+  // dipping and wheeling low over the snow. Each bird keeps its own spot
+  // in the flock, which slowly turns over as they go, and they flash as
+  // they bank (white bellies, darker backs).
+  function buntings() {
+    const w = box.clientWidth, h = box.clientHeight;
+    if (!w || !h) return;
+    const small = h < 140;
+    const dir = Math.random() < 0.5 ? 1 : -1;
+    const n = (small ? 14 : 22) + Math.floor(Math.random() * 12);
+    const flock = el("div", "buntings");
+    const r = small ? 14 : 24; // the flock's size
+    const dur = (small ? 7000 : 10000) + Math.random() * 4000;
+    const x0 = dir > 0 ? -r * 2 : w + r * 2;
+    const base = h * (0.6 + Math.random() * 0.15);
+    const dips = 1.5 + Math.random();
+    const spin = (Math.random() < 0.5 ? 1 : -1) * (1 + Math.random());
+    for (let i = 0; i < n; i++) {
+      const bird = el("i", "bunting");
+      // A spot in an oval, packed toward the middle
+      const a0 = Math.random() * 2 * Math.PI, d = Math.sqrt(Math.random());
+      const frames = [];
+      for (let k = 0; k <= 24; k++) {
+        const p = k / 24;
+        const a = a0 + p * spin * 2 * Math.PI;
+        const cx = x0 + dir * (w + r * 4) * p;
+        const cy = base - Math.sin(p * dips * Math.PI) * h * 0.25 + Math.sin(p * 9) * 4;
+        const x = cx + Math.cos(a) * r * 1.6 * d;
+        const y = cy + Math.sin(a) * r * 0.5 * d;
+        frames.push({ transform: `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`, opacity: (0.55 + 0.45 * Math.abs(Math.cos(a + p * 6))).toFixed(2) });
+      }
+      bird.animate(frames, { duration: dur, delay: Math.random() * 300, easing: "linear", fill: "backwards" }).onfinish = () => bird.remove();
+      flock.append(bird);
+    }
+    box.append(flock);
+    setTimeout(() => flock.remove(), dur + 600);
+  }
+
   // The secret parade (tap the sun seven times, or type "longlight"):
   // everything in the sky comes out at once for about 20 seconds.
   let paradeOn = false;
@@ -4019,6 +4347,9 @@ function setUpCritters(scene, timeNow) {
     if (!jetFlying) jet();
     if (!trainRunning) train();
     if (!hawkFlying) hawk(dir);
+    if (!pelicansUp) pelicans();
+    if (!balloonUp) balloon();
+    setTimeout(buntings, 1000);
     bats();
     setTimeout(bats, 2500);
     tumbleweed();
@@ -4057,6 +4388,9 @@ function setUpCritters(scene, timeNow) {
     }
     if (Math.random() < (CRITTER === "tumbleweed" ? 0.3 : tumbleTime(t) ? 1 / TUMBLE_EVERY_S : 0)) tumbleweed();
     if (!harvesting && (CRITTER === "combine" ? !scene.classList.contains("horizon--harvest") : combineTime(t) && Math.random() < 1 / COMBINE_EVERY_S)) combine();
+    if (!pelicansUp && (CRITTER === "pelicans" || (pelicanTime(t) && Math.random() < 1 / PELICAN_EVERY_S))) pelicans();
+    if (!balloonUp && (CRITTER === "balloon" || (balloonTime(t) && Math.random() < 1 / BALLOON_EVERY_S))) balloon();
+    if (Math.random() < (CRITTER === "buntings" ? 1 / 6 : buntingTime(t) ? 1 / BUNTING_EVERY_S : 0)) buntings();
   }, 1000);
 }
 
@@ -4926,18 +5260,18 @@ function setUpHorizon() {
         [l, r] = swipeLine(t, ahead);
       } else if (isDay && day.set) {
         l = takeTurns([
-          eclipseLine(t), rainbowLine(t), sunDogLine(t), lightHourLine(t) || `Sun's up ${overHere()}`,
-          shadowLine(t), dayLengthLine(t), weatherLine(), frostLine(t), driftLine(t), smokeLine(t),
+          eclipseLine(t), rainbowLine(t), sunDogLine(t), pillarLine(t), beltLine(t), lightHourLine(t) || `Sun's up ${overHere()}`,
+          shadowLine(t), dayLengthLine(t), dayVenusLine(t), weatherLine(), frostLine(t), driftLine(t), smokeLine(t),
         ]);
         r = `Sets ${clock(new Date(day.set))} · ${hoursMins(day.set - t)} of light left`;
       } else if (!isDay && day.rise && t < day.rise) {
         // Night: tonight's moon, and when the sun comes back
-        l = takeTurns([eclipseLine(t), issLine(t), moonLine(t), lightHourLine(t), showerLine(t), auroraLine(t), weatherLine(), driftLine(t), smokeLine(t)]);
+        l = takeTurns([eclipseLine(t), beltLine(t), pillarLine(t), issLine(t), moonLine(t), lightHourLine(t), showerLine(t), auroraLine(t), weatherLine(), driftLine(t), smokeLine(t)]);
         r = `Sun's up at ${clock(new Date(day.rise))}`;
       } else {
         // After sunset: tomorrow's sunrise
         const tomorrow = sunDay(new Date(day.end + 60000));
-        l = takeTurns([eclipseLine(t), issLine(t), moonLine(t), lightHourLine(t), showerLine(t), auroraLine(t), weatherLine(), driftLine(t), smokeLine(t)]);
+        l = takeTurns([eclipseLine(t), beltLine(t), pillarLine(t), issLine(t), moonLine(t), lightHourLine(t), showerLine(t), auroraLine(t), weatherLine(), driftLine(t), smokeLine(t)]);
         r = tomorrow.rise ? `Sun's back at ${clock(new Date(tomorrow.rise))}` : "Sun's back tomorrow";
       }
       setLine(left, l, swiped);
