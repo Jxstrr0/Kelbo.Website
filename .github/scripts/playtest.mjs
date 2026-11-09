@@ -36,7 +36,7 @@ if (!game) { console.error("usage: node playtest.mjs pew|scrapline [--dry] [--mo
 const flag = (n, d) => { const i = args.indexOf(n); return i < 0 ? d : Number(args[i + 1]); };
 const DRY = args.includes("--dry");
 const MAX_MOVES = flag("--moves", 70);
-const BUDGET = flag("--budget", 9);
+const BUDGET = flag("--budget", 8);
 
 // Claude Fable 5.1 on high effort (Kelbo's pick for this one-off). List prices, US$ per million tokens.
 // Thinking is always on for this model, so there is no thinking setting; effort sets how hard it thinks.
@@ -51,6 +51,7 @@ fs.mkdirSync(OUT, { recursive: true });
 const browser = await chromium.launch();
 const ctx = await browser.newContext({ ...devices["Pixel 7"] });   // 412×915, touch, fresh storage = brand-new player
 const page = await ctx.newPage();
+const cdp = await ctx.newCDPSession(page);   // raw browser input, for real finger swipes (see the drag tool below)
 const consoleErrors = [];
 page.on("console", m => { if (m.type() === "error") consoleErrors.push(m.text().slice(0, 300)); });
 page.on("pageerror", e => consoleErrors.push(String(e).slice(0, 300)));
@@ -143,10 +144,14 @@ async function runTool(name, input) {
   const errsBefore = consoleErrors.length;
   if (name === "tap") await page.touchscreen.tap(clamp(input.x, 0, 411), clamp(input.y, 0, 914));
   else if (name === "drag") {
-    const m = page.mouse;   // Playwright drags with the mouse; the games use pointer events, which treat it the same
-    await m.move(clamp(input.x1, 0, 411), clamp(input.y1, 0, 914)); await m.down();
-    await m.move(clamp(input.x2, 0, 411), clamp(input.y2, 0, 914), { steps: 12 });
-    await page.waitForTimeout(clamp(input.hold_seconds, 0, 6) * 1000); await m.up();
+    // A real finger swipe (touch events), not a mouse drag: a mouse drag can't scroll a
+    // panel on a phone page, which made the first run think scrolling was broken.
+    const x1 = clamp(input.x1, 0, 411), y1 = clamp(input.y1, 0, 914), x2 = clamp(input.x2, 0, 411), y2 = clamp(input.y2, 0, 914);
+    const touch = (type, x, y) => cdp.send("Input.dispatchTouchEvent", { type, touchPoints: type === "touchEnd" ? [] : [{ x, y }] });
+    await touch("touchStart", x1, y1);
+    for (let s = 1; s <= 12; s++) { await touch("touchMove", x1 + (x2 - x1) * s / 12, y1 + (y2 - y1) * s / 12); await page.waitForTimeout(16); }
+    await page.waitForTimeout(clamp(input.hold_seconds, 0, 6) * 1000);   // finger stays down (a drive stick)
+    await touch("touchEnd");
   }
   else if (name === "type_text") await page.keyboard.type(String(input.text).slice(0, 200));
   else if (name === "wait") await page.waitForTimeout(clamp(input.seconds, 1, 10) * 1000);
