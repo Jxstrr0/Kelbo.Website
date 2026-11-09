@@ -883,12 +883,12 @@ same `ANTHROPIC_API_KEY` secret as the brief:
   to US$1 a run (batch price, below).
 - **Scorekeeper** (Sunday around noon, 11:35 am, back-up at 1:15 pm and a
   5:45 pm pickup for a slow batch, so Friday's close is graded before the next forecast):
-  Claude Sonnet 5.5 on high effort, with web search, grades each call hit,
+  Claude Opus 5.5 on high effort (Sonnet 5.5 until Nov 9, 2026), with web search, grades each call hit,
   partial or miss with a one-line "What happened", then writes the recap,
   the AI coach note and the lesson. It grades your own hand-written
   entries too, if their `gradeBy` day has passed and a call is still
   `null`. It never changes a grade that's already there, and a call it
-  can't confirm stays ungraded rather than guessed. About 10 to 20 cents
+  can't confirm stays ungraded rather than guessed. About 40 to 70 cents
   a run (batch price).
 
 **Batch price.** Neither result is needed straight away, so both (and the
@@ -1195,7 +1195,7 @@ back on).
   straight away if the draft is already there).
 - **What it does:** looks at every game with a GitHub `code` link in
   `projects.json`, collects the last 7 days of merged pull requests and
-  releases, and asks Sonnet 5.5 to draft 0 to 4 devlog posts (at most one
+  releases, and asks Opus 5.5 (high effort) to draft 0 to 4 devlog posts (at most one
   per game) as Longlight, to players: only real changes, no code words,
   no PR numbers, no names. In the same call (no extra cost) it writes 1
   to 3 new lines for the "Now building" strip, one per game that had
