@@ -23,6 +23,10 @@
         longest and shortest days of the year
     14. fills game.html (one game's own page, game.html?g=the-whip) from
         projects.json
+    15. plays a game's recorded clip on its cover while the card is on
+        screen, and grows a tapped cover into the game page's cover
+    16. runs the scroll sun down the right edge, the character sheet's
+        boot-up and quest log on about.html, and the logo secret
 
    To preview a time of day, add ?at= to the address, e.g.
    index.html?at=noon, ?at=sunset, ?at=night, or ?at=2026-06-21T22:30
@@ -178,6 +182,9 @@ function renderProject(project) {
     img.height = 480;
     img.loading = "lazy";
     cover.append(img);
+    // A game with a recorded clip ("clip" in projects.json) plays it on
+    // its cover while the card is on screen (see "Moving covers").
+    if (project.clip) watchClip(cover, project.clip);
   } else {
     cover.append(el("span", "project__initials", initials(title)));
   }
@@ -331,6 +338,59 @@ function reveal(node) {
   }
   node.classList.add("reveal");
   revealObserver.observe(node);
+}
+
+/* ---------- Moving covers ----------
+   A game with a short recorded clip plays it, silently and on a loop, in
+   place of its cover picture while most of the card is on screen, and
+   stops when it scrolls away. The clip (about 200 KB) is only downloaded
+   the first time its card comes into view. Skipped with "reduce motion",
+   and when the phone has Data Saver on. */
+const SAVE_DATA = Boolean(navigator.connection && navigator.connection.saveData);
+const clipObserver =
+  !REDUCE_MOTION && !SAVE_DATA && "IntersectionObserver" in window
+    ? new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.intersectionRatio >= 0.6) playClip(entry.target);
+            else pauseClip(entry.target);
+          });
+        },
+        { threshold: [0, 0.6] }
+      )
+    : null;
+
+function watchClip(cover, src) {
+  if (!clipObserver) return;
+  cover.dataset.clip = src;
+  clipObserver.observe(cover);
+}
+
+function playClip(cover) {
+  let video = cover.querySelector("video");
+  if (!video) {
+    video = el("video", "project__clip");
+    // Phones only let a video start by itself if it's silent and inline
+    video.muted = true;
+    video.loop = true;
+    video.playsInline = true;
+    video.setAttribute("muted", "");
+    video.setAttribute("playsinline", "");
+    video.disablePictureInPicture = true;
+    video.tabIndex = -1;
+    video.setAttribute("aria-hidden", "true"); // decoration, like the cover picture
+    // Fade it in over the picture once it's really moving
+    video.addEventListener("playing", () => cover.classList.add("is-playing"));
+    video.src = cover.dataset.clip;
+    cover.append(video);
+  }
+  const started = video.play();
+  if (started && started.catch) started.catch(() => {}); // refused: the picture stays
+}
+
+function pauseClip(cover) {
+  const video = cover.querySelector("video");
+  if (video) video.pause();
 }
 
 /* ---------- Smooth filtering ----------
@@ -2515,7 +2575,7 @@ function setUpSkyTaps(scene, timeNow) {
     }
     // Birds and balloons that say what they are (setUpCritters keeps the list)
     for (const c of scene.tapCritters || []) {
-      if (c.node.isConnected) list.push({ ...centre(c.node), r: c.r || Math.max(8, centre(c.node).r), title: c.title, detail: typeof c.detail === "function" ? c.detail() : c.detail });
+      if (c.node.isConnected) list.push({ ...centre(c.node), r: c.r || Math.max(8, centre(c.node).r), title: c.title, detail: typeof c.detail === "function" ? c.detail() : c.detail, onTap: c.onTap });
     }
     if (scene.iss && scene.iss.look) {
       const look = scene.iss.look;
@@ -2619,6 +2679,7 @@ function setUpSkyTaps(scene, timeNow) {
       }
       if (sunTaps.length >= 4) return show(best.x, best.y, best.r, "The Sun", `Keep going… ${PARADE_TAPS - sunTaps.length} more`);
     }
+    if (best && best.onTap) best.onTap(); // the train and the stock car count toward badges
     if (best) show(best.x, best.y, best.r, best.title, best.detail);
     else tip.hidden = true;
   });
@@ -3724,6 +3785,7 @@ function paintWeather(scene, t) {
    ?critter=geese|fireflies|leaves|jet|hawk|kite|pelicans|balloon|buntings. */
 const GEESE_EVERY_S = 40; // a flock every 40 seconds on average, in season
 const JET_EVERY_S = 90; // a jet every minute and a half on average, by day
+const CAR_EVERY_S = 420; // the secret stock car: about once every seven minutes, any hour
 const TRAIN_EVERY_S = 150; // a freight train along the rails every couple of minutes, any hour
 const HAWK_EVERY_S = 60; // how often a hawk turns up on a windy afternoon
 const BATS_EVERY_S = 6; // a few bats every few seconds on Halloween night
@@ -3991,9 +4053,42 @@ function setUpCritters(scene, timeNow) {
     const own = rig.getBoundingClientRect().width || len;
     // Heading left: from past the right edge to past the left. The wrap is flipped to go right.
     const dur = 16000 + Math.random() * 8000;
+    // Tapping the train names it, and earns the Trainspotter badge
+    const untap = tappable(rig, "Freight train", `${cars} grain cars rolling through Longlight Station`, 22, () => spot("train"));
     rig.animate([{ translate: `${w}px 0` }, { translate: `${-own}px 0` }], { duration: dur, easing: "linear" }).onfinish = () => {
       wrap.remove();
+      untap();
       trainRunning = scene.trainRunning = false;
+    };
+  }
+
+  // A sky secret: every so often a tiny stock car tears along the prairie
+  // just under the horizon, a few seconds from edge to edge. Tapping it
+  // in time earns a hidden badge. Preview with ?critter=stockcar.
+  let carRunning = false;
+  function stockCar() {
+    if (!scene.track || !scene.track.clientWidth) return;
+    carRunning = true;
+    const lane = el("div", "tumble-path");
+    // In a 26 x 10 box, nose at the left: body with a spoiler, two wheels,
+    // and a clay stripe along the door
+    const car = svgNode("svg", { class: "stockcar", viewBox: "0 0 26 10" });
+    car.append(
+      svgNode("path", { d: "M0 7.6V5.6L4.5 4.7L8.5 2H17L20 4.5L24.6 4.9V2.4H26V7.6Z" }),
+      svgNode("rect", { class: "stockcar__stripe", x: 5, y: 5.2, width: 15, height: 1.1 }),
+      svgNode("circle", { cx: 6, cy: 7.8, r: 2 }),
+      svgNode("circle", { cx: 20, cy: 7.8, r: 2 })
+    );
+    if (Math.random() < 0.5) lane.style.transform = "scaleX(-1)"; // heads left unless the lane is flipped
+    lane.append(car);
+    scene.track.after(lane);
+    const w = scene.track.clientWidth;
+    const own = car.getBoundingClientRect().width || 24;
+    const untap = tappable(car, "Stock car", "Flat out down the back stretch. You found a secret", 18, () => spot("car"));
+    car.animate([{ translate: `${w}px 0` }, { translate: `${-own}px 0` }], { duration: 3400 + Math.random() * 1200, easing: "linear" }).onfinish = () => {
+      lane.remove();
+      untap();
+      carRunning = false;
     };
   }
 
@@ -4230,8 +4325,8 @@ function setUpCritters(scene, timeNow) {
   // Things in the sky that say what they are when tapped (setUpSkyTaps
   // reads this list). Each entry is removed with its node.
   scene.tapCritters = new Set();
-  const tappable = (node, title, detail, r) => {
-    const entry = { node, title, detail, r };
+  const tappable = (node, title, detail, r, onTap) => {
+    const entry = { node, title, detail, r, onTap };
     scene.tapCritters.add(entry);
     return () => scene.tapCritters.delete(entry);
   };
@@ -4409,6 +4504,7 @@ function setUpCritters(scene, timeNow) {
     }
     if (!jetFlying && (CRITTER === "jet" || (jetTime(t) && Math.random() < 1 / JET_EVERY_S))) jet();
     if (!trainRunning && (CRITTER === "train" || Math.random() < 1 / TRAIN_EVERY_S)) train();
+    if (!carRunning && (CRITTER === "stockcar" || Math.random() < 1 / CAR_EVERY_S)) stockCar();
     if (!hawkFlying && (CRITTER === "hawk" || (hawkTime(t) && Math.random() < 1 / HAWK_EVERY_S))) hawk(breeze().dir);
     if (Math.random() < (CRITTER === "bats" ? 0.5 : batsTime(t) ? 1 / BATS_EVERY_S : 0)) bats();
     if (CRITTER === "fireworks" || fireworksTime(t)) {
@@ -5215,27 +5311,223 @@ function setUpMouseSky(scene) {
 }
 
 function setUpCoverTilt() {
-  if (REDUCE_MOTION || !matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+  if (REDUCE_MOTION) return;
   let card = null;
   const settle = () => {
     if (card) card.classList.remove("is-tilting");
     card = null;
   };
-  document.addEventListener("pointermove", (e) => {
-    if (e.pointerType !== "mouse") return;
-    const over = e.target.closest ? e.target.closest(".project") : null;
-    if (over !== card) settle();
-    if (!over || !over.querySelector(".project__cover img")) return;
+  // Tip a card toward the pointer (x, y on the page); "k" is how far.
+  const lean = (over, e, k) => {
     card = over;
     const r = card.getBoundingClientRect();
     const px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
-    card.style.setProperty("--ry", `${((px - 0.5) * 9).toFixed(2)}deg`);
-    card.style.setProperty("--rx", `${((0.5 - py) * 7).toFixed(2)}deg`);
+    card.style.setProperty("--ry", `${((px - 0.5) * 9 * k).toFixed(2)}deg`);
+    card.style.setProperty("--rx", `${((0.5 - py) * 7 * k).toFixed(2)}deg`);
     card.style.setProperty("--mx", `${(px * 100).toFixed(1)}%`);
     card.style.setProperty("--my", `${(py * 100).toFixed(1)}%`);
     card.classList.add("is-tilting");
+  };
+  const cardAt = (e) => {
+    const over = e.target.closest ? e.target.closest(".project") : null;
+    return over && over.querySelector(".project__cover img") ? over : null;
+  };
+  // A mouse: the card follows it while it's over the card
+  if (matchMedia("(hover: hover) and (pointer: fine)").matches) {
+    document.addEventListener("pointermove", (e) => {
+      if (e.pointerType !== "mouse") return;
+      const over = cardAt(e);
+      if (over !== card) settle();
+      if (over) lean(over, e, 1);
+    });
+    document.documentElement.addEventListener("pointerleave", settle);
+  }
+  // A finger: the card leans toward it while it's pressed, and settles
+  // on letting go or when the press turns into a scroll (pointercancel)
+  document.addEventListener("pointerdown", (e) => {
+    if (e.pointerType === "mouse") return;
+    const over = cardAt(e);
+    if (over) lean(over, e, 0.7);
+  }, { passive: true });
+  document.addEventListener("pointermove", (e) => {
+    if (e.pointerType !== "mouse" && card) lean(card, e, 0.7);
+  }, { passive: true });
+  ["pointerup", "pointercancel"].forEach((name) => {
+    document.addEventListener(name, (e) => {
+      if (e.pointerType !== "mouse") settle();
+    });
   });
-  document.documentElement.addEventListener("pointerleave", settle);
+}
+
+/* ---------- The cover hop ----------
+   Tapping a game card ("About this game") grows its cover into the big
+   cover on the game's own page, instead of a plain fade. It uses the
+   browser's page transitions (style.css, "view-transition"): the tapped
+   cover and the game page's cover share the name "game-cover", so the
+   browser slides and stretches one into the other. The game page builds
+   its cover from projects.json a moment after it opens, too late for the
+   transition, so the tapped picture's address is passed along in
+   sessionStorage and a small script in game.html puts it in place at
+   once. Newer browsers only (Chrome, Edge, Safari 18.2+); others keep the
+   fade. Off with "reduce motion". */
+const HOP_KEY = "kelbo.coverHop";
+function setUpCoverHop() {
+  if (REDUCE_MOTION || !("onpagereveal" in window)) return;
+  const clear = () => {
+    document.querySelectorAll("[data-hop]").forEach((node) => {
+      node.style.viewTransitionName = "";
+      delete node.dataset.hop;
+    });
+  };
+  document.addEventListener("click", (e) => {
+    const link = e.target.closest ? e.target.closest("a.project__main") : null;
+    const card = link && link.closest(".project");
+    const img = card && card.querySelector(".project__cover img");
+    if (!img || !/^game-[a-z0-9-]+\.html$/.test(link.getAttribute("href") || "")) return;
+    clear();
+    img.parentNode.style.viewTransitionName = "game-cover";
+    img.parentNode.dataset.hop = "";
+    try {
+      sessionStorage.setItem(HOP_KEY, JSON.stringify({ to: link.href, src: img.currentSrc || img.src, at: Date.now() }));
+    } catch (err) { /* private mode: the page just fades */ }
+  });
+  // Coming back (the browser may bring this page back as it was): let the
+  // cover shrink home, then take the name off so the next tap starts clean.
+  window.addEventListener("pagereveal", (e) => {
+    if (e.viewTransition) e.viewTransition.finished.then(clear, clear);
+    else clear();
+  });
+}
+
+/* ---------- The scroll sun ----------
+   A thin clay line down the right edge of every long page, with a small
+   sun that travels down it as you scroll and sets into a little horizon
+   at the bottom. It only shows where it moves with your finger, so it's
+   off with "reduce motion", and on pages too short to scroll much. */
+function setUpScrollSun() {
+  if (REDUCE_MOTION) return;
+  const rail = el("div", "scroll-sun");
+  rail.setAttribute("aria-hidden", "true");
+  rail.append(el("i", "scroll-sun__sun"));
+  document.body.append(rail);
+  const header = document.querySelector(".site-header");
+  let frame = 0;
+  const draw = () => {
+    frame = 0;
+    const room = document.documentElement.scrollHeight - innerHeight;
+    rail.classList.toggle("is-shown", room > innerHeight * 0.6);
+    rail.style.setProperty("--p", room > 0 ? Math.min(1, Math.max(0, scrollY / room)).toFixed(4) : "0");
+    if (header) rail.style.setProperty("--top", `${header.offsetHeight + 14}px`);
+  };
+  const ask = () => {
+    if (!frame) frame = requestAnimationFrame(draw);
+  };
+  addEventListener("scroll", ask, { passive: true });
+  addEventListener("resize", ask);
+  // Lists arrive after the page opens, which makes it longer
+  if ("ResizeObserver" in window) new ResizeObserver(ask).observe(document.body);
+  draw();
+}
+
+/* ---------- The character sheet boots up (about.html) ----------
+   When the sheet scrolls into view its name types in letter by letter,
+   the three stat boxes tick on one after another, and further down each
+   party member slides in with its buff lines giving a pulse (style.css,
+   "sheet--boot"). The words don't change, only how they arrive. Skipped
+   with "reduce motion". */
+function setUpSheet() {
+  const sheet = document.querySelector(".sheet");
+  if (!sheet || REDUCE_MOTION || !("IntersectionObserver" in window)) return;
+  const name = sheet.querySelector(".sheet__name");
+  if (name) {
+    // One <span> per letter so each can switch on in turn. Screen readers
+    // get the whole name from aria-label instead of five loose letters.
+    const text = name.textContent.trim();
+    name.setAttribute("aria-label", text);
+    name.replaceChildren(
+      ...[...text].map((letter, i) => {
+        const span = el("span", "sheet__ch", letter);
+        span.setAttribute("aria-hidden", "true");
+        span.style.setProperty("--i", i);
+        return span;
+      })
+    );
+  }
+  sheet.querySelectorAll(".sheet__stats > div").forEach((box, i) => box.style.setProperty("--i", i));
+  sheet.classList.add("sheet--boot");
+  const head = sheet.querySelector(".sheet__head") || sheet;
+  const watcher = new IntersectionObserver(
+    (entries) => {
+      if (!entries.some((entry) => entry.isIntersecting)) return;
+      sheet.classList.add("is-on");
+      watcher.disconnect();
+    },
+    { threshold: 0.3 }
+  );
+  watcher.observe(head);
+  sheet.querySelectorAll(".party__member").forEach((member) => {
+    member.classList.add("party__member--slide");
+    reveal(member);
+  });
+}
+
+/* ---------- The quest log (about.html) ----------
+   Every project from projects.json as one short row: its name, its
+   status and the same progress bar the cards use. Quests still under way
+   come first (closest to done at the top), then the finished ones. Each
+   row links to the game's page (or the project itself). */
+function setUpQuests(listEl, projects) {
+  const done = (p) => findStatus(p.status).spot >= 100;
+  const active = projects.filter((p) => !done(p)).sort((a, b) => findStatus(b.status).spot - findStatus(a.status).spot);
+  const rows = active.concat(projects.filter(done));
+  listEl.replaceChildren();
+  rows.forEach((project, i) => {
+    const status = findStatus(project.status);
+    const title = project.title || "Untitled";
+    const row = el("li", "quest");
+    const href = isGame(project) ? gamePage(title) : project.link;
+    const top = el(href ? "a" : "div", "quest__top");
+    if (href) top.href = href;
+    top.append(el("span", "quest__name", title), el("span", "quest__state", status.label));
+    // The bar is decoration: the status is written right beside the name
+    const field = el("div", "field is-waiting");
+    field.setAttribute("aria-hidden", "true");
+    field.style.setProperty("--progress", status.spot);
+    field.dataset.stage = status.stage;
+    field.append(el("span", "field__drive"), el("span", "field__ball"));
+    row.append(top, field);
+    row.style.setProperty("--i", i % 6);
+    listEl.append(row);
+    reveal(row);
+  });
+}
+
+/* ---------- The logo secret ----------
+   On the home page the logo already is "home", so tapping it scrolls back
+   to the top. Tap it five times quickly and its sun rises again with a
+   burst of confetti (and the sting, if Sound is on), and the hidden
+   Lightkeeper badge is earned. On other pages the logo is a plain link
+   home, as before. */
+const LOGO_TAPS = 5;
+function setUpLogoSecret() {
+  const mark = document.querySelector(".site-header .wordmark");
+  if (!mark || !/(^|\/)(index\.html)?$/.test(location.pathname)) return;
+  let taps = [];
+  mark.addEventListener("click", (e) => {
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button) return; // "open in a new tab" still works
+    e.preventDefault();
+    window.scrollTo({ top: 0, behavior: REDUCE_MOTION ? "auto" : "smooth" });
+    const at = performance.now();
+    taps = taps.filter((tap) => at - tap < 3000).concat(at);
+    if (taps.length < LOGO_TAPS) return;
+    taps = [];
+    writeJSON(LOGO_KEY, Date.now());
+    if (soundOn()) playSting(); // plays, and raises the sun in time with it
+    else stingRise();
+    confetti(mark);
+    buzz([40, 30, 40, 30, 120]);
+    checkBadges();
+  });
 }
 
 function setUpHorizon() {
@@ -5922,8 +6214,24 @@ const BADGES = [
   { id: "explorer", name: "Explorer", hint: "Open Games, Trading, All and About" },
   { id: "wishmaker", name: "Wishmaker", hint: "Tap a shooting star on a dark night" },
   { id: "insider", name: "Insider", hint: "Read the devlog" },
+  { id: "trainspotter", name: "Trainspotter", hint: "Tap the freight train as it rolls through" },
+  { id: "aurora", name: "Northern lights", hint: "Visit on a night the aurora is out in the site's sky" },
   { id: "parade", name: "Parade marshal", hint: "A secret: something in the sky is hiding a party", secret: true },
+  { id: "stock-car", name: "Checkered flag", hint: "A secret: something fast is out on the prairie", secret: true },
+  { id: "lightkeeper", name: "Lightkeeper", hint: "A secret: the logo's sun on the home page likes attention", secret: true },
 ];
+const SPOTTED_KEY = "kelbo.spotted";   // sky things tapped: { train: time, car: time }
+const LOGO_KEY = "kelbo.logoSecret";   // when the logo secret was found
+
+// Note a sky thing as spotted (the train, the stock car), then check badges.
+function spot(what) {
+  const seen = readJSON(SPOTTED_KEY) || {};
+  if (!seen[what]) {
+    seen[what] = Date.now();
+    writeJSON(SPOTTED_KEY, seen);
+  }
+  checkBadges();
+}
 const BADGES_KEY = "kelbo.badges";     // { "first-game": time earned, ... }
 const BADGES_OPEN_KEY = "kelbo.badgesOpen"; // whether the badges box was left open
 const PLAYED_KEY = "kelbo.played";     // titles of the games opened
@@ -5963,6 +6271,7 @@ function badgeChecks() {
   const games = Number(readJSON(GAME_COUNT_KEY)) || 0;
   const days = (readJSON(DAYS_KEY) || []).length;
   const pages = readJSON(PAGES_KEY) || [];
+  const spotted = readJSON(SPOTTED_KEY) || {};
   const real = !new URLSearchParams(location.search).get("at");
   const now = new Date();
   const day = real ? sunDay(now) : {};
@@ -5980,6 +6289,10 @@ function badgeChecks() {
     "wishmaker": wishCount() >= 1,
     "insider": pages.includes("devlog.html"),
     "parade": !!readJSON(PARADE_KEY),
+    "trainspotter": !!spotted.train,
+    "aurora": real && auroraStrength(t) > 0,
+    "stock-car": !!spotted.car,
+    "lightkeeper": !!readJSON(LOGO_KEY),
   };
 }
 
@@ -6248,6 +6561,10 @@ async function init() {
   setUpDevlog();
   setUpBadges();
   setUpCoverTilt();
+  setUpCoverHop();
+  setUpScrollSun();
+  setUpSheet();
+  setUpLogoSecret();
   setUpSound();
 
   // The offline helper (sw.js): keeps a copy of the site on this phone so
@@ -6296,6 +6613,7 @@ async function init() {
     else if (listEl.dataset.projects === "news") setUpNews(listEl, projects);
     else if (listEl.dataset.projects === "press") setUpPress(listEl, projects);
     else if (listEl.dataset.projects === "game") setUpGame(listEl, projects);
+    else if (listEl.dataset.projects === "quests") setUpQuests(listEl, projects);
     else setUpAll(listEl, projects);
   });
 }
