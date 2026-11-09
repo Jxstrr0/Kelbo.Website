@@ -1,5 +1,240 @@
 [
   {
+    "date": "2026-11-09",
+    "title": "Forecast for the week of Nov 9",
+    "bias": "Neutral",
+    "gradeBy": "2026-11-13",
+    "summary": "I think this week turns on Tuesday's CPI, and the AI hardware selloff isn't finished. I expect the S&P to chop around its 200-day near 7,322, and I'd sell bounces into 7,500 to 7,600. I want equal weight to beat SPY and health care to beat tech again. MU should hold $600, but I don't think it gets back over its 200-day near $754 this week.",
+    "view": "Writing this Sunday evening. Last week the S&P fell 2.68% to 7,376.86, the Nasdaq fell 3.37% to 24,579.42, the Dow fell 0.94% to 51,285.73 and the Russell 2000 fell 2.05% to 2,754.11. Thursday did the damage: the S&P fell 4.4% and the Nasdaq 5.5% after reports that Microsoft would not expand a Texas data center deal with Nscale, on top of Democrats calling for a data center moratorium. Communication services (XLC +4.89%), real estate (XLRE +1.92%) and discretionary (XLY +1.91%) led. Energy (XLE -12.00%) and tech (XLK -8.23%) were worst, and the SOX fell 12.15%. The VIX went from 19.4 to 25.64, the 10-year closed at 4.86%, and Brent fell about 16% to $98.32. MU fell 22.0% on the week, from $884.74 to $690.00, including a 17.46% drop on Thursday.\n\nThis week hinges on inflation and the AI money trail. Payrolls came in at 165K against forecasts of 65K to 70K, unemployment fell to 4.1%, and CME odds of a December 9 hike rose to 76.8% from 66.9% a week earlier. CPI is Tuesday at 7:30 a.m. Sask, with 0.3% expected for headline (0.6% prior) and 0.2% for core (0.3% prior). There is no yearly headline rate this time because of the missing October 2025 data. PPI comes Friday. CoreWeave reports Tuesday after the close with about a 21% move priced, and Cisco (8.70%) and Applied Materials (14.37%) report Thursday after the close. Over the weekend, Nvidia's board opened an investigation into Jensen Huang, and Microsoft is winding down an Oracle AI cloud deal. Futures opened lower Sunday night, with the S&P down 0.4% and the Nasdaq 100 down 0.8%.\n\nLast week taught me that the rankings work and tight lines don't. RSP over SPY and XLV over XLK both hit. Lines only 1% to 4% from the last close all broke. So I keep the two rankings and set the lines wider this time. The S&P cap at 7,600 is 3% above Friday's close, the 7,225 floor is scored only on the weekly close, and the MU floor at $600 is 13% below.\n\nMy lean is neutral, with the risk to the downside in AI hardware. Schwab reads the break of 7,600 as a completed double top that points to the 200-day near 7,300, and we are almost there. A hot CPI could push the S&P through 7,225. A soft one probably brings a bounce that stalls between 7,500 and 7,600. The risk to my calls is a soft CPI plus a good Applied Materials report setting off a chip squeeze, which would flip both rankings at once.",
+    "note": "Friday Nov 6 closes and weekly moves come from The Closing Print, The Glass Desk, FXEmpire and Current Logic's sector recap. MU is from the Motley Fool, and Brent and WTI settles are from FinanceFeeds citing CNBC. Consensus and Fed speaker times are from FXEmpire's week ahead, updated Nov 8. Futures were read Sunday evening from CNBC and FX Leaders. Written by the Forecaster robot on Nov 8 from that day's web searches.",
+    "sectors": [
+      {
+        "sector": "Communication Services",
+        "etf": "XLC",
+        "direction": "Leading",
+        "trend": "up",
+        "why": "Best sector last week at +4.89%, but still down 10.98% this year"
+      },
+      {
+        "sector": "Real Estate",
+        "etf": "XLRE",
+        "direction": "Leading",
+        "trend": "up",
+        "why": "+1.92% last week as money hid in rate-sensitive defensives"
+      },
+      {
+        "sector": "Discretionary",
+        "etf": "XLY",
+        "direction": "Bouncing",
+        "trend": "up",
+        "why": "+1.91% last week, and +4.26% Wednesday on cheaper oil"
+      },
+      {
+        "sector": "Financials",
+        "etf": "XLF",
+        "direction": "Firm",
+        "trend": "up",
+        "why": "+1.15% last week, held up through Thursday's drop"
+      },
+      {
+        "sector": "Health Care",
+        "etf": "XLV",
+        "direction": "Holding",
+        "trend": "up",
+        "why": "Flat last week (-0.04%) while tech fell 8%, up 19.38% this year"
+      },
+      {
+        "sector": "Tech",
+        "etf": "XLK",
+        "direction": "Lagging",
+        "trend": "down",
+        "why": "-8.23% last week, its fifth straight weekly loss, on data center worries"
+      },
+      {
+        "sector": "Semis / Memory",
+        "etf": "SMH, MU",
+        "direction": "Weakest",
+        "trend": "down",
+        "why": "SMH -11.20% and SOX -12.15% last week, MU -22.0%"
+      },
+      {
+        "sector": "Energy",
+        "etf": "XLE",
+        "direction": "Rolling over",
+        "trend": "down",
+        "why": "-12.00% last week as Brent fell about 16% on US-Iran deal bets"
+      }
+    ],
+    "calls": [
+      {
+        "call": "Equal weight beats cap weight for a sixth straight week: RSP beats SPY",
+        "wrongIf": "SPY finishes the week (Nov 13 close vs Nov 6 close) ahead of RSP.",
+        "grade": null
+      },
+      {
+        "call": "Health care beats tech again: XLV beats XLK on the week",
+        "wrongIf": "XLK finishes the week (Nov 13 close vs Nov 6 close) ahead of XLV.",
+        "grade": null
+      },
+      {
+        "call": "MU holds $600 on every close this week",
+        "wrongIf": "MU closes under $600 on any day from Nov 9 to Nov 13.",
+        "grade": null
+      },
+      {
+        "call": "MU stays under its 200-day near $754 at the end of the week",
+        "wrongIf": "MU closes at or above $754 on Friday, Nov 13.",
+        "grade": null
+      },
+      {
+        "call": "The S&P stays capped under the 7,600 double-top neckline",
+        "wrongIf": "The S&P 500 closes above 7,600 on any day from Nov 9 to Nov 13.",
+        "grade": null
+      },
+      {
+        "call": "The S&P holds 7,225 support on the weekly close",
+        "wrongIf": "The S&P 500 closes under 7,225 on Friday, Nov 13.",
+        "grade": null
+      }
+    ],
+    "scenarios": [
+      {
+        "odds": 45,
+        "name": "Base: chop around the 200-day",
+        "text": "CPI comes in close to consensus and the S&P swings between 7,225 and 7,500, testing the 200-day near 7,322. Equal weight and health care keep the lead while MU chops between $650 and $750."
+      },
+      {
+        "odds": 30,
+        "name": "Bear: hot CPI and AI funding scare",
+        "text": "A hot CPI pushes December hike odds higher, and CoreWeave or Applied Materials disappoints. The S&P closes under 7,225 and heads for the 52-week average near 7,220, then 7,000, with MU testing $600."
+      },
+      {
+        "odds": 25,
+        "name": "Bull: soft CPI squeeze",
+        "text": "A soft CPI cools the hike talk and oversold chips get squeezed after Applied Materials. The S&P gets back over 7,500 and tests 7,600, and tech beats health care on the week."
+      }
+    ],
+    "levels": [
+      {
+        "symbol": "SPX",
+        "resistance": "7,420-7,444 (Friday's high), 7,500, 7,600 (double-top neckline)",
+        "support": "7,314-7,322 (200-day), 7,225-7,238, 7,220 (52-week average), 7,000",
+        "tell": "A close under 7,225 means the 200-day failed and the AI unwind is going deeper. A close over 7,600 means the double top is void"
+      },
+      {
+        "symbol": "MU",
+        "resistance": "$720-725 (Friday's high), $747-754 (200-day area), $779",
+        "support": "$671-676 (Friday's low), $650-656 (Nov 5 low), $600, $582",
+        "tell": "A close under $650 opens $600. A close back over $754 would mean the memory selloff is done for now"
+      },
+      {
+        "symbol": "Nasdaq",
+        "resistance": "24,679 (52-week average), 25,685",
+        "support": "24,315 (Nov 5 close), 24,207, 23,377",
+        "tell": "Staying under the 52-week average keeps tech the weak spot. A close under 24,207 would be a new low for this selloff"
+      },
+      {
+        "symbol": "Brent",
+        "resistance": "$105",
+        "support": "$93",
+        "tell": "A settle over $105 means the Iran deal hopes are fading and energy bounces. Under $93 means the deal is being priced in"
+      }
+    ],
+    "schedule": [
+      {
+        "when": "Mon",
+        "what": "Bowman 7:40 a.m. Sask, wholesale inventories 9:00 a.m. (0.6% vs 0.6%), Barkin 11:15 a.m., $58B 3-year auction at noon. Constellation, NRG and KKR before the open"
+      },
+      {
+        "when": "Mon after close",
+        "what": "Occidental, Take-Two, Trade Desk, Hims, Rocket Lab (about 16.4% priced)"
+      },
+      {
+        "when": "Tue",
+        "what": "CPI at 7:30 a.m. Sask (headline 0.3% vs 0.6%, core 0.2% vs 0.3%, no yearly headline rate). NFIB 5:00 a.m. (97.7). Logan 9:50 a.m., Schmid 12:30 p.m., Bowman 2:30 p.m. $42B 10-year auction at noon"
+      },
+      {
+        "when": "Tue after close",
+        "what": "CoreWeave (about 21% priced) and Petrobras"
+      },
+      {
+        "when": "Wed",
+        "what": "Veterans Day. Stocks are open, no US data, EIA oil inventories move to Thursday"
+      },
+      {
+        "when": "Thu",
+        "what": "Jobless claims 7:30 a.m. Sask (194K vs 189K), existing home sales 9:00 a.m. (3.86M vs 3.99M), $25B 30-year auction at noon. Hammack, Goolsbee, Daly, Schmid, then Williams at 5:30 p.m. Nebius before the open"
+      },
+      {
+        "when": "Thu after close",
+        "what": "Cisco (about 8.70% priced) and Applied Materials (about 14.37% priced)"
+      },
+      {
+        "when": "Fri",
+        "what": "PPI at 7:30 a.m. Sask (0.4% vs 1.3%, core 0.3% vs 0.7%). Collins 8:10 a.m., Bowman 9:50 a.m., Daly 11:00 a.m."
+      }
+    ],
+    "plan": [
+      "No new MU longs until it closes back over its 200-day near $754. In the $600 to $656 zone I only buy with defined risk.",
+      "Small or flat into Tuesday's 7:30 a.m. CPI print.",
+      "Defined-risk spreads only through CoreWeave Tuesday and Applied Materials Thursday. The implied move is a typical size, not a cap.",
+      "Sell S&P pops into 7,500 to 7,600, and stop if it closes over 7,600.",
+      "If the S&P closes under 7,225, I cut risk and stop looking for longs."
+    ],
+    "trades": [],
+    "sources": [
+      {
+        "title": "Weekly Market Review: Nov 6, 2026 - The Glass Desk",
+        "url": "https://theglassdesk.substack.com/p/weekly-market-review-nov-6-2026"
+      },
+      {
+        "title": "Post-Market & Weekly Summary",
+        "url": "https://www.theclosingprint.net/2026/11/post-market-and-weekly-summary-2026-11-06/"
+      },
+      {
+        "title": "Stock Market Weekly Recap: Sector Winners and Losers Nov 2-6",
+        "url": "https://currentlogic.substack.com/p/dispersion-brief-week-in-review-nov"
+      },
+      {
+        "title": "The Week Ahead: CPI and Tech Earnings Test a Fragile Stock Market",
+        "url": "https://www.fxempire.com/forecasts/article/the-week-ahead-cpi-and-tech-earnings-test-a-fragile-stock-market-1643118"
+      },
+      {
+        "title": "Weekly Market Wrap Up and Look Ahead-Week ending Friday, November 6, 2026",
+        "url": "https://openoutcrytrade.substack.com/p/weekly-market-wrap-up-and-look-ahead-ecf"
+      },
+      {
+        "title": "Closing Look — Friday, November 6, 2026",
+        "url": "https://cappnotes.substack.com/p/closing-look-friday-november-6-2026"
+      },
+      {
+        "title": "Treasury Yields Snapshot: November 6, 2026",
+        "url": "https://www.etftrends.com/fixed-income-content-hub/treasury-yields-snapshot-november-6-2026/"
+      },
+      {
+        "title": "Brent Crude Oil Price: $98.32 After 16% Weekly Drop",
+        "url": "https://financefeeds.com/brent-crude-oil-price-98-32-saturday-week-ahead-us-iran-deal-bets-cpi-10-november-bull-105-bear-93/"
+      },
+      {
+        "title": "Stock Market Today, Nov. 6: Micron Technology Jumps as Chip Stocks Rebound From Thursday's Rout",
+        "url": "https://www.fool.com/coverage/stock-market-today/2026/11/06/stock-market-today-nov-6-micron-technology-jumps-as-chip-stocks-rebound-from-thursday-s-rout/"
+      },
+      {
+        "title": "Micron Stock Has Lost Over 40% Since Its June Record. I'd Still Buy It.",
+        "url": "https://www.fool.com/investing/2026/11/06/micron-stock-has-lost-over-40-since-its-june-record-i-d-still-buy-it/"
+      },
+      {
+        "title": "Micron (MU) Falls Below 200-Day Moving Average as Shares Drop 11%",
+        "url": "https://www.dividendchannel.com/article/202611/micron-mu-falls-below-200-day-moving-average-as-shares-drop-11-mu-MU11052026200.htm/"
+      },
+      {
+        "title": "MU Price Prediction: Oversold bounce faces heavy overhead resistance",
+        "url": "https://blockchain.news/news/20261107-price-prediction-mu-oversold-bounce-faces-heavy-overhead-resistance"
+      }
+    ],
+    "by": "forecaster"
+  },
+  {
     "date": "2026-11-03",
     "title": "Forecast for the week of Nov 2",
     "bias": "Neutral",
