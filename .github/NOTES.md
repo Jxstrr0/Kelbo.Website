@@ -737,6 +737,16 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   "already exists" check (or picks up a saved batch) before any API call.
   Release Writer and Deploy site keep their own crons. To change a time,
   edit `TIMETABLE` in both copies (times on a 5-minute mark, in UTC).
+  **Cost reader** (same Worker): at minute `COST.minute` (55) of every
+  hour, when the secret `ANTHROPIC_ADMIN_KEY` (an organization-scope
+  Console key, `dashboard-cost-reader`, expires 2027-12-31) and the KV
+  binding `COST_KV` (namespace `robot-timer-data`) exist, `saveCosts`
+  pages through the Admin API `GET /v1/organizations/cost_report`
+  (`bucket_width=1d` from `COST.since`, amounts in cents) and writes
+  `{updated, currency, days: {date: dollars}}` to the KV key
+  `cost-report`. It logs only the day count or the HTTP status, never an
+  amount. The private Claude dashboard reads that key through the
+  Cloudflare connection; no figure ever comes into this repo.
 - Coach (brief lessons): `brief-lessons.yml` (Sundays 17:45 UTC = 11:45 am,
   beside the Devlog Writer and Scorekeeper, plus a 23:25 UTC pickup run that stops at once if today's lessons exist and
   no batch is saved) runs `brief-lessons.mjs` (`claude-opus-5-5`, effort
