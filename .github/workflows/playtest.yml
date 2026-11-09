@@ -3,7 +3,7 @@
 # Claude plays Prairie Engine Works and/or Scrapline on a pretend phone as a
 # brand-new player, trying to start a Career, and notes where it gets
 # confused, stuck or pleased. It's paid (Claude Fable 5.1 on high effort,
-# about US$6-9 a game), so it never runs on a schedule: only "Run workflow" starts it, and
+# about US$2-8 a game), so it never runs on a schedule: only "Run workflow" starts it, and
 # each game stops at its move cap or its dollar cap, whichever comes first.
 #
 # The log shows only move counts and cost. The notes and screenshots are
@@ -24,7 +24,7 @@ on:
         default: "70"
       budget:
         description: "Most US$ per game (hard stop)"
-        default: "9"
+        default: "8"
       dry_run:
         description: "Dry run: load the game and screenshot it, no Claude calls"
         type: boolean
