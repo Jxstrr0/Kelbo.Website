@@ -530,6 +530,18 @@ from the optional weather, air quality and northern lights, below).
     `?at=2026-09-10T17:30&weather=rainbow`.
   - **Heat shimmer:** from 28°C (`HOT_C`), the horizon line wobbles and
     the air above it ripples. Preview `?at=2027-07-15T15:00&weather=hot`.
+  - **Belt of Venus:** on a clear evening just after sunset (or morning
+    just before sunrise), a pink band sits low in the sky opposite the
+    sun, with the darker Earth's shadow rising under it. Preview
+    `?at=2026-07-12T21:55&weather=clear`.
+  - **Sun pillar:** on a bitterly cold day (about −10°C or colder) with a
+    low sun, a column of light stands straight up from it. Preview
+    `?at=2026-01-15T17:05&weather=pillar`.
+  - **Venus in daylight:** when Venus is well away from the sun and the
+    sky is clear, a small bright dot shows where to look (tap it). Preview
+    `?at=noon&weather=clear&critter=venus`.
+  - **Cloud shadows:** on a part-cloudy day, soft shadows slide across
+    the ground. Preview `?at=noon&weather=cloudy`.
 - **The grain elevator:** a wooden prairie grain elevator stands on the
   horizon where the sun is at noon. It is drawn like a real one: a tall
   main house with a steep gabled front, a taller narrow leg house behind
@@ -565,9 +577,16 @@ from the optional weather, air quality and northern lights, below).
     above freezing, sun well up), drifting with the wind. In Saskatoon's
     sky it only shows from April to October, when the hawks are around.
     At weekends it's **a kite** on a long string instead (any month).
+  - **Pelicans** circle high on warm summer afternoons, slowly drifting
+    with the wind (Saskatoon's big white summer birds).
+  - **A hot-air balloon** floats over on calm summer weekend mornings and
+    evenings, lighting its burner now and then.
+  - **Snow buntings**, a tight flock of little white birds, flash and
+    wheel low over the snow in winter.
+  - Tap any of the birds or the balloon and the readout says what it is.
   - Preview any of them with `?critter=` plus `leaves`, `jet`, `hawk`,
-    `kite`, `geese`, `fireflies` or `train` (add `&weather=windy` for a strong
-    wind). `JET_EVERY_S` and `HAWK_EVERY_S` in `main.js` set how often.
+    `kite`, `geese`, `fireflies`, `train`, `pelicans`, `balloon` or
+    `buntings` (add `&weather=windy` for a strong wind). `JET_EVERY_S` and `HAWK_EVERY_S` in `main.js` set how often.
 - **Winter ground** (needs snow lying, so it uses the real weather):
   - **Frost glitter:** on a clear morning of -10°C or colder, the snow
     flashes with tiny sparkles while the low sun is up.
