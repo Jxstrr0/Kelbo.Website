@@ -106,7 +106,7 @@ Gap call (the "**Gap call:**" line${hasSox ? " in the MU section, and separately
 - "partial": the direction was right but the size was off by more than 1 point, or the call was flat and the gap was 0.5% to 1%.
 - "miss": the direction was wrong, or the call was flat and the gap was bigger than 1%.
 - "unknown": you couldn't confirm the open or the previous close.
-Key levels (every support and resistance price in the "**Key levels**" part of the brief's MU section, at most 8${hasSox ? ", and separately the SOX section's, at most 8" : ""}). Use the regular-session high, low and close:
+Key levels (every support and resistance price in the "**Key levels**" part of the brief's MU section, at most 8${hasSox ? ", and separately the SOX section's, at most 8" : ""}). Ignore the "**Ladder:**" line: it only repeats these prices for the website's drawing. Use the regular-session high, low and close:
 - "held": the price came within 0.5% of the level (or poked through it) but closed back on the expected side (above a support, below a resistance).
 - "broke": the price closed beyond the level (below a support, above a resistance).
 - "untested": the day's range never came within 0.5% of the level.
