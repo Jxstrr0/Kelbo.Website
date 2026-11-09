@@ -204,6 +204,9 @@ progress order.
   missing the site uses the small one and the Site check gives a warning.
 - **featured**: `true` shows it as a big card under "Pick a game" on the home
   page (the first four only).
+- **clip** (optional): a short silent video on the game's own page, under
+  "See it move": `"clip": "assets/clips/my-game.mp4"`, with a still picture
+  of the same name ending `.jpg` beside it. Ask Claude to record one.
 - **shots** (optional): screenshots for the card's "Screenshots (4)" drawer.
   Add a list under the project, each with a picture and a short
   description for screen readers:
