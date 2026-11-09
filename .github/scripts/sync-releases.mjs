@@ -102,7 +102,12 @@ for (const p of projects) {
   }
 
   const own = lines[`${m[2].replace(/\.git$/, "")}@${tag}`]?.line;
-  const title = typeof own === "string" && own.trim() ? own.trim() : cleanTitle(release.name, tag);
+  // A release title is often a commit summary that starts lowercase, so the
+  // fallback gets a capital first letter to read as a sentence on the card.
+  const fallback = cleanTitle(release.name, tag);
+  const title = typeof own === "string" && own.trim()
+    ? own.trim()
+    : fallback && fallback.charAt(0).toUpperCase() + fallback.slice(1);
   const before = `${p.version} · ${p.latest}`;
   const versionMoved = compare(version, p.version || "0") !== 0;
   p.version = version;
