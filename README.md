@@ -99,6 +99,12 @@ for that game. For it right away, open **Actions** → **Deploy site** →
 release, the site keeps the `projects.json` one and the deploy notes remind
 you to publish a release.
 
+Escapement, Scrapline and Ink do this by themselves: a small helper in each
+repo (`.github/workflows/publish-release.yml`, free, no keys) publishes a
+release whenever a merge to `main` carries a version that has none yet. It
+only matters for the version number on this site, so deleting a helper is
+safe: that game's number just stops at its last release.
+
 ## Change the text
 
 All the words on the home page are in `index.html`. Look for these

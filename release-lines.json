@@ -1,1 +1,17 @@
-{}
+{
+  "Escapement@v1.1.2.2": {
+    "line": "Fast taps on a phone no longer zoom the page or highlight text.",
+    "title": "v1.1.2.2 - no double-tap zoom or hold-to-highlight on phones",
+    "at": "2026-11-09T21:30:00.000Z"
+  },
+  "Scrapline@v0.1.39.0": {
+    "line": "Life after the Open: a title to defend and a hall of fame.",
+    "title": "v0.1.39.0 - life after the Open",
+    "at": "2026-11-09T21:30:00.000Z"
+  },
+  "Ink@v0.1.25.2": {
+    "line": "Fast taps on a phone no longer zoom the page or highlight text.",
+    "title": "v0.1.25.2 - no double-tap zoom or hold-to-highlight on phones",
+    "at": "2026-11-09T21:30:00.000Z"
+  }
+}
