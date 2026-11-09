@@ -1,4 +1,9 @@
 {
+  "350Chev@v1.76.101.0": {
+    "line": "Calmer and easier to read: no camera shake with reduced motion, and bigger buttons.",
+    "title": "v1.76.101.0 - no camera shake under reduced motion, taller chips, readable dimmed text",
+    "at": "2026-11-09T22:00:00.000Z"
+  },
   "Escapement@v1.1.2.2": {
     "line": "Fast taps on a phone no longer zoom the page or highlight text.",
     "title": "v1.1.2.2 - no double-tap zoom or hold-to-highlight on phones",
