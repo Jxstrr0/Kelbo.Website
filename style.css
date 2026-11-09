@@ -2937,6 +2937,18 @@ img {
   letter-spacing: -0.01em;
 }
 
+/* Sky this week borrows this fold. Its one line is a sentence, not a
+   count, so it's smaller, and it goes away once the full list is open. */
+.badges__count--line {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.badges[open] .badges__count--line {
+  display: none;
+}
+
 .badges[open] .badges__list {
   margin-top: 0.9rem;
 }
@@ -3216,6 +3228,32 @@ img {
   border: 1px solid var(--rule);
   color: var(--muted);
   font-weight: 700;
+}
+
+/* "Plays in your browser": a quiet promise next to the category pill */
+.project__instant {
+  padding: 0.2rem 0;
+  color: var(--secondary);
+  font-weight: 700;
+}
+
+/* The game page's clip: a phone-shaped video, never wider than the screen */
+.game__clip video {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: 30rem;
+  aspect-ratio: 1 / 2;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--ll-slate);
+}
+
+.game__clip-note {
+  margin: 0.5rem 0 0;
+  color: var(--muted);
+  font-size: 0.85rem;
 }
 
 .project__summary {

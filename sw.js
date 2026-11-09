@@ -83,6 +83,7 @@ self.addEventListener("fetch", (event) => {
   if (request.method !== "GET") return; // the contact form and the like go straight through
   const url = new URL(request.url);
   if (url.origin !== location.origin) return; // weather and other sites: not ours to save
+  if (url.pathname.endsWith(".mp4")) return; // game clips: let the browser stream them itself
 
   event.respondWith(
     fetch(request)
