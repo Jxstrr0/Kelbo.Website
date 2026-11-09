@@ -14,7 +14,7 @@ from their releases, then publishes the files as they are (see
 
 | File | What it's for |
 |---|---|
-| `index.html` | Home page: the Longlight Interactive name, game cards, Games / Trading / Tools / All tiles, contact |
+| `index.html` | Home page: the Longlight Interactive name, game cards, Games / Trading / All tiles, contact |
 | `about.html` | The About page: your bio and the "player card" facts |
 | `projects.html` | The full projects page with status filters |
 | `whats-new.html` | The newest version and latest change for each project, built from `projects.json` (no dates, since the file has none) |
@@ -23,7 +23,7 @@ from their releases, then publishes the files as they are (see
 | `press.html` | **Press kit**: the fact sheet, logo downloads (`assets/press/`), brand colours, and every game's cover, summary and screenshots, built from `projects.json`. Linked from every footer |
 | `games.html` | The Games section: every project with `"category": "Game"` |
 | `trading.html` | The Trading section: every project with `"category": "Trading"` |
-| `tools.html` | The Tools section (menu: Tools): every project with `"category": "Tool"`. It used to be `ai.html`; old links to that address land here |
+| `tools.html` | The Tools section (menu: Tools): every project with `"category": "Tool"`. Hidden for now: it's not in the menu or on the home page, but the page still works. It used to be `ai.html`; old links to that address land here |
 | `projects.json` | **The list of projects.** Edit this to add or change one |
 | `game.html` | **One game's own page** (`game.html?g=the-whip`). It fills itself from `projects.json`, so a new game needs no new file |
 | `now.json` | **The "Now building" strip** on the home page. Edit this to say what you're working on |
@@ -108,7 +108,7 @@ comments to find each part:
   it, "by Kelbo" under it (linked to your About page), the description, the
   two buttons, and the live sun
 - `<!-- 2. Games -->`: the "Pick a game" cards (filled in from `projects.json`)
-- `<!-- 3. Modes -->`: the Games / Trading / Tools / All tiles, each with a small drawing behind its words (the `<svg class="tile__art">`; its colours are in `style.css` under Mode tiles)
+- `<!-- 3. Modes -->`: the Games / Trading / All tiles, each with a small drawing behind its words (the `<svg class="tile__art">`; its colours are in `style.css` under Mode tiles)
 - `<!-- 4. Contact -->`: the contact form, and your links in the card
   beside it
 
@@ -329,8 +329,7 @@ Say you want a "Music" section next to Games, Trading, and Tools:
    change its link, name, line, drawing, and `data-category-count="Music"`.
    Add `"Music"` to `KNOWN_CATEGORY` in `.github/scripts/check-site.mjs`.
 3. Optionally add it to the menu (`<ul class="nav">`) in every page. Keep the
-   menu short so it fits on one line on a phone. (A menu item with
-   `class="nav__wide"`, like About, only shows on wide screens.)
+   menu short so it fits on one line on a phone (it holds four items now).
 
 ## Change colours or fonts
 

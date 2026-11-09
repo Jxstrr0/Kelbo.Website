@@ -5871,7 +5871,7 @@ const BADGES = [
   { id: "after-dark", name: "After dark", hint: "Visit once the sky is fully dark" },
   { id: "solstice", name: "Solstice", hint: "Visit on the longest or shortest day of the year" },
   { id: "regular", name: "Regular", hint: "Visit on 3 different days" },
-  { id: "explorer", name: "Explorer", hint: "Open Games, Trading, Tools, All and About" },
+  { id: "explorer", name: "Explorer", hint: "Open Games, Trading, All and About" },
   { id: "wishmaker", name: "Wishmaker", hint: "Tap a shooting star on a dark night" },
   { id: "insider", name: "Insider", hint: "Read the devlog" },
   { id: "parade", name: "Parade marshal", hint: "A secret: something in the sky is hiding a party", secret: true },
@@ -5882,7 +5882,8 @@ const PLAYED_KEY = "kelbo.played";     // titles of the games opened
 const DAYS_KEY = "kelbo.days";         // the last few days visited, "2026-10-24"
 const PAGES_KEY = "kelbo.pages";       // which section pages were opened
 const GAME_COUNT_KEY = "kelbo.gameCount"; // how many games there are, for Completionist
-const EXPLORER_PAGES = ["games.html", "trading.html", "tools.html", "projects.html", "about.html"];
+// Tools is hidden for now (November 2026), so Explorer doesn't need it.
+const EXPLORER_PAGES = ["games.html", "trading.html", "projects.html", "about.html"];
 
 // Note a game as played (from Play it or Play here).
 function notePlayed(title) {
@@ -5927,8 +5928,7 @@ function badgeChecks() {
     "after-dark": real && sunAltitude(now) < -12,
     "solstice": real && !!solsticeToday(now),
     "regular": days >= 3,
-    // (The Tools page was called ai.html before November 2026; a visit there counts too.)
-    "explorer": EXPLORER_PAGES.every((page) => pages.includes(page) || (page === "tools.html" && pages.includes("ai.html"))),
+    "explorer": EXPLORER_PAGES.every((page) => pages.includes(page)),
     "wishmaker": wishCount() >= 1,
     "insider": pages.includes("devlog.html"),
     "parade": !!readJSON(PARADE_KEY),
