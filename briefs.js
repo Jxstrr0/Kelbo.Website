@@ -543,22 +543,290 @@ async function showBrief(date) {
   openMonth(preArchive, date);
 }
 
+/* ---------- Dressing the brief ----------
+   The Morning Writer always writes the same headings (see the top of
+   premarket-brief.mjs), so after the Markdown is turned into HTML these
+   functions sort it into colour-coded cards:
+     the lead      headline, TLDR, "How it did" and the section buttons
+     MU            clay (the headline ticker), moved to the front
+     Overnight     purple (the night sky)
+     Watchlist     lilac
+     Calendar      slate (ivory after dark)
+     Sources       folded shut, quiet
+   The colours themselves are in briefs.css ("The brief's sections").
+   Everything here only moves and labels HTML that renderMarkdown already
+   made (and escaped), so nothing new from the brief can sneak in. A
+   heading it doesn't know still gets a plain card, so an older brief
+   (11-05 and 11-06 had a SOX section) or a renamed heading never breaks. */
+
+// "## Overnight and Asia" -> "overnight". Unknown headings -> "other".
+const PART_NAMES = [
+  [/^mu\b/i, "mu"],
+  [/^sox\b/i, "sox"],
+  [/^overnight/i, "overnight"],
+  [/^watchlist/i, "watchlist"],
+  [/^calendar/i, "calendar"],
+  [/^sources$/i, "sources"],
+];
+
+// The short name on each section button.
+const PART_SHORT = { overnight: "Overnight", watchlist: "Watchlist", calendar: "Calendar", sources: "Sources" };
+
+function partName(heading) {
+  const hit = PART_NAMES.find(([test]) => test.test(heading.trim()));
+  return hit ? hit[1] : "other";
+}
+
 // Wraps each "## section" heading and everything under it (up to the next
-// one, or the stamp) in a <section class="brief__part">, so wide screens
-// can set the sections side by side in a grid (briefs.css). Phones see no
-// difference. The Sources section gets brief__part--sources (full width).
+// one, or the stamp) in a <section class="brief__part">, then dresses it.
 function groupParts(article) {
   let part = null;
+  const parts = [];
   for (const node of [...article.children]) {
     if (node.tagName === "H3") {
-      part = el("section", "brief__part");
-      if (node.classList.contains("brief__sources")) part.classList.add("brief__part--sources");
+      const name = partName(node.textContent);
+      part = el("section", "brief__part brief__part--" + name);
+      part.dataset.part = name;
+      part.id = "brief-part-" + parts.length;
       node.before(part);
+      parts.push(part);
     } else if (node.classList.contains("brief__stamp")) {
       part = null;
     }
     if (part) part.append(node);
   }
+  if (!parts.length) return; // not a brief we recognise: leave it as it is
+
+  // The lead card: everything before the first section.
+  const lead = el("div", "brief__lead");
+  while (article.firstElementChild && article.firstElementChild !== parts[0]) lead.append(article.firstElementChild);
+  parts[0].before(lead);
+
+  // MU (and the old SOX) first: the gap call is what the brief is for.
+  const front = parts.filter((p) => p.dataset.part === "mu" || p.dataset.part === "sox");
+  for (const p of front.reverse()) lead.after(p);
+
+  for (const p of parts) {
+    const name = p.dataset.part;
+    if (name === "mu" || name === "sox") dressCalls(p);
+    if (name === "overnight") dressLeads(p);
+    if (name === "watchlist") dressWatchlist(p);
+    if (name === "calendar") dressCalendar(p);
+    if (name === "sources") foldSources(p);
+  }
+  markChanges(article);
+  addJumps(lead, [...article.querySelectorAll(".brief__part")]);
+}
+
+// The MU section: "**Gap call:** ..." lines become labelled boxes, in the
+// order a reader wants them (the call first, last session's check last).
+// Lines with no blank line between them arrive as one <p> split by <br>.
+const CALL_FIELDS = [
+  [/^gap call/i, "gap"],
+  [/^pre-?market/i, "pre"],
+  [/^key levels/i, "levels"],
+  [/^drivers/i, "drivers"],
+  [/^bull/i, "bull"],
+  [/^bear/i, "bear"],
+  [/^news/i, "news"],
+  [/^last call/i, "last"],
+];
+const CALL_ORDER = ["gap", "pre", "levels", "drivers", "bull", "bear", "news", "last"];
+const CALL_LABELS = { last: "Last session's call" }; // friendlier than "Last call"
+
+function dressCalls(part) {
+  const fields = [];
+  let field = null;
+  for (const node of [...part.children]) {
+    if (node.tagName === "H3") continue;
+    if (node.tagName === "P") {
+      for (const bit of node.innerHTML.split("<br>")) {
+        const m = bit.match(/^<strong>([^<]+?):<\/strong>\s*([\s\S]*)$/);
+        if (m) {
+          const hit = CALL_FIELDS.find(([test]) => test.test(m[1]));
+          const kind = hit ? hit[1] : "other";
+          field = el("div", "brief__field brief__field--" + kind);
+          field.dataset.field = kind;
+          field.append(el("p", "brief__label", CALL_LABELS[kind] || m[1]));
+          if (m[2].trim()) {
+            const value = el("p", "brief__value");
+            value.innerHTML = m[2]; // already-escaped HTML from renderMarkdown
+            field.append(value);
+          }
+          fields.push(field);
+        } else if (field && bit.trim()) {
+          const value = el("p", "brief__value");
+          value.innerHTML = bit;
+          field.append(value);
+        }
+      }
+      if (field) node.remove();
+    } else if (field) {
+      field.append(node); // a list under "Key levels:" or "News:"
+    }
+  }
+  if (!fields.length) return;
+
+  // Key levels: tint resistance and support so the ladder reads at a glance.
+  for (const f of fields.filter((f) => f.dataset.field === "levels")) {
+    for (const li of f.querySelectorAll("li")) {
+      const text = li.textContent.trim();
+      if (/^(next\s+)?resistance/i.test(text)) li.classList.add("brief__level--res");
+      else if (/^(next\s+)?support/i.test(text)) li.classList.add("brief__level--sup");
+      boldLead(li);
+    }
+  }
+  // The gap call's confidence becomes a small pill.
+  for (const f of fields.filter((f) => f.dataset.field === "gap")) {
+    for (const value of f.querySelectorAll(".brief__value")) {
+      value.innerHTML = value.innerHTML.replace(
+        /\b(Low|Medium|Moderate|High) confidence\b/,
+        (all, level) => `<span class="brief__conf brief__conf--${level.toLowerCase()}">${all}</span>`
+      );
+    }
+  }
+
+  fields.sort((a, b) => CALL_ORDER.indexOf(a.dataset.field) - CALL_ORDER.indexOf(b.dataset.field));
+  const box = el("div", "brief__fields");
+  for (const f of fields) box.append(f);
+  // Bull and bear side by side (stacked on a phone).
+  const bull = fields.find((f) => f.dataset.field === "bull");
+  const bear = fields.find((f) => f.dataset.field === "bear");
+  if (bull && bear) {
+    const pair = el("div", "brief__pair");
+    bull.before(pair);
+    pair.append(bull, bear);
+  }
+  part.append(box);
+}
+
+// "Resistance at about $690–$695: Friday's close ..." -> the part before
+// the first colon in bold. Only plain text at the start of the line.
+function boldLead(li) {
+  const first = li.firstChild;
+  if (!first || first.nodeType !== Node.TEXT_NODE) return;
+  const at = first.nodeValue.indexOf(":");
+  if (at < 1 || at > 60) return;
+  const strong = el("strong", "", first.nodeValue.slice(0, at + 1));
+  first.nodeValue = first.nodeValue.slice(at + 1);
+  li.insertBefore(strong, first);
+}
+
+// Overnight and Asia: "**Korea:** ..." -> the bold start becomes a small
+// label on its own line above the item.
+function dressLeads(part) {
+  for (const li of part.querySelectorAll("li")) {
+    const first = li.firstChild;
+    if (first && first.nodeName === "STRONG") {
+      first.classList.add("brief__kicker");
+      first.textContent = first.textContent.replace(/:\s*$/, "");
+      if (li.childNodes[1]?.nodeType === Node.TEXT_NODE) li.childNodes[1].nodeValue = li.childNodes[1].nodeValue.replace(/^:\s*/, "");
+    }
+  }
+}
+
+// Watchlist: "**NVDA** News: ..." -> a ticker chip, and a "News" tag on
+// the names that have some today (the rest just have prices).
+function dressWatchlist(part) {
+  for (const li of part.querySelectorAll("li")) {
+    const first = li.firstChild;
+    if (!first || first.nodeName !== "STRONG" || first.textContent.length > 8) continue;
+    li.classList.add("brief__ticker");
+    first.classList.add("brief__symbol");
+    const body = el("span", "brief__about");
+    while (first.nextSibling) body.append(first.nextSibling);
+    li.append(body);
+    const lead = body.firstChild;
+    if (lead && lead.nodeType === Node.TEXT_NODE && /^\s*News:\s*/.test(lead.nodeValue)) {
+      lead.nodeValue = lead.nodeValue.replace(/^\s*News:\s*/, "");
+      body.prepend(el("span", "brief__tag", "News"), " ");
+      li.classList.add("brief__ticker--news");
+    }
+  }
+}
+
+// Calendar: day lines ("**Today (Mon, Nov 9):**") become headers, and
+// "8:40 ET (7:40 SK): ..." lines get the times in their own column.
+function dressCalendar(part) {
+  for (const li of part.querySelectorAll("li")) {
+    const first = li.firstChild;
+    if (first && first.nodeName === "STRONG" && /:\s*$/.test(first.textContent)) {
+      li.classList.add("brief__day");
+      if (/^today/i.test(first.textContent)) li.classList.add("brief__day--today");
+      if (li.childNodes.length === 1) li.classList.add("brief__day--alone");
+      continue;
+    }
+    const m = li.innerHTML.match(/^(\d{1,2}:\d{2}(?:\s?[AP]M)?\s?ET)\s*\(([^)<]{1,20})\):\s*/i);
+    if (m) {
+      li.classList.add("brief__slot");
+      const rest = li.innerHTML.slice(m[0].length);
+      li.innerHTML =
+        `<span class="brief__when">${m[1]}<small>${m[2]}</small></span>` + `<span class="brief__what">${rest}</span>`;
+    }
+  }
+}
+
+// Sources: folded shut, with how many there are.
+function foldSources(part) {
+  const list = part.querySelector("ul, ol");
+  const heading = part.querySelector("h3");
+  if (!list || !heading) return;
+  const fold = el("details", "brief__fold");
+  const summary = el("summary", "", heading.textContent + " ");
+  summary.append(el("span", "brief__count", String(list.children.length)));
+  fold.append(summary, list);
+  heading.replaceWith(fold);
+}
+
+// Signed changes ("+0.63%", "−5.1%") in purple for up and clay for down,
+// the same colours as the report card's grades. The sign stays, so the
+// colour is only a helper. Walks the text, never the tags.
+function markChanges(root) {
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  const found = [];
+  while (walker.nextNode()) {
+    const node = walker.currentNode;
+    if (node.parentNode.closest("a, summary, .brief__symbol")) continue;
+    if (/[+−-]\d[\d,.]*%/.test(node.nodeValue)) found.push(node);
+  }
+  const pattern = /(^|[\s(\/])([+−-]\d[\d,]*(?:\.\d+)?%)/g;
+  for (const node of found) {
+    const text = node.nodeValue;
+    const bits = document.createDocumentFragment();
+    let last = 0;
+    for (const m of text.matchAll(pattern)) {
+      const start = m.index + m[1].length;
+      bits.append(text.slice(last, start));
+      const up = m[2][0] === "+";
+      bits.append(el("span", "brief__chg brief__chg--" + (up ? "up" : "down"), m[2]));
+      last = start + m[2].length;
+    }
+    if (!last) continue;
+    bits.append(text.slice(last));
+    node.replaceWith(bits);
+  }
+}
+
+// A row of buttons in the lead card that scroll to each section. Buttons,
+// not #links, because the address already says which brief is showing.
+function addJumps(lead, parts) {
+  const nav = el("nav", "brief__jumps");
+  nav.setAttribute("aria-label", "Sections of this brief");
+  for (const part of parts) {
+    const heading = part.querySelector("h3, summary");
+    if (!heading) continue;
+    const name = part.dataset.part;
+    const label = PART_SHORT[name] || heading.firstChild.textContent.trim();
+    const button = el("button", "brief__jump brief__jump--" + name, label);
+    button.type = "button";
+    button.addEventListener("click", () => {
+      const fold = part.querySelector("details");
+      if (fold) fold.open = true;
+      part.scrollIntoView({ behavior: REDUCE_MOTION ? "auto" : "smooth", block: "start" }); // REDUCE_MOTION: main.js
+    });
+    nav.append(button);
+  }
+  lead.append(nav);
 }
 
 // A one-line pointer under the brief's TLDR to its report card on the
