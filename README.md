@@ -872,8 +872,8 @@ percentages are safer than dollar amounts or account sizes.
 Two robots now write and grade the weekly forecast for you, using the
 same `ANTHROPIC_API_KEY` secret as the brief:
 
-- **Forecaster** (Sunday night, 7:47 pm, with back-up tries at 9:13 pm
-  and 4:37 am Monday):
+- **Forecaster** (Sunday night, 7:45 pm, with back-up tries at 9:15 pm
+  and 4:35 am Monday):
   Claude Opus 5.5 on high effort, with web search, writes "Forecast for the
   week of ..." with the TLDR, view, sector board, 4 to 6 calls (each with a
   "wrong if"), scenarios, levels, schedule and plan, and puts it at the top
@@ -881,8 +881,8 @@ same `ANTHROPIC_API_KEY` secret as the brief:
   "Sources" fold lists the pages its numbers came from. If you've already
   written an entry for that week, it leaves the week alone. About 50 cents
   to US$1 a run (batch price, below).
-- **Scorekeeper** (Sunday around noon, 11:37 am, back-up at 1:13 pm and a
-  5:43 pm pickup for a slow batch, so Friday's close is graded before the next forecast):
+- **Scorekeeper** (Sunday around noon, 11:35 am, back-up at 1:15 pm and a
+  5:45 pm pickup for a slow batch, so Friday's close is graded before the next forecast):
   Claude Sonnet 5.5 on high effort, with web search, grades each call hit,
   partial or miss with a one-line "What happened", then writes the recap,
   the AI coach note and the lesson. It grades your own hand-written
@@ -981,10 +981,9 @@ Past briefs folds by year, then month; a month's list only downloads when
 you open it.
 
 - **Who writes it:** the **Morning Writer**
-  (`.github/workflows/premarket-brief.yml`) runs every weekday morning,
-  aiming for 6:17 am Saskatoon time, with back-up tries at 6:43 and 7:11
-  in case GitHub starts it late or skips it. The first try that runs
-  writes the brief; the others see it's there and stop without calling
+  (`.github/workflows/premarket-brief.yml`) is started by the **Robot Timer**
+  (below) every weekday at 6:30 am Saskatoon time, with a back-up try at
+  7:15. The first try writes the brief; the back-up sees it's there and stop without calling
   Claude, so you only pay once. It runs `.github/scripts/premarket-brief.mjs`, which asks
   Claude (with web search) for the brief, saves it, commits it to `main`,
   and starts the **Deploy site** run so it goes live a few minutes later.
@@ -1001,11 +1000,7 @@ you open it.
   Actions → General → Workflow permissions needs "Read and write".
 - **Changing it:** the watchlist, the rules and the layout of the brief are
   all in `SYSTEM` near the top of `premarket-brief.mjs`, in plain English.
-  The times are the three `cron` lines in the workflow (UTC; Saskatoon is
-  UTC−6 all year, so 12:17 is 6:17 am). GitHub often starts scheduled runs
-  15 to 60 minutes late on busy mornings, and now and then drops one,
-  which is why there are back-up tries. Keep them off :00 and :30, the
-  busiest minutes.
+  The times live in the Robot Timer (below), not in the workflow.
   It can run up to 30 web searches a brief (`MAX_SEARCHES`) and open up to
   15 whole pages on any site to read the actual numbers (`MAX_FETCHES`),
   following a rough search plan in `SYSTEM` (most of it on MU, 3 searches on the SOX). It calls
@@ -1049,8 +1044,8 @@ After the market closes, the **Grader** grades that morning's brief, so
 you can see how good the calls really are over time.
 
 - **Who runs it:** the **Grader**
-  (`.github/workflows/postmarket-recap.yml`), every weekday at 4:07 pm
-  Saskatoon time (back-up tries at 4:37 and 5:13 if GitHub is late),
+  (`.github/workflows/postmarket-recap.yml`), started by the Robot Timer every
+  weekday at 4:45 pm Saskatoon time (back-up try at 5:45),
   after the 4:00 pm ET close in summer and winter. It runs
   `.github/scripts/postmarket-recap.mjs`, which asks Claude (with web
   search) for MU's previous close, open, high, low and close (and the
@@ -1107,23 +1102,43 @@ you can see how good the calls really are over time.
 
 | Name | What it does | When (Saskatoon time) |
 |---|---|---|
-| **Morning Writer** | Writes the pre-market brief (`premarket-brief.yml`) | Weekdays 6:17 am |
-| **Grader** | Grades that brief after the close (`postmarket-recap.yml`) | Weekdays 4:07 pm |
-| **Coach** | Turns the report cards into lessons for the Morning Writer (`brief-lessons.yml`) | Sundays 11:47 am (batch) |
-| **Devlog Writer** | Drafts devlog posts and "Now building" lines, and opens a pull request for you (`devlog-draft.yml`) | Sundays 11:23 am (batch) |
+| **Morning Writer** | Writes the pre-market brief (`premarket-brief.yml`) | Weekdays 6:30 am |
+| **Grader** | Grades that brief after the close (`postmarket-recap.yml`) | Weekdays 4:45 pm |
+| **Coach** | Turns the report cards into lessons for the Morning Writer (`brief-lessons.yml`) | Sundays 11:45 am (batch) |
+| **Devlog Writer** | Drafts devlog posts and "Now building" lines, and opens a pull request for you (`devlog-draft.yml`) | Sundays 11:20 am (batch) |
 | **Release Writer** | Writes the player-friendly "What's new" line for game releases (`release-lines.yml`) | Every 6 hours |
-| **Forecaster** | Writes the journal's forecast for the coming week (`journal-forecast.yml`) | Sundays 7:47 pm (batch) |
-| **Scorekeeper** | Grades that week's journal calls (`journal-grade.yml`) | Sundays 11:37 am (batch) |
+| **Forecaster** | Writes the journal's forecast for the coming week (`journal-forecast.yml`) | Sundays 7:45 pm (batch) |
+| **Scorekeeper** | Grades that week's journal calls (`journal-grade.yml`) | Sundays 11:35 am (batch) |
 | **Scanner** | The weekly market scan on Agent Fleet (a Claude routine on your own plan, not a workflow) | Saturdays 8:55 am |
 
 On the Actions tab each workflow shows as its name with what it does in
 brackets, and its commits are signed with its name (morning-writer,
 grader, coach, devlog-writer, release-writer, forecaster, scorekeeper).
 
-The **Morning Writer starter** is a Claude routine (weekdays 6:08 am) that
-presses "Run workflow" on the Morning Writer for you, because GitHub's own
-timed starts are often late. If the brief is already there, the extra start
-stops before calling Claude, so it costs nothing.
+### The Robot Timer (what starts the robots on time)
+
+GitHub's own timers started the robots 3.5 to 7 hours late, so the six
+robots with set times (all but the Release Writer) no longer have a GitHub
+timer. Instead the **Robot Timer**, a free Cloudflare Worker, wakes every
+5 minutes and presses "Run workflow" for whichever robot is due. They start
+within seconds of the time in the table above.
+
+- **The code:** `.github/worker/robot-timer.js`. The live copy is the
+  `robot-timer` Worker in Cloudflare (Workers & Pages); keep the two the
+  same.
+- **Changing a time:** edit `TIMETABLE` near the top. Times are in UTC
+  (Saskatoon is UTC−6 all year, so 12:30 is 6:30 am) and must land on a
+  5-minute mark. Then ask Claude to upload it to Cloudflare, or paste it
+  into the Worker's editor there and press Deploy.
+- **The key:** it uses a GitHub token (`GH_TOKEN`) that can only start
+  workflows in this repo. It lives in the Worker's settings as a Secret,
+  never in the repo. It runs out after a year: make a new one on GitHub
+  (Settings → Developer settings → Fine-grained tokens, this repo only,
+  Actions: Read and write) and replace the Secret. There's a reminder.
+- **Safe twice over:** every extra start stops before calling Claude when
+  the work is already done, so a back-up try costs nothing.
+- **If a robot didn't start:** the Worker's Logs tab in Cloudflare shows
+  "started" or "failed (401)" for each try. 401 means the token has run out.
 
 **What they cost:** every run that calls Claude pins a "Cost" note to its
 run page on the Actions tab (for example "US$0.90 · 25 searches, 8 pages
@@ -1148,9 +1163,9 @@ back on).
 
 ### The Coach (brief lessons, "What the brief is working on")
 
-- **When:** Sundays at 11:47 am Saskatoon time (`brief-lessons.yml`), next
+- **When:** Sundays at 11:45 am Saskatoon time (`brief-lessons.yml`), next
   to the Devlog Writer and the Scorekeeper, as a half-price batch; a
-  5:23 pm try picks it up if it was slow. Monday's brief uses the lessons.
+  5:25 pm try picks it up if it was slow. Monday's brief uses the lessons.
 - **What it does:** reads every report card from the last 28 days, the
   briefs they graded, the running score and last week's lessons, and asks
   Opus 5.5 for 3 to 5 lessons about *how the brief works*: gap sizes called
@@ -1175,8 +1190,8 @@ back on).
 
 ### The Devlog Writer (weekly devlog drafts)
 
-- **When:** Sundays at 11:23 am Saskatoon time (`devlog-draft.yml`), as a
-  half-price batch; a 5:13 pm try picks it up if it was slow (and stops
+- **When:** Sundays at 11:20 am Saskatoon time (`devlog-draft.yml`), as a
+  half-price batch; a 5:15 pm try picks it up if it was slow (and stops
   straight away if the draft is already there).
 - **What it does:** looks at every game with a GitHub `code` link in
   `projects.json`, collects the last 7 days of merged pull requests and

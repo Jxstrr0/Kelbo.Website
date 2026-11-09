@@ -19,17 +19,13 @@ name: Forecaster (weekly journal forecast)
 
 # It asks Claude through the Batches API (half price): the answer usually
 # comes back within an hour, and the run waits for it (up to 5 hours 20).
-# GitHub starts timed runs late now and then, or drops one, so there are
-# tries at 7:47 and 9:13 pm Sunday and 4:37 am Monday, Saskatoon time
-# (01:47, 03:13 and 10:37 UTC Monday), after US futures open at 6 pm New
-# York time. A later try that finds the entry already there stops before
+# Started by the Robot Timer, a Cloudflare Worker (.github/worker/robot-timer.js),
+# at 7:45 and 9:15 pm Sunday and 4:35 am Monday, Saskatoon time, after US
+# futures open at 6 pm New York time (GitHub's own timer ran late, so it
+# was removed). A later run that finds the entry already there stops before
 # calling Claude; one that finds a batch still waiting (saved in
 # .github/batches/forecaster.json) picks it up instead of paying again.
 on:
-  schedule:
-    - cron: "47 1 * * 1"
-    - cron: "13 3 * * 1"
-    - cron: "37 10 * * 1" # 4:37 am Monday: picks up a batch that's still waiting
   workflow_dispatch:
     inputs:
       dry_run:
