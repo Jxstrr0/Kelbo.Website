@@ -202,8 +202,9 @@ progress order.
   (`assets/covers/my-game@2x.jpg`, 1280 × 960). Big phones like an iPhone
   16 Pro Max show that one, so the cover isn't stretched and blurry. If it's
   missing the site uses the small one and the Site check gives a warning.
-- **featured**: `true` shows it as a big card under "Pick a game" on the home
-  page (the first four only).
+- **featured**: no longer changes the home page, which now shows every game
+  in one swipe row under "Pick a game", in the order they have in this
+  file. The four marked `true` are the covers in the link preview picture.
 - **clip** (optional): a short silent video on the game's own page, under
   "See it move": `"clip": "assets/clips/my-game.mp4"`, with a still picture
   of the same name ending `.jpg` beside it. Ask Claude to record one.
