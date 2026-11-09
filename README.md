@@ -1083,11 +1083,17 @@ you can see how good the calls really are over time.
   past card, `#2026-11-02` a past brief. The brief itself is laid out as
   colour-coded cards: a top card with the headline, TLDR and buttons that
   jump to each section, then MU (clay, with the gap call first, bull and
-  bear side by side, and last session's call at the bottom), Overnight
-  (purple), Watchlist (lilac, a chip per ticker, "News" on the ones with
-  news), Calendar (a time column per day) and Sources (folded shut).
-  Price changes show purple when up and clay when down. The Morning
-  Writer's Markdown doesn't change; `briefs.js` does the sorting. On a
+  bear side by side, a price ladder drawing, and last session's call at
+  the bottom), Overnight (purple), Watchlist (lilac, a row per ticker with
+  last close and pre-market columns; tap a column heading to sort by it,
+  "Ticker" for the brief's order), Calendar (Saskatoon time first, New
+  York time under it) and Sources (folded shut). Tap any section's heading
+  to fold it; your phone remembers which ones you folded. Lines that
+  weren't in the brief before get a clay "New" tag. Price changes show
+  purple when up and clay when down. The ladder and the watchlist columns
+  come from two fixed-format lines the Morning Writer writes (`**Ladder:**`
+  and `| close ... | pre ... |`); older briefs without them just show
+  without the drawing and columns. `briefs.js` does the sorting. On a
   computer (64rem and wider) the cards sit side by side, two to four
   across depending on the width; phones keep one column.
 - **Where it's saved:** `report-cards/2026-11.json` (that month's grades)
