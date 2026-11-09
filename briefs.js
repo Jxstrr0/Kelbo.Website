@@ -535,6 +535,7 @@ async function showBrief(date) {
     // the tags it makes itself.
     article.innerHTML = renderMarkdown(await loadBriefFile(date + ".md"));
     groupParts(article);
+    markNew(date, article); // tags what's new since the brief before; finishes on its own
   } catch (error) {
     article.textContent = "";
     article.append(el("p", "project-list__note", "This brief couldn't load. Pull down to refresh and try again."));
@@ -615,7 +616,9 @@ function groupParts(article) {
     if (name === "sources") foldSources(p);
   }
   markChanges(article);
-  addJumps(lead, [...article.querySelectorAll(".brief__part")]);
+  const all = [...article.querySelectorAll(".brief__part")];
+  addFolds(all);
+  addJumps(lead, all);
 }
 
 // The MU section: "**Gap call:** ..." lines become labelled boxes, in the
@@ -625,14 +628,15 @@ const CALL_FIELDS = [
   [/^gap call/i, "gap"],
   [/^pre-?market/i, "pre"],
   [/^key levels/i, "levels"],
+  [/^ladder/i, "ladder"],
   [/^drivers/i, "drivers"],
   [/^bull/i, "bull"],
   [/^bear/i, "bear"],
   [/^news/i, "news"],
   [/^last call/i, "last"],
 ];
-const CALL_ORDER = ["gap", "pre", "levels", "drivers", "bull", "bear", "news", "last"];
-const CALL_LABELS = { last: "Last session's call" }; // friendlier than "Last call"
+const CALL_ORDER = ["gap", "ladder", "pre", "levels", "drivers", "bull", "bear", "news", "last"];
+const CALL_LABELS = { last: "Last session's call", ladder: "Price ladder" }; // friendlier names
 
 function dressCalls(part) {
   const fields = [];
@@ -686,6 +690,14 @@ function dressCalls(part) {
     }
   }
 
+  // The "Ladder:" line (numbers only) becomes a drawing; if it can't be
+  // read, the line is dropped, since the same numbers are in the boxes.
+  for (const f of fields.filter((f) => f.dataset.field === "ladder")) {
+    if (drawLadder(f)) continue;
+    fields.splice(fields.indexOf(f), 1);
+    f.remove();
+  }
+
   fields.sort((a, b) => CALL_ORDER.indexOf(a.dataset.field) - CALL_ORDER.indexOf(b.dataset.field));
   const box = el("div", "brief__fields");
   for (const f of fields) box.append(f);
@@ -712,6 +724,104 @@ function boldLead(li) {
   li.insertBefore(strong, first);
 }
 
+// The price ladder: the "**Ladder:**" line the Morning Writer adds under
+// Key levels, numbers only, drawn as a price scale (high at the top).
+//   prior 690.00 | pre 685.00 | call 675-690 | support 676.00, 656.39 | resistance 690-695, 708.35
+// A price can be a range ("690-695"); "n/a" means it wasn't found.
+// Returns { prior, pre, call, support, resistance }, each a list of
+// { lo, hi, text }, or null if there's too little to draw.
+const LADDER_KINDS = ["prior", "pre", "call", "support", "resistance"];
+
+function parseLadder(line) {
+  const out = {};
+  let count = 0;
+  for (const piece of line.split("|")) {
+    const m = piece.trim().match(/^(prior|pre|call|support|resistance)\b\s*(.*)$/i);
+    if (!m) continue;
+    const kind = m[1].toLowerCase();
+    out[kind] = [];
+    for (const bit of m[2].split(",")) {
+      const r = bit.replace(/[$\s]/g, "").match(/^(\d+(?:\.\d+)?)(?:[-–—](\d+(?:\.\d+)?))?$/);
+      if (!r) continue; // "n/a", or anything that isn't a price
+      const a = Number(r[1]);
+      const b = r[2] ? Number(r[2]) : a;
+      out[kind].push({ lo: Math.min(a, b), hi: Math.max(a, b), text: r[2] ? `$${r[1]}–$${r[2]}` : "$" + r[1] });
+      count++;
+    }
+  }
+  return count >= 2 ? out : null;
+}
+
+// What each kind of mark is called on the drawing.
+const LADDER_NAMES = {
+  resistance: "Resistance",
+  call: "Gap call",
+  pre: "Pre-market",
+  prior: "Last close",
+  support: "Support",
+};
+
+function drawLadder(field) {
+  const raw = [...field.querySelectorAll(".brief__value")].map((v) => v.textContent).join(" ");
+  const data = parseLadder(raw);
+  if (!data) return false;
+
+  const marks = [];
+  for (const kind of LADDER_KINDS) for (const v of data[kind] || []) marks.push({ kind, ...v });
+  let top = Math.max(...marks.map((m) => m.hi));
+  let bottom = Math.min(...marks.map((m) => m.lo));
+  const pad = Math.max((top - bottom) * 0.08, top * 0.004);
+  top += pad;
+  bottom -= pad;
+
+  const ROW = 24; // px between labels, so they never overlap
+  const height = Math.max(200, marks.length * ROW + 24);
+  const y = (price) => ((top - price) / (top - bottom)) * height;
+
+  const plot = el("div", "ladder__plot");
+  plot.style.height = height + "px";
+  plot.setAttribute("aria-hidden", "true");
+
+  // Lines and bands on the rail, at their true heights.
+  for (const m of marks) {
+    const line = el("span", `ladder__mark ladder__mark--${m.kind}`);
+    line.style.top = y(m.hi) + "px";
+    if (m.hi > m.lo) {
+      line.classList.add("ladder__mark--range");
+      line.style.height = y(m.lo) - y(m.hi) + "px";
+    }
+    plot.append(line);
+  }
+
+  // Labels beside the rail, top to bottom, nudged apart where prices sit
+  // close together: first push each one down clear of the one above, then
+  // pull them back up from the bottom if the last one ran off the end.
+  const tags = marks
+    .map((m) => ({ m, at: (y(m.hi) + y(m.lo)) / 2 }))
+    .sort((a, b) => a.at - b.at || LADDER_KINDS.indexOf(b.m.kind) - LADDER_KINDS.indexOf(a.m.kind));
+  let above = ROW / 2 - ROW;
+  for (const t of tags) above = t.at = Math.max(t.at, above + ROW);
+  let below = height - ROW / 2 + ROW;
+  for (const t of [...tags].reverse()) below = t.at = Math.min(t.at, below - ROW);
+  for (const t of tags) {
+    const tag = el("span", `ladder__tag ladder__tag--${t.m.kind}`);
+    tag.style.top = t.at + "px";
+    tag.append(el("strong", "", t.m.text), " " + LADDER_NAMES[t.m.kind]);
+    plot.append(tag);
+  }
+
+  // The same, in words, for screen readers.
+  const words = tags.map((t) => `${LADDER_NAMES[t.m.kind]} ${t.m.text}`).join(", ");
+  const figure = el("figure", "ladder");
+  figure.setAttribute("role", "img");
+  figure.setAttribute("aria-label", "MU price ladder, high to low: " + words);
+  figure.append(plot);
+
+  for (const v of field.querySelectorAll(".brief__value")) v.remove();
+  field.append(figure);
+  return true;
+}
+
 // Overnight and Asia: "**Korea:** ..." -> the bold start becomes a small
 // label on its own line above the item.
 function dressLeads(part) {
@@ -725,28 +835,125 @@ function dressLeads(part) {
   }
 }
 
-// Watchlist: "**NVDA** News: ..." -> a ticker chip, and a "News" tag on
-// the names that have some today (the rest just have prices).
+// Watchlist: since 2026-11-10 each line has two number columns,
+//   **NVDA** | close 186.64 +2.8% | pre 177.04 -5.1% | News: ...
+// which become a row: ticker chip, last close, pre-market, and the line
+// under them. Names with news today get a "News" tag. The column headings
+// are buttons that sort the list (tap again to flip it; "Ticker" puts the
+// brief's own order back). Older briefs have no "|" columns, so they keep
+// plain ticker chips.
+const WATCH_COLS = [
+  ["close", "Last close"],
+  ["pre", "Pre-market"],
+];
+
+// "close 186.64 +2.8%" -> { price: "$186.64", change: "+2.8%", pct: 2.8 }
+function watchCell(text) {
+  const change = text.match(/[+−-]\d[\d,]*(?:\.\d+)?%/);
+  const price = text.replace(change ? change[0] : "", "").match(/\d[\d,]*(?:\.\d+)?/);
+  return {
+    price: price ? "$" + price[0] : "",
+    change: change ? change[0] : "",
+    pct: change ? Number(change[0].replace("−", "-").replace(/[,%]/g, "")) : null,
+  };
+}
+
 function dressWatchlist(part) {
-  for (const li of part.querySelectorAll("li")) {
+  const list = part.querySelector("ul");
+  let rows = 0;
+  [...part.querySelectorAll("li")].forEach((li, i) => {
     const first = li.firstChild;
-    if (!first || first.nodeName !== "STRONG" || first.textContent.length > 8) continue;
+    if (!first || first.nodeName !== "STRONG" || first.textContent.length > 8) return;
     li.classList.add("brief__ticker");
+    li.dataset.order = i;
     first.classList.add("brief__symbol");
     const body = el("span", "brief__about");
     while (first.nextSibling) body.append(first.nextSibling);
     li.append(body);
+
+    // The "|" columns. The cells are HTML renderMarkdown already escaped.
+    const cells = body.innerHTML.split(/\s*\|\s*/);
+    const found = {};
+    const rest = [];
+    for (const cell of cells) {
+      const m = cell.match(/^(close|pre)\b\s*(.*)$/i);
+      if (m && !found[m[1].toLowerCase()]) found[m[1].toLowerCase()] = watchCell(m[2]);
+      else if (cell.trim()) rest.push(cell);
+    }
+    if (found.close || found.pre) {
+      rows++;
+      li.classList.add("brief__ticker--row");
+      body.innerHTML = rest.join(" | ");
+      for (const [key, label] of WATCH_COLS) {
+        const cell = found[key] || watchCell("");
+        const num = el("span", "brief__num brief__num--" + key);
+        num.setAttribute("aria-label", `${label}: ${[cell.price, cell.change].join(" ").trim() || "not found"}`);
+        if (cell.change) num.append(el("span", "brief__pct", cell.change));
+        num.append(el("small", "", cell.price || (cell.change ? "" : "—")));
+        li.dataset[key] = cell.pct ?? "";
+        body.before(num);
+      }
+    }
+
     const lead = body.firstChild;
     if (lead && lead.nodeType === Node.TEXT_NODE && /^\s*News:\s*/.test(lead.nodeValue)) {
       lead.nodeValue = lead.nodeValue.replace(/^\s*News:\s*/, "");
       body.prepend(el("span", "brief__tag", "News"), " ");
       li.classList.add("brief__ticker--news");
     }
+  });
+  if (rows && list) addWatchSort(part, list);
+}
+
+// The heading row over the watchlist: Ticker · Last close · Pre-market.
+function addWatchSort(part, list) {
+  const head = el("div", "brief__watchhead");
+  const buttons = [];
+  let sortKey = "order";
+  let down = true; // biggest gain first
+
+  const sortBy = (key) => {
+    down = key === sortKey && key !== "order" ? !down : true;
+    sortKey = key;
+    const value = (li) => {
+      const raw = li.dataset[key];
+      return raw === "" || raw === undefined ? null : Number(raw);
+    };
+    const items = [...list.children].sort((a, b) => {
+      if (key === "order") return value(a) - value(b);
+      const va = value(a);
+      const vb = value(b);
+      if (va === null || vb === null) return (va === null) - (vb === null); // missing last
+      return down ? vb - va : va - vb;
+    });
+    list.append(...items);
+    for (const b of buttons) {
+      const on = b.dataset.key === sortKey;
+      b.setAttribute("aria-pressed", on);
+      b.querySelector(".brief__arrow").textContent = on && key !== "order" ? (down ? " ▼" : " ▲") : "";
+    }
+  };
+
+  for (const [key, label] of [["order", "Ticker"], ...WATCH_COLS]) {
+    const button = el("button", "brief__sort", label);
+    button.type = "button";
+    button.dataset.key = key;
+    button.title = key === "order" ? "Back to the brief's order" : `Sort by ${label.toLowerCase()} change`;
+    button.append(el("span", "brief__arrow", ""));
+    button.addEventListener("click", () => sortBy(key));
+    buttons.push(button);
+    head.append(button);
   }
+  buttons[0].setAttribute("aria-pressed", "true");
+  list.before(head);
 }
 
 // Calendar: day lines ("**Today (Mon, Nov 9):**") become headers, and
-// "8:40 ET (7:40 SK): ..." lines get the times in their own column.
+// "8:40 ET (7:40 SK): ..." lines get the times in their own column,
+// Saskatoon time first (big) with New York time under it. Times in the
+// middle of a line ("4:00 ET (3:00 SK)") are turned round the same way.
+const ET_SK = /(\d{1,2}:\d{2}(?:\s?[AP]M)?\s?ET)\s*\((\d{1,2}:\d{2}(?:\s?[AP]M)?\s?SK)\)/gi;
+
 function dressCalendar(part) {
   for (const li of part.querySelectorAll("li")) {
     const first = li.firstChild;
@@ -754,15 +961,26 @@ function dressCalendar(part) {
       li.classList.add("brief__day");
       if (/^today/i.test(first.textContent)) li.classList.add("brief__day--today");
       if (li.childNodes.length === 1) li.classList.add("brief__day--alone");
-      continue;
     }
     const m = li.innerHTML.match(/^(\d{1,2}:\d{2}(?:\s?[AP]M)?\s?ET)\s*\(([^)<]{1,20})\):\s*/i);
-    if (m) {
+    if (m && !li.classList.contains("brief__day")) {
       li.classList.add("brief__slot");
-      const rest = li.innerHTML.slice(m[0].length);
+      const rest = li.innerHTML.slice(m[0].length).replace(ET_SK, "$2 ($1)");
       li.innerHTML =
-        `<span class="brief__when">${m[1]}<small>${m[2]}</small></span>` + `<span class="brief__what">${rest}</span>`;
+        `<span class="brief__when">${m[2]}<small>${m[1]}</small></span>` + `<span class="brief__what">${rest}</span>`;
+    } else {
+      swapTimes(li);
     }
+  }
+}
+
+// Turns "4:00 ET (3:00 SK)" round in a line's own text only, never in a
+// list nested under it (those lines get their own turn).
+function swapTimes(li) {
+  const walker = document.createTreeWalker(li, NodeFilter.SHOW_TEXT);
+  while (walker.nextNode()) {
+    const node = walker.currentNode;
+    if (node.parentNode.closest("li") === li) node.nodeValue = node.nodeValue.replace(ET_SK, "$2 ($1)");
   }
 }
 
@@ -822,11 +1040,162 @@ function addJumps(lead, parts) {
     button.addEventListener("click", () => {
       const fold = part.querySelector("details");
       if (fold) fold.open = true;
+      if (part.classList.contains("brief__part--folded")) {
+        setFolded(part, false);
+        saveFold(name, false);
+      }
       part.scrollIntoView({ behavior: REDUCE_MOTION ? "auto" : "smooth", block: "start" }); // REDUCE_MOTION: main.js
     });
     nav.append(button);
   }
   lead.append(nav);
+}
+
+// Folding: tap a section's heading to fold it shut. The page remembers
+// which sections are folded on this phone (localStorage "kelbo.briefFolds",
+// { overnight: true, sources: false, ... }), so a section Kelbo never reads
+// stays out of the way on the next brief too. Sources starts folded.
+const FOLDS_KEY = "kelbo.briefFolds";
+
+function readFolds() {
+  try {
+    return JSON.parse(localStorage.getItem(FOLDS_KEY)) || {};
+  } catch (error) {
+    return {}; // private browsing or a bad value: nothing remembered
+  }
+}
+
+function saveFold(name, folded) {
+  const folds = readFolds();
+  folds[name] = folded;
+  try {
+    localStorage.setItem(FOLDS_KEY, JSON.stringify(folds));
+  } catch (error) {
+    /* storage full or blocked: it just won't be remembered */
+  }
+}
+
+function setFolded(part, folded) {
+  part.classList.toggle("brief__part--folded", folded);
+  part.querySelector(".brief__toggle")?.setAttribute("aria-expanded", String(!folded));
+}
+
+function addFolds(parts) {
+  const folds = readFolds();
+  for (const part of parts) {
+    const name = part.dataset.part;
+    const fold = part.querySelector(":scope > details"); // Sources
+    if (fold) {
+      if (folds[name] === false) fold.open = true;
+      fold.addEventListener("toggle", () => saveFold(name, !fold.open));
+      continue;
+    }
+    const heading = part.querySelector(":scope > h3");
+    if (!heading) continue;
+    const button = el("button", "brief__toggle");
+    button.type = "button";
+    button.append(...heading.childNodes, el("span", "brief__chevron", ""));
+    heading.append(button);
+    button.addEventListener("click", () => {
+      const folded = !part.classList.contains("brief__part--folded");
+      setFolded(part, folded);
+      saveFold(name, folded);
+    });
+    setFolded(part, folds[name] === true);
+  }
+}
+
+/* ---------- "New" since the last brief ----------
+   Compares this brief with the one before it and tags the lines that
+   weren't in it: Overnight items, MU news, and watchlist names with news.
+   A line counts as old if most of its words (4+ letters, numbers left out,
+   since prices change every day anyway) were in one line of the last
+   brief. Rough, but it only adds a tag, and it never hides anything. */
+const SAME_SHARE = 0.45; // below this share of old words, a line is new
+const COMMON = new Set(
+  "about after also been before from have into more over said says since still than that their them then there they this were what when which while will with would".split(" ")
+);
+
+function wordSet(text) {
+  return new Set((text.toLowerCase().match(/[a-z][a-z'’]{3,}/g) || []).filter((w) => !COMMON.has(w)));
+}
+
+// The share of a line's words that one of the old lines also had (the best one).
+function seenShare(words, oldLines) {
+  let best = 0;
+  for (const old of oldLines) {
+    let hits = 0;
+    for (const w of words) if (old.has(w)) hits++;
+    best = Math.max(best, hits / words.size);
+  }
+  return best;
+}
+
+// The date of the brief before this one, looking back up to two months.
+async function briefBefore(date) {
+  const day = new Date(date + "T12:00:00");
+  for (let back = 0; back < 3; back++) {
+    const d = new Date(day.getFullYear(), day.getMonth() - back, 1);
+    const entries = await loadMonth(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`);
+    const earlier = (entries || []).map((e) => e.date).filter((x) => x < date).sort();
+    if (earlier.length) return earlier[earlier.length - 1];
+  }
+  return null;
+}
+
+function tagNew(li) {
+  const tag = el("span", "brief__new", "New");
+  const kicker = li.querySelector(".brief__kicker");
+  if (kicker) kicker.append(" ", tag);
+  else (li.querySelector(".brief__about") || li).prepend(tag, " ");
+}
+
+async function markNew(date, article) {
+  const before = await briefBefore(date);
+  if (!before) return;
+  const old = document.createElement("div");
+  try {
+    old.innerHTML = renderMarkdown(await loadBriefFile(before + ".md")); // escaped, as above
+  } catch (error) {
+    return; // no tags is fine
+  }
+  if (shownDate !== date || !article.isConnected) return; // moved on meanwhile
+  const oldLines = [...old.querySelectorAll("li")].map((li) => li.textContent);
+  const oldSets = oldLines.map(wordSet);
+  const oldTicker = new Map(); // "NVDA" -> that ticker's line last time
+  for (const line of oldLines) {
+    const m = line.match(/^([A-Z]{2,5})\s/);
+    if (m && !oldTicker.has(m[1])) oldTicker.set(m[1], line);
+  }
+
+  let count = 0;
+  for (const li of article.querySelectorAll(".brief__part--overnight li, .brief__field--news li")) {
+    const words = wordSet(li.textContent);
+    if (words.size < 4 || /\bno (new|update|change)/i.test(li.textContent)) continue;
+    // The futures and last-close lines are new numbers every day: no tag.
+    if (/futures|close/i.test(li.querySelector(".brief__kicker")?.textContent || "")) continue;
+    if (seenShare(words, oldSets) < SAME_SHARE) {
+      tagNew(li);
+      count++;
+    }
+  }
+  for (const li of article.querySelectorAll(".brief__ticker--news")) {
+    const symbol = li.querySelector(".brief__symbol").textContent.trim();
+    const last = oldTicker.get(symbol);
+    const words = wordSet(li.querySelector(".brief__about").textContent);
+    if (!last || !/\bNews:/.test(last) || seenShare(words, [wordSet(last)]) < SAME_SHARE) {
+      tagNew(li);
+      count++;
+    }
+  }
+
+  const lead = article.querySelector(".brief__lead");
+  if (!count || !lead) return;
+  const note = el("p", "brief__newnote");
+  note.append(el("span", "brief__new", "New"), ` ${count} item${count === 1 ? "" : "s"} that weren't in the last brief (${briefDate(before, { weekday: "short", month: "short", day: "numeric" })}).`);
+  const jumps = lead.querySelector(".brief__jumps");
+  if (jumps) jumps.before(note);
+  else lead.append(note);
 }
 
 // A one-line pointer under the brief's TLDR to its report card on the
