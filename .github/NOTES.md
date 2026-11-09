@@ -390,8 +390,10 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   (cached by `iconKey`). `setUpMouseSky` sets `--tilt-x/y` from the mouse
   on fine pointers; `setUpCoverTilt` adds `.is-tilting` with `--rx/--ry`
   and a `--mx/--my` glint on `.project` cards (a mouse over the card, or a
-  finger pressing it; `pointercancel` when a press becomes a scroll
-  settles it).
+  finger held still on it for `PRESS_TILT_MS`, so a swipe never tips a
+  card; `pointerup`/`pointercancel` settle it). The `.project:hover` lift
+  sits in `@media (hover: hover)`: on a phone hover sticks to the last
+  card touched.
 - Sky secrets and their badges (2026-11-09): `tappable(node, title,
   detail, r, onTap)` in `setUpCritters`; `onTap` runs when that thing is
   the tap's best target. The freight train calls `spot("train")`
@@ -638,7 +640,10 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   projects.json order, as normal `renderProject` cards whose summary,
   version line, progress bar, code link and screenshots are hidden by CSS.
   Scroll-snap, bleeds to the screen edges, focusable for arrow keys;
-  `[data-row-nav]` arrows show from 40rem up. `featured` no longer
+  `[data-row-nav]` arrows show from 40rem up. The row is `overflow-y:
+  hidden` (on `auto` it slid and bounced up and down inside itself on an
+  iPhone) and its cards reveal together when the row comes into view (one
+  observer on the row, not one per card). `featured` no longer
   affects the page; it only records the four covers in the link preview.
   Each game keeps its own look (fonts, colours, art). The Longlight logo,
   the five colours and Space Grotesk belong to studio pieces only (logo or
