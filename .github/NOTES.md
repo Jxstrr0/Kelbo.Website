@@ -596,7 +596,7 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   "rewrite today's" box) runs `.github/scripts/premarket-brief.mjs`: plain Node
   `fetch` to the Anthropic Messages API (`claude-fable-5-1` at `output_config.effort` "high" (`EFFORT`; Opus 5.5 at xhigh until 2026-11-09), no `thinking` field (Fable always thinks; sending one is a 400), a spending cap from a running total at Fable list prices (`spent()`): past `WRAP_UP_AT` US$4 a paused turn gets a user message asking for the brief now (if the API refuses that, the text so far is used), `max_tokens` per reply from `roomLeft()` (8000 to 48000, so writing can't pass `HARD_CAP` US$6), no request once at `HARD_CAP`, `NETWORK_TRIES` 1 and a mid-stream error event counted as a drop, `stop_reason` "refusal" throws; server-side
   `web_search_20260209` with `MAX_SEARCHES` 35 and `web_fetch_20260209`
-  with `MAX_FETCHES` 20, no domain limits, a per-section research plan in
+  with `MAX_FETCHES` 25 (20 until 2026-11-09), no domain limits, a per-section research plan in
   `SYSTEM`, prompt caching (a marker on the system block plus top-level
   `cache_control`), the previous brief minus its Sources in the user
   message for the MU **Last call:** line, a usage and estimated-cost log
