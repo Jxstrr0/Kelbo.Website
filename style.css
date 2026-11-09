@@ -3646,6 +3646,159 @@ img {
   z-index: 2;
 }
 
+/* ---------- About: Kelbo's character sheet ----------
+   One card laid out like a character-select screen: a purple header with
+   the name and three stats, then titled blocks, with the party members as
+   small cards of their own. */
+.sheet {
+  max-width: 44rem;
+  margin: 0 auto;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--card);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.sheet__head {
+  padding: 1.25rem 1.25rem 1.1rem;
+  background: var(--ll-purple);
+  color: var(--ll-ivory);
+  border-bottom: 4px solid var(--ll-clay);
+}
+
+.sheet__label {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #E6D8F7;
+}
+
+.sheet__name {
+  margin: 0.15rem 0 0;
+  font-size: clamp(2.4rem, 12vw, 3.6rem);
+  line-height: 1;
+  letter-spacing: 0.04em;
+}
+
+/* Class / Home base / Studio: three stat boxes, stacked on small phones */
+.sheet__stats {
+  display: grid;
+  gap: 0.5rem;
+  margin: 1rem 0 0;
+}
+
+.sheet__stats div {
+  padding: 0.5rem 0.75rem;
+  border-radius: 10px;
+  background: rgba(250, 249, 245, 0.12);
+}
+
+.sheet__stats dt {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #E6D8F7;
+}
+
+.sheet__stats dd {
+  margin: 0.1rem 0 0;
+  font-weight: 700;
+}
+
+@media (min-width: 34rem) {
+  .sheet__stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.sheet__block {
+  padding: 1.1rem 1.25rem;
+  border-top: 1px solid var(--rule);
+}
+
+.sheet__head + .sheet__block {
+  border-top: 0;
+}
+
+.sheet__block p {
+  margin: 0.5rem 0 0;
+}
+
+.sheet__title {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+}
+
+.party {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.party__member {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.85rem;
+  padding: 0.9rem;
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.party__icon {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 10px;
+  background: var(--secondary-soft);
+  font-size: 1.4rem;
+}
+
+.party__name {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.party__member p {
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+/* Buff lines read as a stat line, not body text: small, bold, purple,
+   with a clay bar down the left */
+.sheet__block .party__buff {
+  margin-top: 0.6rem;
+  padding: 0.35rem 0.6rem;
+  border-left: 3px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  background: var(--secondary-soft);
+  color: var(--secondary);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.sheet__block .party__buff + .party__buff {
+  margin-top: 0.35rem;
+}
+
+.sheet__after {
+  max-width: 44rem;
+  margin: 1.25rem auto 0;
+  text-align: center;
+}
+
 /* ---------- Mode tiles (Games / Trading / All) ---------- */
 .tiles {
   display: grid;
