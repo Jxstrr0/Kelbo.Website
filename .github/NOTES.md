@@ -31,6 +31,16 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   `<details class="shots">` "Screenshots (N)" with a scroll-snap strip of
   lazy images, all `12rem` tall so portrait and landscape mix. Hidden on
   the home featured list by CSS; the What's new rows don't show it.
+- A game can carry a `clip` (`assets/clips/<slug>.mp4`, silent H.264,
+  360×720, about 14 seconds, under 400 KB, with a same-named `.jpg` still
+  beside it). `setUpGame` shows it under "See it move" as a `<video>` with
+  `preload="none"`, so only the still downloads until play is pressed.
+  `sw.js` lets `.mp4` requests go straight to the network. Clips and the
+  newer screenshots are recorded from the live game with Playwright at a
+  phone size, then cut with ffmpeg. check-site checks the files exist.
+- Game cards with a `link` say "Plays in your browser" beside the category
+  pill (`playsInBrowser`, `.project__instant`); the game page adds ", no
+  download".
 - Whole cards are tappable: the main link (`.project__main`) stretches an
   invisible `::after` over its `.project` or `.news` card; the other links
   and `.shots` sit above it (`z-index: 2`). On a game that main link is
@@ -344,6 +354,10 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   via `cachedFetch` (`FX_KEY`, `FX_MS` 3 h), labelled as a daily average
   with its date, never as live. It stays hidden if the call fails.
 ## Sky extras, glass, tilt, the ISS, Sky this week
+
+- The home page's Sky this week box is a `<details>` that folds to one line,
+  the next thing coming up (`[data-sky-week-next]`); it borrows the badges
+  box's fold styles and remembers open or closed in `kelbo.skyWeekOpen`.
 
 - Fun extras (2026-10-30): `setUpLand` adds `.horizon__windmill` (SVG,
   `WINDMILL_TOWER`/`WINDMILL_TAIL`, at 16% across; `.windmill__wheel`
