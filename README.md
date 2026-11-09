@@ -15,7 +15,7 @@ from their releases, then publishes the files as they are (see
 | File | What it's for |
 |---|---|
 | `index.html` | Home page: the Longlight Interactive name, game cards, Games / Trading / All tiles, contact |
-| `about.html` | The About page: your bio and the "player card" facts |
+| `about.html` | The About page: your character sheet |
 | `projects.html` | The full projects page with status filters |
 | `whats-new.html` | The newest version and latest change for each project, built from `projects.json` (no dates, since the file has none) |
 | `devlog.html` + `devlog.json` | **Devlog**: dated studio posts, newest first. To add one, put it at the top of `"posts"` in `devlog.json` with a `date` (like `2026-10-24`), a `title`, a `body` (a blank line, written `\n\n`, starts a new paragraph) and, if it's about one game, `game` with that game's exact title. Posts about a game also show on that game's page |
@@ -112,9 +112,9 @@ comments to find each part:
 - `<!-- 4. Contact -->`: the contact form, and your links in the card
   beside it
 
-Everything about you is on its own page, `about.html`: the about paragraphs,
-then the "player card" facts (each `<li>` is one box: a label, then the
-value). The rest of the site speaks as Longlight Interactive, except
+Everything about you is on its own page, `about.html`: your character
+sheet (the purple header with Class, Home base and Studio, then Backstory,
+Abilities, Party members, Side quests and Status). The rest of the site speaks as Longlight Interactive, except
 Trading and the journal, which are in your own voice.
 
 Only change the words between the tags, like this:
