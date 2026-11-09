@@ -19,7 +19,7 @@ import { readFile, writeFile } from "node:fs/promises";
 import { askClaudeWeb, logWebCost, seenSources, readJson, setOutput, skDate, pullLatest, DRY_RUN } from "./claude.mjs";
 import { addDays } from "./market-days.mjs";
 
-const MODEL = "claude-sonnet-5-5"; // the smaller model, like the Grader
+const MODEL = "claude-opus-5-5"; // the bigger model, like the Forecaster (Sonnet 5.5 until Nov 9, 2026)
 const EFFORT = "high";
 const MAX_SEARCHES = 20; // web searches it may run ($10 per 1,000)
 const MAX_FETCHES = 15; // whole pages it may open and read
