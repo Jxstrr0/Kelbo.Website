@@ -222,7 +222,7 @@ async function callClaude(messages, withTools = true, attempt = 1) {
     // usually drops partway through the research, after most of the
     // searches are already paid for, so each extra try costs about as much
     // as a whole brief (on 2026-11-06, four dropped tries cost $8.83 and
-    // saved nothing). The 6:43 and 7:11 back-up runs get another go.
+    // saved nothing). The 7:15 back-up run gets another go.
     if (attempt >= NETWORK_TRIES) throw err;
     console.log(`Network error (${err.message}), retrying in ${15 * attempt}s`);
     await new Promise((r) => setTimeout(r, 15000 * attempt));

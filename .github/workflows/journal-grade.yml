@@ -17,20 +17,14 @@
 # and choose "Disable workflow".
 name: Scorekeeper (weekly journal grades)
 
-# Sunday around noon, so the half-price batch has the whole afternoon to
-# come back before the Forecaster writes the next week that evening. Two
-# tries in case GitHub starts one late or drops it: 11:37 am and 1:13 pm
-# Sunday, Saskatoon time (17:37 and 19:13 UTC). The second either finds
-# nothing left to grade and stops before calling Claude, or (if the first
-# is still waiting) queues behind it and picks up the batch it leaves
-# (.github/batches/scorekeeper.json). A third at 5:43 pm (23:43 UTC) picks
-# up a slow batch if the 1:13 pm start was dropped; it's still before the
-# Forecaster's 7:47 pm run.
+# Started by the Robot Timer, a Cloudflare Worker (.github/worker/robot-timer.js),
+# on Sundays at 11:35 am, 1:15 pm and 5:45 pm Saskatoon time (GitHub's own
+# timer ran late, so it was removed). Around noon, so the half-price batch
+# has the afternoon to come back before the Forecaster writes the next week
+# that evening. A later run either finds nothing left to grade and stops
+# before calling Claude, or picks up the batch an earlier one left waiting
+# (.github/batches/scorekeeper.json).
 on:
-  schedule:
-    - cron: "37 17 * * 0"
-    - cron: "13 19 * * 0"
-    - cron: "43 23 * * 0" # 5:43 pm: picks up a batch that's still waiting
   workflow_dispatch:
     inputs:
       dry_run:

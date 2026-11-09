@@ -7,8 +7,8 @@
 // workflow now (the same as pressing "Run workflow"). GitHub starts it within
 // seconds. The robots themselves don't change.
 //
-// This copy is the reference. The live one is pasted into the Cloudflare
-// dashboard (Workers & Pages > robot-timer); keep the two the same.
+// This copy is the reference. The live one is the robot-timer Worker in
+// Cloudflare (Workers & Pages > robot-timer); keep the two the same.
 //
 // Secret: GH_TOKEN, a fine-grained GitHub token for this repo only with
 // "Actions: Read and write". It lives only in the Worker's settings, never

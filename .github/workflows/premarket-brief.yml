@@ -15,17 +15,13 @@
 # tick the box to rewrite a brief that already exists for today.
 name: Morning Writer (pre-market brief)
 
-# GitHub starts timed runs late on busy mornings (often 15 to 60 minutes,
-# and now and then it drops one), so there are three tries: 6:17, 6:43
-# and 7:11 am Saskatoon time (12:17, 12:43 and 13:11 UTC). They stay off
-# :00 and :30, the busiest minutes. Whichever starts first writes the
-# brief; the later ones see today's brief is already there and stop before
-# calling Claude, so a normal morning costs one brief, not three.
+# Started by the Robot Timer, a Cloudflare Worker (.github/worker/robot-timer.js),
+# at 6:30 am Saskatoon time with a backup try at 7:15 am, Monday to Friday.
+# GitHub's own timer ("schedule:") ran up to 7 hours late, so it was removed.
+# Whichever run starts first writes the brief; a later one sees today's
+# brief is already there and stops before calling Claude, so a normal
+# morning costs one brief, not two.
 on:
-  schedule:
-    - cron: "17 12 * * 1-5"
-    - cron: "43 12 * * 1-5"
-    - cron: "11 13 * * 1-5"
   workflow_dispatch:
     inputs:
       force:
