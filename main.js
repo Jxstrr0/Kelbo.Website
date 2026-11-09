@@ -2439,6 +2439,33 @@ function caughtMeteor(px, py) {
    reach us, how far it is, how much of the moon is lit. Catching a
    shooting star makes a wish (counted on this device only). */
 const WISHES_KEY = "kelbo.wishes";
+// A rare twist on a wish: about one in twelve says it already came true
+// and sends up a heart. Preview it every time with ?wish=true.
+const WISH_TRUE_CHANCE = 1 / 12;
+const WISH_TRUE = new URLSearchParams(location.search).get("wish") === "true";
+
+// One heart shape (in a 16 x 16 box) for every heart in the sky: the Home
+// Base window, the rare wish and Valentine's Day all draw this one.
+const HEART_PATH = "M8 14.5C2.5 10.2 1 7.6 1 5.2C1 3.1 2.6 1.5 4.6 1.5C6 1.5 7.2 2.2 8 3.4C8.8 2.2 10 1.5 11.4 1.5C13.4 1.5 15 3.1 15 5.2C15 7.6 13.5 10.2 8 14.5Z";
+
+// A small lilac heart that floats up from a spot (x, y on the page) and
+// fades away. Not with "reduce motion".
+function floatHeart(scene, x, y) {
+  if (REDUCE_MOTION || typeof Element.prototype.animate !== "function") return;
+  const box = scene.getBoundingClientRect();
+  const heart = svgNode("svg", { class: "horizon__heart", viewBox: "0 0 16 16", "aria-hidden": "true" });
+  heart.append(svgNode("path", { d: HEART_PATH }));
+  heart.style.left = `${(x - box.left - 5).toFixed(1)}px`;
+  heart.style.top = `${(y - box.top - 5).toFixed(1)}px`;
+  scene.append(heart);
+  const sway = (Math.random() < 0.5 ? -1 : 1) * (3 + Math.random() * 4);
+  heart.animate(
+    [{ transform: "translate(0, 0) scale(0.5)", opacity: 0 },
+     { transform: `translate(${(sway / 2).toFixed(1)}px, -10px) scale(1)`, opacity: 1, offset: 0.2 },
+     { transform: `translate(${sway.toFixed(1)}px, -40px) scale(1.1)`, opacity: 0 }],
+    { duration: 1800, easing: "ease-out" }
+  ).onfinish = () => heart.remove();
+}
 const LIGHT_KM_S = 299792.458;
 const AU_KM = 149597870.7;
 
@@ -2560,7 +2587,11 @@ function setUpSkyTaps(scene, timeNow) {
     } catch (e) {}
     const badge = WISH_BADGES.find(([n]) => n === count && n > 1);
     if (badge) show(x, y, 0, `Badge: ${badge[1]}`, `${count} wishes on this device`);
-    else show(x, y, 0, "Wish made", count === 1 ? "Your first one on this device" : `That's ${count} on this device`);
+    else if (count > 1 && (WISH_TRUE || Math.random() < WISH_TRUE_CHANCE)) {
+      // The rare one (never the first wish, never a milestone)
+      show(x, y, 0, "Wish granted", "This one already came true");
+      floatHeart(scene, x, y);
+    } else show(x, y, 0, "Wish made", count === 1 ? "Your first one on this device" : `That's ${count} on this device`);
     showWishes(document.querySelector("[data-wishes]"));
     checkBadges();
   }
@@ -2572,6 +2603,17 @@ function setUpSkyTaps(scene, timeNow) {
       const r = node.getBoundingClientRect();
       return { x: r.left + r.width / 2, y: r.top + r.height / 2, r: r.width / 2 };
     };
+    // A secret, after dark on the home page: the elevator's top window is
+    // lit, and tapping it sends up a heart. Listed before the elevator so
+    // a tap on the window picks this and not "Grain elevator".
+    if (scene.homeLight && document.documentElement.dataset.theme === "dark" && document.querySelector("[data-badges]")
+      && scene.elevator.getBoundingClientRect().width) {
+      const at = centre(scene.homeLight);
+      list.push({
+        ...at, r: 10, title: "Home base", detail: "Full HP restored",
+        onTap: () => { floatHeart(scene, at.x, at.y); buzz(30); spot("home"); },
+      });
+    }
     if (scene.elevator && scene.elevator.getBoundingClientRect().width) {
       list.push({ ...centre(scene.elevator), title: "Grain elevator", detail: elevatorFact(t) });
     }
@@ -3200,6 +3242,11 @@ function sunDogLine(t) {
   return sunDogStrength(t) ? "Sun dogs out right now" : "";
 }
 
+// A second line for the same days: the two in the sky, and one more.
+function thirdDogLine(t) {
+  return sunDogStrength(t) ? "Three dogs out · one's on the bed" : "";
+}
+
 // A rainbow: rain in the last couple of hours (or showers now), the sun
 // out and under 40° (the bow sits 42° out from the spot straight
 // opposite the sun, so a higher sun puts it under the horizon), and
@@ -3348,9 +3395,10 @@ function groundSeason(t) {
 /* ---------- Holidays and the farm ----------
    From the calendar: bats and a jack-o'-lantern on Halloween, lights on
    the elevator through December, fireworks after dark on Canada Day and
-   around midnight on New Year's. Preview with
-   ?holiday=halloween|christmas|canada|newyear (fireworks want the dark
-   too: add &at=night). The windmill and the tumbleweed follow the real
+   around midnight on New Year's, lilac hearts all day on Valentine's Day
+   (and lilac windows on the elevator after dark). Preview with
+   ?holiday=halloween|christmas|canada|newyear|valentines (fireworks want
+   the dark too: add &at=night). The windmill and the tumbleweed follow the real
    wind, and the combine comes out for the harvest. */
 const HOLIDAY = new URLSearchParams(location.search).get("holiday");
 
@@ -3359,6 +3407,7 @@ function holidayAt(t) {
   const p = localParts(t);
   const day = p.m * 100 + p.d;
   if (day === 1031) return "halloween";
+  if (day === 214) return "valentines";
   if (day >= 1201 && day <= 1226) return "christmas";
   if (day === 701 || (day === 702 && p.h < 1)) return "canada";
   if ((day === 1231 && p.h >= 23) || (day === 101 && p.h < 1)) return "newyear";
@@ -3374,6 +3423,11 @@ function fireworksTime(t) {
 // Bats come out at dusk on Halloween and stay out all night.
 function batsTime(t) {
   return holidayAt(t) === "halloween" && sunAltitude(t) < 4;
+}
+
+// Hearts drift up all day and all night on Valentine's Day.
+function heartsTime(t) {
+  return holidayAt(t) === "valentines";
 }
 
 // Tumbleweed: a real wind of 25 km/h or more on a dry day with no snow.
@@ -3515,7 +3569,7 @@ function setUpLand(scene) {
     svgNode("rect", { class: "elevator__door", x: 52, y: 52, width: 9, height: 20 }), // the annex's barn door
     // little windows that glow after dark: high in the gable, the leg house, the annex
     svgNode("rect", { class: "elevator__light", x: 28.5, y: 15.5, width: 3, height: 4 }),
-    svgNode("rect", { class: "elevator__light", x: 40.5, y: 7, width: 3, height: 4 }),
+    (scene.homeLight = svgNode("rect", { class: "elevator__light", x: 40.5, y: 7, width: 3, height: 4 })), // the top one hides a secret (see targets in setUpSkyTaps)
     svgNode("rect", { class: "elevator__light", x: 64, y: 51, width: 3, height: 3 })
   );
   // December: a string of lights along its rooflines, in the three
@@ -3748,6 +3802,7 @@ function paintWeather(scene, t) {
   const holiday = holidayAt(t);
   scene.classList.toggle("horizon--halloween", holiday === "halloween");
   scene.classList.toggle("horizon--christmas", holiday === "christmas");
+  scene.classList.toggle("horizon--valentines", holiday === "valentines");
   // The windmill: one turn of the wheel takes 2 s in a 12 km/h breeze,
   // quicker as it blows harder; still when it's calm. Its tail trails downwind.
   const air = breeze();
@@ -3812,13 +3867,14 @@ function paintWeather(scene, t) {
    weekend mornings and evenings, a hot-air balloon drifts over; in
    winter, flocks of snow buntings wheel low over the snow. Off for
    "reduce motion". Preview one with
-   ?critter=geese|fireflies|leaves|jet|hawk|kite|pelicans|balloon|buntings. */
+   ?critter=geese|fireflies|leaves|jet|hawk|kite|pelicans|balloon|buntings|hearts. */
 const GEESE_EVERY_S = 40; // a flock every 40 seconds on average, in season
 const JET_EVERY_S = 90; // a jet every minute and a half on average, by day
 const CAR_EVERY_S = 420; // the secret stock car: about once every seven minutes, any hour
 const TRAIN_EVERY_S = 150; // a freight train along the rails every couple of minutes, any hour
 const HAWK_EVERY_S = 60; // how often a hawk turns up on a windy afternoon
 const BATS_EVERY_S = 6; // a few bats every few seconds on Halloween night
+const HEARTS_EVERY_S = 4; // a heart every few seconds on Valentine's Day
 const TUMBLE_EVERY_S = 12; // how often a tumbleweed rolls by on a dry, windy day
 const COMBINE_EVERY_S = 120; // how often the combine comes out in the harvest
 const PELICAN_EVERY_S = 75; // a group of pelicans on a warm, settled summer afternoon
@@ -4236,6 +4292,33 @@ function setUpCritters(scene, timeNow) {
     }
   }
 
+  // Valentine's Day: one small heart drifts up from the prairie line,
+  // swaying a little, and fades into the sky. Tapping it names it.
+  function valentineHeart() {
+    const w = box.clientWidth, h = box.clientHeight;
+    if (!w || !h) return;
+    const size = 8 + Math.random() * 6;
+    const heart = svgNode("svg", { class: "valentine-heart", viewBox: "0 0 16 16" });
+    heart.append(svgNode("path", { d: HEART_PATH }));
+    heart.style.width = heart.style.height = `${size.toFixed(1)}px`;
+    box.append(heart);
+    const x0 = w * (0.05 + Math.random() * 0.9);
+    const sway = 6 + Math.random() * 10;
+    const turns = 1 + Math.random() * 1.5;
+    const frames = [];
+    for (let k = 0; k <= 20; k++) {
+      const p = k / 20;
+      const x = x0 + Math.sin(p * turns * 2 * Math.PI) * sway;
+      const y = h - size - p * h * 0.6;
+      frames.push({ translate: `${x.toFixed(1)}px ${y.toFixed(1)}px`, opacity: p < 0.15 ? p / 0.15 : Math.max(0, 1 - (p - 0.5) / 0.5).toFixed(2) });
+    }
+    const untap = tappable(heart, "Happy Valentine's Day", "From Longlight", 12);
+    heart.animate(frames, { duration: 6000 + Math.random() * 3000, easing: "linear", fill: "both" }).onfinish = () => {
+      heart.remove();
+      untap();
+    };
+  }
+
   // One firework: a spark climbs from the ground, then bursts into a
   // ring of sparks that fall and fade. The palette's light colours.
   function firework() {
@@ -4537,6 +4620,7 @@ function setUpCritters(scene, timeNow) {
     if (!carRunning && (CRITTER === "stockcar" || Math.random() < 1 / CAR_EVERY_S)) stockCar();
     if (!hawkFlying && (CRITTER === "hawk" || (hawkTime(t) && Math.random() < 1 / HAWK_EVERY_S))) hawk(breeze().dir);
     if (Math.random() < (CRITTER === "bats" ? 0.5 : batsTime(t) ? 1 / BATS_EVERY_S : 0)) bats();
+    if (Math.random() < (CRITTER === "hearts" ? 0.5 : heartsTime(t) ? 1 / HEARTS_EVERY_S : 0)) valentineHeart();
     if (CRITTER === "fireworks" || fireworksTime(t)) {
       if (Math.random() < 0.7) firework();
       if (Math.random() < 0.3) setTimeout(firework, 500);
@@ -5560,6 +5644,47 @@ function setUpLogoSecret() {
   });
 }
 
+/* ---------- The About page secret ----------
+   On the About page, tapping the Chihuahua's portrait makes him headbutt
+   toward the finger: his special move from the character sheet. Five
+   taps within 3 seconds and he gets his petting: a happy wiggle,
+   confetti and the hidden "Petting achieved" badge. With "reduce motion"
+   nothing moves (style.css), but the badge still counts. Pointer-only,
+   like the sun-tap secret: the portrait is decoration to a screen reader. */
+const MOOSE_TAPS = 5;
+function setUpMooseAttack() {
+  const dog = document.querySelector(".party__icon .party__dog");
+  const icon = dog && dog.closest(".party__icon");
+  if (!icon) return;
+  let taps = [];
+  // Each animation class comes off when it finishes, so it can play again
+  icon.addEventListener("animationend", () => icon.classList.remove("party__icon--bump", "party__icon--petted"));
+  icon.addEventListener("click", (e) => {
+    const at = performance.now();
+    taps = taps.filter((tap) => at - tap < 3000).concat(at);
+    icon.classList.remove("party__icon--bump", "party__icon--petted");
+    void icon.offsetWidth; // lets the same animation start over
+    if (taps.length < MOOSE_TAPS) {
+      // Lean toward the finger: up to 4px from the middle of the portrait
+      const r = icon.getBoundingClientRect();
+      const dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
+      const far = Math.hypot(dx, dy) || 1;
+      const push = e.clientX || e.clientY ? 4 : 0; // a keyboard "click" has no place
+      icon.style.setProperty("--bump-x", `${((dx / far) * push).toFixed(1)}px`);
+      icon.style.setProperty("--bump-y", `${(push ? (dy / far) * push : -4).toFixed(1)}px`);
+      icon.classList.add("party__icon--bump");
+      buzz(20);
+      return;
+    }
+    taps = [];
+    writeJSON(MOOSE_KEY, Date.now());
+    icon.classList.add("party__icon--petted");
+    confetti(icon);
+    buzz([40, 30, 40, 30, 120]);
+    checkBadges();
+  });
+}
+
 function setUpHorizon() {
   const scene = document.querySelector("[data-horizon]");
   const readout = document.querySelector("[data-horizon-readout]");
@@ -5611,7 +5736,7 @@ function setUpHorizon() {
         [l, r] = swipeLine(t, ahead);
       } else if (isDay && day.set) {
         l = takeTurns([
-          eclipseLine(t), rainbowLine(t), sunDogLine(t), pillarLine(t), beltLine(t), lightHourLine(t) || `Sun's up ${overHere()}`,
+          eclipseLine(t), rainbowLine(t), sunDogLine(t), thirdDogLine(t), pillarLine(t), beltLine(t), lightHourLine(t) || `Sun's up ${overHere()}`,
           shadowLine(t), dayLengthLine(t), dayVenusLine(t), weatherLine(), frostLine(t), driftLine(t), smokeLine(t),
         ]);
         r = `Sets ${clock(new Date(day.set))} · ${hoursMins(day.set - t)} of light left`;
@@ -6249,9 +6374,12 @@ const BADGES = [
   { id: "parade", name: "Parade marshal", hint: "A secret: something in the sky is hiding a party", secret: true },
   { id: "stock-car", name: "Checkered flag", hint: "A secret: something fast is out on the prairie", secret: true },
   { id: "lightkeeper", name: "Lightkeeper", hint: "A secret: the logo's sun on the home page likes attention", secret: true },
+  { id: "home-base", name: "Home Base", hint: "A secret: someone left a light on after dark", secret: true },
+  { id: "moose-attack", name: "Petting achieved", hint: "A secret: someone on the About page wants attention", secret: true },
 ];
-const SPOTTED_KEY = "kelbo.spotted";   // sky things tapped: { train: time, car: time }
+const SPOTTED_KEY = "kelbo.spotted";   // sky things tapped: { train: time, car: time, home: time }
 const LOGO_KEY = "kelbo.logoSecret";   // when the logo secret was found
+const MOOSE_KEY = "kelbo.mooseAttack"; // when the About page secret was found
 
 // Note a sky thing as spotted (the train, the stock car), then check badges.
 function spot(what) {
@@ -6323,6 +6451,8 @@ function badgeChecks() {
     "aurora": real && auroraStrength(t) > 0,
     "stock-car": !!spotted.car,
     "lightkeeper": !!readJSON(LOGO_KEY),
+    "home-base": !!spotted.home,
+    "moose-attack": !!readJSON(MOOSE_KEY),
   };
 }
 
@@ -6595,6 +6725,7 @@ async function init() {
   setUpScrollSun();
   setUpSheet();
   setUpLogoSecret();
+  setUpMooseAttack();
   setUpSound();
 
   // The offline helper (sw.js): keeps a copy of the site on this phone so
