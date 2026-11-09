@@ -510,14 +510,16 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   Trading = anything for the trading day (Agent Fleet is there, since its
   bot is the weekly market scan); Tool = every other tool (the winter
   roads checker goes here). `tools.html` was `ai.html` until November 2026:
-  `404.html` sends `ai.html` there and the Explorer badge counts either.
-  The home page has four tiles (Games, Trading, Tools, All;
+  `404.html` sends `ai.html` there. Since November 2026 Tools is hidden: it
+  is out of the menu, off the home tiles and not needed for Explorer, but
+  `tools.html` and the tools still work at their addresses.
+  The home page has three tiles (Games, Trading, All;
   `data-category-count="*"` counts everything, 0 reads "Coming soon"),
   each with an inline `svg.tile__art` drawing (viewBox 120×100, bottom
   right at 0.4 opacity over the corner sun; `.tile__art-a` clay /
   `-b` and `-line` `--secondary`, so it follows the theme): a controller,
-  candles, a highway with a wrench, four suns. 1 column on phones, 2 from
-  40rem, 4 from 64rem; the market light sits on its own line.
+  candles, four suns. 1 column on phones, 3 from 40rem (the Tools tile's
+  styles are still in `style.css` for when it comes back); the market light sits on its own line.
 - `devlog.html` is the devlog: `setUpDevlog` renders `devlog.json`
   (`{"posts": [...]}`, newest first; `date` YYYY-MM-DD, `title`, `body`
   split on blank lines, optional `game` = a projects.json title) as dated
@@ -577,8 +579,7 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   ray. Below 40rem the header shows `.logo--compact` (sun +
   short line), from 40rem `.logo--full`; the footer always shows the full
   lockup.
-- The header (the logo as home, the nav Games, Trading, Tools, All, plus
-  About from 64rem, and the ☀/☾ button) is copied in every page and only
+- The header (the logo as home, the nav Games, Trading, All, About, and the ☀/☾ button) is copied in every page and only
   just fits at 360px, where only the compact mark shows. Test before adding
   to it. The parked tracker doesn't load
   `main.js` (its names clash), so it has no ☀/☾ button or live sun.

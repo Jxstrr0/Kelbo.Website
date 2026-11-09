@@ -379,12 +379,6 @@ img {
   list-style: none;
 }
 
-/* About is in the nav on wide screens only; on phones there's no room, so
-   it's in the footer of every page instead */
-.nav__wide {
-  display: none;
-}
-
 .nav a {
   display: inline-block;
   padding: 0.4rem 0.35rem;
@@ -3614,7 +3608,7 @@ img {
   z-index: 2;
 }
 
-/* ---------- Mode tiles (Games / Trading / Tools / All) ---------- */
+/* ---------- Mode tiles (Games / Trading / All) ---------- */
 .tiles {
   display: grid;
   gap: 0.9rem;
@@ -4280,7 +4274,7 @@ img {
   }
 
   .tiles {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   /* Taller header bar once there's room for the full logo */
@@ -4373,13 +4367,6 @@ img {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .tiles {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-
-  .nav__wide {
-    display: list-item;
-  }
 }
 
 /* ---------- Glass ----------
