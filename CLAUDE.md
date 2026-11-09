@@ -29,7 +29,7 @@ Live at https://longlight.games/
   the footer all say Longlight Interactive. Everything personal about Kelbo
   lives on `about.html`, linked from "by Kelbo" under the hero name (the one
   place the site says "by Kelbo"), every footer, and the nav
-  on wide screens (`nav__wide`, 64rem+). Studio pages (home, Games, Tools,
+  (Games, Trading, All, About; Tools is hidden for now). Studio pages (home, Games, Tools,
   All) speak as Longlight; Trading, the journal and Agent Fleet stay in
   his own first-person voice.
 
