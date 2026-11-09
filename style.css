@@ -3908,6 +3908,34 @@ img {
   font-size: 1.4rem;
 }
 
+/* The chihuahua portrait. These are his real coat colours, so they stay
+   the same in light and dark themes. */
+.party__dog {
+  --dog-choc: #5c3020;
+  --dog-tan: #d9a066;
+  --dog-cream: #fbf3e6;
+  --dog-nose: #7a4a3a;
+  --dog-eye: #24110c;
+  width: 2.35rem;
+  height: 2.35rem;
+}
+
+.party__dog .dog-choc { fill: var(--dog-choc); }
+.party__dog .dog-tan { fill: var(--dog-tan); }
+.party__dog .dog-cream { fill: var(--dog-cream); }
+.party__dog .dog-nose { fill: var(--dog-nose); }
+.party__dog .dog-eye { fill: var(--dog-eye); }
+
+.party__dog .dog-wisp,
+.party__dog .dog-mouth {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.party__dog .dog-wisp { stroke: var(--dog-tan); stroke-width: 0.9; }
+.party__dog .dog-mouth { stroke: var(--dog-nose); stroke-width: 0.9; }
+
 .party__name {
   margin: 0;
   font-size: 1.1rem;
