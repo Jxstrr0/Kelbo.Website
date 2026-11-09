@@ -12,7 +12,8 @@
 //
 // Secret: GH_TOKEN, a fine-grained GitHub token for this repo only with
 // "Actions: Read and write". It lives only in the Worker's settings, never
-// here, in a log or in a chat. It expires a year after it was made.
+// here, in a log or in a chat. It expires, so check its expiry date in GitHub
+// (Settings > Developer settings > Fine-grained tokens) and renew it before then.
 //
 // Safe to run twice: every robot skips without calling Claude when its work
 // for the day is already done, and each has a queue so two copies never run
