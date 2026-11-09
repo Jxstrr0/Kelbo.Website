@@ -1,14 +1,14 @@
 {
   "latest": {
-    "date": "2026-11-06",
-    "time": "2026-11-06T14:11:22.769Z",
-    "headline": "Chips bounce about 5% pre-market after SOX's worst day since 2020",
-    "tldr": "SOX fell 12.25% to 9,011 Thursday and MU fell 17.5% to $656.39, and Asia sold off again overnight, but US chips are bouncing pre-market: SMH and SOXX are up about 5%, MU is about $703–$710 (+7–8%), and Nasdaq 100 futures are up about 1.5% even after a hot jobs report (+165K) pushed yields higher."
+    "date": "2026-11-09",
+    "time": "2026-11-09T12:35:05.008Z",
+    "headline": "Nvidia down 5% on Huang probe; MU flat ahead of CPI",
+    "tldr": "Nvidia's board opened an investigation into CEO Jensen Huang's affair with an alleged Chinese spy and the stock is down about 5% pre-market, but the rest of the chip complex is shrugging it off (Taiex +4.9%, Nasdaq 100 futures +0.4%), MU is roughly flat at about $685, and Tuesday's CPI (with December hike odds near 80%) is the bigger event."
   },
   "months": [
     {
       "month": "2026-11",
-      "count": 6
+      "count": 7
     }
   ]
 }
