@@ -788,6 +788,35 @@ img {
   opacity: 0.8;
 }
 
+/* Venus in daylight (main.js placeDayVenus): a faint ivory pinprick
+   with its name, in the light theme only (after dark the planets layer
+   above has the real one). */
+.horizon__day-venus {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: var(--sky-height);
+  pointer-events: none;
+}
+
+:root[data-theme="dark"] .horizon__day-venus {
+  display: none;
+}
+
+.horizon__day-venus .day-venus {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  margin: -2px 0 0 -2px;
+  border-radius: 50%;
+  background: var(--ll-ivory);
+  box-shadow: 0 0 5px 1px rgba(250, 249, 245, 0.5);
+  opacity: 0.85;
+}
+
+.horizon__day-venus .day-venus[hidden] {
+  display: none;
+}
+
 /* The brightest stars (Sirius, Vega, Rigel...) get a soft halo */
 .horizon__stars .star--bright {
   box-shadow: 0 0 8px 2px rgba(180, 140, 232, 0.75);
@@ -1026,6 +1055,7 @@ img {
 .horizon--spin .horizon__glint,
 .horizon--spin .horizon__ray,
 .horizon--spin .horizon__sundogs,
+.horizon--spin .horizon__pillar,
 .horizon--spin .horizon__shadow {
   transition: none;
 }
@@ -1487,6 +1517,141 @@ img {
   stroke-linecap: round;
 }
 
+/* American white pelicans circling up a thermal (main.js pelicans):
+   white, with black wingtips. Lilac-white in the dark theme. */
+.pelicans {
+  position: absolute;
+  left: 0;
+}
+
+.pelican {
+  position: absolute;
+  width: 18px;
+  margin: -4.5px 0 0 -9px;
+  overflow: visible;
+}
+
+.page-head .pelican {
+  width: 12px;
+  margin: -3px 0 0 -6px;
+}
+
+.pelican__wing,
+.pelican__body {
+  fill: var(--ll-ivory);
+}
+
+.pelican__tips {
+  fill: var(--ll-slate);
+}
+
+:root[data-theme="dark"] .pelican__wing,
+:root[data-theme="dark"] .pelican__body {
+  fill: color-mix(in srgb, var(--ll-lilac) 40%, var(--ll-ivory));
+}
+
+/* A hot-air balloon (main.js balloon): clay with an ivory middle panel,
+   a lilac band, and a slate basket under its burner */
+.balloon {
+  position: absolute;
+  left: 0;
+  overflow: visible;
+}
+
+.balloon__body {
+  fill: var(--ll-clay);
+}
+
+.balloon__gore {
+  fill: var(--ll-ivory);
+  opacity: 0.85;
+}
+
+.balloon__band {
+  fill: var(--ll-lilac);
+}
+
+.balloon__ropes {
+  fill: none;
+  stroke: var(--ll-slate);
+  stroke-width: 0.5;
+  stroke-opacity: 0.7;
+}
+
+.balloon__basket {
+  fill: var(--ll-slate);
+}
+
+.balloon__flame {
+  fill: var(--ll-ivory);
+  opacity: 0;
+}
+
+:root[data-theme="dark"] .balloon__ropes {
+  stroke: var(--ll-lilac);
+}
+
+:root[data-theme="dark"] .balloon__basket {
+  fill: var(--ll-lilac);
+}
+
+/* A flock of snow buntings (main.js buntings): tiny white birds */
+.buntings {
+  position: absolute;
+  inset: 0;
+}
+
+.bunting {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 3.4px;
+  height: 2.2px;
+  margin: -1.1px 0 0 -1.7px;
+  border-radius: 50%;
+  background: var(--ll-ivory);
+}
+
+.page-head .bunting {
+  width: 2.4px;
+  height: 1.6px;
+}
+
+/* Cloud shadows (main.js paintWeather): soft dark patches drifting over
+   the fields on a partly cloudy day, over the snow too, under the
+   readout. They drift left to right like the clouds (motion block). */
+.horizon__cloud-shadows {
+  position: absolute;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  top: calc(var(--sky-height) + 3.5px);
+  bottom: 0;
+  z-index: 1;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 3s var(--ease);
+  pointer-events: none;
+}
+
+.horizon--cloud-shadows .horizon__cloud-shadows {
+  opacity: 1;
+}
+
+:root[data-theme="dark"] .horizon__cloud-shadows {
+  display: none;
+}
+
+.cloud-shadow {
+  position: absolute;
+  width: var(--w);
+  height: 45%;
+  border-radius: 50%;
+  background: var(--ll-slate);
+  opacity: 0.2;
+  filter: blur(8px);
+}
+
 /* Tap a cloud and it breaks into these puffs (main.js) */
 .cloud-puff {
   position: absolute;
@@ -1525,6 +1690,54 @@ img {
 
 :root[data-theme="dark"] .horizon__optics::before {
   background: linear-gradient(to bottom, rgba(217, 119, 87, 0), rgba(217, 119, 87, 0.28));
+}
+
+/* The Belt of Venus (main.js beltStrength): just after sunset (and
+   before sunrise) on a clear day, a pink band low on the far side of
+   the sky from the sun, with the Earth's own blue-grey shadow under it,
+   rising as the sun sinks (--belt-rise, 0..1). Full width, brightest at
+   --belt-x (a share of the screen's width) and fainter toward the sun. */
+.horizon__belt {
+  --belt-shadow: calc(8% + var(--belt-rise, 0) * 30%); /* the Earth's shadow, from the bottom up */
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 100vw;
+  margin-left: -50vw;
+  height: 60%;
+  background: linear-gradient(to top,
+    color-mix(in srgb, var(--ll-slate) 35%, var(--ll-purple)) 0,
+    color-mix(in srgb, var(--ll-purple) 60%, var(--ll-lilac)) var(--belt-shadow),
+    color-mix(in srgb, var(--ll-clay) 60%, var(--ll-lilac)) calc(var(--belt-shadow) + 8%),
+    color-mix(in srgb, var(--ll-clay) 45%, var(--ll-ivory)) calc(var(--belt-shadow) + 22%),
+    rgba(250, 249, 245, 0) 100%);
+  -webkit-mask: radial-gradient(ellipse 75% 140% at calc(var(--belt-x, 0.2) * 100%) 100%, #000 25%, rgba(0, 0, 0, 0.3) 100%);
+  mask: radial-gradient(ellipse 75% 140% at calc(var(--belt-x, 0.2) * 100%) 100%, #000 25%, rgba(0, 0, 0, 0.3) 100%);
+  opacity: calc(var(--belt, 0) * 0.7);
+  transition: opacity 3s var(--ease);
+}
+
+:root[data-theme="dark"] .horizon__belt {
+  opacity: calc(var(--belt, 0) * 0.5);
+}
+
+/* A sun pillar (main.js pillarStrength): a narrow column of light
+   standing straight up from a low sun on a bitterly cold day. It starts
+   at the sun's middle, or at the horizon once the sun has set. */
+.horizon__pillar {
+  --pillar-w: calc(var(--sun-size) * 0.26);
+  --pillar-foot: min(var(--sky-height), calc((1 - var(--sun-alt)) * (var(--sky-height) - var(--sun-size) / 2) + var(--sun-size) / 2));
+  --pillar-len: calc(var(--sun-size) * 2.4);
+  position: absolute;
+  left: calc(var(--sun-x) * (100% - var(--sun-size)) + var(--sun-size) / 2 - var(--pillar-w) / 2);
+  top: calc(var(--pillar-foot) - var(--pillar-len));
+  width: var(--pillar-w);
+  height: var(--pillar-len);
+  border-radius: 50% 50% 0 0 / 12% 12% 0 0;
+  background: linear-gradient(to top, rgba(250, 249, 245, 0.95), rgba(217, 119, 87, 0.75) 35%, rgba(217, 119, 87, 0));
+  filter: blur(3px);
+  opacity: calc(var(--pillar, 0) * 0.85);
+  transition: top 1200ms var(--ease), left 1200ms var(--ease), opacity 3s var(--ease);
 }
 
 /* The rainbow: bands of the five colours (clay outside, then ivory,
@@ -4700,6 +4913,52 @@ img {
 
   .geese path {
     animation: flap 0.6s ease-in-out infinite alternate;
+  }
+
+  /* Pelicans flap now and then between long glides; the balloon bobs and
+     its burner flares; cloud shadows slide over the fields */
+  .pelican__wing,
+  .pelican__tips {
+    transform-box: view-box;
+    transform-origin: 50% 50%;
+    animation: pelican-flap 7s ease-in-out infinite;
+  }
+
+  .pelican:nth-child(2n) :is(.pelican__wing, .pelican__tips) { animation-delay: -2.3s; }
+  .pelican:nth-child(3n) :is(.pelican__wing, .pelican__tips) { animation-delay: -4.1s; }
+
+  @keyframes pelican-flap {
+    0%, 80%, 100% { transform: scaleY(1); }
+    84%, 92% { transform: scaleY(-0.6); }
+    88%, 96% { transform: scaleY(1); }
+  }
+
+  .balloon {
+    animation: balloon-bob 6s ease-in-out infinite alternate;
+  }
+
+  @keyframes balloon-bob {
+    from { transform: translateY(-2px); }
+    to { transform: translateY(2px); }
+  }
+
+  .balloon__flame {
+    animation: balloon-burn 9s ease-in-out infinite;
+  }
+
+  @keyframes balloon-burn {
+    0%, 70%, 100% { opacity: 0; }
+    74%, 86% { opacity: 1; }
+    80% { opacity: 0.6; }
+  }
+
+  .cloud-shadow {
+    animation: shadow-drift 80s linear infinite;
+  }
+
+  @keyframes shadow-drift {
+    from { left: calc(var(--w) * -1.2); }
+    to { left: 100%; }
   }
 
   @keyframes flap {

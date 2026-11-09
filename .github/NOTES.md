@@ -206,6 +206,25 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   line, rippling air on `.horizon__ground::before`, wavering elevator)
   is motion-only. Readout extras: `rainbowLine`, `sunDogLine`,
   `shadowLine`, `smokeLine`.
+  Twilight and cold-air optics (also in `placeOptics`; `clearSky(max)` =
+  cloud known and ≤ max, no falling weather): `beltStrength` (clear ≤ 50,
+  sun −7..1°) sets `--belt`, `--belt-x` (the anti-sun point as a share of
+  the viewport, `skyX` clamped 0.1..0.9) and `--belt-rise` (the Earth's
+  shadow climbing as the sun sinks) for `.horizon__belt`, the Belt of
+  Venus (full-bleed gradient with a radial mask; `beltLine` in the day and
+  night readouts when ≥ 0.3). `pillarStrength` (≤ −10°C, sun not hidden,
+  high cloud ≥ 10 or ≤ −20°C, sun −3..7°) sets `--pillar` for
+  `.horizon__pillar`, a blurred column up from the sun (`pillarLine`).
+  `placeDayVenus` (from `placeSun`) makes `.horizon__day-venus` with a
+  `b.day-venus.planet` dot when `dayVenus(t)` holds: sun ≥ 4°,
+  `clearSky(40)`, ≥ `DAY_VENUS_GAP` (20°) from the sun and ≥
+  `DAY_VENUS_ALT` (10°) high; light theme only, tap tip and
+  `dayVenusLine`; `?critter=venus` shows a pretend one. Cloud shadows:
+  `cloudShadowTime` (cloud `CLOUD_SHADOW_MIN`..`MAX` = 20..<80, sun > 5°,
+  nothing falling) toggles `horizon--cloud-shadows`; `paintWeather` fills
+  `.horizon__cloud-shadows` with `.cloud-shadow` blurs drifting over the
+  ground (`shadow-drift`, motion block). Previews `?weather=pillar` and
+  `?weather=warm` (26°C, light wind, for pelicans).
   Winter ground: `frostSparkle` (snow lying, ≤ −10°C, cloud < 40, not
   `sunHidden`, sun 0..25°, before noon) shows `.horizon__frost` (two masked
   tiles of ivory glints over the ground, twinkling) via `horizon--frost`;
@@ -264,7 +283,16 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   `windyAfternoon` on weekdays, Apr–Oct at home; `windyAfternoon` = known
   wind ≥ 20 km/h, 12–6 PM, sun ≥ 8° and not hidden, ≥ 3°C or temp
   unknown) and a `.kite` (SVG, sways about its string's ground end) when
-  `windyAfternoon` falls on a weekend (`kiteTime`). `?critter=geese|fireflies|leaves|jet|hawk|kite|train`
+  `windyAfternoon` falls on a weekend (`kiteTime`). Home-sky birds and a
+  balloon: `.pelicans` (5–10 `svg.pelican` each looping an ellipse while
+  the group drifts with the breeze; `pelicanTime` = May–Sep, 11 AM–7 PM,
+  sun ≥ 15°, wind < 20, ≥ 15°C; `PELICAN_EVERY_S`), a `.balloon`
+  (`balloonTime` = known wind < `BALLOON_WIND` 8 km/h, May–Sep weekends,
+  sun 3–20°; `BALLOON_EVERY_S`; bobs and burns in CSS) and a flock of
+  `.bunting` dots (`buntingTime` = Nov–Mar with snow lying, sun > 2°, not
+  storm/fog/heavy snow; `BUNTING_EVERY_S`). These register in
+  `scene.tapCritters` through `tappable(node, title, detail, r)` so a tap
+  names them. `?critter=geese|fireflies|leaves|jet|hawk|kite|train|pelicans|balloon|buntings`
   forces one. In `setUpSkyTaps`, `puffCloud` (light theme, not reduce
   motion) breaks a tapped `.cloud` into `.cloud-puff`s and restarts its
   drift from the left; a tap right on the sun or moon still names it.
