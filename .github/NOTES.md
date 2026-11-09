@@ -24,7 +24,10 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   in from the newest release (tag `v1.4.0.0` → `"1.4.0.0"`, release title →
   `latest`), so the live values can be newer than this file. Don't "fix"
   that by hand. Prefer publishing a release in the game's repo; editing
-  them here is the fallback for games without releases.
+  them here is the fallback for games without releases. Escapement,
+  Scrapline and Ink publish their own: `publish-release.yml` in each repo
+  (key-free) makes release `v<VERSION>` on a push to `main` when that
+  version has none, titled from the `x.y.z.w: summary` merge commit.
   It can also carry `shots` (`[{src, alt}]`, files in `assets/shots/`,
   about 360px tall JPG, under 40 KB, plus an `@2x` twin about 720px tall
   under 90 KB): `renderProject` makes a closed
