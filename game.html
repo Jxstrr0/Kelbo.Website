@@ -120,6 +120,35 @@
       <div class="game" data-projects="game">
         <p class="game__note is-loading">Loading&hellip;</p>
       </div>
+      <!-- The cover hop: when a game card was just tapped, main.js
+           (setUpCoverHop) leaves that cover's picture address in
+           sessionStorage. Putting it here straight away, before main.js
+           has loaded the game, lets the browser grow the tapped cover
+           into this one. main.js then fills the page in as usual. -->
+      <script>
+        (function () {
+          try {
+            var hop = JSON.parse(sessionStorage.getItem("kelbo.coverHop") || "null");
+            sessionStorage.removeItem("kelbo.coverHop");
+            if (!hop || hop.to !== location.href || Date.now() - hop.at > 8000) return;
+            // Only ever a picture from this site
+            if (String(hop.src).indexOf(location.origin + "/") !== 0) return;
+            var box = document.querySelector('[data-projects="game"]');
+            var top = document.createElement("div");
+            top.className = "game__top";
+            var cover = document.createElement("div");
+            cover.className = "project__cover game__cover";
+            var img = new Image();
+            img.src = hop.src;
+            img.alt = "";
+            img.width = 640;
+            img.height = 480;
+            cover.appendChild(img);
+            top.appendChild(cover);
+            box.insertBefore(top, box.firstChild);
+          } catch (e) { /* no storage: the page just fades in */ }
+        })();
+      </script>
       <noscript>
         <p>Turn on JavaScript to see this game, or go back to the <a href="games.html">games list</a>.</p>
       </noscript>

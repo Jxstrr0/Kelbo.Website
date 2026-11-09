@@ -386,7 +386,19 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   `skyIcon` redraws the favicon `<link>` as an SVG data URL on live paints
   (cached by `iconKey`). `setUpMouseSky` sets `--tilt-x/y` from the mouse
   on fine pointers; `setUpCoverTilt` adds `.is-tilting` with `--rx/--ry`
-  and a `--mx/--my` glint on `.project` cards.
+  and a `--mx/--my` glint on `.project` cards (a mouse over the card, or a
+  finger pressing it; `pointercancel` when a press becomes a scroll
+  settles it).
+- Sky secrets and their badges (2026-11-09): `tappable(node, title,
+  detail, r, onTap)` in `setUpCritters`; `onTap` runs when that thing is
+  the tap's best target. The freight train calls `spot("train")`
+  (Trainspotter). `stockCar` (every `CAR_EVERY_S`, `?critter=stockcar`)
+  runs a tiny `.stockcar` along the tumbleweed's lane; tapping it calls
+  `spot("car")` (hidden Checkered flag). `spot` saves to `kelbo.spotted`.
+  Northern lights is earned when `auroraStrength` is above 0 at the real
+  time. `setUpLogoSecret` (home page only): the header logo scrolls to
+  the top, and `LOGO_TAPS` taps in 3 s run `stingRise` and `confetti` and
+  set `kelbo.logoSecret` (hidden Lightkeeper). 16 badges in all.
 - Glass (2026-10-30): the "Glass" section of `style.css` (just before
   Motion) turns the header, cards (`.now`, `.sky-week`, `.continue__card`,
   `.project`, `.news`, `.tile`, `.facts li`, `.post`, `.press-game`, the
@@ -511,6 +523,29 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
 - Page changes: cross-document view transitions (`@view-transition`)
   with `.site-header` and `.page-head .horizon` named so they stay put;
   all inside the no-preference block.
+- The cover hop (2026-11-09): `.game__cover` is named `game-cover`;
+  `setUpCoverHop` gives a tapped card's cover the same name (`data-hop`,
+  cleared on `pagereveal`) and leaves `{to, src, at}` in
+  `sessionStorage["kelbo.coverHop"]`. The inline script after the game
+  box in `game.html` puts that picture in a `.game__top` at once (same
+  origin, under 8 s old, right page) so the new page has a cover in its
+  first frame; `setUpGame` then rebuilds the box as usual. Keep
+  `data-projects="game"` on the box: `make-game-pages.mjs` looks for it.
+- Moving covers: a project with `clip` gets `data-clip` on its cover
+  (`watchClip`); `clipObserver` plays a muted looping `<video
+  class="project__clip">` over the picture at 60% in view and pauses it
+  below that. Off with reduce motion and Data Saver (`SAVE_DATA`).
+  `.project.reveal .project__cover::before` is the one-time light sweep.
+- The scroll sun: `setUpScrollSun` adds `.scroll-sun` (fixed, right
+  gutter, `--p` 0 to 1, `--top` under the header) on pages with more than
+  0.6 of a screen to scroll. Off with reduce motion and in print.
+- About's character sheet: `setUpSheet` splits `.sheet__name` into
+  `.sheet__ch` letters (the name stays in `aria-label`), adds
+  `sheet--boot`, then `is-on` when the head is in view (label, typed
+  name with a cursor, stat boxes ticking on); `.party__member--slide`
+  members use `reveal`. `setUpQuests` fills `[data-projects="quests"]`
+  under Status: unfinished projects first (highest `spot` first), then
+  finished, each a `.quest` row with the cards' `.field` bar.
 - Motion lives at the bottom of `style.css`, all inside
   `prefers-reduced-motion: no-preference`; `main.js` handles scroll reveal
   and smooth filtering (FLIP) and skips both when reduce motion is on. Content must never depend on JS or
