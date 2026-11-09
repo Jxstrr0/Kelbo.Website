@@ -1001,12 +1001,12 @@ you open it.
 - **Changing it:** the watchlist, the rules and the layout of the brief are
   all in `SYSTEM` near the top of `premarket-brief.mjs`, in plain English.
   The times live in the Robot Timer (below), not in the workflow.
-  It can run up to 30 web searches a brief (`MAX_SEARCHES`) and open up to
-  15 whole pages on any site to read the actual numbers (`MAX_FETCHES`),
+  It can run up to 35 web searches a brief (`MAX_SEARCHES`) and open up to
+  20 whole pages on any site to read the actual numbers (`MAX_FETCHES`),
   following a rough search plan in `SYSTEM` (most of it on MU, 3 searches on the SOX). It calls
-  the model named in `MODEL` (`claude-opus-5-5`), set to think a lot harder
-  than its default (`effort: "xhigh"`, one step below the maximum), mostly
-  for the gap call.
+  the model named in `MODEL`: Claude Fable 5.1 (`claude-fable-5-1`), the
+  top model, on high effort (`EFFORT`). Until Nov 9, 2026 it was Opus 5.5
+  on xhigh.
 - **Yesterday's call:** the robot hands it the previous brief, so it says
   what changed overnight instead of repeating old news, and the MU and SOX
   sections each open with **Last call:** what the last brief predicted for
@@ -1017,7 +1017,14 @@ you open it.
   costs a twentieth of the normal price. The end of each run's log says
   how many searches and page reads it used and an estimated cost in US
   dollars (`PRICE` near the top of the script; the Anthropic console has
-  the real bill).
+  the real bill). A normal brief costs about US$3.50 to US$5.
+- **Spending cap:** one brief can't run up much more than about US$6.
+  The script keeps a running total as it goes. Past US$4 (`WRAP_UP_AT`) it
+  stops researching and tells Claude to write the brief from what it has.
+  Each reply is also kept short enough that the total stays under US$6
+  (`HARD_CAP`), and nothing more is sent once it gets there. A dropped
+  connection isn't retried (that would cost a second brief); the 7:15 back-up
+  run tries again instead. To change the cap, edit those two numbers.
 - **Same headings every day:** the page expects `# headline`, `TLDR:`,
   then Overnight and Asia, MU, SOX, Watchlist and Calendar, even on a holiday.
   If a brief comes back without them, the script asks Claude once to
@@ -1086,7 +1093,7 @@ you can see how good the calls really are over time.
   list to update), days with no brief, and any run before the 4:00 pm New
   York close (3:00 pm Saskatoon in winter, 2:00 pm in summer). A skipped
   run stops before asking Claude, so it costs nothing.
-- **Cost:** it uses Opus 5.5 at high effort, the same model as the brief (`MODEL` at the
+- **Cost:** it uses Opus 5.5 at high effort (`MODEL` at the
   top of the script; Sonnet 5.5 until Nov 6, 2026), up to 18 web searches (`MAX_SEARCHES`) and 15 page
   reads (`MAX_FETCHES`). It uses the same `ANTHROPIC_API_KEY` secret as the
   brief. The last line of each run's log is "Estimated cost: US$0.xx".
