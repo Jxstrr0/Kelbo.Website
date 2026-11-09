@@ -1,0 +1,77 @@
+# First-time player tester (one-off, by hand only).
+#
+# Claude plays Prairie Engine Works and/or Scrapline on a pretend phone as a
+# brand-new player, trying to start a Career, and notes where it gets
+# confused, stuck or pleased. It's paid (Claude Opus 5.5, about US$1-3 a
+# game), so it never runs on a schedule: only "Run workflow" starts it, and
+# each game stops at its move cap or its dollar cap, whichever comes first.
+#
+# The log shows only move counts and cost. The notes and screenshots are
+# the run's artifact ("playtest"), kept for 3 days. This workflow and
+# .github/scripts/playtest.mjs get deleted once the reports are read.
+name: Playtester (one-off)
+
+on:
+  workflow_dispatch:
+    inputs:
+      game:
+        description: "Which game"
+        type: choice
+        options: [both, pew, scrapline]
+        default: both
+      moves:
+        description: "Most actions per game"
+        default: "70"
+      budget:
+        description: "Most US$ per game (hard stop)"
+        default: "4"
+      dry_run:
+        description: "Dry run: load the game and screenshot it, no Claude calls"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: playtest
+  cancel-in-progress: false
+
+jobs:
+  play:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # The browser is installed in a temp folder on the runner, not in the
+      # repo, so the repo stays package-free.
+      - name: Install a browser (runner only)
+        run: |
+          mkdir -p "$RUNNER_TEMP/pw" && cd "$RUNNER_TEMP/pw"
+          npm init -y > /dev/null
+          npm install --no-audit --no-fund playwright@1.49.1 > /dev/null
+          npx playwright install --with-deps chromium > /dev/null
+      - name: Play
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          PW_DIR: ${{ runner.temp }}/pw
+          GAME: ${{ inputs.game }}
+          MOVES: ${{ inputs.moves }}
+          BUDGET: ${{ inputs.budget }}
+          DRY: ${{ inputs.dry_run }}
+        run: |
+          games="$GAME"; [ "$games" = "both" ] && games="pew scrapline"
+          extra=""; [ "$DRY" = "true" ] && extra="--dry"
+          for g in $games; do
+            echo "== $g =="
+            node .github/scripts/playtest.mjs "$g" --moves "$MOVES" --budget "$BUDGET" $extra || echo "$g stopped with an error"
+          done
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playtest
+          path: playtest-out/
+          retention-days: 3
