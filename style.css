@@ -3197,11 +3197,20 @@ img {
   transition: transform 260ms var(--ease), box-shadow 260ms var(--ease), border-color 260ms;
 }
 
-.project:hover,
+/* The lift is for a mouse or the keyboard. On a phone "hover" sticks to
+   the last card touched, so a card stayed raised after every swipe. */
 .project:focus-within {
   transform: translateY(-3px);
   box-shadow: var(--shadow-lift);
   border-color: var(--secondary);
+}
+
+@media (hover: hover) {
+  .project:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lift);
+    border-color: var(--secondary);
+  }
 }
 
 .project__cover {
@@ -3415,6 +3424,10 @@ img {
   margin-inline: calc(var(--gutter) * -1);
   padding: 0.3rem var(--gutter) 0.9rem; /* room for the hover lift and shadow */
   overflow-x: auto;
+  /* Sideways only. Left on "auto" the row could also slide a few pixels
+     up and down inside itself, and on an iPhone it bounced under the
+     thumb on every swipe. */
+  overflow-y: hidden;
   overscroll-behavior-x: contain;
   scroll-snap-type: x proximity;
   scroll-padding-inline: var(--gutter);
@@ -5369,6 +5382,12 @@ a.quest__top:focus-visible .quest__name {
   .reveal.is-in {
     opacity: 1;
     translate: 0 0;
+  }
+
+  /* The home swipe row arrives as one piece (main.js setUpGameRow), with
+     a shorter rise so no card pokes out under the row. */
+  .project-list--row > .project.reveal:not(.is-in) {
+    translate: 0 10px;
   }
 
   /* The clay dot on "Now building" breathes slowly */

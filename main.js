@@ -832,6 +832,23 @@ function setUpGameRow(listEl, projects) {
   fillList(listEl, games, "No games yet.");
   if (!games.length) return;
 
+  // The whole row fades in together when it scrolls into view. Left to
+  // themselves the cards off to the side would wait, then rise in one by
+  // one during a swipe, which made the row jiggle.
+  if (revealObserver) {
+    const cards = [...listEl.children];
+    cards.forEach((card) => revealObserver.unobserve(card));
+    const rowObserver = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        cards.forEach(showNow);
+        rowObserver.disconnect();
+      },
+      { rootMargin: "0px 0px -8% 0px" }
+    );
+    rowObserver.observe(listEl);
+  }
+
   // Keyboard users can focus the row and scroll it with the arrow keys.
   listEl.tabIndex = 0;
   listEl.setAttribute("aria-label", games.length + " games. Swipe sideways to see them all");
@@ -5424,6 +5441,8 @@ function setUpMouseSky(scene) {
   });
 }
 
+const PRESS_TILT_MS = 160; // how long a finger rests on a card before it tips
+
 function setUpCoverTilt() {
   if (REDUCE_MOTION) return;
   let card = null;
@@ -5456,19 +5475,24 @@ function setUpCoverTilt() {
     });
     document.documentElement.addEventListener("pointerleave", settle);
   }
-  // A finger: the card leans toward it while it's pressed, and settles
-  // on letting go or when the press turns into a scroll (pointercancel)
+  // A finger: the card leans toward it once it has been held still for a
+  // moment, and settles on letting go. A swipe never tips a card: the
+  // press turns into a scroll (pointercancel) before the wait is over.
+  let hold = 0;
   document.addEventListener("pointerdown", (e) => {
     if (e.pointerType === "mouse") return;
     const over = cardAt(e);
-    if (over) lean(over, e, 0.7);
+    clearTimeout(hold);
+    if (over) hold = setTimeout(() => lean(over, e, 0.7), PRESS_TILT_MS);
   }, { passive: true });
   document.addEventListener("pointermove", (e) => {
     if (e.pointerType !== "mouse" && card) lean(card, e, 0.7);
   }, { passive: true });
   ["pointerup", "pointercancel"].forEach((name) => {
     document.addEventListener(name, (e) => {
-      if (e.pointerType !== "mouse") settle();
+      if (e.pointerType === "mouse") return;
+      clearTimeout(hold);
+      settle();
     });
   });
 }
