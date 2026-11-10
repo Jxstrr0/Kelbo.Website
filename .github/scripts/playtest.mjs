@@ -3,7 +3,7 @@
 // Run by .github/workflows/playtest.yml, which installs a browser on the runner first
 // (PW_DIR points at it; nothing is installed in this repo).
 //
-//   node .github/scripts/playtest.mjs pew|scrapline [--dry] [--moves 70] [--budget 4]
+//   node .github/scripts/playtest.mjs pew|scrapline|lombard [--dry] [--moves 70] [--budget 4]
 //
 // --dry      no API calls: just loads the game on the phone and saves a screenshot (free)
 // --moves    hard cap on how many actions Claude may take
@@ -28,12 +28,18 @@ const GAMES = {
     name: "Scrapline",
     goal: "Start a Career. Get a robot ready, fight your first career event (drive it yourself), and close a week.",
   },
+  lombard: {
+    url: "https://lombard.longlight.games/",
+    name: "Lombard",
+    // Nov 10 run: Kelbo asked for Lombard on its own, its first play-test.
+    goal: "Start a new game and run the pawn shop through your first customers: look over what each one brings in, decide whether it is real, haggle, and make or refuse a deal. Get to the end of your first day if you can, and say how the money came out.",
+  },
 };
 
 const args = process.argv.slice(2);
 const gameId = args[0];
 const game = GAMES[gameId];
-if (!game) { console.error("usage: node playtest.mjs pew|scrapline [--dry] [--moves N] [--budget USD]"); process.exit(1); }
+if (!game) { console.error("usage: node playtest.mjs pew|scrapline|lombard [--dry] [--moves N] [--budget USD]"); process.exit(1); }
 const flag = (n, d) => { const i = args.indexOf(n); return i < 0 ? d : Number(args[i + 1]); };
 const DRY = args.includes("--dry");
 const MAX_MOVES = flag("--moves", 70);
