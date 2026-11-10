@@ -742,6 +742,20 @@ img {
   right: calc(100% + 6px);
 }
 
+/* Below or above the dot, when a neighbour's name is in the way beside it
+   (main.js placePlanetNames picks the side) */
+.planet--below span,
+.planet--above span {
+  left: 50%;
+  top: calc(100% + 6px);
+  transform: translateX(-50%);
+}
+
+.planet--above span {
+  top: auto;
+  bottom: calc(100% + 6px);
+}
+
 /* The space station (main.js placeIss): its own full-width layer over
    the stars, so it shows whatever the theme (the real one only after
    dark; ?critter=iss any time). A bright steady ivory dot, brighter than
@@ -827,6 +841,30 @@ img {
   --sun-x: 0.12;
   --ground-height: 1.5rem;
   --cloud-reach: 7rem;
+}
+
+/* On a phone the page head is shorter, so the page's own content starts
+   higher on the first screen: less padding, a lower sky, a smaller sun. */
+@media (max-width: 39.99rem) {
+  .page-head {
+    padding-top: 1.5rem;
+  }
+
+  .page-head__line,
+  .fx {
+    margin-bottom: 1.25rem;
+  }
+
+  .page-head .horizon {
+    --sky-height: 66px;
+    --sun-size: 50px;
+    --ground-height: 1rem;
+    --cloud-reach: 5rem;
+  }
+
+  .page-head + .section {
+    padding-top: 1.5rem;
+  }
 }
 
 .horizon__sun {
