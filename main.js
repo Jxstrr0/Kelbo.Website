@@ -509,10 +509,13 @@ function setUpGame(box, projects) {
   // Cover (a coloured tile with initials if there's no picture)
   const cover = el("div", "project__cover game__cover");
   cover.dataset.cat = String(project.category || "").trim().toLowerCase();
-  if (project.image) {
+  // "art" (assets/art/, 640x480 + @2x) is painted key art: it leads the
+  // game page, while the cards keep the live-game cover and its clip.
+  const coverSrc = project.art || project.image;
+  if (coverSrc) {
     const img = el("img");
-    setPicture(img, project.image);
-    img.alt = "Cover of " + title;
+    setPicture(img, coverSrc);
+    img.alt = (project.art ? "Key art for " : "Cover of ") + title;
     img.width = 640;
     img.height = 480;
     cover.append(img);
@@ -598,6 +601,27 @@ function setUpGame(box, projects) {
     video.height = 720;
     video.setAttribute("aria-label", "A short silent clip of " + title);
     section.append(video, el("p", "game__clip-note", "A short silent clip, recorded from the game on a phone-sized screen."));
+    box.append(section);
+  }
+
+  // A cinematic loop ("film" in projects.json, an .mp4 in assets/films/ with
+  // a same-named .jpg still). It is painted art, not gameplay, and says so.
+  // Like the clip, only the still downloads until play is pressed.
+  if (project.film) {
+    const section = el("section", "game__film");
+    section.append(el("h2", null, "Cinematic"));
+    const video = el("video");
+    video.src = project.film;
+    video.poster = String(project.film).replace(/\.mp4$/i, ".jpg");
+    video.preload = "none";
+    video.controls = true;
+    video.muted = true;
+    video.loop = true;
+    video.playsInline = true;
+    video.width = 1280;
+    video.height = 720;
+    video.setAttribute("aria-label", "A short silent cinematic of " + title + ", not gameplay");
+    section.append(video, el("p", "game__clip-note", "A cinematic, not gameplay: a short silent mood piece for the game."));
     box.append(section);
   }
 

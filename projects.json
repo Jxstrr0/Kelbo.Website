@@ -1,6 +1,8 @@
 [
   {
     "title": "Prairie Engine Works",
+    "art": "assets/art/prairie-engine-works.jpg",
+    "film": "assets/films/prairie-engine-works.mp4",
     "status": "Released",
     "category": "Game",
     "summary": "Longlight's biggest game so far. Put an engine together on the test stand, fire it up and hear it run, then take it to the drag strip or a truck and tractor pull to earn cash and reputation.",
@@ -33,6 +35,7 @@
   },
   {
     "title": "Lombard",
+    "art": "assets/art/lombard.jpg",
     "status": "In development",
     "category": "Game",
     "summary": "A first-person pawn shop sim on a canal in Mostograd, a made-up Russian river city in the 2010s. Inspect what people bring in, spot the fakes, haggle, and decide how much trouble a good deal is worth.",
@@ -47,6 +50,7 @@
   },
   {
     "title": "Escapement",
+    "film": "assets/films/escapement.mp4",
     "status": "Released",
     "category": "Game",
     "summary": "A watchmaking career game. Build mechanical movements part by part, put them on the timegrapher, chase chronometer certification and sell to collectors, until a shared repair bench in the Haldis becomes a manufacture making its own calibres.",
@@ -79,6 +83,7 @@
   },
   {
     "title": "Scrapline",
+    "film": "assets/films/scrapline.mp4",
     "status": "Polishing",
     "category": "Game",
     "summary": "A combat robot builder. Design a fighting robot under a weight limit, test it on the bench, drive it in the arena, patch it in the pit and read the post-mortem, from a plywood box in a rented corner of a machine shop to the televised Scrapline Open.",
@@ -239,6 +244,7 @@
   },
   {
     "title": "Red Skies",
+    "art": "assets/art/red-skies.jpg",
     "status": "Complete",
     "category": "Game",
     "summary": "A phone game where you run an air-defence battery. Watch the radar, sort friendly jets from enemies, and hold your fire until you're sure, because shooting down a friendly ends the shift.",
