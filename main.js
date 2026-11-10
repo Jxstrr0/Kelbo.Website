@@ -179,9 +179,12 @@ function renderProject(project) {
     img.height = 480;
     img.loading = "lazy";
     cover.append(img);
-    // A game with a recorded clip ("clip" in projects.json) plays it on
-    // its cover while the card is on screen (see "Moving covers").
-    if (project.clip) watchClip(cover, project.clip);
+    // A game with a card clip ("cardClip" in projects.json, the same
+    // shape as the cover and starting on the very same picture) plays it
+    // on its cover while the card is on screen (see "Moving covers").
+    // Without one, the tall game-page clip ("clip") stands in.
+    const cardClip = project.cardClip || project.clip;
+    if (cardClip) watchClip(cover, cardClip);
   } else {
     cover.append(el("span", "project__initials", initials(title)));
   }
@@ -340,7 +343,10 @@ function reveal(node) {
 /* ---------- Moving covers ----------
    A game with a short recorded clip plays it, silently and on a loop, in
    place of its cover picture while most of the card is on screen, and
-   stops when it scrolls away. The clip (about 200 KB) is only downloaded
+   stops when it scrolls away. The card clip ("cardClip", 640x480, 30
+   frames a second, six to eight seconds) opens on the cover picture
+   itself and its end melts back into its start, so the picture simply
+   comes to life. The clip (100 to 400 KB) is only downloaded
    the first time its card comes into view. Skipped with "reduce motion",
    and when the phone has Data Saver on. */
 const SAVE_DATA = Boolean(navigator.connection && navigator.connection.saveData);
