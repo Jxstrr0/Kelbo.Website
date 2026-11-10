@@ -45,6 +45,13 @@
       var t = localStorage.getItem("kelbo.theme");
       if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
     } catch (e) {}
+    // Sound on and the sting not played yet this visit: keep the logo's
+    // sun below its line from the very first frame, so it rises together
+    // with the sound (main.js setUpSound lets it go).
+    try {
+      if (localStorage.getItem("kelbo.sound") === "on" && sessionStorage.getItem("kelbo.stingPlayed") !== "1")
+        document.documentElement.classList.add("logo--sting", "logo--hold");
+    } catch (e) {}
   </script>
   <script src="main.js" defer></script>
 </head>

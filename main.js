@@ -6672,12 +6672,17 @@ function setUpLens() {
    made by Kelbo with ElevenLabs). Off unless the visitor turns Sound on
    with the footer switch (saved in localStorage["kelbo.sound"]).
    Turning it on plays the sting once. With Sound on, the first page of a
-   visit plays it as the logo rises; phones block sound until a tap, so if
-   that's refused it waits for the first tap or key on the page instead.
+   visit plays it once, and the logo's sun always rises together with it:
+   the sun waits below its line until the sound really starts. Phones
+   block sound until a tap, so there the sun waits for the first tap or
+   key (up to STING_WAIT_MS, then it comes up quietly so the logo is
+   never left empty; the first tap after that still plays the sound and
+   raises the sun again with it).
    The file is only downloaded once Sound is on. */
 const SOUND_KEY = "kelbo.sound";
 const STING_URL = "assets/sounds/longlight-sting.mp3";
 const STING_DONE = "kelbo.stingPlayed"; // sessionStorage: once per visit
+const STING_WAIT_MS = 4000; // how long the sun waits below its line for the sound
 
 function soundOn() {
   try { return localStorage.getItem(SOUND_KEY) === "on"; } catch (e) { return false; }
@@ -6738,32 +6743,41 @@ function setUpSound() {
   paint();
   line.append(" \u00b7 ", btn);
 
-  // First page of the visit, Sound on: play it as the logo rises.
-  let done = false;
-  try { done = sessionStorage.getItem(STING_DONE) === "1"; } catch (e) {}
-  if (!soundOn() || done) return;
-  const mark = () => { try { sessionStorage.setItem(STING_DONE, "1"); } catch (e) {} };
-  // Hold the logo's sun down while the file loads, so it can rise with
-  // the sound. If it's slow or refused, let it rise the usual way.
+  // First page of the visit, Sound on: the sun and the sound go together.
+  // Each page's <head> script has already put the sun below its line
+  // (logo--sting + logo--hold) before the first frame, so it never rises
+  // early and drops back. Here it is let go: by the sound starting
+  // (playSting calls stingRise), or quietly once the wait runs out.
   const root = document.documentElement;
-  root.classList.add("logo--sting", "logo--hold");
   const release = () => {
     if (root.classList.contains("logo--hold")) root.classList.remove("logo--sting", "logo--hold");
   };
-  const slow = setTimeout(release, 1200);
+  let done = false;
+  try { done = sessionStorage.getItem(STING_DONE) === "1"; } catch (e) {}
+  if (!soundOn() || done) return release();
+  const mark = () => { try { sessionStorage.setItem(STING_DONE, "1"); } catch (e) {} };
+  root.classList.add("logo--sting", "logo--hold"); // in case the <head> script didn't
+  const giveUp = setTimeout(release, STING_WAIT_MS);
   playSting().then((ok) => {
-    clearTimeout(slow);
-    if (ok) return mark();
-    release();
-    // Refused (no tap yet): play on the first tap or key instead.
+    if (ok) { clearTimeout(giveUp); return mark(); }
+    if (!stingAudio) { clearTimeout(giveUp); return release(); } // no file: nothing to wait for
+    // Refused (no tap yet): keep the sun down and play at the first tap
+    // or key. Browsers only allow sound once a tap has finished (finger
+    // up), so listen for click, not pointerdown. A tap on a link is left
+    // alone: the next page starts its own wait instead of cutting the
+    // sound off mid-rise.
+    const events = ["click", "keydown"];
     const once = (e) => {
       if (e.target === btn || !soundOn()) return;
-      removeEventListener("pointerdown", once, true);
-      removeEventListener("keydown", once, true);
-      playSting().then((played) => played && mark());
+      if (e.target.closest && e.target.closest("a[href]")) return;
+      playSting().then((played) => {
+        if (!played) return; // still refused: keep listening
+        clearTimeout(giveUp);
+        mark();
+        events.forEach((name) => removeEventListener(name, once, true));
+      });
     };
-    addEventListener("pointerdown", once, true);
-    addEventListener("keydown", once, true);
+    events.forEach((name) => addEventListener(name, once, true));
   });
 }
 

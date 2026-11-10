@@ -5864,7 +5864,7 @@ a.quest__top:focus-visible .quest__name {
 
   /* The sting (main.js stingRise): the sun swells up slowly with the
      sound and lands on its cut at 1.33 s, then the halo pops and the
-     ray shoots out. logo--hold keeps it down while the sound loads. */
+     ray shoots out. logo--hold keeps it down until the sound starts. */
   .logo--sting .logo__sun {
     animation: logo-swell 1330ms cubic-bezier(0.5, 0, 0.3, 1) backwards;
   }
