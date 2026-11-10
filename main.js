@@ -1700,6 +1700,40 @@ function skyX(az) {
   return (off + 90) / 180;
 }
 
+// Picks a side for each planet's name so two names never sit on top of
+// each other when planets are close together. Each name tries the right
+// of its dot first, then the left, below and above, and takes the first
+// spot that is on screen and clear of the names and dots already placed.
+const NAME_SIDES = ["", "planet--flip", "planet--below", "planet--above"];
+function placePlanetNames(box) {
+  const w = box.clientWidth, h = box.clientHeight;
+  const shown = box.planets.filter((p) => p.up && p.dot.firstElementChild);
+  if (!w || !shown.length) return;
+  const GAP = 6, PAD = 2; // px: dot to name, and breathing room between names
+  const hit = (a, b) => a.l < b.r + PAD && b.l < a.r + PAD && a.t < b.b + PAD && b.t < a.b + PAD;
+  // Every dot is in the way from the start, so a name never covers a planet
+  const taken = shown.map((p) => {
+    const x = (p.x / 100) * w, y = (p.y / 100) * h;
+    return { l: x - 4, r: x + 4, t: y - 4, b: y + 4, of: p };
+  });
+  for (const p of shown) {
+    const label = p.dot.firstElementChild;
+    if (!p.nameW) { p.nameW = label.offsetWidth; p.nameH = label.offsetHeight; } // the words never change
+    const x = (p.x / 100) * w, y = (p.y / 100) * h, lw = p.nameW, lh = p.nameH;
+    const spots = [
+      { l: x + GAP, r: x + GAP + lw, t: y - lh / 2, b: y + lh / 2 }, // right
+      { l: x - GAP - lw, r: x - GAP, t: y - lh / 2, b: y + lh / 2 }, // left
+      { l: x - lw / 2, r: x + lw / 2, t: y + GAP, b: y + GAP + lh }, // below
+      { l: x - lw / 2, r: x + lw / 2, t: y - GAP - lh, b: y - GAP }, // above
+    ];
+    const fits = (s) => s.l >= 0 && s.r <= w && s.t >= 0 && !taken.some((o) => o.of !== p && hit(s, o));
+    let pick = spots.findIndex(fits);
+    if (pick < 0) pick = p.x > 85 ? 1 : 0; // nowhere is clear: fall back to the old rule
+    NAME_SIDES.forEach((side, i) => side && p.dot.classList.toggle(side, i === pick));
+    taken.push({ ...spots[pick], of: null });
+  }
+}
+
 // Puts every star where it really is at moment "t".
 function placeStars(scene, t) {
   const box = scene.querySelector(".horizon__stars");
@@ -1728,10 +1762,8 @@ function placeStars(scene, t) {
     entry.dot.style.top = `${entry.y.toFixed(2)}%`;
   };
   for (const entry of box.stars) place(entry, entry.star[0], entry.star[1]);
-  for (const entry of box.planets) {
-    place(entry, ...planetRaDec(entry.planet.orbit, t));
-    entry.dot.classList.toggle("planet--flip", entry.x > 85); // name on the left near the right edge
-  }
+  for (const entry of box.planets) place(entry, ...planetRaDec(entry.planet.orbit, t));
+  placePlanetNames(box);
   for (const { a, b, line } of box.lines) {
     const show = a && b && a.up && b.up;
     line.style.display = show ? "" : "none";

@@ -173,7 +173,11 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   stars are up. `PLANETS` (JPL approximate Keplerian elements +
   `EARTH_ORBIT`; `orbitXYZ`, `planetRaDec`, within ~0.1°) are placed the
   same way as `b.planet` dots (steady, ivory, Mars clay; name `span`
-  on the home sky only, flipped left near the right edge).
+  on the home sky only; `placePlanetNames` puts each name right, left
+  (`planet--flip`), below or above its dot (`planet--below`/`--above`),
+  the first spot on screen and clear of other names and dots). On phones
+  (under 40rem) the page head is shorter: less padding, `--sky-height`
+  66px, `--sun-size` 50px, and the first section starts closer.
   Shooting stars: `setUpMeteors` rolls dice every 500 ms (dark theme,
   sun below -8°, not spinning/swiping, off with reduce motion) from
   `meteorRate`: strays (`METEOR_EVERY_S`) plus the active `SHOWERS` entry
