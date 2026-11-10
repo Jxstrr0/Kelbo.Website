@@ -540,8 +540,9 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   sunset and at night (`--logo-dip` on `<html>`, set in `placeSun`, so it
   follows swipes and the spin; the line in front hides the drop).
   `stingRise` replays the rise on `.logo--sting` timed to the sting (swell,
-  lands on its cut at 1.33 s); `logo--hold` keeps the sun down while the
-  file loads (released after 1.2 s or on refusal). `placeLowSun` sets
+  lands on its cut at 1.33 s); `logo--hold` keeps the sun down until the
+  sound starts (set by each page's `<head>` script before the first frame;
+  released quietly after `STING_WAIT_MS`, 4 s, or at once with no file). `placeLowSun` sets
   `--sun-flat` below `LOW_SUN_DEG` (4°) with `horizon--low-sun` (squashed
   `scale`, `sun-wobble`) and `horizon--rim` (setting, under `RIM_DEG` 1.5°:
   `sun-rim` ripples the border-radius). `horizon--breezy` (known wind ≥
@@ -555,8 +556,9 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   saved in `localStorage["kelbo.sound"]`; off by default, and the file is
   only fetched once it's on. Turning it on plays the sting; with Sound on,
   the first page of a visit (`sessionStorage["kelbo.stingPlayed"]`) plays it
-  as the logo rises, or at the first tap or key when the browser blocks
-  sound until then. Not in `sw.js` `CORE`. It's the site's only sound.
+  with the logo's rise: the sun waits below its line for the sound, so on a
+  phone (sound blocked until a tap) both start at the first tap or key
+  (`click`/`keydown`; taps on links are skipped so the next page does it). Not in `sw.js` `CORE`. It's the site's only sound.
 - Offline: `sw.js` (root, registered in `init`) precaches `CORE` and is
   network-first for same-origin GETs (saved copy on failure, `index.html`
   for unknown pages offline). Bump `CACHE`
