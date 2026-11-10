@@ -1,14 +1,14 @@
 {
   "latest": {
-    "date": "2026-11-09",
-    "time": "2026-11-09T12:35:05.008Z",
-    "headline": "Nvidia down 5% on Huang probe; MU flat ahead of CPI",
-    "tldr": "Nvidia's board opened an investigation into CEO Jensen Huang's affair with an alleged Chinese spy and the stock is down about 5% pre-market, but the rest of the chip complex is shrugging it off (Taiex +4.9%, Nasdaq 100 futures +0.4%), MU is roughly flat at about $685, and Tuesday's CPI (with December hike odds near 80%) is the bigger event."
+    "date": "2026-11-10",
+    "time": "2026-11-10T12:37:31.426Z",
+    "headline": "CPI at 7:30 SK decides whether Monday's chip rebound holds",
+    "tldr": "Chips had their best day in months on Monday (SOX about +6.9%, MU +6.25% to $733.15) and Asia followed, but Nasdaq 100 futures are −0.3% and MU has faded to about $726 ahead of an 8:30 ET CPI print that a Fed governor has tied to a possible 50bp December hike."
   },
   "months": [
     {
       "month": "2026-11",
-      "count": 7
+      "count": 8
     }
   ]
 }
