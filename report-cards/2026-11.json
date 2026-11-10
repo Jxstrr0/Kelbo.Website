@@ -1,4 +1,63 @@
 {
+  "2026-11-10": {
+    "date": "2026-11-10",
+    "time": "2026-11-10T22:47:03.064Z",
+    "summary": "The gap call was a hit (open −2.15%, inside the −0.5% to −2.5% call); three of four levels held, though only after being poked through, and $689.65 was never tested.",
+    "gap": {
+      "call": "Down about 0.5% to 2.5%, roughly $715–$730",
+      "result": "MU opened at 717.37, down 2.15% from 733.15 after a hot core CPI print.",
+      "grade": "hit"
+    },
+    "mu": {
+      "prev_close": 733.15,
+      "open": 717.37,
+      "high": 745.64,
+      "low": 699.63,
+      "close": 725.11,
+      "open_pct": -2.15,
+      "close_pct": -1.1
+    },
+    "levels": [
+      {
+        "level": "Resistance $733.15 (Monday's close)",
+        "result": "The price traded above it to 745.64 but closed below at 725.11.",
+        "grade": "held"
+      },
+      {
+        "level": "Next resistance $744.74 (Monday's high)",
+        "result": "The high of 745.64 poked just above it, then the price closed well below.",
+        "grade": "held"
+      },
+      {
+        "level": "Support $703.59 (Monday's open)",
+        "result": "The low of 699.63 poked below it, but the price closed above at 725.11.",
+        "grade": "held"
+      },
+      {
+        "level": "Next support $689.65 (Monday's low)",
+        "result": "The day's low of 699.63 stayed more than 0.5% above it.",
+        "grade": "untested"
+      }
+    ],
+    "sources": [
+      {
+        "title": "Micron Technology, Inc. (MU) stock price, news, quote and history - Yahoo Finance",
+        "url": "https://au.finance.yahoo.com/quote/MU/"
+      },
+      {
+        "title": "Micron Technology, Inc. (MU) Stock Price, Quote, News & Analysis",
+        "url": "https://seekingalpha.com/symbol/MU"
+      },
+      {
+        "title": "Micron Is Down 40% Since Oct. 7. History Suggests a $5,000 Investment Today Could Be Worth This Much by 2030.",
+        "url": "https://www.fool.com/investing/2026/11/10/micron-is-down-40-since-oct-7-history-suggests-a-5/"
+      },
+      {
+        "title": "Micron Technology Stocks Slip 1.27% as Hot CPI Overshadows $1 Billion Anthropic Bet — TradingView News",
+        "url": "https://www.tradingview.com/news/gurufocus:e8082f9dc094b:0-micron-technology-stocks-slip-1-27-as-hot-cpi-overshadows-1-billion-anthropic-bet/"
+      }
+    ]
+  },
   "2026-11-09": {
     "date": "2026-11-09",
     "time": "2026-11-09T22:46:17.403Z",
