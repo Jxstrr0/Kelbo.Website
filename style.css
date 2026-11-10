@@ -3379,6 +3379,18 @@ img {
   background: var(--ll-slate);
 }
 
+/* The game page's cinematic: a wide 16:9 video, never wider than the screen */
+.game__film video {
+  display: block;
+  width: 100%;
+  max-width: 48rem;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--ll-slate);
+}
+
 .game__clip-note {
   margin: 0.5rem 0 0;
   color: var(--muted);
