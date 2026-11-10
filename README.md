@@ -214,6 +214,11 @@ progress order.
 - **clip** (optional): a short silent video on the game's own page, under
   "See it move": `"clip": "assets/clips/my-game.mp4"`, with a still picture
   of the same name ending `.jpg` beside it. Ask Claude to record one.
+- **cardClip** (optional): the short silent loop that plays on the game's
+  card, in place of its cover, while the card is on screen:
+  `"cardClip": "assets/clips/my-game-card.mp4"`. It is the same shape as
+  the cover and starts on the cover picture, so the two are recorded
+  together. Ask Claude to record them.
 - **shots** (optional): screenshots for the card's "Screenshots (4)" drawer.
   Add a list under the project, each with a picture and a short
   description for screen readers:
@@ -318,8 +323,8 @@ each page has just one copy of them.
 When someone shares a link to the site in a text, Discord, or X, the app
 shows a preview card. That card is `assets/social-preview.jpg` (1200×630).
 It shows the sun with the same glow and halo as the logo. To change it,
-upload a new picture with the same name and size, then bump the `?v=18` on
-the end of every page's `og:image` line (to `?v=19`) so apps fetch the new
+upload a new picture with the same name and size, then bump the `?v=19` on
+the end of every page's `og:image` line (to `?v=20`) so apps fetch the new
 one. Apps remember old previews for a while, so a change can still take a
 day or so to show up when you share the link.
 

@@ -10,6 +10,7 @@
     "code": "https://github.com/Jxstrr0/350Chev",
     "image": "assets/covers/prairie-engine-works.jpg",
     "clip": "assets/clips/prairie-engine-works.mp4",
+    "cardClip": "assets/clips/prairie-engine-works-card.mp4",
     "featured": true,
     "shots": [
       {
@@ -41,6 +42,7 @@
     "code": "https://github.com/Jxstrr0/Lombard",
     "image": "assets/covers/lombard.jpg",
     "clip": "assets/clips/lombard.mp4",
+    "cardClip": "assets/clips/lombard-card.mp4",
     "featured": false
   },
   {
@@ -55,6 +57,7 @@
     "image": "assets/covers/escapement.jpg",
     "featured": false,
     "clip": "assets/clips/escapement.mp4",
+    "cardClip": "assets/clips/escapement-card.mp4",
     "shots": [
       {
         "src": "assets/shots/escapement-1.jpg",
@@ -86,6 +89,7 @@
     "image": "assets/covers/scrapline.jpg",
     "featured": false,
     "clip": "assets/clips/scrapline.mp4",
+    "cardClip": "assets/clips/scrapline-card.mp4",
     "shots": [
       {
         "src": "assets/shots/scrapline-1.jpg",
@@ -117,6 +121,7 @@
     "image": "assets/covers/ink.jpg",
     "featured": false,
     "clip": "assets/clips/ink.mp4",
+    "cardClip": "assets/clips/ink-card.mp4",
     "shots": [
       {
         "src": "assets/shots/ink-1.jpg",
@@ -147,6 +152,7 @@
     "code": "https://github.com/Jxstrr0/StationKeeper",
     "image": "assets/covers/station-keeper.jpg",
     "clip": "assets/clips/station-keeper.mp4",
+    "cardClip": "assets/clips/station-keeper-card.mp4",
     "featured": false
   },
   {
@@ -160,6 +166,7 @@
     "code": "https://github.com/Jxstrr0/SeasonTicket",
     "image": "assets/covers/season-ticket.jpg",
     "clip": "assets/clips/season-ticket.mp4",
+    "cardClip": "assets/clips/season-ticket-card.mp4",
     "shots": [
       {
         "src": "assets/shots/season-ticket-1.jpg",
@@ -195,6 +202,7 @@
     "code": "https://github.com/Jxstrr0/FrontierLab",
     "image": "assets/covers/frontier-lab.jpg",
     "clip": "assets/clips/frontier-lab.mp4",
+    "cardClip": "assets/clips/frontier-lab-card.mp4",
     "featured": true
   },
   {
@@ -208,6 +216,7 @@
     "code": "https://github.com/Jxstrr0/The-Whip",
     "image": "assets/covers/the-whip.jpg",
     "clip": "assets/clips/the-whip.mp4",
+    "cardClip": "assets/clips/the-whip-card.mp4",
     "featured": true,
     "shots": [
       {
@@ -239,6 +248,7 @@
     "code": "https://github.com/Jxstrr0/RedSkies",
     "image": "assets/covers/red-skies.jpg",
     "clip": "assets/clips/red-skies.mp4",
+    "cardClip": "assets/clips/red-skies-card.mp4",
     "featured": false,
     "shots": [
       {
