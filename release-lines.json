@@ -28,5 +28,15 @@
     "line": "Bots now have wheel wells, tyres, running tracks, bolts and deck fittings.",
     "title": "v0.1.41.0 - the bots' parts (wheel wells, tyres, running tracks, bolts, deck fittings)",
     "at": "2026-11-09T22:44:40.858Z"
+  },
+  "350Chev@v1.76.122.0": {
+    "line": "Pull trucks, bog trucks and boats can now get a clear-coat paint finish.",
+    "title": "v1.76.122.0 - clear-coat paint on pull trucks, bog trucks and boats",
+    "at": "2026-11-10T07:48:26.919Z"
+  },
+  "Scrapline@v0.1.53": {
+    "line": "Side plates now protect equally well on every box.",
+    "title": "v0.1.53 - side plates protect the same on every box",
+    "at": "2026-11-10T07:48:26.920Z"
   }
 }
