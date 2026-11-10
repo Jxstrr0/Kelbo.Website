@@ -140,9 +140,7 @@ keep the Co-Authored-By trailer for Claude in each message.
   used by seven workflows: the Morning Writer (pre-market brief), the
   Grader (after-close report card), the Coach (brief lessons), the Devlog
   Writer, the Release Writer, the Forecaster (weekly journal forecast) and
-  the Scorekeeper (weekly journal grades), plus the one-off Playtester
-  (`playtest.yml`, by hand only, to be deleted after use). It is only
-  ever referenced as
+  the Scorekeeper (weekly journal grades). It is only ever referenced as
   `${{ secrets.ANTHROPIC_API_KEY }}` in those workflows; `deploy.yml` and `site-check.yml` stay key-free.
 - Mobile first (works down to 360px wide), light and dark themes with
   every colour in CSS variables (`data-theme` on `<html>`, set by `main.js`
