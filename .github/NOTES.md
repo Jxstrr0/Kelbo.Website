@@ -41,6 +41,13 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   `sw.js` lets `.mp4` requests go straight to the network. Clips and the
   newer screenshots are recorded from the live game with Playwright at a
   phone size, then cut with ffmpeg. check-site checks the files exist.
+- A game can carry `art` (`assets/art/<slug>.jpg`, 640×480 plus `@2x`):
+  painted key art (Higgsfield, credited in `assets/art/CREDITS.md`) that
+  takes the cover's place at the top of the game page only; cards, the
+  home row, the press kit and the link preview keep `image`. And a `film`
+  (`assets/films/<slug>.mp4`, silent H.264 1280×720, about 10 s, under
+  1.2 MB, with a same-named `.jpg` still): a "Cinematic" section under
+  "See it move", `preload="none"`, labelled as not gameplay.
 - A game can also carry a `cardClip` (`assets/clips/<slug>-card.mp4`,
   silent H.264, 640×480 like the cover, 30 frames a second, 6 to 8
   seconds, under 400 KB). `watchClip`/`playClip` fade it in over the card's
