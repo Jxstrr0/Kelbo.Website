@@ -244,7 +244,6 @@
   },
   {
     "title": "Red Skies",
-    "art": "assets/art/red-skies.jpg",
     "status": "Complete",
     "category": "Game",
     "summary": "A phone game where you run an air-defence battery. Watch the radar, sort friendly jets from enemies, and hold your fire until you're sure, because shooting down a friendly ends the shift.",
