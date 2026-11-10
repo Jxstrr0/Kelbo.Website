@@ -41,6 +41,18 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   `sw.js` lets `.mp4` requests go straight to the network. Clips and the
   newer screenshots are recorded from the live game with Playwright at a
   phone size, then cut with ffmpeg. check-site checks the files exist.
+- A game can also carry a `cardClip` (`assets/clips/<slug>-card.mp4`,
+  silent H.264, 640×480 like the cover, 30 frames a second, 6 to 8
+  seconds, under 400 KB). `watchClip`/`playClip` fade it in over the card's
+  cover while the card is 60% on screen (not with reduced motion or Data
+  Saver); without one the tall `clip` stands in. The cover picture
+  (`assets/covers/<slug>.jpg` and `@2x`) is the card clip's first frame,
+  so the still simply starts moving, and the clip's last half second is
+  cross-faded into its lead-in so the loop has no jump. Recorded from the
+  live game with Playwright in headless Chromium, UI hidden, the game's
+  clock stepped one thirtieth of a second per frame and the canvas read
+  each step (so it is smooth however slow the machine is), then cut with
+  ffmpeg. Re-record the cover and the card clip together.
 - Game cards with a `link` say "Plays in your browser" beside the category
   pill (`playsInBrowser`, `.project__instant`); the game page adds ", no
   download".
