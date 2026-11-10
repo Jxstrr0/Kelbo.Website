@@ -126,6 +126,21 @@ if (projects !== undefined) {
         else if (!exists(p.cardClip)) error("projects.json", `${name}: the card clip "${p.cardClip}" doesn't exist.`);
         else if (statSync(join(ROOT, p.cardClip)).size > 400 * 1024) warn("projects.json", `${name}: the card clip "${p.cardClip}" is over 400 KB, heavy for a phone on mobile data.`);
       }
+      // Painted key art for the game page (640x480 JPG with an @2x twin).
+      if (p.art !== undefined) {
+        if (typeof p.art !== "string" || !/\.jpg$/i.test(p.art)) error("projects.json", `${name}: "art" should be the path of a .jpg file.`);
+        else if (!exists(p.art)) error("projects.json", `${name}: the art "${p.art}" doesn't exist.`);
+        else if (!exists(p.art.replace(/\.jpg$/i, "@2x.jpg"))) warn("projects.json", `${name}: the art has no @2x twin.`);
+      }
+      // A cinematic loop for the game page: an .mp4 with a same-named .jpg still.
+      if (p.film !== undefined) {
+        if (typeof p.film !== "string" || !/\.mp4$/i.test(p.film)) error("projects.json", `${name}: "film" should be the path of an .mp4 file.`);
+        else if (!exists(p.film)) error("projects.json", `${name}: the film "${p.film}" doesn't exist.`);
+        else {
+          if (!exists(p.film.replace(/\.mp4$/i, ".jpg"))) error("projects.json", `${name}: the film needs a still picture beside it ("${p.film.replace(/\.mp4$/i, ".jpg")}").`);
+          if (statSync(join(ROOT, p.film)).size > 1.2 * 1024 * 1024) warn("projects.json", `${name}: the film "${p.film}" is over 1.2 MB.`);
+        }
+      }
       // A game's short clip: an .mp4 with a same-named .jpg still beside it,
       // small enough for a phone on mobile data.
       if (p.clip !== undefined) {
