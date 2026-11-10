@@ -38,5 +38,25 @@
     "line": "Side plates now protect equally well on every box.",
     "title": "v0.1.53 - side plates protect the same on every box",
     "at": "2026-11-10T07:48:26.920Z"
+  },
+  "350Chev@v1.76.124.0": {
+    "line": "Your qualifying slip now shows your seed, and a step strip appears before launch.",
+    "title": "v1.76.124.0 - qualifying slip shows your seed, a step strip before launch",
+    "at": "2026-11-10T20:02:39.387Z"
+  },
+  "Escapement@v1.2.0.0": {
+    "line": "Your staff can now have skills.",
+    "title": "v1.2.0.0 - staff skills",
+    "at": "2026-11-10T20:02:39.387Z"
+  },
+  "Scrapline@v0.1.55.0": {
+    "line": "Added a point-to-go stick and a 2D map you can actually use.",
+    "title": "v0.1.55.0 - Point to go stick and a 2D map you can use",
+    "at": "2026-11-10T20:02:39.387Z"
+  },
+  "Ink@v0.1.26.0": {
+    "line": "The needle is louder, and the first friend and first sitting are simpler and wider.",
+    "title": "v0.1.26.0 - louder needle, a simpler first friend, a wider first sitting",
+    "at": "2026-11-10T20:02:39.387Z"
   }
 }
