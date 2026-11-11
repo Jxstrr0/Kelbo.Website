@@ -4217,6 +4217,19 @@ a.quest__top:focus-visible .quest__name {
   box-shadow: 0 0 6px rgba(217, 119, 87, 0.75);
 }
 
+/* On touch screens the sun stands in for the browser's own scroll bar, so
+   hide that one while the sun is showing. Mouse users keep theirs (they
+   may drag it). */
+@media (pointer: coarse) {
+  html.has-scroll-sun {
+    scrollbar-width: none;
+  }
+
+  html.has-scroll-sun::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 @media print {
   .scroll-sun {
     display: none;
