@@ -1018,6 +1018,15 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   and 1 day in browsers (1 day because a redone voice line keeps its file
   name). They only reach the proxied subdomains (assets, contact); the main
   site is served by GitHub Pages directly.
+- **Cloudflare Web Analytics** (Kelbo said yes, Nov 2026): every page ends
+  with Cloudflare's `beacon.min.js` script and the site's public token
+  (`data-cf-beacon`). It counts visits, pages, countries, devices,
+  referrers and load speed, with no cookies; see Cloudflare's dashboard,
+  Analytics & Logs, Web Analytics. Ad blockers hide some visits, so the
+  counts run low. A new page needs the same line before `</body>`. The
+  token is meant to be public (it only sends counts), so it is the one
+  Cloudflare value allowed in the repo. `sw.js` ignores the beacon because
+  it is on another origin.
 - **Privacy scan** (`check-site.mjs`, section 8): errors on an email
   address (`EMAIL_OK` allows example.com and GitHub no-reply ones), a phone
   number, a 9+ digit number not inside a URL, id or version, or a
