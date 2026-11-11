@@ -176,6 +176,26 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   `dayLengthLine` (today vs yesterday to the second, from `sunDay().length`)
   by day and `lightHourLine` (golden hour -4°..6°, blue hour -6°..-4°)
   around sunrise and sunset.
+  **How the numbers reach the CSS (keep this fast).** The sky's numbers
+  (`--sun-x`, `--moon-alt`, `--ray`, `--land-shadow` ...) are never set on
+  the scene: a custom property is inherited, so changing one there makes
+  the browser restyle every element in the sky, each frame of the spin
+  (that was the old stutter). `skyVar(scene, name, value)` sets a number
+  only on the elements whose CSS reads it (`SKY_VAR_USERS`, a selector
+  per name) and only when it changed; `skyVarOf` reads the last value
+  (the kite and the favicon use it); `skyVarsAgain` hands them all out
+  again after new elements are added (the optics, the elevator's shadow).
+  `setLogoDip` does the same for the header logo (`--logo-dip` used to
+  be on `<html>`, restyling the whole page). A new number needs a line in
+  `SKY_VAR_USERS`, and new CSS that reads one needs its selector there.
+  `sunDay` looks every 5 minutes, then minute by minute only round the
+  crossings and the peak (same answers as all 1,440 minutes).
+  While the sky is turning (`spinning`), `placeStars` moves the dots with
+  the `translate` property in pixels (not `left`/`top`; the twinkle owns
+  `transform`), skips writing them at all in daylight where they can't be
+  seen, and hides the planet names and constellation lines
+  (`.horizon__stars--moving`); `STARS_SETTLE_MS` after the last move it
+  places names and lines once and they fade back in.
   `placeSun` also calls `placeStars`: the real sky from `STARS` (the
   named bright stars from PyEphem's catalogue, J2000 RA/Dec + magnitude,
   dec > -38° so they can rise here), alt/az from local sidereal time,

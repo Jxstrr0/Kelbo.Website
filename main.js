@@ -1361,14 +1361,30 @@ function sunDay(date) {
   if (dayCache[key]) return dayCache[key];
 
   const start = zoneMidnight(p.y, p.m, p.d); // local midnight
-  let rise = null, set = null, peakAlt = -90, peakAt = start, prev = sunAltitude(new Date(start));
-  for (let i = 1; i <= 1440; i++) {
-    const t = start + i * 60000;
-    const alt = sunAltitude(new Date(t));
-    if (prev < SUNRISE_ALT && alt >= SUNRISE_ALT && rise === null) rise = t;
-    if (prev >= SUNRISE_ALT && alt < SUNRISE_ALT && rise !== null && set === null) set = t;
-    if (alt > peakAlt) { peakAlt = alt; peakAt = t; }
+  // Look every 5 minutes first, then minute by minute only inside the
+  // 5 minutes where the sun crosses the horizon and around its highest
+  // point. Same answers as checking all 1,440 minutes, in about a fifth
+  // of the work (a new day used to cost a dropped frame in the spin).
+  const STEP = 5;
+  const altAt = (i) => sunAltitude(new Date(start + i * 60000)); // i = minutes after midnight
+  let rise = null, set = null, top = -90, topI = STEP, prev = altAt(0);
+  for (let i = STEP; i <= 1440; i += STEP) {
+    const alt = altAt(i);
+    const up = prev < SUNRISE_ALT && alt >= SUNRISE_ALT && rise === null;
+    const down = prev >= SUNRISE_ALT && alt < SUNRISE_ALT && rise !== null && set === null;
+    if (up || down) {
+      // The first minute in this stretch that is on the new side
+      let m = i - STEP + 1;
+      while (m < i && (altAt(m) >= SUNRISE_ALT) !== up) m++;
+      if (up) rise = start + m * 60000; else set = start + m * 60000;
+    }
+    if (alt > top) { top = alt; topI = i; }
     prev = alt;
+  }
+  let peakAlt = -90, peakAt = start;
+  for (let i = Math.max(1, topI - STEP); i <= Math.min(1440, topI + STEP); i++) {
+    const alt = altAt(i);
+    if (alt > peakAlt) { peakAlt = alt; peakAt = start + i * 60000; }
   }
   // The minute steps are fine for clock times, but comparing one day with
   // the next needs the seconds too, so narrow each crossing down to a
@@ -1501,28 +1517,28 @@ function placeSun(scene, t) {
   }
   // Height, as a share of today's highest point. Negative = set.
   const y = skyHeight(alt, day.peakAlt);
-  scene.style.setProperty("--sun-x", x.toFixed(3));
-  scene.style.setProperty("--sun-alt", Math.min(1, y).toFixed(3));
+  skyVar(scene, "--sun-x", x.toFixed(3));
+  skyVar(scene, "--sun-alt", Math.min(1, y).toFixed(3));
   // The ray follows the sun's height, and reaches further in summer:
   // full length on the longest day, a bit under half on the shortest.
   const reach = 0.45 + 0.55 * season;
-  scene.style.setProperty("--ray", (Math.max(0, Math.min(1, y)) * reach).toFixed(3));
+  skyVar(scene, "--ray", (Math.max(0, Math.min(1, y)) * reach).toFixed(3));
   // --sun-low: 0 when the sun is high, 1 near the horizon. style.css
   // makes the glow bigger and warmer as it climbs to 1.
   const low = 1 - Math.min(1, Math.max(0, y) / 0.6);
-  scene.style.setProperty("--sun-low", low.toFixed(3));
+  skyVar(scene, "--sun-low", low.toFixed(3));
   // --sun-show fades the glow and halo out as the sun sinks out of sight.
-  scene.style.setProperty("--sun-show", Math.max(0, Math.min(1, (y + 0.6) * 3)).toFixed(3));
+  skyVar(scene, "--sun-show", Math.max(0, Math.min(1, (y + 0.6) * 3)).toFixed(3));
   // The light on the ground fades in as the sun clears the horizon,
   // strongest when the sun is low.
-  scene.style.setProperty("--glint-sun", (glint(y) * (0.55 + 0.45 * low)).toFixed(3));
+  skyVar(scene, "--glint-sun", (glint(y) * (0.55 + 0.45 * low)).toFixed(3));
   placeLowSun(scene, t, alt, day);
   // The logo's sun follows the real one a little: up to LOGO_DIP units
   // lower near sunrise and sunset (and all night), right up at noon. The
   // line in front of it hides the part that drops below. It follows
   // swipes and the opening spin too.
   const dip = LOGO_DIP * (1 - Math.max(0, Math.min(1, y / 0.92)));
-  document.documentElement.style.setProperty("--logo-dip", `${dip.toFixed(2)}px`);
+  setLogoDip(`${dip.toFixed(2)}px`);
   placeOptics(scene, t, x);
   placeShadow(scene, t);
   placeMoon(scene, t);
@@ -1544,9 +1560,72 @@ const LOGO_DIP = 3; // logo units; the line in front of the sun is 3.5 to 4 thic
 const LOW_SUN_DEG = 4;
 const RIM_DEG = 1.5;
 
+/* ---------- The sky's numbers ----------
+   placeSun and friends hand style.css a couple of dozen numbers (--sun-x,
+   --moon-alt, --ray ...). They used to be set on the whole scene, and a
+   custom property is inherited, so every change made the browser work
+   out the style of every element in the sky again (hundreds of them, 60
+   times a second in the opening spin): that was the stutter. Now each
+   number goes only onto the few elements whose CSS reads it, and only
+   when it has changed. A new number needs a line here. */
+const SKY_VAR_USERS = {
+  "--sun-x": ".horizon__sun, .horizon__ray, .horizon__glint--sun, .horizon__pillar, .horizon__sundogs",
+  "--sun-alt": ".horizon__sun, .horizon__ray, .horizon__pillar, .horizon__sundogs",
+  "--ray": ".horizon__ray",
+  "--sun-low": ".horizon__sun",
+  "--sun-show": ".horizon__sun",
+  "--sun-flat": ".horizon__sun",
+  "--glint-sun": ".horizon__glint--sun",
+  "--eclipse": ".horizon__moon",
+  "--moon-x": ".horizon__moon, .horizon__glint--moon",
+  "--moon-alt": ".horizon__moon",
+  "--moon-show": ".horizon__moon",
+  "--moon-day": ".horizon__moon",
+  "--glint-moon": ".horizon__glint--moon",
+  "--sundogs": ".horizon__sundogs",
+  "--pillar": ".horizon__pillar",
+  "--belt": ".horizon__belt",
+  "--belt-x": ".horizon__belt",
+  "--belt-rise": ".horizon__belt",
+  "--rainbow": ".horizon__rainbow",
+  "--bow-x": ".horizon__rainbow",
+  "--bow-d": ".horizon__rainbow",
+  "--land-shadow": ".horizon__shadow",
+};
+
+function skyVar(scene, name, value) {
+  const vars = scene.skyVars || (scene.skyVars = {});
+  value = String(value);
+  if (vars[name] === value) return;
+  vars[name] = value;
+  for (const node of scene.querySelectorAll(SKY_VAR_USERS[name])) node.style.setProperty(name, value);
+}
+
+// The last value given for one of the numbers above ("" if none yet)
+function skyVarOf(scene, name) {
+  return (scene.skyVars && scene.skyVars[name]) || "";
+}
+
+// Hand every number out again: for elements added to the scene after
+// some numbers were already set (the sun dogs, the elevator's shadow)
+function skyVarsAgain(scene) {
+  const vars = scene.skyVars;
+  scene.skyVars = {};
+  for (const name in vars) skyVar(scene, name, vars[name]);
+}
+
+// The logo's sun, the same way: only the logo's own three shapes
+let logoDip = "", logoParts = null;
+function setLogoDip(value) {
+  if (value === logoDip) return;
+  logoDip = value;
+  if (!logoParts) logoParts = document.querySelectorAll(".logo__sun, .logo__halo, .logo__glow");
+  for (const node of logoParts) node.style.setProperty("--logo-dip", value);
+}
+
 function placeLowSun(scene, t, alt, day) {
   const flat = alt > LOW_SUN_DEG || alt < -1.2 ? 0 : Math.min(1, (LOW_SUN_DEG - alt) / LOW_SUN_DEG);
-  scene.style.setProperty("--sun-flat", flat.toFixed(3));
+  skyVar(scene, "--sun-flat", flat.toFixed(3));
   scene.classList.toggle("horizon--low-sun", flat > 0);
   const setting = day.set && t <= day.set && t > (day.rise || 0) + (day.set - (day.rise || 0)) / 2;
   scene.classList.toggle("horizon--rim", Boolean(setting) && alt < RIM_DEG && alt > -1.2);
@@ -1715,6 +1794,9 @@ function makeStars(box, limit, withLines) {
   });
   box.lines = [];
   const parts = [...box.stars.map((s) => s.dot), ...box.planets.map((p) => p.dot)];
+  // Every dot starts in the top left corner; placeStars slides it to its
+  // spot with "translate" (see there for why)
+  if (DOTS_BY_TRANSLATE) for (const dot of parts) dot.style.left = dot.style.top = "0";
   if (withLines) {
     // One SVG behind the dots, stretched over the sky so its 0..100
     // units match the dots' left/top percentages.
@@ -1780,13 +1862,36 @@ function placePlanetNames(box) {
 }
 
 // Puts every star where it really is at moment "t".
-function placeStars(scene, t) {
+//
+// This runs on every frame of the opening spin and of a swipe, so it is
+// kept cheap while the sky is moving ("spinning"):
+//  - dots are moved with "translate" in pixels, which the browser can do
+//    without laying the page out again (left/top made it redo the layout
+//    for every star, every frame);
+//  - in the light theme the stars can't be seen, so nothing is written;
+//  - planet names and constellation lines are hidden, then fitted once
+//    and faded back in when the sky has stood still for a moment.
+// "settled" is that catch-up call.
+const STARS_SETTLE_MS = 160; // how long the sky must stand still before names and lines come back
+const DOTS_BY_TRANSLATE = typeof CSS !== "undefined" && CSS.supports && CSS.supports("translate", "1px 1px");
+function placeStars(scene, t, settled) {
   const box = scene.querySelector(".horizon__stars");
   if (!box) return;
   if (!box.stars) {
     const small = scene.closest(".page-head");
     makeStars(box, small ? 2 : 4.5, !small);
+    // The dots sit at pixel spots, so a new window size needs a new placing
+    window.addEventListener("resize", () => {
+      box.w = 0;
+      if (box.lastT) placeStars(scene, box.lastT, true);
+    });
   }
+  box.lastT = t;
+  const moving = spinning && !settled;
+  const dark = document.documentElement.dataset.theme === "dark";
+  const write = !moving || dark; // nobody can see them move in daylight
+  if (write && !box.w) { box.w = box.clientWidth; box.h = box.clientHeight; }
+  const w = box.w, h = box.h;
   const n = t.getTime() / 86400000 - 10957.5;
   const lst = ((18.697374558 + 24.06570982441908 * n) * 15 + YXE.lon) * D2R; // which way the sky faces now
   const la = YXE.lat * D2R;
@@ -1799,15 +1904,31 @@ function placeStars(scene, t) {
     az = (az + 360) % 360;
     const across = skyX(az);
     entry.up = !(alt < 2 || across < 0 || across > 1);
-    entry.dot.hidden = !entry.up; // below the horizon, or behind us
+    if (entry.up) {
+      entry.x = across * 100;
+      entry.y = (1 - Math.min(alt, STAR_TOP_ALT) / STAR_TOP_ALT) * 100;
+    }
+    if (!write) return;
+    if (entry.shown !== entry.up) { // below the horizon, or behind us
+      entry.shown = entry.up;
+      entry.dot.hidden = !entry.up;
+    }
     if (!entry.up) return;
-    entry.x = across * 100;
-    entry.y = (1 - Math.min(alt, STAR_TOP_ALT) / STAR_TOP_ALT) * 100;
-    entry.dot.style.left = `${entry.x.toFixed(2)}%`;
-    entry.dot.style.top = `${entry.y.toFixed(2)}%`;
+    if (DOTS_BY_TRANSLATE && w) {
+      entry.dot.style.translate = `${((entry.x / 100) * w).toFixed(1)}px ${((entry.y / 100) * h).toFixed(1)}px`;
+    } else {
+      entry.dot.style.left = `${entry.x.toFixed(2)}%`;
+      entry.dot.style.top = `${entry.y.toFixed(2)}%`;
+    }
   };
   for (const entry of box.stars) place(entry, entry.star[0], entry.star[1]);
   for (const entry of box.planets) place(entry, ...planetRaDec(entry.planet.orbit, t));
+  clearTimeout(box.settle);
+  if (moving) {
+    box.classList.add("horizon__stars--moving");
+    box.settle = setTimeout(() => placeStars(scene, box.lastT, true), STARS_SETTLE_MS);
+    return;
+  }
   placePlanetNames(box);
   for (const { a, b, line } of box.lines) {
     const show = a && b && a.up && b.up;
@@ -1818,6 +1939,7 @@ function placeStars(scene, t) {
     line.setAttribute("x2", b.x.toFixed(2));
     line.setAttribute("y2", b.y.toFixed(2));
   }
+  box.classList.remove("horizon__stars--moving");
 }
 
 /* ---------- The space station ----------
@@ -2315,7 +2437,7 @@ function placeEclipse(scene, t) {
     shade.setAttribute("cy", lunar ? lunar.y.toFixed(3) : 0);
     shade.setAttribute("r", lunar ? lunar.r.toFixed(3) : 0);
   }
-  scene.style.setProperty("--eclipse", lunar ? lunar.share.toFixed(3) : 0); // style.css dims the glow
+  skyVar(scene, "--eclipse", lunar ? lunar.share.toFixed(3) : 0); // style.css dims the glow
   const sun = scene.querySelector(".horizon__sun");
   if (!sun) return;
   let bite = sun.querySelector(".sun__bite");
@@ -2355,11 +2477,11 @@ function placeMoon(scene, t) {
   // all but disappears; from about half lit it's as clear as it gets.
   const day = 0.32 * Math.max(0, Math.min(1, (moonLit(phase) - 0.04) / 0.3));
   const show = day + (1 - day) * night;
-  scene.style.setProperty("--moon-x", x.toFixed(3));
-  scene.style.setProperty("--moon-alt", Math.min(1, y).toFixed(3));
-  scene.style.setProperty("--moon-show", show.toFixed(3));
-  scene.style.setProperty("--moon-day", (1 - night).toFixed(3)); // style.css: paler, no glow
-  scene.style.setProperty("--glint-moon", (glint(y) * 0.6 * night).toFixed(3));
+  skyVar(scene, "--moon-x", x.toFixed(3));
+  skyVar(scene, "--moon-alt", Math.min(1, y).toFixed(3));
+  skyVar(scene, "--moon-show", show.toFixed(3));
+  skyVar(scene, "--moon-day", (1 - night).toFixed(3)); // style.css: paler, no glow
+  skyVar(scene, "--glint-moon", (glint(y) * 0.6 * night).toFixed(3));
 }
 
 // How strong the light on the ground is for a sun or moon at height y:
@@ -2732,7 +2854,7 @@ function setUpSkyTaps(scene, timeNow) {
       list.push({ ...centre(sun), title: "The Sun", detail: `Light takes ${lightTime((au * AU_KM) / LIGHT_KM_S)} to get here` });
     }
     const moon = scene.querySelector(".horizon__moon");
-    if (moon && moonSpanAt(t).up && parseFloat(getComputedStyle(scene).getPropertyValue("--moon-show")) > 0.15) {
+    if (moon && moonSpanAt(t).up && parseFloat(skyVarOf(scene, "--moon-show")) > 0.15) {
       const phase = moonPhase(t);
       const span = moonSpanAt(t);
       list.push({ ...centre(moon), title: `${moonName(phase)} moon`, detail: `${Math.round(moonLit(phase) * 100)}% lit · sets ${clock(new Date(span.next))}` });
@@ -3556,13 +3678,13 @@ function windmillFact() {
 // sun through the opening spin and a swipe too.
 function placeOptics(scene, t, sunX) {
   if (!scene.optics) return;
-  scene.style.setProperty("--sundogs", sunDogStrength(t).toFixed(2));
-  scene.style.setProperty("--pillar", pillarStrength(t).toFixed(2));
+  skyVar(scene, "--sundogs", sunDogStrength(t).toFixed(2));
+  skyVar(scene, "--pillar", pillarStrength(t).toFixed(2));
   // The Belt of Venus: brightest on the side of the sky away from the
   // sun (kept on screen, so it shows even when that's behind you), and
   // the Earth's shadow under it climbs as the sun sinks.
   const belt = beltStrength(t);
-  scene.style.setProperty("--belt", belt.toFixed(2));
+  skyVar(scene, "--belt", belt.toFixed(2));
   if (belt) {
     const p = sunPosition(t);
     const away = (altAz(p.ra * R2D, p.dec * R2D, t).az + 180) % 360;
@@ -3570,8 +3692,8 @@ function placeOptics(scene, t, sunX) {
     // is given as a share of the screen's width, not the sky's
     const box = scene.getBoundingClientRect();
     const across = Math.max(0.1, Math.min(0.9, skyX(away)));
-    scene.style.setProperty("--belt-x", ((box.left + across * box.width) / (innerWidth || 1)).toFixed(3));
-    scene.style.setProperty("--belt-rise", Math.max(0, Math.min(1, -sunAltitude(t) / 6)).toFixed(3));
+    skyVar(scene, "--belt-x", ((box.left + across * box.width) / (innerWidth || 1)).toFixed(3));
+    skyVar(scene, "--belt-rise", Math.max(0, Math.min(1, -sunAltitude(t) / 6)).toFixed(3));
   }
   let bow = rainbowStrength(t);
   if (bow && !scene.sky) {
@@ -3585,7 +3707,7 @@ function placeOptics(scene, t, sunX) {
       };
     } else bow = 0;
   }
-  scene.style.setProperty("--rainbow", bow.toFixed(2));
+  skyVar(scene, "--rainbow", bow.toFixed(2));
   if (!bow) return;
   // The bow's middle sits as far right of the middle of the sky as the
   // sun is left of it (and the other way round), and its centre is as
@@ -3599,8 +3721,8 @@ function placeOptics(scene, t, sunX) {
   const gap = r * 1.24 + sun * 0.6; // the outer bow's radius, plus the sun's and a little room
   let at = (1 - sunX) * w;
   if (Math.abs(at - sunAt) < gap) at = sunAt + (at >= sunAt ? gap : -gap);
-  scene.style.setProperty("--bow-x", (at / w).toFixed(3));
-  scene.style.setProperty("--bow-d", (sunAltitude(t) / 42).toFixed(3));
+  skyVar(scene, "--bow-x", (at / w).toFixed(3));
+  skyVar(scene, "--bow-d", (sunAltitude(t) / 42).toFixed(3));
 }
 
 /* ---------- The grain elevator ----------
@@ -3738,6 +3860,7 @@ function setUpLand(scene) {
     crocuses.append(clump);
   }
   ground.after(shadow, windmill, elevator, depot, pumpkin, track, el("div", "horizon__wheat"), el("div", "horizon__stubble"), crocuses);
+  skyVarsAgain(scene); // the shadow is new: give it the numbers set so far
   scene.land = null; // measured on the first paint, and again whenever the sky or window changes size
   const remeasure = () => { scene.land = null; scene.sky = null; };
   if ("ResizeObserver" in window) new ResizeObserver(remeasure).observe(scene);
@@ -3779,7 +3902,7 @@ function placeShadow(scene, t) {
   const alt = seenAltitude(sun.alt);
   const az = sun.az;
   const show = shadowStrength(alt);
-  scene.style.setProperty("--land-shadow", show.toFixed(2));
+  skyVar(scene, "--land-shadow", show.toFixed(2));
   if (!show) {
     scene.shadowShape.removeAttribute("points"); // no stale sunset shadow left lying there
     scene.depotShape.removeAttribute("points");
@@ -3848,6 +3971,7 @@ function setUpWeather(scene) {
   // Smoke haze, the rainbow and sun dogs, under the clouds and rain
   scene.optics = layer("horizon__optics");
   scene.optics.append(el("div", "horizon__belt"), el("div", "horizon__pillar"), el("div", "horizon__rainbow"), el("div", "horizon__sundogs"));
+  skyVarsAgain(scene); // these four are new: give them the numbers set so far
   scene.snowline = el("div", "horizon__snowline");
   scene.querySelector(".horizon__ground").after(scene.snowline);
   // Winter ground: frost glitter over the snow, and snow blowing along the line
@@ -4328,8 +4452,8 @@ function setUpCritters(scene, timeNow) {
       const sun = scene.querySelector(".horizon__sun");
       const sunSize = sun.offsetWidth;
       const sky = scene.getBoundingClientRect();
-      const sunX = (parseFloat(scene.style.getPropertyValue("--sun-x")) || 0) * (sky.width - sunSize) + sunSize / 2 + sky.left - box.getBoundingClientRect().left;
-      const sunY = (1 - (parseFloat(scene.style.getPropertyValue("--sun-alt")) || 0)) * (h - sunSize / 2) + sunSize / 2;
+      const sunX = (parseFloat(skyVarOf(scene, "--sun-x")) || 0) * (sky.width - sunSize) + sunSize / 2 + sky.left - box.getBoundingClientRect().left;
+      const sunY = (1 - (parseFloat(skyVarOf(scene, "--sun-alt")) || 0)) * (h - sunSize / 2) + sunSize / 2;
       let ground = 0, far = -1;
       for (let i = 0; i < 8 && far < sunSize * 0.8 + 16 * k; i++) {
         const spot = dir < 0 ? w * (0.66 + Math.random() * 0.2) : w * (0.14 + Math.random() * 0.2);
@@ -5461,7 +5585,7 @@ function skyIcon(scene) {
   const link = document.querySelector('link[rel="icon"]');
   if (!link || !scene) return;
   const dark = document.documentElement.dataset.theme === "dark";
-  const css = (name) => parseFloat(scene.style.getPropertyValue(name)) || 0;
+  const css = (name) => parseFloat(skyVarOf(scene, name)) || 0;
   const sx = css("--sun-x"), sa = css("--sun-alt");
   const mx = css("--moon-x"), ma = css("--moon-alt"), ms = css("--moon-show");
   const cloud = weather ? weather.cloud : 0;
