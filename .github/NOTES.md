@@ -1012,7 +1012,9 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   repo): a WAF custom rule blocks probes for secret files and admin pages
   (`.env`, `.git`, `wp-login`, `wp-admin`, `phpmyadmin`...); Bot Fight Mode
   is on; a redirect sends the bare `assets.longlight.games/` to the main
-  site; a cache rule keeps `/scrapline/voice/` files 1 month at the edge
+  site; the free plan's one rate-limit rule caps
+  `contact.longlight.games` at 5 requests per 10 s per visitor (blocked
+  for 10 s); a cache rule keeps `/scrapline/voice/` files 1 month at the edge
   and 1 day in browsers (1 day because a redone voice line keeps its file
   name). They only reach the proxied subdomains (assets, contact); the main
   site is served by GitHub Pages directly.
