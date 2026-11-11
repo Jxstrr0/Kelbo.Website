@@ -199,8 +199,9 @@ that part, and update it when how something works changes. The short map:
   with `?at=`, `?weather=`, `?critter=`. Notes: "The live sky" and "Sky
   extras".
 - **Home page:** Now strip (`now.json`), Sky this week, badges, Continue
-  card, four tiles, contact form (Web3Forms; its key is public by design,
-  never put Kelbo's email in the site).
+  card, four tiles, contact form (our own `contact-form` Cloudflare Worker,
+  `.github/worker/contact-form.js`; Kelbo's email lives only in its
+  Cloudflare settings, never in the site or repo).
 - **Offline:** `sw.js` precaches `CORE`; it only ever deletes `longlight-*`
   caches. Add new top-level pages to `CORE` and `sitemap.xml`.
 - **Pages:** `games.html`, `trading.html`, `tools.html` (was `ai.html`),
