@@ -56,7 +56,7 @@
       },
       {
         "src": "assets/shots/season-ticket-3.jpg",
-        "alt": "A live 3D match with players around the centre circle and the match stats beside it"
+        "alt": "A live 3D match with modelled players defending the edge of the box and the match stats beside it"
       },
       {
         "src": "assets/shots/season-ticket-4.jpg",
@@ -64,7 +64,7 @@
       },
       {
         "src": "assets/shots/season-ticket-5.jpg",
-        "alt": "The same ground at night"
+        "alt": "The same ground at night, with the town lit up round it"
       }
     ],
     "featured": true
