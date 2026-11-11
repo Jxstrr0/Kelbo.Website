@@ -597,7 +597,9 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   `.project.reveal .project__cover::before` is the one-time light sweep.
 - The scroll sun: `setUpScrollSun` adds `.scroll-sun` (fixed, right
   gutter, `--p` 0 to 1, `--top` under the header) on pages with more than
-  0.6 of a screen to scroll. Off with reduce motion and in print.
+  0.6 of a screen to scroll. Off with reduce motion and in print. While
+  it shows, `html.has-scroll-sun` hides the browser's own scroll bar on
+  touch screens (`pointer: coarse`), so a phone shows one marker, not two.
 - About's character sheet: `setUpSheet` splits `.sheet__name` into
   `.sheet__ch` letters (the name stays in `aria-label`), adds
   `sheet--boot`, then `is-on` when the head is in view (label, typed
