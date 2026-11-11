@@ -4251,10 +4251,11 @@ a.quest__top:focus-visible .quest__name {
   top: -70vh;
   height: 70vh;
   overflow: hidden;
+  z-index: 1; /* above the colour blobs behind the page */
   pointer-events: none;
-  --night: 0;
-  background:
-    linear-gradient(to bottom, color-mix(in srgb, var(--sky) 55%, #FAF9F5), var(--sky));
+  /* plain colours (no color-mix) so every phone paints them */
+  background-color: #7B3FC4;
+  background-image: linear-gradient(to bottom, #B48CE8, #7B3FC4);
 }
 
 /* the horizon line the sun sits on, just above the header */
@@ -4312,26 +4313,30 @@ a.quest__top:focus-visible .quest__name {
 /* Night: a deep sky with stars. Mirrors the two ways the dark theme turns
    on (main.js from the real sun, or the phone's setting before JS runs). */
 :root[data-theme="dark"] .pull-sky {
-  background: linear-gradient(to bottom, color-mix(in srgb, var(--ll-purple) 18%, #0B0A10), var(--sky));
+  background-color: #141413;
+  background-image: linear-gradient(to bottom, #1E1030, #141413);
 }
 
 :root[data-theme="dark"] .pull-sky__dots {
   background-image:
-    radial-gradient(1.5px 1.5px at 12% 30%, #FAF9F5, transparent),
-    radial-gradient(1px 1px at 27% 55%, #FAF9F5, transparent),
-    radial-gradient(2px 2px at 41% 18%, #FAF9F5, transparent),
-    radial-gradient(1px 1px at 58% 44%, var(--ll-lilac), transparent),
-    radial-gradient(1.5px 1.5px at 69% 72%, #FAF9F5, transparent),
-    radial-gradient(1px 1px at 83% 26%, #FAF9F5, transparent),
-    radial-gradient(2px 2px at 91% 60%, var(--ll-lilac), transparent),
-    radial-gradient(1px 1px at 6% 80%, #FAF9F5, transparent),
-    radial-gradient(1.5px 1.5px at 35% 86%, var(--ll-lilac), transparent),
-    radial-gradient(1px 1px at 76% 90%, #FAF9F5, transparent);
+    radial-gradient(circle at 12% 30%, #FAF9F5 1.5px, transparent 2.5px),
+    radial-gradient(circle at 27% 55%, #FAF9F5 1px, transparent 2px),
+    radial-gradient(circle at 41% 18%, #FAF9F5 2px, transparent 3px),
+    radial-gradient(circle at 58% 44%, #B48CE8 1.5px, transparent 2.5px),
+    radial-gradient(circle at 69% 72%, #FAF9F5 1.5px, transparent 2.5px),
+    radial-gradient(circle at 83% 26%, #FAF9F5 1px, transparent 2px),
+    radial-gradient(circle at 91% 60%, #B48CE8 2px, transparent 3px),
+    radial-gradient(circle at 6% 80%, #FAF9F5 1px, transparent 2px),
+    radial-gradient(circle at 35% 86%, #B48CE8 1.5px, transparent 2.5px),
+    radial-gradient(circle at 76% 90%, #FAF9F5 1px, transparent 2px),
+    radial-gradient(circle at 50% 38%, #FAF9F5 1px, transparent 2px),
+    radial-gradient(circle at 18% 64%, #FAF9F5 1.5px, transparent 2.5px);
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .pull-sky {
-    background: linear-gradient(to bottom, color-mix(in srgb, var(--ll-purple) 18%, #0B0A10), var(--sky));
+    background-color: #141413;
+    background-image: linear-gradient(to bottom, #1E1030, #141413);
   }
 }
 
