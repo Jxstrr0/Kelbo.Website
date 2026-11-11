@@ -149,6 +149,7 @@
   },
   {
     "title": "Station Keeper",
+    "hidden": true,
     "status": "In development",
     "category": "Game",
     "summary": "A space station tycoon. Build a commercial station module by module and keep it alive, solvent and full of paying guests. Power, cooling, air, crew and money all share one network, so when one thing fails, the rest follow.",
