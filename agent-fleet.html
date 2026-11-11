@@ -3,6 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Security: the browser only loads scripts, data and frames from the
+       places listed here, so a bad link or injected code can't pull in
+       anything else. A new outside service (an API, a script) must be added
+       here or it will be blocked. See .github/NOTES.md, "Security tag". -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self' https://contact.longlight.games https://cloudflareinsights.com https://api.open-meteo.com https://air-quality-api.open-meteo.com https://services.swpc.noaa.gov https://api.weather.gc.ca https://celestrak.org https://www.bankofcanada.ca; frame-src https://challenges.cloudflare.com; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self' https://contact.longlight.games; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>Agent Fleet · Longlight Interactive</title>
   <meta name="description" content="Agent Fleet: a growing set of small, single-purpose bots Kelbo can run from his phone, like news digests, trackers, and weekly scans.">
   <!-- Link preview: the card that shows up when this page is shared in a

@@ -100,8 +100,10 @@ alt text, file names, screenshots, logs):
   never copy from them into the repo, a page, a PR, a commit message or a
   log. Don't list on the site which accounts or tools Claude can reach.
 - Keys, tokens, passwords, recovery codes, Cloudflare account or zone IDs,
-  DNS records, device names, Wi-Fi names. (The one exception: the public Web
-  Analytics token at the foot of each page, which only sends visit counts.)
+  DNS records, device names, Wi-Fi names. (The two exceptions, both public by
+  design: the Web Analytics token at the foot of each page, which only
+  sends visit counts, and the Turnstile site key in the home page's
+  contact form; its secret lives only in Cloudflare.)
 
 **Robots and logs.** The scripts may print counts, grades, costs and text
 that is already going on the site, nothing else: never a prompt that holds
