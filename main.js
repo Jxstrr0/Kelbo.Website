@@ -1144,7 +1144,7 @@ function setUpAll(listEl, projects) {
   show("All");
 }
 
-// Contact form on the home page. Sends the message to Web3Forms in the
+// Contact form on the home page. Sends the message to the contact Worker in the
 // background so the visitor stays on the page, then says whether it worked.
 // Without JavaScript the form still posts normally.
 function setUpContactForm() {

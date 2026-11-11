@@ -841,20 +841,24 @@ and open http://localhost:8000.
 
 ## The contact form
 
-The form under "Get in touch" on the home page sends messages through
-Web3Forms (web3forms.com), a free service that emails them to you. Your
-email address isn't anywhere on the site. Web3Forms knows it from when you
-made the access key, and the key in `index.html` (`name="access_key"`) is
-all the page needs. The key is meant to be public: all anyone can do with
-it is send you a message.
+The form under "Get in touch" on the home page sends messages to
+Longlight's own little Cloudflare Worker at `contact.longlight.games`, which
+emails them to you with Cloudflare Email Routing (free). No outside form
+service. Your email address isn't anywhere on the site or in this repo: it
+lives only in the Worker's settings in Cloudflare.
 
-- Messages arrive with the subject "New message from Kelbo.Website", so a
-  Gmail filter on that subject can put them in their own folder.
-- To send them to a different email, make a new key at web3forms.com with
-  that address and swap it into `index.html`.
-- A hidden checkbox catches spam bots. Real visitors never see it.
-- Web3Forms only accepts messages sent from a real browser, so test it on
-  the live site, not from a script.
+- **The code:** `.github/worker/contact-form.js`. The live copy is the
+  `contact-form` Worker in Cloudflare (Workers & Pages); keep the two the
+  same.
+- Messages arrive from "Longlight contact form" with the subject "New
+  message from (name) (longlight.games)". Hit Reply to answer the visitor
+  if they left their email. A Gmail filter on "longlight.games" in the
+  subject can put them in their own folder.
+- To send them to a different email: in Cloudflare, add and verify the new
+  address under Email Routing > Destination addresses, then change the
+  Worker's `TO` variable and its `EMAIL` binding to it.
+- A hidden checkbox catches spam bots, and the Worker only takes messages
+  sent from longlight.games pages.
 
 ## The trading journal
 
