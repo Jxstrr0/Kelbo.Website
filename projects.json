@@ -105,7 +105,7 @@
   {
     "title": "Lombard",
     "art": "assets/art/lombard.jpg",
-    "status": "In development",
+    "status": "Polishing",
     "category": "Game",
     "summary": "A first-person pawn shop sim on a canal in Mostograd, a made-up Russian river city in the 2010s. Inspect what people bring in, spot the fakes, haggle, and decide how much trouble a good deal is worth.",
     "version": "0.1.1.0",
@@ -119,7 +119,7 @@
   },
   {
     "title": "Frontier Lab",
-    "status": "In development",
+    "status": "Polishing",
     "category": "Game",
     "summary": "An AI-lab tycoon. Raise a seed round, open sales offices, buy compute or build data centers, train your own models and ship products, keep the safety regulator happy, then take the lab public and grow it across the world's tech capitals, all on an engraved isometric city map.",
     "version": "0.1.63.0",
