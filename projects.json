@@ -176,6 +176,17 @@
     "featured": false
   },
   {
+    "title": "Hull Down",
+    "hidden": true,
+    "status": "Prototype",
+    "category": "Game",
+    "summary": "A tank design game. Run a state design bureau, build a tank part by part against a weight limit, and send the prototype to trial. When it fails, the after-action report shows why.",
+    "link": "https://hulldown.longlight.games/",
+    "code": "https://github.com/Jxstrr0/hull-down",
+    "image": "assets/covers/hull-down.jpg",
+    "featured": false
+  },
+  {
     "title": "Escapement",
     "hidden": true,
     "film": "assets/films/escapement.mp4",
