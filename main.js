@@ -5727,13 +5727,11 @@ function setUpSheet() {
 
 /* ---------- The quest log (about.html) ----------
    Every project from projects.json as one short row: its name, its
-   status and the same progress bar the cards use. Quests still under way
-   come first (closest to done at the top), then the finished ones. Each
-   row links to the game's page (or the project itself). */
+   status and the same progress bar the cards use, in projects.json order
+   (Kelbo's ranking, the same as the Games page). Each row links to the
+   game's page (or the project itself). */
 function setUpQuests(listEl, projects) {
-  const done = (p) => findStatus(p.status).spot >= 100;
-  const active = projects.filter((p) => !done(p)).sort((a, b) => findStatus(b.status).spot - findStatus(a.status).spot);
-  const rows = active.concat(projects.filter(done));
+  const rows = projects;
   listEl.replaceChildren();
   rows.forEach((project, i) => {
     const status = findStatus(project.status);
