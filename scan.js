@@ -109,8 +109,10 @@ function renderScan(box, scan) {
   scanSchedule(box, "Earnings next week", scanList(scan, "earnings"));
   scanSchedule(box, "Economic reports next week", scanList(scan, "economy"));
 
-  // Where the numbers came from, as links.
-  const sources = scanList(scan, "sources").filter((s) => s.url);
+  // Where the numbers came from, as links. Only https links, like the
+  // journal's and the report card's: scan.json is written from web searches,
+  // so a "javascript:" or other odd address never becomes a clickable link.
+  const sources = scanList(scan, "sources").filter((s) => /^https:\/\//.test(String(s.url || "")));
   const small = el("p", "entry__note");
   small.append("Gathered by Claude from public market news. Not advice, and worth double-checking before acting on.");
   if (sources.length) {
