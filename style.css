@@ -4821,12 +4821,6 @@ a.quest__top:focus-visible .quest__name {
   margin-top: 0.5rem;
 }
 
-/* The other ways to reach Kelbo: under the form on phones, in a card
-   beside it on wider screens (see the 48rem section below) */
-.contact-aside .contact-form__also {
-  margin-top: 1.5rem;
-}
-
 .form-row {
   margin-bottom: 1rem;
 }
@@ -4885,38 +4879,6 @@ a.quest__top:focus-visible .quest__name {
 .contact-form__status.is-error {
   color: var(--accent-ink);
   font-weight: 700;
-}
-
-.contact-form__also {
-  color: var(--muted);
-}
-
-.contact-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.contact-list a {
-  display: inline-flex;
-  gap: 0.4rem;
-  padding: 0.5rem 1rem;
-  border: 1.5px solid var(--rule);
-  border-radius: 999px;
-  text-decoration: none;
-  font-weight: 700;
-}
-
-.contact-list a:hover {
-  border-color: var(--secondary);
-}
-
-.contact-list__handle {
-  color: var(--muted);
-  font-weight: 500;
 }
 
 /* ---------- Footer (its logo rules are in the Logo section) ---------- */
@@ -5006,47 +4968,6 @@ a.quest__top:focus-visible .quest__name {
   }
 
   .facts {
-    margin-top: 0;
-  }
-}
-
-/* Contact: the form and the "also find me" card side by side */
-@media (min-width: 48rem) {
-  .contact-grid {
-    display: grid;
-    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
-    gap: 2.5rem;
-    align-items: start;
-  }
-
-  .contact-form {
-    max-width: none;
-  }
-
-  .contact-aside {
-    position: relative;
-    overflow: hidden;
-    padding: 1.4rem 1.4rem 4.5rem;
-    border: 1px solid var(--rule);
-    border-radius: var(--radius);
-    background: var(--card);
-    box-shadow: var(--shadow);
-  }
-
-  /* The same sun peeking over the corner as the mode tiles */
-  .contact-aside::before {
-    content: "";
-    position: absolute;
-    right: -1.5rem;
-    bottom: -3rem;
-    width: 6rem;
-    height: 6rem;
-    border-radius: 50%;
-    background: var(--accent);
-    opacity: 0.9;
-  }
-
-  .contact-aside .contact-form__also {
     margin-top: 0;
   }
 }
