@@ -49,12 +49,16 @@ if (process.env.GITHUB_TOKEN) headers.Authorization = `Bearer ${process.env.GITH
 
 /* ---------- Which games have a release with no line yet? ---------- */
 // Hidden projects ("hidden": true) are off the site, so they're skipped.
+// SKIP_REPOS are games whose card keeps its plain release title: no paid
+// call for them (Kelbo, 2026-11-11, to keep the robot's bill where it was).
+const SKIP_REPOS = new Set(["SeasonTicket", "Lombard", "FrontierLab", "RedSkies"]);
 const projects = JSON.parse(await readFile("projects.json", "utf8")).filter((p) => !p.hidden);
 const fresh = []; // { key, game, title, notes }
 for (const p of projects) {
   const m = (p.code || "").match(/github\.com\/([^/]+)\/([^/#?]+)/);
   if (!m) continue;
   const name = m[2].replace(/\.git$/, "");
+  if (SKIP_REPOS.has(name)) { console.log(`${p.title}: on the skip list, keeps its release title.`); continue; }
   let release;
   try {
     const res = await fetch(`https://api.github.com/repos/${m[1]}/${name}/releases/latest`, { headers });
