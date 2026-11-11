@@ -286,19 +286,16 @@
       <div class="contact-grid">
       <div>
       <p>Send me a message here and it'll come straight to my inbox. Leave your email if you'd like a reply.</p>
-      <!-- Contact form. Messages go through Web3Forms (a free form service),
-           which emails them to Kelbo. His email address is never on this
-           site: it lives in his Web3Forms settings, linked to the access key
-           below. The key is meant to be public and can only send him a
-           message, so it's safe here. main.js sends the form without leaving
-           the page; without JavaScript it still works and shows Web3Forms'
-           own "sent" page. -->
-      <form class="contact-form" action="https://api.web3forms.com/submit" method="POST" data-contact-form>
-        <input type="hidden" name="access_key" value="df76bed4-391f-431d-aed3-dfa7aacac89a">
-        <input type="hidden" name="subject" value="New message from Kelbo.Website">
-        <input type="hidden" name="from_name" value="Kelbo.Website">
-        <!-- Spam trap: hidden from people, but bots fill it in, and
-             Web3Forms throws those messages away. -->
+      <!-- Contact form. Messages go to Longlight's own little Cloudflare
+           Worker (contact.longlight.games; code in
+           .github/worker/contact-form.js), which emails them to Kelbo with
+           Cloudflare Email Routing. His email address is never on this site:
+           it lives only in the Worker's settings in Cloudflare. main.js sends
+           the form without leaving the page; without JavaScript it still
+           works and shows a small "sent" page. -->
+      <form class="contact-form" action="https://contact.longlight.games/" method="POST" data-contact-form>
+        <!-- Spam trap: hidden from people, but bots fill it in, and the
+             Worker quietly throws those messages away. -->
         <input type="checkbox" name="botcheck" class="visually-hidden" tabindex="-1" autocomplete="off" aria-hidden="true">
 
         <div class="form-row">
