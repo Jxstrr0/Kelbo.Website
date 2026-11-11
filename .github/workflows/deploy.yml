@@ -7,7 +7,9 @@
 #   3. makes game-<slug>.html for each game, so shared links show its cover,
 #   4. runs the site check, and STOPS if it finds a problem, so the live
 #      site keeps the last version that worked,
-#   5. publishes _site to Pages.
+#   5. publishes _site to Pages. If GitHub's publish step hiccups (it has
+#      failed once with "No artifacts named github-pages" on GitHub's side),
+#      it waits 30 seconds and tries once more before giving up.
 #
 # For this to work, Settings → Pages → Source must be "GitHub Actions".
 name: Deploy site
@@ -36,7 +38,7 @@ jobs:
     timeout-minutes: 10
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deployment.outputs.page_url || steps.deployment_retry.outputs.page_url }}
     steps:
       - uses: actions/checkout@v7
 
@@ -82,6 +84,17 @@ jobs:
         with:
           path: _site
 
+      # First try. A failure here doesn't stop the run: the two steps below
+      # wait and try once more. Only a second failure turns the run red.
       - id: deployment
         if: steps.compare.outputs.deploy != 'false'
+        continue-on-error: true
+        uses: actions/deploy-pages@v5
+
+      - name: Publish failed, waiting 30 seconds to try again
+        if: steps.deployment.outcome == 'failure'
+        run: sleep 30
+
+      - id: deployment_retry
+        if: steps.deployment.outcome == 'failure'
         uses: actions/deploy-pages@v5
