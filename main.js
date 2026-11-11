@@ -5615,7 +5615,11 @@ function setUpScrollSun() {
   const draw = () => {
     frame = 0;
     const room = document.documentElement.scrollHeight - innerHeight;
-    rail.classList.toggle("is-shown", room > innerHeight * 0.6);
+    const shown = room > innerHeight * 0.6;
+    rail.classList.toggle("is-shown", shown);
+    // While the sun shows, phones hide their own grey scroll bar (style.css)
+    // so there aren't two scroll markers side by side.
+    document.documentElement.classList.toggle("has-scroll-sun", shown);
     rail.style.setProperty("--p", room > 0 ? Math.min(1, Math.max(0, scrollY / room)).toFixed(4) : "0");
     if (header) rail.style.setProperty("--top", `${header.offsetHeight + 14}px`);
   };
