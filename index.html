@@ -3,6 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Security: the browser only loads scripts, data and frames from the
+       places listed here, so a bad link or injected code can't pull in
+       anything else. A new outside service (an API, a script) must be added
+       here or it will be blocked. See .github/NOTES.md, "Security tag". -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self' https://contact.longlight.games https://cloudflareinsights.com https://api.open-meteo.com https://air-quality-api.open-meteo.com https://services.swpc.noaa.gov https://api.weather.gc.ca https://celestrak.org https://www.bankofcanada.ca; frame-src https://challenges.cloudflare.com; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self' https://contact.longlight.games; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>Longlight Interactive</title>
   <meta name="description" content="Longlight Interactive makes browser games and AI projects in Saskatoon, Saskatchewan.">
   <!-- Link preview: the card that shows up when this page is shared in a
@@ -289,8 +295,8 @@
            .github/worker/contact-form.js), which emails them to Kelbo with
            Cloudflare Email Routing. His email address is never on this site:
            it lives only in the Worker's settings in Cloudflare. main.js sends
-           the form without leaving the page; without JavaScript it still
-           works and shows a small "sent" page. -->
+           the form without leaving the page. Since the Turnstile check needs
+           JavaScript, a visitor with it switched off can't send. -->
       <form class="contact-form" action="https://contact.longlight.games/" method="POST" data-contact-form>
         <!-- Spam trap: hidden from people, but bots fill it in, and the
              Worker quietly throws those messages away. -->
@@ -308,6 +314,11 @@
           <label for="contact-message">Message</label>
           <textarea id="contact-message" name="message" rows="5" required maxlength="5000"></textarea>
         </div>
+        <!-- Cloudflare Turnstile, the free "I'm human" check. Most people
+             never see it; a bot can't get past it. The site key below is
+             public by design (like the analytics token); the matching
+             secret lives only in the Worker's settings. -->
+        <div class="cf-turnstile contact-form__check" data-sitekey="0x4AAAAAAF8TjzY_AMHXltSb" data-theme="auto" data-size="flexible"></div>
         <div class="contact-form__actions">
           <button class="button button--send" type="submit">Send</button>
           <p class="contact-form__status" role="status" aria-live="polite" data-contact-status></p>
@@ -349,6 +360,8 @@
         <a href="about.html">About Kelbo</a> &middot; <a href="whats-new.html">What's new</a> &middot; <a href="devlog.html">Devlog</a> &middot; <a href="press.html">Press kit</a> &middot; <a href="https://github.com/Jxstrr0">GitHub</a></p>
     </div>
   </footer>
+  <!-- The Turnstile check for the contact form (see the form above). -->
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
   <!-- Cloudflare Web Analytics: counts visits, no cookies (Kelbo said yes,
        Nov 2026). The token is public by design; it only lets the page send counts. -->
   <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "9bfee231b90d4123905202aad20e8fbf"}'></script>

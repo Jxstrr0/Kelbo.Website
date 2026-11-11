@@ -1169,14 +1169,21 @@ function setUpContactForm() {
         body: new FormData(form),
       });
       const result = await response.json();
-      if (!response.ok || !result.success) throw new Error(result.message || "HTTP " + response.status);
+      if (!response.ok || !result.success) {
+        const problem = new Error(result.message || "HTTP " + response.status);
+        problem.fromServer = Boolean(result.message);
+        throw problem;
+      }
       form.reset();
       say("Sent. Thanks for reaching out!", "sent");
     } catch (err) {
       console.error("Contact form didn't send:", err);
-      say("That didn't send. Please try again in a minute.", "error");
+      // The Worker's own words when it has them (e.g. "tick the check").
+      say(err && err.fromServer ? err.message : "That didn't send. Please try again in a minute.", "error");
     } finally {
       button.disabled = false;
+      // Each Turnstile pass works once, so get a fresh one for the next try.
+      if (window.turnstile) window.turnstile.reset();
     }
   });
 }
