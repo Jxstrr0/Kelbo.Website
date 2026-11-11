@@ -694,6 +694,19 @@ img {
   overflow: visible;
 }
 
+/* While the sky is spinning or being swiped, the lines and the planets'
+   names step out; main.js fits them once it stops and they fade back in. */
+.horizon__lines,
+.planet span {
+  transition: opacity 400ms var(--ease);
+}
+
+.horizon__stars--moving .horizon__lines,
+.horizon__stars--moving .planet span {
+  opacity: 0;
+  transition-duration: 120ms;
+}
+
 .horizon__lines line {
   stroke: var(--ll-lilac);
   stroke-width: 1;
