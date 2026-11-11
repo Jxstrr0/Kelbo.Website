@@ -113,8 +113,8 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   `srcset` "1x, @2x 2x" and drops it if the twin fails to load; check-site
   warns when a twin is missing; captured from each live game; Red Skies is portrait-only, so
   it's shot at 600px wide mid-shift with a jet on the TV camera, cropped 4:3;
-  Prairie Engine Works is the GM LT4 6.2 from the game's own studio render,
-  `ENGINE_VIS.photoShot(1280, 960)`, so no stray parts show; Season Ticket is
+  Prairie Engine Works is the Three-fifty small-block (`sbc350`) on its stand
+  in the garage: photo mode with the turntable spin and the UI hidden; Season Ticket is
   the game's dusk title scene (ground and town) at 1280 wide, with every element except the 3D
   canvas hidden, cropped 4:3). The non-game projects have drawn covers
   (inline SVG rendered to 640×480 JPG, palette only, no text): Pre-market
