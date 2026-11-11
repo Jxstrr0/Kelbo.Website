@@ -146,7 +146,16 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   now in `SWIPE_BACK_MS`. `swiping` pauses the minute tick;
   `skyRun` lets a swipe cut off the spin. `.horizon` has
   `touch-action: pan-y pinch-zoom` so vertical scrolling still works.
-  `placeSun` is the one place the sun gets positioned; it also calls
+  `placeSun` is the one place the sun gets positioned. Its height comes
+  from `skyHeight(alt, peak)` (shared with the moon): straight above the
+  horizon, then one smooth curve down to -1 at 10 degrees under, so it sets
+  at the speed it was falling. The night drift back runs from sunset to the
+  next sunrise in one piece (it looks up yesterday's sunset or tomorrow's
+  sunrise), so nothing jumps at midnight. On load the sun, ray, glint, sun
+  dogs, pillar and shadow stay hidden (`@media (scripting: enabled)`) until
+  `setUpHorizon` adds `.horizon--placed`, and `.horizon--spin` is on for the
+  first two frames, so the sun appears in place with no snap or slide.
+  `placeSun` also calls
   `placeMoon`, which puts the clay moon (`.horizon__moon`, glow via
   drop-shadow) where the real moon is: `moonAltitude` (low-precision lunar
   theory + parallax, within ~0.2° of a full ephemeris; rise/set within a
