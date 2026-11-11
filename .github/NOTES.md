@@ -1036,7 +1036,9 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   emails Kelbo through Cloudflare Email Routing (`send_email` binding
   `EMAIL`, locked to his verified address, plus a `TO` variable). His
   address lives only in those Worker settings; never put it in the site or
-  repo. Anything but a POST (or the CORS OPTIONS check) gets a plain 404.
+  repo. Opening the address in a browser (GET or HEAD) forwards to the
+  form on the home page (`#contact-heading`); any other method but a POST
+  (or the CORS OPTIONS check) gets a plain 404.
   It only takes posts whose `Origin` is https://longlight.games (403
   otherwise), drops posts with the `botcheck` honeypot ticked (fake
   success), caps name/email/message at 100/200/5000 characters, and
