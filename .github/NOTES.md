@@ -115,7 +115,7 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   it's shot at 600px wide mid-shift with a jet on the TV camera, cropped 4:3;
   Prairie Engine Works is the GM LT4 6.2 from the game's own studio render,
   `ENGINE_VIS.photoShot(1280, 960)`, so no stray parts show; Season Ticket is
-  the game's dusk title scene at 1024×768, with every element except the 3D
+  the game's dusk title scene (ground and town) at 1280 wide, with every element except the 3D
   canvas hidden, cropped 4:3). The non-game projects have drawn covers
   (inline SVG rendered to 640×480 JPG, palette only, no text): Pre-market
   brief (dawn sky, candles rising off the horizon, clay sun), AI Trading
