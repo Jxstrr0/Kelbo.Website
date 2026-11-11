@@ -93,7 +93,7 @@
     "link": "https://scrapline.longlight.games/",
     "code": "https://github.com/Jxstrr0/Scrapline",
     "image": "assets/covers/scrapline.jpg",
-    "featured": false,
+    "featured": true,
     "clip": "assets/clips/scrapline.mp4",
     "cardClip": "assets/clips/scrapline-card.mp4",
     "shots": [
@@ -226,7 +226,7 @@
     "image": "assets/covers/the-whip.jpg",
     "clip": "assets/clips/the-whip.mp4",
     "cardClip": "assets/clips/the-whip-card.mp4",
-    "featured": true,
+    "featured": false,
     "shots": [
       {
         "src": "assets/shots/the-whip-1.jpg",
