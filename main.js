@@ -733,7 +733,7 @@ async function setUpDevlog() {
   let games = [];
   try {
     const response = await fetch("projects.json", { cache: "no-cache" });
-    if (response.ok) games = (await response.json()).filter(isGame);
+    if (response.ok) games = (await response.json()).filter((p) => isGame(p) && !p.hidden);
   } catch (e) {}
   list.replaceChildren();
   if (posts.length === 0) {
@@ -6857,6 +6857,10 @@ async function init() {
     if (!response.ok) throw new Error("HTTP " + response.status);
     projects = await response.json();
     if (!Array.isArray(projects)) throw new Error("projects.json should be a list [ ... ]");
+    // "hidden": true in projects.json takes a project off the site (cards,
+    // lists, its game page) without deleting its entry. Remove the line to
+    // bring it back.
+    projects = projects.filter((p) => !p.hidden);
   } catch (err) {
     // Most likely a typo in projects.json (a missing comma or quote).
     console.error("Couldn't load projects.json:", err);

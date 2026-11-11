@@ -25,7 +25,8 @@ import { join } from "node:path";
 
 const ROOT = process.argv[2] || ".";
 const SITE = "https://longlight.games/";
-const projects = JSON.parse(readFileSync(join(ROOT, "projects.json"), "utf8"));
+// Hidden projects ("hidden": true) get no page.
+const projects = JSON.parse(readFileSync(join(ROOT, "projects.json"), "utf8")).filter((p) => !p.hidden);
 const template = readFileSync(join(ROOT, "game.html"), "utf8");
 
 // Same as projectSlug in main.js: "Prairie Engine Works" -> "prairie-engine-works".
