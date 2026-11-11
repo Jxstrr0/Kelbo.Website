@@ -709,6 +709,10 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   more built); its cover and card clip are a hot bar on the anvil under the
   hammer, recorded from the game by its own `npm run cover`
   (`scripts/cover.mjs` there; the files are kept in its `art/cover/`).
+  Hull Down (the tank design game, hulldown.longlight.games) was added
+  hidden too (Kelbo, 2026-11-11); its cover is the side view on the
+  blueprint screen. It has no release workflow yet, so it carries no
+  version until one is added.
   Each game keeps its own look (fonts, colours, art). The Longlight logo,
   the five colours and Space Grotesk belong to studio pieces only (logo or
   splash, credit line, studio block, links back here); every game repo's
