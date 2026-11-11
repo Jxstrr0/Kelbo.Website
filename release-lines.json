@@ -63,5 +63,15 @@
     "line": "Bolts, clamps, coils, plug boots and wiring plugs now have new 3D models in the engine.",
     "title": "v1.76.127.0 - bolts, clamps, coils, plug boots and wiring plugs modelled in Blender",
     "at": "2026-11-11T07:15:58.173Z"
+  },
+  "350Chev@v1.76.135.1": {
+    "line": "The garage shadow now updates right after you change a part.",
+    "title": "v1.76.135.1 - garage shadow redraws right after a part change again",
+    "at": "2026-11-11T19:53:56.892Z"
+  },
+  "Scrapline@v0.1.62.0": {
+    "line": "Scrapline now has a plan view.",
+    "title": "v0.1.62.0 - the plan view",
+    "at": "2026-11-11T19:53:56.892Z"
   }
 }
