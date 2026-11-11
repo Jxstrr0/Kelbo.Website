@@ -936,7 +936,7 @@ same `ANTHROPIC_API_KEY` secret as the brief:
   a run (batch price).
 
 **Batch price.** Neither result is needed straight away, so both (and the
-Coach and the Devlog Writer) send their request as a "batch": Anthropic answers when it has
+Coach) send their request as a "batch": Anthropic answers when it has
 room, at half the token price. The answer usually comes back within an
 hour while the run waits. If it takes longer than about 5 hours, the run
 saves its place in `.github/batches/` and the next try picks up the same
@@ -1167,7 +1167,7 @@ you can see how good the calls really are over time.
 | **Morning Writer** | Writes the pre-market brief (`premarket-brief.yml`) | Weekdays 6:30 am |
 | **Grader** | Grades that brief after the close (`postmarket-recap.yml`) | Weekdays 4:45 pm |
 | **Coach** | Turns the report cards into lessons for the Morning Writer (`brief-lessons.yml`) | Sundays 11:45 am (batch) |
-| **Devlog Writer** | Drafts devlog posts and "Now building" lines, and opens a pull request for you (`devlog-draft.yml`) | Sundays 11:20 am (batch) |
+| **Devlog Writer** | Drafts devlog posts and "Now building" lines, and opens a pull request for you (`devlog-draft.yml`) | Sundays 11:20 am |
 | **Release Writer** | Writes the player-friendly "What's new" line for game releases (`release-lines.yml`) | Every 6 hours |
 | **Forecaster** | Writes the journal's forecast for the coming week (`journal-forecast.yml`) | Sundays 7:45 pm (batch) |
 | **Scorekeeper** | Grades that week's journal calls (`journal-grade.yml`) | Sundays 11:35 am (batch) |

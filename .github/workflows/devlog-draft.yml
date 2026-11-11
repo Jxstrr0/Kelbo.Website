@@ -21,11 +21,10 @@
 # without opening a pull request. To stop it, open it on the Actions tab,
 # tap "..." and choose "Disable workflow".
 #
-# It asks Claude through the Batches API (half price) and waits for the
-# answer, usually within an hour. If that takes over 5 h 20, it saves its
-# place in .github/batches/devlog-writer.json (committed to main, never
-# published) and the 5:15 pm run picks the same answer up, so nothing is
-# paid twice. That second run stops at once if today's draft already exists.
+# It asks Claude straight away at full price (it was a half-price batch
+# until Nov 11, 2026), so the draft is up within minutes. The 5:15 pm run
+# stops at once if today's draft already exists, so it only tries again
+# (one retry) when the morning run failed.
 #
 # Needs Settings > Actions > General > "Allow GitHub Actions to create and
 # approve pull requests" switched on, or step 3 fails.
