@@ -5,8 +5,16 @@
 > when something matters, check the live repo. A game's own `CLAUDE.md` always
 > wins over this file inside that game's repo.
 >
-> **Public edition.** It covers the ten games on the studio site and leaves
-> out Kelbo's private and parked repos. Ask Kelbo about those.
+> **Public edition.** It covers the ten games in the studio site's
+> `projects.json` and leaves out Kelbo's private and parked repos. Ask Kelbo
+> about those.
+>
+> **Only six are listed on the site.** Since 11 November 2026 Escapement,
+> Ink, Station Keeper and The Whip carry `"hidden": true` in `projects.json`:
+> no card, no game page, no devlog or release lines. Their repos and live
+> games stay up, and everything in this file still applies to them. The
+> listed six are Prairie Engine Works, Season Ticket, Scrapline, Lombard,
+> Frontier Lab and Red Skies.
 
 ---
 
@@ -50,19 +58,19 @@ Every game is a public repo under **github.com/Jxstrr0**, served by GitHub Pages
 on its own subdomain of **longlight.games** (November 2026; the old
 `https://jxstrr0.github.io/<Repo>/` addresses forward there).
 
-| Game | Repo | Live |
-| --- | --- | --- |
-| Prairie Engine Works | [Jxstrr0/350Chev](https://github.com/Jxstrr0/350Chev) | https://pew.longlight.games/ |
-| Lombard | [Jxstrr0/Lombard](https://github.com/Jxstrr0/Lombard) | https://lombard.longlight.games/ |
-| Escapement | [Jxstrr0/Escapement](https://github.com/Jxstrr0/Escapement) | https://escapement.longlight.games/ |
-| Scrapline | [Jxstrr0/Scrapline](https://github.com/Jxstrr0/Scrapline) | https://scrapline.longlight.games/ |
-| Ink | [Jxstrr0/Ink](https://github.com/Jxstrr0/Ink) | https://ink.longlight.games/ |
-| Station Keeper | [Jxstrr0/StationKeeper](https://github.com/Jxstrr0/StationKeeper) | https://stationkeeper.longlight.games/ |
-| Season Ticket | [Jxstrr0/SeasonTicket](https://github.com/Jxstrr0/SeasonTicket) | https://seasonticket.longlight.games/ |
-| Frontier Lab | [Jxstrr0/FrontierLab](https://github.com/Jxstrr0/FrontierLab) | https://frontierlab.longlight.games/ |
-| The Whip | [Jxstrr0/The-Whip](https://github.com/Jxstrr0/The-Whip) | https://thewhip.longlight.games/ |
-| Red Skies | [Jxstrr0/RedSkies](https://github.com/Jxstrr0/RedSkies) | https://redskies.longlight.games/ |
-| Studio site | [Jxstrr0/Kelbo.Website](https://github.com/Jxstrr0/Kelbo.Website) | https://longlight.games/ |
+| Game | Repo | Live | On the site |
+| --- | --- | --- | --- |
+| Prairie Engine Works | [Jxstrr0/350Chev](https://github.com/Jxstrr0/350Chev) | https://pew.longlight.games/ | Listed |
+| Lombard | [Jxstrr0/Lombard](https://github.com/Jxstrr0/Lombard) | https://lombard.longlight.games/ | Listed |
+| Escapement | [Jxstrr0/Escapement](https://github.com/Jxstrr0/Escapement) | https://escapement.longlight.games/ | Hidden |
+| Scrapline | [Jxstrr0/Scrapline](https://github.com/Jxstrr0/Scrapline) | https://scrapline.longlight.games/ | Listed |
+| Ink | [Jxstrr0/Ink](https://github.com/Jxstrr0/Ink) | https://ink.longlight.games/ | Hidden |
+| Station Keeper | [Jxstrr0/StationKeeper](https://github.com/Jxstrr0/StationKeeper) | https://stationkeeper.longlight.games/ | Hidden |
+| Season Ticket | [Jxstrr0/SeasonTicket](https://github.com/Jxstrr0/SeasonTicket) | https://seasonticket.longlight.games/ | Listed |
+| Frontier Lab | [Jxstrr0/FrontierLab](https://github.com/Jxstrr0/FrontierLab) | https://frontierlab.longlight.games/ | Listed |
+| The Whip | [Jxstrr0/The-Whip](https://github.com/Jxstrr0/The-Whip) | https://thewhip.longlight.games/ | Hidden |
+| Red Skies | [Jxstrr0/RedSkies](https://github.com/Jxstrr0/RedSkies) | https://redskies.longlight.games/ | Listed |
+| Studio site | [Jxstrr0/Kelbo.Website](https://github.com/Jxstrr0/Kelbo.Website) | https://longlight.games/ | — |
 
 Kelbo's private and parked repos are not covered here (section 11).
 
@@ -180,18 +188,20 @@ cost nothing, keep old copies apart, and let a game move again safely.
 
 Status is Kelbo's label on the studio site (`projects.json`); version is what
 the repo's code says on 7 November 2026. Order is Kelbo's own ranking.
+**Hidden** marks the four games taken off the site on 11 November 2026
+(`"hidden": true`); they are still live at their own addresses.
 
 | Game | Status | Version | Genre | Setting | Screen | Stack |
 | --- | --- | --- | --- | --- | --- | --- |
 | Prairie Engine Works | Released | 1.76.78.0 | Engine builder, dyno, ten race events, race-team career | Prairie engine shop (Saskatoon) | Phone, both ways; desktop layout | Classic JS + `build.js`, three r128 (CDN) |
 | Lombard | In development (site); repo shipped 1.0.0.0 on 6 Nov | 1.0.0.0 | First-person pawn shop sim: inspect, appraise, haggle; a crime layer | Mostograd, a 2010s Russian river city | Portrait first | TypeScript, Vite, three 0.187 (npm) |
-| Escapement | Prototype | 1.0.2.3 | Watchmaking career: build, regulate, certify, sell | The Haldis, Velmark (alpine, 2000–2030) | Portrait (side by side in landscape) | Classic JS + `build.js` (PEW stack), three r128 |
+| Escapement | Prototype, **hidden** | 1.0.2.3 | Watchmaking career: build, regulate, certify, sell | The Haldis, Velmark (alpine, 2000–2030) | Portrait (side by side in landscape) | Classic JS + `build.js` (PEW stack), three r128 |
 | Scrapline | In development | 0.1.16.2 | Combat-robot builder, arena fights, career | Velmark and the Haldis (shared with Escapement) | Portrait (side by side in landscape) | Classic JS + `build.js` (PEW stack), three r128 |
-| Ink | Prototype | 0.1.15.1 | Tattoo artist career: consult, design, tattoo, heal, see it age | Mostograd (shared with Lombard), 2000–2030 | Portrait (landscape layout too) | Classic JS + `build.js` (PEW stack), three r128 |
-| Station Keeper | In development | 0.1.2.0 | Space-station tycoon, cascading systems | Real low Earth orbit, 2041–2045 | Any | TypeScript, Vite, three 0.187 |
+| Ink | Prototype, **hidden** | 0.1.15.1 | Tattoo artist career: consult, design, tattoo, heal, see it age | Mostograd (shared with Lombard), 2000–2030 | Portrait (landscape layout too) | Classic JS + `build.js` (PEW stack), three r128 |
+| Station Keeper | In development, **hidden** | 0.1.2.0 | Space-station tycoon, cascading systems | Real low Earth orbit, 2041–2045 | Any | TypeScript, Vite, three 0.187 |
 | Season Ticket | Released | 1.1.2.0 | Football club owner/GM with live tactics | Valmere, a fictional northern republic | **Landscape** | TypeScript, Vite, three 0.186 |
 | Frontier Lab | In development | 0.1.63.0 | AI-lab tycoon (fork of Vault Street) | Real cities on procedural maps | Portrait | TypeScript, Preact, 2D canvas/SVG |
-| The Whip | Released | 1.0.0.0 | Political career: votes, deals, whip | Dominion of Caledor (Westminster) | Portrait first | ES modules, no build, three 0.160 (CDN) |
+| The Whip | Released, **hidden** | 1.0.0.0 | Political career: votes, deals, whip | Dominion of Caledor (Westminster) | Portrait first | ES modules, no build, three 0.160 (CDN) |
 | Red Skies | Complete | 1.6.1.0 | SAM air-defence: identify, hold fire | Republic of Varenna | **Portrait only** | Plain JS + inline build, three r128 vendored |
 
 Studio site trading projects (not games): Pre-market brief, AI Trading Journal,
