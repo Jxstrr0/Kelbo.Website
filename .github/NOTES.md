@@ -1027,6 +1027,27 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   token is meant to be public (it only sends counts), so it is the one
   Cloudflare value allowed in the repo. `sw.js` ignores the beacon because
   it is on another origin.
+- **Security tag** (Nov 2026): every page's `<head>` has a
+  `Content-Security-Policy` meta tag (and a referrer one) right after the
+  viewport line. It lists the only places the browser may load scripts
+  (the site, Cloudflare's analytics beacon and Turnstile), data (the
+  contact Worker, the analytics endpoint, and the weather, aurora, ISS and
+  exchange-rate APIs `main.js` reads) and frames (Turnstile). A new page
+  copies the tag; a new outside service must be added to it, or the
+  browser blocks it (the console says "Content Security Policy"). GitHub
+  Pages can't send real security headers, so this tag is the next best.
+- **Contact form spam guard** (Nov 2026): Cloudflare Turnstile, the free
+  "I'm human" check, sits above Send on the home page. Its site key in
+  `index.html` is public by design; the secret is the contact-form
+  Worker's `TURNSTILE_SECRET` setting in Cloudflare, never in the repo.
+  The Worker refuses a message without a fresh pass, and a Cloudflare
+  rate-limit rule on `contact.longlight.games` slows floods. `main.js`
+  resets the check after each send.
+- **Domain email safety** (Nov 2026, set in Cloudflare DNS, not here): a
+  DMARC record sends fake mail "from" longlight.games to spam, CAA
+  records say which certificate companies may issue for the domain, and
+  DNSSEC is switched on (it only takes effect once the registrar has the
+  DS record from Cloudflare).
 - **Privacy scan** (`check-site.mjs`, section 8): errors on an email
   address (`EMAIL_OK` allows example.com and GitHub no-reply ones), a phone
   number, a 9+ digit number not inside a URL, id or version, or a
