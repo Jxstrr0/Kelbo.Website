@@ -1002,11 +1002,22 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   emails Kelbo through Cloudflare Email Routing (`send_email` binding
   `EMAIL`, locked to his verified address, plus a `TO` variable). His
   address lives only in those Worker settings; never put it in the site or
-  repo. It only takes posts whose `Origin` is longlight.games (403
+  repo. Anything but a POST (or the CORS OPTIONS check) gets a plain 404.
+  It only takes posts whose `Origin` is https://longlight.games (403
   otherwise), drops posts with the `botcheck` honeypot ticked (fake
   success), caps name/email/message at 100/200/5000 characters, and
   answers `{success, message}` JSON when asked (`Accept: application/json`,
   what `setUpContactForm` sends) or a small HTML page otherwise.
+- **Cloudflare zone rules** (set in the dashboard, free plan, not in the
+  repo): a WAF custom rule blocks probes for secret files and admin pages
+  (`.env`, `.git`, `wp-login`, `wp-admin`, `phpmyadmin`...); Bot Fight Mode
+  is on; a redirect sends the bare `assets.longlight.games/` to the main
+  site; the free plan's one rate-limit rule caps
+  `contact.longlight.games` at 5 requests per 10 s per visitor (blocked
+  for 10 s); a cache rule keeps `/scrapline/voice/` files 1 month at the edge
+  and 1 day in browsers (1 day because a redone voice line keeps its file
+  name). They only reach the proxied subdomains (assets, contact); the main
+  site is served by GitHub Pages directly.
 - **Privacy scan** (`check-site.mjs`, section 8): errors on an email
   address (`EMAIL_OK` allows example.com and GitHub no-reply ones), a phone
   number, a 9+ digit number not inside a URL, id or version, or a
