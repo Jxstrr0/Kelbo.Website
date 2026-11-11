@@ -151,9 +151,9 @@ ${JSON.stringify(recent, null, 1)}
 
 Draft this week's posts and the "Now building" lines.`;
 
-// Sent as a batch (half price): Kelbo reads the draft whenever he gets to
-// it. A slow batch saves its place and the 5:15 pm run picks it up.
-const { text, usage } = await askClaude({ model: MODEL, effort: EFFORT, system: SYSTEM, user, maxTokens: 16000, batch: { name: "devlog-writer", key: today } });
+// Sent straight away at full price (no batch since Nov 11, 2026, Kelbo),
+// so the draft PR opens within minutes of the 11:20 am run.
+const { text, usage } = await askClaude({ model: MODEL, effort: EFFORT, system: SYSTEM, user, maxTokens: 16000 });
 const answer = readJson(text, MARKER);
 if (!answer || !Array.isArray(answer.posts)) {
   logCost(MODEL, usage);
