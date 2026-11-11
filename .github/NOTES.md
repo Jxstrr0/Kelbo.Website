@@ -688,8 +688,8 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   hidden (a placeholder in the game; retake it once real movements are on
   the bench); Ink's is the live Studio tab's back room with the UI hidden
   (the scaffold's placeholder room; retake it once the real studio is in);
-  Scrapline's is the live workshop's bench bot (the default vertical
-  spinner) with the UI hidden. This site only links to
+  Scrapline's is a live fight with the UI hidden: Splinter and Türkeil
+  locked together in the corner by the SCRAPLINE boards. This site only links to
   them via `link` (the pink Play it button) and `code` (the repo). The home
   page "Pick a game" is a swipe row (2026-11-09): `setUpGameRow` fills
   `.project-list--row` (`data-projects="row"`) with every game in
