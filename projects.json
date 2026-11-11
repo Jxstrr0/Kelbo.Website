@@ -117,6 +117,7 @@
   },
   {
     "title": "Ink",
+    "hidden": true,
     "status": "Polishing",
     "category": "Game",
     "summary": "A tattoo artist career game set in Mostograd. Start as an apprentice sweeping floors, learn on fake skin, build a client list and open your own studio, with every piece aging on people who keep walking back through your door.",
