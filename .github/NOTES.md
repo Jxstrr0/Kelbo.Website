@@ -674,8 +674,8 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   affects the page; it only records the four covers in the link preview.
   `hidden: true` drops a project everywhere: both `projects.json` loads in
   `main.js` filter it out, `make-game-pages.mjs` makes no page for it, and
-  `devlog-draft.mjs` / `release-lines.mjs` skip it. The Whip is hidden
-  (Kelbo, 2026-11-11); its repo and live game stay up.
+  `devlog-draft.mjs` / `release-lines.mjs` skip it. The Whip and Escapement
+  are hidden (Kelbo, 2026-11-11); their repos and live games stay up.
   Each game keeps its own look (fonts, colours, art). The Longlight logo,
   the five colours and Space Grotesk belong to studio pieces only (logo or
   splash, credit line, studio block, links back here); every game repo's
