@@ -48,7 +48,8 @@ const headers = { Accept: "application/vnd.github+json", "User-Agent": "longligh
 if (process.env.GITHUB_TOKEN) headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
 
 /* ---------- Which games have a release with no line yet? ---------- */
-const projects = JSON.parse(await readFile("projects.json", "utf8"));
+// Hidden projects ("hidden": true) are off the site, so they're skipped.
+const projects = JSON.parse(await readFile("projects.json", "utf8")).filter((p) => !p.hidden);
 const fresh = []; // { key, game, title, notes }
 for (const p of projects) {
   const m = (p.code || "").match(/github\.com\/([^/]+)\/([^/#?]+)/);
