@@ -5599,6 +5599,49 @@ function setUpCoverHop() {
   });
 }
 
+/* ---------- The pull sky (and pull-to-refresh in the home-screen app) ----------
+   Adds the bit of sky that shows when you pull the page down past the top
+   (styles: .pull-sky in style.css). In the app saved to an iPhone's home
+   screen, which has no pull-to-refresh of its own, it also refreshes: pull
+   down at the top of the page, the sun rises and the label changes to
+   "Let go to refresh", and letting go then reloads the page. The site
+   always fetches its newest copy on a reload, so this is how the app
+   picks up changes without being swiped closed. */
+function setUpPullSky() {
+  const sky = el("div", "pull-sky");
+  sky.setAttribute("aria-hidden", "true");
+  const label = el("span", "pull-sky__label");
+  sky.append(el("i", "pull-sky__dots"), el("i", "pull-sky__sun"), label);
+  document.body.prepend(sky);
+
+  // Only the iPhone home-screen app: browsers have their own refresh.
+  if (navigator.standalone !== true) return;
+  const FAR = 110; // how far (in pixels) to pull before letting go refreshes
+  let startY = null;
+  let pull = 0;
+  const show = (p) => {
+    sky.style.setProperty("--pull", p.toFixed(2));
+    sky.classList.toggle("is-ready", p >= 1);
+    label.textContent = p >= 1 ? "Let go to refresh" : "Pull to refresh";
+  };
+  addEventListener("touchstart", (e) => {
+    startY = window.scrollY <= 0 && e.touches.length === 1 ? e.touches[0].clientY : null;
+    pull = 0;
+  }, { passive: true });
+  addEventListener("touchmove", (e) => {
+    if (startY === null) return;
+    pull = Math.max(0, Math.min(1, (e.touches[0].clientY - startY) / FAR));
+    show(pull);
+  }, { passive: true });
+  addEventListener("touchend", () => {
+    if (startY !== null && pull >= 1) {
+      label.textContent = "Refreshing…";
+      location.reload();
+    }
+    startY = null;
+  }, { passive: true });
+}
+
 /* ---------- The scroll sun ----------
    A thin clay line down the right edge of every long page, with a small
    sun that travels down it as you scroll and sets into a little horizon
@@ -6827,6 +6870,7 @@ async function init() {
   setUpCoverTilt();
   setUpCoverHop();
   setUpScrollSun();
+  setUpPullSky();
   setUpSheet();
   setUpLogoSecret();
   setUpMooseAttack();
