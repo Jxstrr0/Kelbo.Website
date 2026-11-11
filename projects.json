@@ -212,6 +212,7 @@
   },
   {
     "title": "The Whip",
+    "hidden": true,
     "status": "Released",
     "category": "Game",
     "summary": "A political career game for your phone. Start as a rookie backbench MP in the 120-seat House of Commons of the made-up Dominion of Caledor and climb to Chief Whip: the person who counts the votes, makes the deals and gets the caucus into the chamber when it matters. Every MP remembers what you promised.",

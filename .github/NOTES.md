@@ -672,6 +672,10 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   iPhone) and its cards reveal together when the row comes into view (one
   observer on the row, not one per card). `featured` no longer
   affects the page; it only records the four covers in the link preview.
+  `hidden: true` drops a project everywhere: both `projects.json` loads in
+  `main.js` filter it out, `make-game-pages.mjs` makes no page for it, and
+  `devlog-draft.mjs` / `release-lines.mjs` skip it. The Whip is hidden
+  (Kelbo, 2026-11-11); its repo and live game stay up.
   Each game keeps its own look (fonts, colours, art). The Longlight logo,
   the five colours and Space Grotesk belong to studio pieces only (logo or
   splash, credit line, studio block, links back here); every game repo's
