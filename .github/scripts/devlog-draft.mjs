@@ -39,7 +39,8 @@ const NOW_CHARS = 70; // each line stays about this short
 
 const today = skDate();
 const since = new Date(Date.now() - DAYS * 864e5);
-const projects = JSON.parse(await readFile("projects.json", "utf8"));
+// Hidden projects ("hidden": true) are off the site, so no posts about them.
+const projects = JSON.parse(await readFile("projects.json", "utf8")).filter((p) => !p.hidden);
 const devlog = JSON.parse(await readFile("devlog.json", "utf8"));
 // A missing or broken now.json just means the strip starts fresh.
 const nowFile = await readFile("now.json", "utf8").then(JSON.parse).catch(() => ({ items: [] }));
