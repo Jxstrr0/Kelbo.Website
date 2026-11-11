@@ -13,7 +13,7 @@
 // it and get a fake "sent"), messages only from the site's own pages, and
 // length limits. Sending to your own verified address is free.
 
-const SITES = ["https://longlight.games", "https://www.longlight.games"];
+const SITES = ["https://longlight.games"];
 const LIMITS = { name: 100, email: 200, message: 5000 };
 
 export default {
@@ -37,7 +37,8 @@ export default {
     }
 
     if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: { ...cors, "Access-Control-Allow-Methods": "POST", "Access-Control-Allow-Headers": "Accept" } });
-    if (request.method !== "POST") return reply(false, "This address only takes messages from the contact form.", 405);
+    // Anything but a form post (bots poking the bare address) gets a plain 404.
+    if (request.method !== "POST") return new Response("Not found", { status: 404 });
     if (!allowed) return reply(false, "Please send your message from longlight.games.", 403);
 
     let form;
