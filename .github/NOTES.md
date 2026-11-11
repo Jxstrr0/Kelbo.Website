@@ -113,8 +113,8 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   `srcset` "1x, @2x 2x" and drops it if the twin fails to load; check-site
   warns when a twin is missing; captured from each live game; Red Skies is portrait-only, so
   it's shot at 600px wide mid-shift with a jet on the TV camera, cropped 4:3;
-  Prairie Engine Works is the GM LT4 6.2 from the game's own studio render,
-  `ENGINE_VIS.photoShot(1280, 960)`, so no stray parts show; Season Ticket is
+  Prairie Engine Works is the Three-fifty small-block (`sbc350`) on its stand
+  in the garage: photo mode with the turntable spin and the UI hidden; Season Ticket is
   the game's dusk title scene (ground and town) at 1280 wide, with every element except the 3D
   canvas hidden, cropped 4:3). The non-game projects have drawn covers
   (inline SVG rendered to 640×480 JPG, palette only, no text): Pre-market
@@ -688,8 +688,8 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   hidden (a placeholder in the game; retake it once real movements are on
   the bench); Ink's is the live Studio tab's back room with the UI hidden
   (the scaffold's placeholder room; retake it once the real studio is in);
-  Scrapline's is the live workshop's bench bot (the default vertical
-  spinner) with the UI hidden. This site only links to
+  Scrapline's is a live fight with the UI hidden: Splinter and Türkeil
+  locked together in the corner by the SCRAPLINE boards. This site only links to
   them via `link` (the pink Play it button) and `code` (the repo). The home
   page "Pick a game" is a swipe row (2026-11-09): `setUpGameRow` fills
   `.project-list--row` (`data-projects="row"`) with every game in
@@ -1036,7 +1036,9 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   emails Kelbo through Cloudflare Email Routing (`send_email` binding
   `EMAIL`, locked to his verified address, plus a `TO` variable). His
   address lives only in those Worker settings; never put it in the site or
-  repo. Anything but a POST (or the CORS OPTIONS check) gets a plain 404.
+  repo. Opening the address in a browser (GET or HEAD) forwards to the
+  form on the home page (`#contact-heading`); any other method but a POST
+  (or the CORS OPTIONS check) gets a plain 404.
   It only takes posts whose `Origin` is https://longlight.games (403
   otherwise), drops posts with the `botcheck` honeypot ticked (fake
   success), caps name/email/message at 100/200/5000 characters, and

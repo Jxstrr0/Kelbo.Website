@@ -40,7 +40,9 @@ export default {
     }
 
     if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: { ...cors, "Access-Control-Allow-Methods": "POST", "Access-Control-Allow-Headers": "Accept" } });
-    // Anything but a form post (bots poking the bare address) gets a plain 404.
+    // Someone opening the bare address in a browser is sent to the form on the site.
+    if (request.method === "GET" || request.method === "HEAD") return Response.redirect("https://longlight.games/#contact-heading", 302);
+    // Any other method that isn't a form post gets a plain 404.
     if (request.method !== "POST") return new Response("Not found", { status: 404 });
     if (!allowed) return reply(false, "Please send your message from longlight.games.", 403);
 
