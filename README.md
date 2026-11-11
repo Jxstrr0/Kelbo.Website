@@ -61,6 +61,8 @@ from their releases, then publishes the files as they are (see
 If the site doesn't change, open the **Actions** tab: a red ❌ on
 **Deploy site** means the check found a mistake (tap it to see what in plain
 English). The live site keeps the last version that worked until it's fixed.
+If GitHub's own publish step hiccups, the run waits 30 seconds and tries
+once more by itself, so a red ❌ there means it failed twice.
 
 ## Automatic checks and game versions
 
