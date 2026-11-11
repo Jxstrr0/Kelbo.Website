@@ -9,9 +9,12 @@
 // only in the Worker's settings in Cloudflare: the TO variable, and the EMAIL
 // binding, which is locked so it can only ever send to that one address.
 //
-// Spam protection: a hidden "botcheck" box that people never see (bots tick
-// it and get a fake "sent"), messages only from the site's own pages, and
-// length limits. Sending to your own verified address is free.
+// Spam protection: Cloudflare Turnstile (the free "I'm human" check on the
+// form; its secret is the TURNSTILE_SECRET setting, never in the repo), a
+// hidden "botcheck" box that people never see (bots tick it and get a fake
+// "sent"), messages only from the site's own pages, length limits, and a
+// Cloudflare rate-limit rule on contact.longlight.games. Sending to your own
+// verified address is free.
 
 const SITES = ["https://longlight.games"];
 const LIMITS = { name: 100, email: 200, message: 5000 };
@@ -49,6 +52,12 @@ export default {
     // A bot filled in the hidden box: say "sent" so it moves on, send nothing.
     if (form.get("botcheck")) return reply(true, "Sent. Thanks for reaching out!", 200);
 
+    // Turnstile: ask Cloudflare whether this visitor passed the check. A
+    // script can fake the Origin header, but it can't fake a pass.
+    if (!(await passedCheck(form.get("cf-turnstile-response"), request, env))) {
+      return reply(false, "Please tick the \u201cI'm human\u201d check above Send, then try again.", 403);
+    }
+
     if (!name || !message) return reply(false, "Please fill in your name and a message.", 400);
     if (name.length > LIMITS.name || email.length > LIMITS.email || message.length > LIMITS.message) {
       return reply(false, "That message is too long.", 400);
@@ -72,3 +81,21 @@ export default {
     return reply(true, "Sent. Thanks for reaching out!", 200);
   },
 };
+
+// True when Cloudflare confirms the Turnstile pass is real, fresh and for
+// this site. No secret set, or Cloudflare unreachable: refuse (fail closed).
+async function passedCheck(token, request, env) {
+  if (!token || !env.TURNSTILE_SECRET) return false;
+  const body = new FormData();
+  body.append("secret", env.TURNSTILE_SECRET);
+  body.append("response", String(token));
+  const ip = request.headers.get("CF-Connecting-IP");
+  if (ip) body.append("remoteip", ip);
+  try {
+    const res = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", { method: "POST", body });
+    const out = await res.json();
+    return out.success === true && out.hostname === "longlight.games";
+  } catch {
+    return false;
+  }
+}
