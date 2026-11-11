@@ -1108,6 +1108,56 @@ img {
 /* Before main.js has placed the sun it would sit in the stand-in spot
    above (--sun-x, --sun-alt) and then jump, so it stays hidden until
    main.js adds "horizon--placed". With JavaScript off the stand-in shows. */
+/* The sun and the things that follow it move with translate, not left
+   and top. They look the same, but the browser counts a move by left or
+   top as the page jumping (layout shift, the CLS number in Cloudflare's
+   page speed), and the opening spin moves them every frame. 100cqw is the
+   sky's width (the horizon is a size container), the same as the 100% the
+   left values used. Browsers without container units keep left and top.
+   The moon keeps left and top too: its translate is the phone-tilt
+   parallax (motion section), and it's a small share of the shift. The
+   pillar and the sundogs get the same treatment after their own rules. */
+@supports (width: 1cqw) and (translate: 1px) {
+  .horizon {
+    container-type: inline-size;
+  }
+
+  .horizon__sun {
+    left: 0;
+    top: 0;
+    translate:
+      calc(var(--sun-x) * (100cqw - var(--sun-size)))
+      calc((1 - var(--sun-alt)) * (var(--sky-height) - var(--sun-size) / 2));
+    transition: translate 1200ms var(--ease);
+  }
+
+  .horizon__ray {
+    --ray-left: calc(var(--sun-x) * (100cqw - var(--sun-size)) + var(--sun-size) + 4px);
+    left: 0;
+    top: 0;
+    right: auto;
+    width: max(0px, calc(100cqw - var(--ray-left)));
+    translate:
+      var(--ray-left)
+      calc((1 - var(--sun-alt)) * (var(--sky-height) - var(--sun-size) / 2) + var(--sun-size) / 2 - 3px);
+    transition: translate 1200ms var(--ease), width 1200ms var(--ease), transform 1200ms var(--ease), opacity 600ms;
+  }
+
+  .horizon__glint--sun,
+  .horizon__glint--moon {
+    left: 0;
+    transition: translate 1200ms var(--ease), opacity 600ms var(--ease);
+  }
+
+  .horizon__glint--sun {
+    translate: calc(var(--sun-x) * (100cqw - var(--sun-size)) - var(--sun-size) * 0.4) 0;
+  }
+
+  .horizon__glint--moon {
+    translate: calc(var(--moon-x) * (100cqw - var(--moon-size)) - var(--moon-size) * 0.4) 0;
+  }
+}
+
 @media (scripting: enabled) {
   .horizon:not(.horizon--placed) .horizon__sun,
   .horizon:not(.horizon--placed) .horizon__glint,
@@ -1856,6 +1906,29 @@ img {
   mask: linear-gradient(to bottom, transparent var(--dog-fade), #000 calc(var(--dog-fade) + var(--sun-size) * 0.45));
   opacity: var(--sundogs, 0);
   transition: top 1200ms var(--ease), left 1200ms var(--ease), opacity 3s var(--ease);
+}
+
+/* The pillar and the sundogs move with translate too, like the sun above
+   (see "The sun and the things that follow it"), so the opening spin
+   doesn't count as the page jumping. */
+@supports (width: 1cqw) and (translate: 1px) {
+  .horizon__pillar {
+    left: 0;
+    top: 0;
+    translate:
+      calc(var(--sun-x) * (100cqw - var(--sun-size)) + var(--sun-size) / 2 - var(--pillar-w) / 2)
+      calc(var(--pillar-foot) - var(--pillar-len));
+    transition: translate 1200ms var(--ease), opacity 3s var(--ease);
+  }
+
+  .horizon__sundogs {
+    left: 0;
+    top: 0;
+    translate:
+      calc(var(--sun-x) * (100cqw - var(--sun-size)) + var(--sun-size) / 2 - var(--dog-r) - var(--dog-pad))
+      var(--dog-top);
+    transition: translate 1200ms var(--ease), opacity 3s var(--ease);
+  }
 }
 
 /* On phones the ring sits closer in, so the morning dog isn't off the
@@ -2902,6 +2975,14 @@ img {
 }
 
 .sky-week[hidden] {
+  display: none;
+}
+
+/* Sky this week needs JavaScript, so like the badges box below it only
+   shows once the <head> script has added the "js" class. It shows from
+   the first frame, folded to its title and next-up line (which keeps its
+   height while empty), so nothing below it moves when main.js fills it. */
+:root:not(.js) .sky-week[data-sky-week] {
   display: none;
 }
 

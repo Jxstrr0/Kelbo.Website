@@ -55,8 +55,9 @@
       if (localStorage.getItem("kelbo.sound") === "on" && sessionStorage.getItem("kelbo.stingPlayed") !== "1")
         document.documentElement.classList.add("logo--sting", "logo--hold");
     } catch (e) {}
-    // JavaScript is on: show the badges box straight away (style.css), so
-    // the page doesn't jump down when main.js fills it in a moment later.
+    // JavaScript is on: show the badges and Sky this week boxes straight
+    // away (style.css), so the page doesn't jump down when main.js fills
+    // them in a moment later.
     document.documentElement.classList.add("js");
   </script>
   <script src="main.js" defer></script>
@@ -158,8 +159,10 @@
          plus the cloud and northern lights forecasts when they load and
          the shooting-star wish counter. Hidden without JavaScript. It's
          folded to the next thing coming up until tapped (it borrows the
-         badges box's fold styles); the choice is remembered. -->
-    <details class="sky-week badges wrap" data-sky-week hidden>
+         badges box's fold styles); the choice is remembered. It shows from
+         the first frame when JavaScript is on (style.css), so the page
+         below doesn't jump when main.js fills it in. -->
+    <details class="sky-week badges wrap" data-sky-week>
       <summary class="badges__summary">
         <h2 id="sky-week-heading" class="now__label">Sky this week</h2>
         <p class="badges__count badges__count--line" data-sky-week-next></p>
