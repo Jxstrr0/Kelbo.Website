@@ -196,6 +196,17 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   seen, and hides the planet names and constellation lines
   (`.horizon__stars--moving`); `STARS_SETTLE_MS` after the last move it
   places names and lines once and they fade back in.
+  **No page jumps (CLS).** The sun, its ray, both glints, the pillar and
+  the sundogs are placed with the `translate` property, not `left`/`top`
+  (two `@supports (width: 1cqw)` blocks in `style.css`; `.horizon` is an
+  inline-size container, so `100cqw` is the sky's width). A move by
+  `left`/`top` counts as layout shift in Cloudflare's page speed, and the
+  opening spin moves them every frame. The moon keeps `left`/`top`
+  because its `translate` is the tilt parallax. New things that follow
+  the sun should move with `translate` too. Sky this week shows from the
+  first frame when JavaScript is on (`:root:not(.js)` hides it), like the
+  badges box, so filling it doesn't push the page down; the Now strip
+  still appears when now.json loads (about 0.04 of shift on a phone).
   `placeSun` also calls `placeStars`: the real sky from `STARS` (the
   named bright stars from PyEphem's catalogue, J2000 RA/Dec + magnitude,
   dec > -38° so they can rise here), alt/az from local sidereal time,
