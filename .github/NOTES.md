@@ -996,10 +996,17 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   `release-lines.json` (a missing file is only a warning).
 ## Contact form, README
 
-- The home page contact form posts to Web3Forms, which emails Kelbo. Its
-  `access_key` in `index.html` is public by design (it can only send him a
-  message); never put his email address in the site. Web3Forms rejects
-  server-side posts, so test it from a real browser on the live site.
+- The home page contact form posts to `https://contact.longlight.games/`,
+  the `contact-form` Cloudflare Worker (reference copy:
+  `.github/worker/contact-form.js`, kept the same as the live one). It
+  emails Kelbo through Cloudflare Email Routing (`send_email` binding
+  `EMAIL`, locked to his verified address, plus a `TO` variable). His
+  address lives only in those Worker settings; never put it in the site or
+  repo. It only takes posts whose `Origin` is longlight.games (403
+  otherwise), drops posts with the `botcheck` honeypot ticked (fake
+  success), caps name/email/message at 100/200/5000 characters, and
+  answers `{success, message}` JSON when asked (`Accept: application/json`,
+  what `setUpContactForm` sends) or a small HTML page otherwise.
 - **Privacy scan** (`check-site.mjs`, section 8): errors on an email
   address (`EMAIL_OK` allows example.com and GitHub no-reply ones), a phone
   number, a 9+ digit number not inside a URL, id or version, or a
