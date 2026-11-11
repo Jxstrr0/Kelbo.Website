@@ -990,6 +990,8 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   characters, no version number; stored as `{line, title, at}`, existing
   entries never overwritten (Kelbo may hand-edit them; broken JSON stops
   the script). Commits as release-writer, then runs deploy.yml.
+  `SKIP_REPOS` (Season Ticket, Lombard, Frontier Lab, Red Skies; Kelbo,
+  2026-11-11) are never sent: their cards show the release title as is.
   `sync-releases.mjs` uses that `line` for the exact repo@tag as `latest`,
   else the cleaned release title (missing/broken file = old behaviour).
   `check-site.mjs` validates `lessons/latest.json` and
