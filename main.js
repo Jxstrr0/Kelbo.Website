@@ -1466,6 +1466,18 @@ function setUpThemeToggle(refresh) {
 
 /* ---------- Moving the sun ---------- */
 
+// How high something sits in the sky picture: 0.92 at its highest point
+// (which keeps it off the top edge), 0 on the horizon, -1 well under the
+// ground. Below the horizon it carries on at the speed it was falling
+// and then picks up, so it sinks through the line smoothly and is still
+// fully out of sight (-1) by 10 degrees under, however low its day is.
+function skyHeight(alt, peak) {
+  const k = 0.92 / Math.max(10, peak); // height per degree above the horizon
+  if (alt >= 0) return k * alt;
+  if (alt <= -10) return -1;
+  return k * alt - ((1 - 10 * k) / 100) * alt * alt;
+}
+
 // Puts the sun (and its ray) where the real sun is at moment "t", and
 // the moon in the night sky.
 function placeSun(scene, t) {
@@ -1478,15 +1490,17 @@ function placeSun(scene, t) {
   let x;
   if (day.rise && day.set && t >= day.rise && t <= day.set) {
     x = 0.06 + 0.64 * ((t - day.rise) / (day.set - day.rise));
-  } else if (day.set && t > day.set) {
-    const nightLen = day.end + 7 * 3600000 - day.set; // roughly until tomorrow's sunrise
-    x = 0.70 - 0.64 * Math.min(1, (t - day.set) / nightLen);
   } else {
-    x = 0.06;
+    // Night runs from one sunset to the next sunrise, which are on
+    // different days either side of midnight, so look both up. That
+    // keeps the drift back in one piece, with no jump at midnight.
+    const before = day.rise && t < day.rise; // after midnight, before sunrise
+    const from = before ? sunDay(new Date(day.start - 60000)).set : day.set;
+    const to = before ? day.rise : sunDay(new Date(day.end + 60000)).rise;
+    x = from && to && to > from ? 0.70 - 0.64 * Math.max(0, Math.min(1, (t - from) / (to - from))) : 0.06;
   }
   // Height, as a share of today's highest point. Negative = set.
-  let y = 0.92 * (alt / Math.max(10, day.peakAlt)); // 0.92 keeps the noon sun off the top edge
-  if (alt < 0) y = Math.max(-1, alt / 10);
+  const y = skyHeight(alt, day.peakAlt);
   scene.style.setProperty("--sun-x", x.toFixed(3));
   scene.style.setProperty("--sun-alt", Math.min(1, y).toFixed(3));
   // The ray follows the sun's height, and reaches further in summer:
@@ -2330,8 +2344,7 @@ function placeMoon(scene, t) {
   const alt = moonAltitude(t);
   const f = Math.min(1, Math.max(0, (t - span.prev) / (span.next - span.prev)));
   const x = span.up ? 0.06 + 0.64 * f : 0.70 - 0.64 * f;
-  let y = 0.92 * (alt / Math.max(10, span.peak));
-  if (alt < 0) y = Math.max(-1, alt / 10);
+  const y = skyHeight(alt, span.peak);
   // "night" runs 0 by day to 1 at night: the moon comes into its own as
   // the sun gets low (from 6 degrees up) and is fully out once the sun
   // is 2 degrees under, then the same in reverse at dawn. So the two
@@ -4874,6 +4887,9 @@ function spinSun(scene) {
   spinning = true;
   scene.classList.add("horizon--spin"); // turns off the slow CSS easing while it plays
   const run = ++skyRun;
+  // Put the sun where the spin starts straight away, so it never shows
+  // in its stand-in spot for a frame and then jumps.
+  placeSun(scene, new Date(now().getTime() - 86400000));
   const start = performance.now();
   function frame(ms) {
     if (run !== skyRun) return; // a swipe took over
@@ -5899,6 +5915,11 @@ function setUpHorizon() {
     if (!swiping) paint(now(), null);
   }
 
+  // The first placing must not ease: style.css keeps the sun hidden until
+  // "horizon--placed", and "horizon--spin" keeps the slow CSS easing off,
+  // so the sun simply appears in the right place. The easing comes on two
+  // frames later (or when the opening spin ends).
+  if (scene) scene.classList.add("horizon--spin");
   if (scene && shouldSpin()) spinSun(scene);
   if (scene) {
     const shownTime = setUpSwipe(scene, paint);
@@ -5912,6 +5933,12 @@ function setUpHorizon() {
     setUpMouseSky(scene);
   }
   tick();
+  if (scene) {
+    scene.classList.add("horizon--placed");
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      if (!spinning && !swiping) scene.classList.remove("horizon--spin");
+    }));
+  }
   setUpThemeToggle(tick);
   setInterval(tick, READOUT_TURN_MS);
   document.addEventListener("visibilitychange", () => {

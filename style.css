@@ -1092,6 +1092,20 @@ img {
   transition: none;
 }
 
+/* Before main.js has placed the sun it would sit in the stand-in spot
+   above (--sun-x, --sun-alt) and then jump, so it stays hidden until
+   main.js adds "horizon--placed". With JavaScript off the stand-in shows. */
+@media (scripting: enabled) {
+  .horizon:not(.horizon--placed) .horizon__sun,
+  .horizon:not(.horizon--placed) .horizon__glint,
+  .horizon:not(.horizon--placed) .horizon__ray,
+  .horizon:not(.horizon--placed) .horizon__sundogs,
+  .horizon:not(.horizon--placed) .horizon__pillar,
+  .horizon:not(.horizon--placed) .horizon__shadow {
+    visibility: hidden;
+  }
+}
+
 .horizon__line {
   position: absolute;
   left: 50%;
