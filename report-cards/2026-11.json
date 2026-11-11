@@ -1,4 +1,71 @@
 {
+  "2026-11-11": {
+    "date": "2026-11-11",
+    "time": "2026-11-11T22:46:24.438Z",
+    "summary": "The gap call hit with a +7.25% open inside the 4.5–8% range, but MU then rallied to close +11.9%, breaking both resistance levels while the $760 support held.",
+    "gap": {
+      "call": "Up about 4.5% to 8%, roughly $758–$783",
+      "result": "Opened at 777.68, up 7.25% from 725.11, inside the called range.",
+      "grade": "hit"
+    },
+    "mu": {
+      "prev_close": 725.11,
+      "open": 777.68,
+      "high": 827.58,
+      "low": 763.05,
+      "close": 811.3,
+      "open_pct": 7.25,
+      "close_pct": 11.89
+    },
+    "levels": [
+      {
+        "level": "Resistance at $774.30 (highest pre-market print)",
+        "result": "Opened above it and closed at 811.30, well through it.",
+        "grade": "broke"
+      },
+      {
+        "level": "Next resistance at $795.23 (Nov 4 close)",
+        "result": "Ran to 827.58 and closed at 811.30, above it.",
+        "grade": "broke"
+      },
+      {
+        "level": "Level to watch below at $760.07 (200-day average)",
+        "result": "The low of 763.05 came within 0.4% and the price bounced to close far above.",
+        "grade": "held"
+      },
+      {
+        "level": "Next level to watch at $745.64 (Tuesday's high)",
+        "result": "The day's low of 763.05 stayed more than 2% above it.",
+        "grade": "untested"
+      }
+    ],
+    "sources": [
+      {
+        "title": "MU Volume and Price Micron Technology (Market Chameleon)",
+        "url": "https://marketchameleon.com/Overview/MU/Stock-Price-Action/"
+      },
+      {
+        "title": "Micron Stock Price Today (Investing.com)",
+        "url": "https://www.investing.com/equities/micron-tech"
+      },
+      {
+        "title": "Micron Technology (MU) — Robinhood",
+        "url": "https://robinhood.com/us/en/stocks/MU/"
+      },
+      {
+        "title": "MU Stock Quote Price and Forecast (CNN)",
+        "url": "https://edition.cnn.com/markets/stocks/MU"
+      },
+      {
+        "title": "MU - Micron Technology Inc Stock Price and Quote (Finviz)",
+        "url": "https://finviz.com/stock?t=MU"
+      },
+      {
+        "title": "Micron Technology (MU) Stock Price, Chart & News (StockAnalysis)",
+        "url": "https://stockanalysis.com/stocks/mu/"
+      }
+    ]
+  },
   "2026-11-10": {
     "date": "2026-11-10",
     "time": "2026-11-10T22:47:03.064Z",
