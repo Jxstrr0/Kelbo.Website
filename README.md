@@ -208,6 +208,9 @@ progress order.
   (`assets/covers/my-game@2x.jpg`, 1280 × 960). Big phones like an iPhone
   16 Pro Max show that one, so the cover isn't stretched and blurry. If it's
   missing the site uses the small one and the Site check gives a warning.
+- **hidden**: `true` takes a project off the site (cards, lists, the All
+  page, its game page, the robots) but keeps its entry here. Delete the
+  line to bring it back. The Whip is hidden for now.
 - **featured**: no longer changes the home page, which now shows every game
   in one swipe row under "Pick a game", in the order they have in this
   file. The four marked `true` are the covers in the link preview picture.
