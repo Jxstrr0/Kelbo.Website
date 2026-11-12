@@ -12,8 +12,9 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
 - `projects.json` is the single source of truth for projects. `main.js`
   renders it. Its order is the display order everywhere (Games, Projects,
   What's new, home swipe row, "More games"): Kelbo's own ranking, games
-  first: Prairie Engine Works, Lombard, Escapement, Scrapline, Ink,
-  Station Keeper, Season Ticket, Frontier Lab, The Whip, Red Skies. Nothing sorts by progress except the
+  first. Shown games (Kelbo, 2026-11-12): Prairie Engine Works, Scrapline,
+  Season Ticket, Funded, Lombard, Red Skies, Frontier Lab; the hidden games
+  follow. Nothing sorts by progress except the
   Projects page's filter buttons (`sortByProgress`). Adding a project should never need an HTML edit. Each project
   can carry a `version` ("1.4.0.0", no "v") and `latest` (what changed),
   shown as "v1.4.0.0 · Added night mode" under the summary; either may be
@@ -735,8 +736,11 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   blueprint screen. It has no release workflow yet, so it carries no
   version until one is added.
   Funded (the prop-firm trading game, funded.longlight.games) was added
-  hidden as well (Kelbo, 2026-11-12); its cover is a live trading day's
-  chart, captured from the game. No release workflow yet, so no version.
+  hidden as well (Kelbo, 2026-11-12) and went on the site the same day; its
+  cover is a live trading day's chart, captured from the game, and its clip
+  and screenshots were recorded from the live game at a phone size. Its
+  `publish-release.yml` (from 0.8.0.0) publishes a release whenever
+  `VERSION` in its `js/config.js` changes.
   Each game keeps its own look (fonts, colours, art). The Longlight logo,
   the five colours and Space Grotesk belong to studio pieces only (logo or
   splash, credit line, studio block, links back here); every game repo's

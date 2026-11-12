@@ -34,6 +34,39 @@
     ]
   },
   {
+    "title": "Scrapline",
+    "film": "assets/films/scrapline.mp4",
+    "status": "Polishing",
+    "category": "Game",
+    "summary": "A combat robot builder. Design a fighting robot under a weight limit, test it on the bench, drive it in the arena, patch it in the pit and read the post-mortem, from a plywood box in a rented corner of a machine shop to the televised Scrapline Open.",
+    "version": "0.1.12.0",
+    "latest": "A balance pass on flippers, drums, lifters and the small-class pits",
+    "link": "https://scrapline.longlight.games/",
+    "code": "https://github.com/Jxstrr0/Scrapline",
+    "image": "assets/covers/scrapline.jpg",
+    "featured": true,
+    "clip": "assets/clips/scrapline.mp4",
+    "cardClip": "assets/clips/scrapline-card.mp4",
+    "shots": [
+      {
+        "src": "assets/shots/scrapline-1.jpg",
+        "alt": "The build sheet: a beetleweight with a vertical spinner, 19 grams under the limit"
+      },
+      {
+        "src": "assets/shots/scrapline-2.jpg",
+        "alt": "The bench, where seven tests prove a robot before it fights"
+      },
+      {
+        "src": "assets/shots/scrapline-3.jpg",
+        "alt": "A fight in the arena, seen from above, with both robots' damage panels"
+      },
+      {
+        "src": "assets/shots/scrapline-4.jpg",
+        "alt": "Two robots trading hits beside the pit"
+      }
+    ]
+  },
+  {
     "title": "Season Ticket",
     "status": "Released",
     "category": "Game",
@@ -70,35 +103,29 @@
     "featured": true
   },
   {
-    "title": "Scrapline",
-    "film": "assets/films/scrapline.mp4",
+    "title": "Funded",
     "status": "Polishing",
     "category": "Game",
-    "summary": "A combat robot builder. Design a fighting robot under a weight limit, test it on the bench, drive it in the arena, patch it in the pit and read the post-mortem, from a plywood box in a rented corner of a machine shop to the televised Scrapline Open.",
-    "version": "0.1.12.0",
-    "latest": "A balance pass on flippers, drums, lifters and the small-class pits",
-    "link": "https://scrapline.longlight.games/",
-    "code": "https://github.com/Jxstrr0/Scrapline",
-    "image": "assets/covers/scrapline.jpg",
-    "featured": true,
-    "clip": "assets/clips/scrapline.mp4",
-    "cardClip": "assets/clips/scrapline-card.mp4",
+    "summary": "A prop-firm trading game. The firm gives you $25,000 and five days: hit the target without breaking the daily loss limit or the drawdown floor. Pass to climb to the $50k futures desk, then $100k options, picking edge cards for the career as you go.",
+    "version": "0.8.0.0",
+    "latest": "Three trading desks, edge cards and mandates",
+    "link": "https://funded.longlight.games/",
+    "code": "https://github.com/Jxstrr0/Funded",
+    "image": "assets/covers/funded.jpg",
+    "featured": false,
+    "clip": "assets/clips/funded.mp4",
     "shots": [
       {
-        "src": "assets/shots/scrapline-1.jpg",
-        "alt": "The build sheet: a beetleweight with a vertical spinner, 19 grams under the limit"
+        "src": "assets/shots/funded-1.jpg",
+        "alt": "A trading day: the price chart with a news line, a long position up $186, and the BUY, SELL and FLATTEN buttons"
       },
       {
-        "src": "assets/shots/scrapline-2.jpg",
-        "alt": "The bench, where seven tests prove a robot before it fights"
+        "src": "assets/shots/funded-2.jpg",
+        "alt": "Pick an edge: three cards to keep for the career, Stop Discipline, Hot Hand and Coffee"
       },
       {
-        "src": "assets/shots/scrapline-3.jpg",
-        "alt": "A fight in the arena, seen from above, with both robots' damage panels"
-      },
-      {
-        "src": "assets/shots/scrapline-4.jpg",
-        "alt": "Two robots trading hits beside the pit"
+        "src": "assets/shots/funded-3.jpg",
+        "alt": "Day 1 closed, up $200, with the balance, days counted, distance to target and the drawdown floor"
       }
     ]
   },
@@ -116,20 +143,6 @@
     "clip": "assets/clips/lombard.mp4",
     "cardClip": "assets/clips/lombard-card.mp4",
     "featured": true
-  },
-  {
-    "title": "Frontier Lab",
-    "status": "Polishing",
-    "category": "Game",
-    "summary": "An AI-lab tycoon. Raise a seed round, open sales offices, buy compute or build data centers, train your own models and ship products, keep the safety regulator happy, then take the lab public and grow it across the world's tech capitals, all on an engraved isometric city map.",
-    "version": "0.1.63.0",
-    "latest": "A loading screen from the very first moment",
-    "link": "https://frontierlab.longlight.games/",
-    "code": "https://github.com/Jxstrr0/FrontierLab",
-    "image": "assets/covers/frontier-lab.jpg",
-    "clip": "assets/clips/frontier-lab.mp4",
-    "cardClip": "assets/clips/frontier-lab-card.mp4",
-    "featured": false
   },
   {
     "title": "Red Skies",
@@ -164,6 +177,20 @@
     ]
   },
   {
+    "title": "Frontier Lab",
+    "status": "Polishing",
+    "category": "Game",
+    "summary": "An AI-lab tycoon. Raise a seed round, open sales offices, buy compute or build data centers, train your own models and ship products, keep the safety regulator happy, then take the lab public and grow it across the world's tech capitals, all on an engraved isometric city map.",
+    "version": "0.1.63.0",
+    "latest": "A loading screen from the very first moment",
+    "link": "https://frontierlab.longlight.games/",
+    "code": "https://github.com/Jxstrr0/FrontierLab",
+    "image": "assets/covers/frontier-lab.jpg",
+    "clip": "assets/clips/frontier-lab.mp4",
+    "cardClip": "assets/clips/frontier-lab-card.mp4",
+    "featured": false
+  },
+  {
     "title": "Quench",
     "hidden": true,
     "status": "Polishing",
@@ -184,17 +211,6 @@
     "link": "https://hulldown.longlight.games/",
     "code": "https://github.com/Jxstrr0/hull-down",
     "image": "assets/covers/hull-down.jpg",
-    "featured": false
-  },
-  {
-    "title": "Funded",
-    "hidden": true,
-    "status": "Prototype",
-    "category": "Game",
-    "summary": "A prop-firm trading game. The firm gives you $25,000 and five days: hit the target without breaking the daily loss limit or the drawdown floor, then climb to the futures desk.",
-    "link": "https://funded.longlight.games/",
-    "code": "https://github.com/Jxstrr0/Funded",
-    "image": "assets/covers/funded.jpg",
     "featured": false
   },
   {
