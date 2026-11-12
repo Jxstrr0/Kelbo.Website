@@ -111,6 +111,9 @@ for (const p of projects) {
   const before = `${p.version} · ${p.latest}`;
   const versionMoved = compare(version, p.version || "0") !== 0;
   p.version = version;
+  // The day the release went out, for the feed (make-feed.mjs). Only in
+  // the deploy copy, like everything else this script fills in.
+  if (/^\d{4}-\d{2}-\d{2}/.test(release.published_at || "")) p.released = release.published_at.slice(0, 10);
   if (title) p.latest = title;
   // New version but the release has no title: blank "latest" rather than
   // show the old version's description next to the new number.

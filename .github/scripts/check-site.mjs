@@ -262,6 +262,8 @@ if (releaseLines === undefined) {
 //    files inside the site.)
 // ---------------------------------------------------------------------
 const SKIP = /^(https?:|\/\/|mailto:|tel:|data:|javascript:|#|\{|\$)/;
+// Made by the deploy (make-feed.mjs), so never in the repo itself.
+const DEPLOY_MADE = new Set(["feed.xml"]);
 for (const f of files.filter((f) => extname(f) === ".html")) {
   const html = readFileSync(f, "utf8").replace(/<!--[\s\S]*?-->/g, "");
   const base = dirname(f);
@@ -274,7 +276,7 @@ for (const f of files.filter((f) => extname(f) === ".html")) {
       if (!existsSync(join(folder, "index.html"))) error(rel(f), `Links to "${url}", but there's no index.html there.`);
       continue;
     }
-    if (!existsSync(join(base, path))) error(rel(f), `Links to "${url}", which doesn't exist.`);
+    if (!existsSync(join(base, path)) && !DEPLOY_MADE.has(path)) error(rel(f), `Links to "${url}", which doesn't exist.`);
   }
 }
 
