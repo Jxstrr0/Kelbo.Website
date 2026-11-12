@@ -1299,6 +1299,7 @@ img {
   position: absolute;
   height: var(--h);
   width: calc(var(--h) * 3.2);
+  left: var(--x, 0);
   border-radius: 999px;
   background: var(--ll-ivory);
 }
@@ -1758,6 +1759,7 @@ img {
   border-radius: 50%;
   background: var(--ll-slate);
   opacity: 0.2;
+  left: var(--x, 0);
   filter: blur(8px);
 }
 
@@ -5678,13 +5680,18 @@ a.quest__top:focus-visible .quest__name {
     to { transform: skewX(6deg) scaleY(1.05); }
   }
 
+  /* The clouds slide with transform, not left: moving left re-lays out
+     the page every frame and snaps to whole pixels, so a slow drift
+     stuttered (Kelbo, 2026-11-12). The layer is 100vw wide. */
   .cloud {
+    left: 0;
+    will-change: transform;
     animation: cloud-drift 200s linear infinite;
   }
 
   @keyframes cloud-drift {
-    from { left: calc(var(--h) * -4); }
-    to { left: 100%; }
+    from { transform: translateX(calc(var(--h) * -4)); }
+    to { transform: translateX(100vw); }
   }
 
   .horizon__precip::before {
@@ -5772,12 +5779,14 @@ a.quest__top:focus-visible .quest__name {
   }
 
   .cloud-shadow {
+    left: 0;
+    will-change: transform;
     animation: shadow-drift 80s linear infinite;
   }
 
   @keyframes shadow-drift {
-    from { left: calc(var(--w) * -1.2); }
-    to { left: 100%; }
+    from { transform: translateX(calc(var(--w) * -1.2)); }
+    to { transform: translateX(100vw); }
   }
 
   @keyframes flap {
