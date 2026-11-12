@@ -49,7 +49,7 @@ from their releases, then publishes the files as they are (see
 | `404.html` | The "page not found" screen GitHub shows for any address that doesn't exist |
 | `.nojekyll` | Tells GitHub Pages to serve the files as-is. Leave it alone |
 | `.github/workflows/` | The robots: `site-check.yml` (checks every pull request), `deploy.yml` (checks again, then puts the site live), `premarket-brief.yml` (the Morning Writer), `postmarket-recap.yml` (the Grader), `brief-lessons.yml` (the Coach), `devlog-draft.yml` (the Devlog Writer) and `release-lines.yml` (the Release Writer), all below |
-| `.github/scripts/` | What they run: `check-site.mjs` (the mistake finder), `sync-releases.mjs` (fills in game versions from their releases), `make-game-pages.mjs` (makes each game's own page, below), `premarket-brief.mjs` (asks Claude for the brief), `postmarket-recap.mjs` (asks Claude how the brief did), `brief-lessons.mjs` (Coach), `devlog-draft.mjs` (Devlog Writer), `release-lines.mjs` (Release Writer) and `claude.mjs` (the one-call-to-Claude code those three share) |
+| `.github/scripts/` | What they run: `check-site.mjs` (the mistake finder), `sync-releases.mjs` (fills in game versions from their releases), `make-game-pages.mjs` (makes each game's own page, below), `make-feed.mjs` (makes the RSS feed, `feed.xml`, from the devlog and game releases), `premarket-brief.mjs` (asks Claude for the brief), `postmarket-recap.mjs` (asks Claude how the brief did), `brief-lessons.mjs` (Coach), `devlog-draft.mjs` (Devlog Writer), `release-lines.mjs` (Release Writer) and `claude.mjs` (the one-call-to-Claude code those three share) |
 
 ## Editing on your phone
 

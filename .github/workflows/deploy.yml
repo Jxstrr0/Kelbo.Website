@@ -5,6 +5,7 @@
 #   1. copies the site's files into a folder called _site (as-is, no build),
 #   2. fills in each game's version from its newest GitHub Release,
 #   3. makes game-<slug>.html for each game, so shared links show its cover,
+#      and feed.xml (the RSS feed: devlog posts and game releases),
 #   4. runs the site check, and STOPS if it finds a problem, so the live
 #      site keeps the last version that worked,
 #   5. publishes _site to Pages. If GitHub's publish step hiccups (it has
@@ -61,6 +62,9 @@ jobs:
 
       - name: Make each game's own page (with its own link preview)
         run: node .github/scripts/make-game-pages.mjs _site
+
+      - name: Make the RSS feed (devlog posts and game releases)
+        run: node .github/scripts/make-feed.mjs _site
 
       - name: Check the site
         run: node .github/scripts/check-site.mjs _site
