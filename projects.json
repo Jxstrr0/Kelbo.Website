@@ -187,6 +187,17 @@
     "featured": false
   },
   {
+    "title": "Funded",
+    "hidden": true,
+    "status": "Prototype",
+    "category": "Game",
+    "summary": "A prop-firm trading game. The firm gives you $25,000 and five days: hit the target without breaking the daily loss limit or the drawdown floor, then climb to the futures desk.",
+    "link": "https://funded.longlight.games/",
+    "code": "https://github.com/Jxstrr0/Funded",
+    "image": "assets/covers/funded.jpg",
+    "featured": false
+  },
+  {
     "title": "Escapement",
     "hidden": true,
     "film": "assets/films/escapement.mp4",

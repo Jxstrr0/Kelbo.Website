@@ -212,8 +212,8 @@ progress order.
   missing the site uses the small one and the Site check gives a warning.
 - **hidden**: `true` takes a project off the site (cards, lists, the All
   page, its game page, the robots) but keeps its entry here. Delete the
-  line to bring it back. The Whip, Escapement, Ink and Station Keeper are hidden for now, and so is
-  Quench and Hull Down (new, still being built).
+  line to bring it back. The Whip, Escapement, Ink and Station Keeper are hidden for now, and so are
+  Quench, Hull Down and Funded (new, still being built).
 - **featured**: no longer changes the home page, which now shows every game
   in one swipe row under "Pick a game", in the order they have in this
   file. The four marked `true` are the covers in the link preview picture.
