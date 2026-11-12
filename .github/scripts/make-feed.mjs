@@ -7,7 +7,8 @@
 //   - every devlog post (devlog.json), linked to its card on devlog.html;
 //   - each game's newest release (the version and "latest" line that
 //     sync-releases.mjs filled in), linked to that game's own page.
-// Hidden projects are left out, like everywhere else on the site.
+// Hidden projects, and devlog posts about them, are left out, like
+// everywhere else on the site.
 //
 // Like sync-releases.mjs and make-game-pages.mjs it only writes into the
 // deploy copy (_site), so the repo never holds feed.xml. Run it after
@@ -23,7 +24,10 @@ const SITE = "https://longlight.games/";
 const MAX_ITEMS = 40;
 
 const projects = JSON.parse(readFileSync(join(ROOT, "projects.json"), "utf8")).filter((p) => !p.hidden);
-const posts = JSON.parse(readFileSync(join(ROOT, "devlog.json"), "utf8")).posts || [];
+const allProjects = JSON.parse(readFileSync(join(ROOT, "projects.json"), "utf8"));
+const hiddenTitles = new Set(allProjects.filter((p) => p.hidden).map((p) => p.title));
+// A devlog post about a hidden game ("game" names it) is left out too.
+const posts = (JSON.parse(readFileSync(join(ROOT, "devlog.json"), "utf8")).posts || []).filter((post) => !hiddenTitles.has(post.game));
 
 // Same as projectSlug in main.js: "Prairie Engine Works" -> "prairie-engine-works".
 const slug = (title) => String(title || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
