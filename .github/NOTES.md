@@ -724,6 +724,9 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   hidden too (Kelbo, 2026-11-11); its cover is the side view on the
   blueprint screen. It has no release workflow yet, so it carries no
   version until one is added.
+  Funded (the prop-firm trading game, funded.longlight.games) was added
+  hidden as well (Kelbo, 2026-11-12); its cover is a live trading day's
+  chart, captured from the game. No release workflow yet, so no version.
   Each game keeps its own look (fonts, colours, art). The Longlight logo,
   the five colours and Space Grotesk belong to studio pieces only (logo or
   splash, credit line, studio block, links back here); every game repo's
