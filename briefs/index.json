@@ -1,14 +1,14 @@
 {
   "latest": {
-    "date": "2026-11-11",
-    "time": "2026-11-11T12:35:22.766Z",
-    "headline": "CoreWeave beat lifts chips; MU indicated up about 6%",
-    "tldr": "CoreWeave's revenue beat and raised 2026 guide have Nasdaq 100 futures up about 1.8% and MU near $771 pre-market (+6.4% from Tuesday's $725.11 close), one day after a hot CPI sent the 10-year yield above 5%."
+    "date": "2026-11-12",
+    "time": "2026-11-12T12:37:46.743Z",
+    "headline": "Nvidia CEO turmoil drags chips; MU indicated down about 4%",
+    "tldr": "Reports that Nvidia's board may remove Jensen Huang have NVDA down about 8% pre-market and Nasdaq 100 futures down about 0.8%, pulling MU to $780.50 (−3.8% from Wednesday's $811.30 close) with no Micron-specific news."
   },
   "months": [
     {
       "month": "2026-11",
-      "count": 9
+      "count": 10
     }
   ]
 }
