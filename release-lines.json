@@ -73,5 +73,15 @@
     "line": "Scrapline now has a plan view.",
     "title": "v0.1.62.0 - the plan view",
     "at": "2026-11-11T19:53:56.892Z"
+  },
+  "350Chev@v1.76.135.2": {
+    "line": "The game now double-checks the outside scripts it loads for safety.",
+    "title": "v1.76.135.2 - CDN scripts carry integrity hashes",
+    "at": "2026-11-12T07:46:39.525Z"
+  },
+  "Scrapline@v0.1.63.0": {
+    "line": "Changes to the thwackbot's tail and the two-wheel drum.",
+    "title": "v0.1.63.0 - the thwackbot tail and the two-wheel drum",
+    "at": "2026-11-12T07:46:39.525Z"
   }
 }
