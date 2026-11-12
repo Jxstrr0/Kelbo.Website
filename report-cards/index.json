@@ -1,16 +1,16 @@
 {
-  "latest": "2026-11-11",
-  "days": 8,
+  "latest": "2026-11-12",
+  "days": 9,
   "gap": {
-    "hit": 6,
+    "hit": 7,
     "partial": 1,
     "miss": 1,
     "unknown": 0
   },
   "levels": {
-    "held": 8,
-    "broke": 14,
-    "untested": 28,
+    "held": 10,
+    "broke": 15,
+    "untested": 29,
     "unknown": 0
   },
   "sox": {
@@ -32,6 +32,6 @@
     "2026-11"
   ],
   "counts": {
-    "2026-11": 8
+    "2026-11": 9
   }
 }

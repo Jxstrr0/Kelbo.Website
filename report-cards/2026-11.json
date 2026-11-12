@@ -1,4 +1,67 @@
 {
+  "2026-11-12": {
+    "date": "2026-11-12",
+    "time": "2026-11-12T22:46:13.685Z",
+    "summary": "The brief called the gap down correctly and within its range, and MU bounced off its supports to close above the first resistance at $795.23.",
+    "gap": {
+      "call": "Down about 2.5% to 6%",
+      "result": "MU opened at 769.31, down about 5.2% from 811.30.",
+      "grade": "hit"
+    },
+    "mu": {
+      "prev_close": 811.3,
+      "open": 769.31,
+      "high": 799.7,
+      "low": 764.57,
+      "close": 798.44,
+      "open_pct": -5.18,
+      "close_pct": -1.59
+    },
+    "levels": [
+      {
+        "level": "Resistance $795.23 (Nov 4 close)",
+        "result": "MU retook it in the afternoon and closed above it at 798.44.",
+        "grade": "broke"
+      },
+      {
+        "level": "Next resistance $811.30 (Wednesday's close)",
+        "result": "The day's high of 799.70 stayed more than 0.5% below it.",
+        "grade": "untested"
+      },
+      {
+        "level": "Level to watch below $777.28 (Wednesday's open)",
+        "result": "MU traded below it after the open but closed well above it.",
+        "grade": "held"
+      },
+      {
+        "level": "Next level to watch $763.05 (Wednesday's low)",
+        "result": "The low of 764.57 came within 0.5% of it and MU bounced to close far above.",
+        "grade": "held"
+      }
+    ],
+    "sources": [
+      {
+        "title": "Micron Technology, Inc. (MU) Stock Price, News, Quote & History - Yahoo Finance",
+        "url": "https://finance.yahoo.com/quote/MU/"
+      },
+      {
+        "title": "Micron Technology (NASDAQ:MU) Stock Falls 1.6% - What's Next?",
+        "url": "https://www.marketbeat.com/instant-alerts/price-micron-technology-nasdaq-mu-stock-falls-16-whats-next-2026-11-12/"
+      },
+      {
+        "title": "Micron Technology (MU) Stock Price, Chart & News",
+        "url": "https://stockanalysis.com/stocks/mu/"
+      },
+      {
+        "title": "Invest in Micron Technology, NASDAQ: MU Stock - Commission-Free Investing",
+        "url": "https://www.trading212.com/trading-instruments/invest/MU.US"
+      },
+      {
+        "title": "MU News Today",
+        "url": "https://www.marketbeat.com/stocks/NASDAQ/MU/news/"
+      }
+    ]
+  },
   "2026-11-11": {
     "date": "2026-11-11",
     "time": "2026-11-11T22:46:24.438Z",
