@@ -188,14 +188,30 @@
   },
   {
     "title": "Funded",
-    "hidden": true,
-    "status": "Prototype",
+    "status": "Polishing",
     "category": "Game",
-    "summary": "A prop-firm trading game. The firm gives you $25,000 and five days: hit the target without breaking the daily loss limit or the drawdown floor, then climb to the futures desk.",
+    "summary": "A prop-firm trading game. The firm gives you $25,000 and five days: hit the target without breaking the daily loss limit or the drawdown floor. Pass to climb to the $50k futures desk, then $100k options, picking edge cards for the career as you go.",
+    "version": "0.8.0.0",
+    "latest": "Three trading desks, edge cards and mandates",
     "link": "https://funded.longlight.games/",
     "code": "https://github.com/Jxstrr0/Funded",
     "image": "assets/covers/funded.jpg",
-    "featured": false
+    "featured": false,
+    "clip": "assets/clips/funded.mp4",
+    "shots": [
+      {
+        "src": "assets/shots/funded-1.jpg",
+        "alt": "A trading day: the price chart with a news line, a long position up $186, and the BUY, SELL and FLATTEN buttons"
+      },
+      {
+        "src": "assets/shots/funded-2.jpg",
+        "alt": "Pick an edge: three cards to keep for the career, Stop Discipline, Hot Hand and Coffee"
+      },
+      {
+        "src": "assets/shots/funded-3.jpg",
+        "alt": "Day 1 closed, up $200, with the balance, days counted, distance to target and the drawdown floor"
+      }
+    ]
   },
   {
     "title": "Escapement",
