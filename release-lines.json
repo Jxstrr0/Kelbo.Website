@@ -83,5 +83,20 @@
     "line": "Changes to the thwackbot's tail and the two-wheel drum.",
     "title": "v0.1.63.0 - the thwackbot tail and the two-wheel drum",
     "at": "2026-11-12T07:46:39.525Z"
+  },
+  "350Chev@v1.76.135.4": {
+    "line": "The game no longer fails to load when an ad or analytics blocker is turned on.",
+    "title": "v1.76.135.4 - Loader: a blocked analytics beacon is not a failed game file",
+    "at": "2026-11-12T20:29:41.471Z"
+  },
+  "Scrapline@v0.1.68.1": {
+    "line": "Auto-drive gets a small improvement.",
+    "title": "v0.1.68.1 - a small edge for auto-drive",
+    "at": "2026-11-12T20:29:41.472Z"
+  },
+  "Funded@v0.8.0.0": {
+    "line": "Adds three trading desks, plus edge cards and mandates.",
+    "title": "v0.8.0.0 - Three trading desks, edge cards and mandates",
+    "at": "2026-11-12T20:29:41.472Z"
   }
 }
