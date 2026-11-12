@@ -154,7 +154,7 @@ keep the Co-Authored-By trailer for Claude in each message.
 - Use relative links only, because the site is served both at
   `https://longlight.games/` and (forwarding) under `/Kelbo.Website/`. The exceptions are the `og:`
   link-preview tags and the `canonical` tag in each page's `<head>`, plus
-  `robots.txt` and `sitemap.xml`, which must be absolute; update them all
+  `robots.txt`, `sitemap.xml` and the deploy-made `feed.xml`, which must be absolute; update them all
   if the domain changes. Add new pages to `sitemap.xml`. `404.html` is the other exception: GitHub
   serves it at any missing address, however deep, so a small script in its
   `<head>` adds a `<base>` pointing at the site's top folder before any

@@ -679,6 +679,16 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   `check-site.mjs` checks the fields, the order and the `game` titles.
   Linked from every footer ("Devlog") and the What's new intro; in
   `sitemap.xml` and `sw.js` `CORE`.
+- `feed.xml` is the RSS feed (devlog posts plus each listed game's newest
+  release), written into `_site` by `.github/scripts/make-feed.mjs` in the
+  deploy, after `make-game-pages.mjs`, so it never exists in the repo. Devlog
+  items link to `devlog.html#<devlogId>`; release items use `released` (the
+  release's day, filled by `sync-releases.mjs` in the deploy copy only) and
+  link to `game-<slug>.html`; hidden games and releases with no date are left
+  out; newest first, at most 40. URLs are absolute (an exception to the
+  relative-links rule). Index, Games, Devlog and What's new have a
+  `rel="alternate"` link to it in the `<head>`; Devlog and What's new link it
+  in their intros. Test with a `_site` copy.
 - `press.html` is the press kit: a fact sheet (`.facts`, the game count
   filled by `setUpPress` into `[data-press-count]`), the logo files in
   `assets/press/` (`longlight-logo-dark/light`, SVG with the letters as

@@ -32,4 +32,5 @@ jobs:
           git archive HEAD | tar -x -C _site
           rm -rf _site/.github
           node .github/scripts/make-game-pages.mjs _site
+          node .github/scripts/make-feed.mjs _site
           node .github/scripts/check-site.mjs _site
