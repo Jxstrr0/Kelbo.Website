@@ -729,12 +729,20 @@ function renderPost(post, games) {
 async function setUpDevlog() {
   const list = document.querySelector("[data-devlog]");
   if (!list) return;
-  const posts = await loadDevlog();
+  let posts = await loadDevlog();
   let games = [];
+  let hiddenTitles = new Set();
   try {
     const response = await fetch("projects.json", { cache: "no-cache" });
-    if (response.ok) games = (await response.json()).filter((p) => isGame(p) && !p.hidden);
+    if (response.ok) {
+      const all = await response.json();
+      games = all.filter((p) => isGame(p) && !p.hidden);
+      // A post about a hidden game ("game" names it) stays off the page
+      // until that game is un-hidden; devlog.json keeps every post.
+      hiddenTitles = new Set(all.filter((p) => p.hidden).map((p) => p.title));
+    }
   } catch (e) {}
+  posts = posts.filter((post) => !hiddenTitles.has(post.game));
   list.replaceChildren();
   if (posts.length === 0) {
     list.append(el("li", "project-list__note", "No posts yet. Check back soon."));
