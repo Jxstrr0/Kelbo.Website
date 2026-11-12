@@ -676,7 +676,8 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   split on blank lines, optional `game` = a projects.json title) as dated
   `.post` cards with ids from `devlogId` (date + title slug) so posts can
   be linked; `addGameDevlog` lists a game's posts on its page above "More
-  Longlight games". Posts speak as Longlight and report only real changes.
+  Longlight games". A post whose `game` is a hidden project is left off
+  the page (and the feed) until that game is un-hidden. Posts speak as Longlight and report only real changes.
   `check-site.mjs` checks the fields, the order and the `game` titles.
   Linked from every footer ("Devlog") and the What's new intro; in
   `sitemap.xml` and `sw.js` `CORE`.
@@ -685,7 +686,7 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   deploy, after `make-game-pages.mjs`, so it never exists in the repo. Devlog
   items link to `devlog.html#<devlogId>`; release items use `released` (the
   release's day, filled by `sync-releases.mjs` in the deploy copy only) and
-  link to `game-<slug>.html`; hidden games and releases with no date are left
+  link to `game-<slug>.html`; hidden games, posts about them and releases with no date are left
   out; newest first, at most 40. URLs are absolute (an exception to the
   relative-links rule). Index, Games, Devlog and What's new have a
   `rel="alternate"` link to it in the `<head>`; Devlog and What's new link it
