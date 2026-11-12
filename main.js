@@ -4062,7 +4062,7 @@ function paintWeather(scene, t) {
     c.style.setProperty("--h", `${((14 + Math.random() * 18) * size).toFixed(0)}px`);
     // measured down from the top of the sky (the layer starts --cloud-reach above it)
     c.style.top = `calc(var(--cloud-reach) + var(--sky-height) * ${(0.04 + Math.random() * 0.5).toFixed(2)})`;
-    c.style.left = `${((i + Math.random() * 0.6) / count * 100).toFixed(0)}%`;
+    c.style.setProperty("--x", `${((i + Math.random() * 0.6) / count * 100).toFixed(0)}%`); // where it sits with motion off
     c.style.animationDuration = `${slow.toFixed(0)}s`;
     c.style.animationDelay = `${(-slow * ((i + 0.5) / count)).toFixed(0)}s`; // already partway across
     clouds.push(c);
@@ -4078,7 +4078,7 @@ function paintWeather(scene, t) {
     const slow = 60 + Math.random() * 50; // seconds to cross: they're near, so they look quicker
     s.style.setProperty("--w", `${(18 + Math.random() * 22).toFixed(0)}vw`);
     s.style.top = `${(10 + Math.random() * 45).toFixed(0)}%`;
-    s.style.left = `${((i + Math.random() * 0.6) / shadows * 100).toFixed(0)}%`;
+    s.style.setProperty("--x", `${((i + Math.random() * 0.6) / shadows * 100).toFixed(0)}%`);
     s.style.animationDuration = `${slow.toFixed(0)}s`;
     s.style.animationDelay = `${(-slow * ((i + 0.5) / shadows)).toFixed(0)}s`;
     patches.push(s);
