@@ -98,5 +98,10 @@
     "line": "Adds three trading desks, plus edge cards and mandates.",
     "title": "v0.8.0.0 - Three trading desks, edge cards and mandates",
     "at": "2026-11-12T20:29:41.472Z"
+  },
+  "Funded@v0.9.0.0": {
+    "line": "New art for your desk, cards, rainy days and city view, plus a better intro and news.",
+    "title": "v0.9.0.0 - Art pass: desk props, card art, rain days, pass desk, city view, rendered intro and clicker; stronger news",
+    "at": "2026-11-13T07:24:11.930Z"
   }
 }
