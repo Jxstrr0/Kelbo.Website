@@ -592,16 +592,34 @@ img {
 }
 
 /* USD/CAD under the Trading intro (main.js fills it in). It pulls up
-   into the intro's bottom gap so the page head keeps its height. */
+   into the intro's bottom gap so the page head keeps its height.
+   It holds its full height before the rate arrives (min-height), so the
+   sky and the list below don't jump down when it fills in: that jump was
+   the Trading page's layout shift. Two rows (the rate, then the note) is
+   0.95rem x 1.6 + the 0.25rem gap + 0.85rem x 1.6 = 3.13rem; on a narrow
+   phone the note wraps to a third row, 4.49rem. Change these with the
+   font sizes below. */
 .fx {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
   gap: 0.25rem 0.6rem;
   max-width: 36rem;
+  min-height: 3.13rem;
   margin: -1.25rem 0 2rem;
   color: var(--sky-muted);
   font-size: 0.95rem;
+}
+
+@media (max-width: 29.99rem) {
+  .fx {
+    min-height: 4.49rem;
+  }
+}
+
+/* Blank while it waits for the bank: keeps its space, shows nothing. */
+.fx:empty {
+  visibility: hidden;
 }
 
 .fx[hidden] {
