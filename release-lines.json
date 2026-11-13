@@ -103,5 +103,10 @@
     "line": "New art for your desk, cards, rainy days and city view, plus a better intro and news.",
     "title": "v0.9.0.0 - Art pass: desk props, card art, rain days, pass desk, city view, rendered intro and clicker; stronger news",
     "at": "2026-11-13T07:24:11.930Z"
+  },
+  "Funded@v0.9.0.1": {
+    "line": "Fixes for tutorial replays, fired desks, phone audio, and Rewind after reloading.",
+    "title": "v0.9.0.1 - Bug fixes: tutorial replay kept save, fired-desk race, phone audio, Rewind after reload",
+    "at": "2026-11-13T20:06:14.579Z"
   }
 }
