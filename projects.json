@@ -216,11 +216,12 @@
   {
     "title": "Burn Rate",
     "hidden": true,
-    "status": "Prototype",
+    "status": "Released",
     "category": "Game",
     "summary": "A rocket motor design game. Rent a stand on an old state test range, design a solid motor to a client's spec, predict its curve, then fire it and find out why the real one didn't match.",
     "link": "https://burnrate.longlight.games/",
     "code": "https://github.com/Jxstrr0/BurnRate",
+    "image": "assets/covers/burn-rate.jpg",
     "featured": false
   },
   {
