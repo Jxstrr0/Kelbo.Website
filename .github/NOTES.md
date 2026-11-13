@@ -419,7 +419,9 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   The Trading page head has `[data-fx]` (`setUpFx`): the Bank of Canada
   Valet `FXUSDCAD` daily average (`recent=2`, so it shows the day's move),
   via `cachedFetch` (`FX_KEY`, `FX_MS` 3 h), labelled as a daily average
-  with its date, never as live. It stays hidden if the call fails.
+  with its date, never as live. It holds its height while it waits
+  (`min-height` on `.fx`, blank via `.fx:empty`), so filling in doesn't
+  shift the page, and stays blank if the call fails.
 ## Sky extras, glass, tilt, the ISS, Sky this week
 
 - The home page's Sky this week box is a `<details>` that folds to one line,

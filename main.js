@@ -6563,7 +6563,9 @@ function setUpFx() {
   )
     .then((list) => {
       const last = list[list.length - 1];
-      if (!last) return; // nothing usable: leave the line hidden
+      // Nothing usable: the line stays blank (it still holds its space, so
+      // hiding it now would make the page jump; see .fx in style.css).
+      if (!last) return;
       const day = new Date(last.date + "T12:00:00Z").toLocaleDateString("en-CA", {
         weekday: "short", month: "short", day: "numeric", timeZone: "UTC",
       });
@@ -6580,7 +6582,7 @@ function setUpFx() {
       node.append(el("span", "fx__note", `Bank of Canada daily average for ${day}, not a live quote`));
       node.hidden = false;
     })
-    .catch(() => {}); // the bank didn't answer: the line just stays hidden
+    .catch(() => {}); // the bank didn't answer: the line just stays blank
 }
 
 /* ======================================================================
