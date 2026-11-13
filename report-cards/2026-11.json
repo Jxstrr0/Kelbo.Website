@@ -1,4 +1,59 @@
 {
+  "2026-11-13": {
+    "date": "2026-11-13",
+    "time": "2026-11-13T22:46:03.798Z",
+    "summary": "The brief called a flat-to-up open, but MU gapped down about 2% and closed down 2.5% at 778.31, breaking both supports and never reaching either resistance.",
+    "gap": {
+      "call": "Flat to slightly up, -0.5% to +2.5%",
+      "result": "MU opened at 782.69, down 1.97% from 798.44.",
+      "grade": "miss"
+    },
+    "mu": {
+      "prev_close": 798.44,
+      "open": 782.69,
+      "high": 796.18,
+      "low": 750.25,
+      "close": 778.31,
+      "open_pct": -1.97,
+      "close_pct": -2.52
+    },
+    "levels": [
+      {
+        "level": "Resistance $811.30 (Wednesday's close)",
+        "result": "The day's high of 796.18 stayed well below it.",
+        "grade": "untested"
+      },
+      {
+        "level": "Next resistance $827.58 (Wednesday's high)",
+        "result": "Price never got near it.",
+        "grade": "untested"
+      },
+      {
+        "level": "Level to watch below $795.23 (Nov 4 close)",
+        "result": "MU opened below it, briefly got back above to 796.18, and closed under it at 778.31.",
+        "grade": "broke"
+      },
+      {
+        "level": "Next level to watch $789.90 (overnight low print)",
+        "result": "MU fell through it to a low of 750.25 and closed at 778.31.",
+        "grade": "broke"
+      }
+    ],
+    "sources": [
+      {
+        "title": "Micron Technology (MU) Stock Price History 1984-2026",
+        "url": "https://stockanalysis.com/stocks/mu/history/"
+      },
+      {
+        "title": "Micron Stock Price History - Investing.com",
+        "url": "https://www.investing.com/equities/micron-tech-historical-data"
+      },
+      {
+        "title": "Micron Technology (MU) quote - StockAnalysis",
+        "url": "https://stockanalysis.com/stocks/mu/"
+      }
+    ]
+  },
   "2026-11-12": {
     "date": "2026-11-12",
     "time": "2026-11-12T22:46:13.685Z",
