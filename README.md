@@ -761,13 +761,15 @@ And one on the Trading page:
 The footer ends with a **Sound off / Sound on** switch. Sound is off for
 everyone until they tap it. Turning it on plays the Longlight sting, a
 2-second "sun coming up" sound you made with ElevenLabs
-(`assets/sounds/longlight-sting.mp3`, credited in
+(`assets/sounds/longlight-sting-v2.mp3`, credited in
 `assets/sounds/CREDITS.md`). With Sound on, it plays once per visit, always
 together with the logo's sun rising. Phones don't allow sound before you
 touch the screen, so there the sun waits below its line and both start at
 your first tap (after 4 seconds without a tap the sun comes up quietly, and
-the first tap still plays the sound with a second rise). To swap the sound, replace that file
-(keep the name, or change `STING_URL` in `main.js`).
+the first tap still plays the sound with a second rise). To swap the sound, add the new file under a **new name**
+and change `STING_URL` in `main.js` (visitors' phones keep the old sound
+under the old name). It follows the iPhone's silent switch and plays over
+your music instead of stopping it.
 
 ## Motion
 
