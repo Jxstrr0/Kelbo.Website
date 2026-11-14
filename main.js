@@ -3824,15 +3824,15 @@ function setUpLand(scene) {
   );
   // The windmill, to the left (its wheel spins at the real wind speed)
   const windmill = svgNode("svg", { class: "horizon__windmill", viewBox: "0 0 30 50" });
-  const wheel = svgNode("g", { class: "windmill__wheel" });
+  // The wheel is its own little <svg> over the tower's hub, so the browser
+  // can spin it on the graphics card without re-laying-out the page each frame
+  const wheel = svgNode("svg", { class: "horizon__windmill windmill__wheel", viewBox: "-10 -10 20 20" });
   for (let i = 0; i < 12; i++) {
     // Each blade a thin wedge from near the hub to the rim
     wheel.append(svgNode("path", { d: "M-0.5 -2.6L-1.3 -9.2L1.3 -9.2L0.5 -2.6Z", transform: `rotate(${i * 30})` }));
   }
   wheel.append(svgNode("circle", { class: "windmill__rim", r: 9.2 }), svgNode("circle", { r: 1.6 }));
-  const hub = svgNode("g", { transform: "translate(15 11)" });
-  hub.append(wheel);
-  windmill.append(svgNode("path", { d: WINDMILL_TOWER }), svgNode("path", { class: "windmill__tail", d: WINDMILL_TAIL }), hub);
+  windmill.append(svgNode("path", { d: WINDMILL_TOWER }), svgNode("path", { class: "windmill__tail", d: WINDMILL_TAIL }));
   scene.windmill = windmill;
   // The station depot to the right of it, and the rail line they stand beside
   const depot = svgNode("svg", { class: "horizon__depot", viewBox: `0 0 ${DEPOT_W} ${DEPOT_H}` });
@@ -3867,7 +3867,7 @@ function setUpLand(scene) {
     clump.style.left = `${(i + 0.2 + Math.random() * 0.6) * (100 / 18)}%`;
     crocuses.append(clump);
   }
-  ground.after(shadow, windmill, elevator, depot, pumpkin, track, el("div", "horizon__wheat"), el("div", "horizon__stubble"), crocuses);
+  ground.after(shadow, windmill, wheel, elevator, depot, pumpkin, track, el("div", "horizon__wheat"), el("div", "horizon__stubble"), crocuses);
   skyVarsAgain(scene); // the shadow is new: give it the numbers set so far
   scene.land = null; // measured on the first paint, and again whenever the sky or window changes size
   const remeasure = () => { scene.land = null; scene.sky = null; };
@@ -5971,6 +5971,15 @@ function setUpMooseAttack() {
   });
 }
 
+// Pauses the sky's CSS animations (stars, aurora, sun, moon, windmill...)
+// while the hero is scrolled out of view; they pick up where they were.
+function setUpSkySleep(scene) {
+  if (!("IntersectionObserver" in window)) return;
+  new IntersectionObserver(([entry]) => {
+    scene.classList.toggle("horizon--asleep", !entry.isIntersecting);
+  }).observe(scene);
+}
+
 function setUpHorizon() {
   const scene = document.querySelector("[data-horizon]");
   const readout = document.querySelector("[data-horizon-readout]");
@@ -6063,6 +6072,7 @@ function setUpHorizon() {
     setUpSkyTaps(scene, shownTime);
     setUpMotion(scene, shownTime);
     setUpMouseSky(scene);
+    setUpSkySleep(scene);
   }
   tick();
   if (scene) {
