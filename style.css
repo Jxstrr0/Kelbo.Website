@@ -2375,9 +2375,15 @@ img {
   stroke: color-mix(in srgb, var(--ll-slate) 55%, var(--ll-purple));
 }
 
-.windmill__wheel {
-  transform-box: fill-box;
-  transform-origin: center;
+/* The wheel's own box: 20 × 20 of the tower's 30 × 50 units, centred on
+   the hub at (15, 11). It is radially even, so the tail's flip only
+   changes which way it turns (mill-spin uses --mill-flip). */
+.horizon__windmill.windmill__wheel {
+  left: calc(0.16 * (100% - var(--sun-size)) + var(--sun-size) / 2 - var(--elevator-h) * 0.72 * 10 / 50);
+  top: calc(var(--sky-height) - var(--elevator-h) * 0.72 * 49 / 50 + 0.5px);
+  width: calc(var(--elevator-h) * 0.72 * 20 / 50);
+  height: calc(var(--elevator-h) * 0.72 * 20 / 50);
+  transform: none;
 }
 
 /* Halloween: a jack-o'-lantern just left of the elevator's foot, its
@@ -5287,7 +5293,6 @@ a.quest__top:focus-visible .quest__name {
      puts the #glass-lens filter in the page: it finds the pane's edges,
      bends what's behind them inward like thick glass, then frosts. Safari
      can't do this yet, so iPhones keep the plain frost above. */
-  :root[data-lens] .site-header,
   :root[data-lens] .now,
   :root[data-lens] .sky-week,
   :root[data-lens] .continue__card,
@@ -6146,7 +6151,18 @@ a.quest__top:focus-visible .quest__name {
   }
 
   @keyframes mill-spin {
-    to { transform: rotate(360deg); }
+    to { transform: rotate(calc(360deg * var(--mill-flip, 1))); }
+  }
+
+  /* While the hero sky is scrolled out of view (main.js setUpSkySleep),
+     everything in it holds still, so nobody pays for stars they can't see */
+  .horizon--asleep,
+  .horizon--asleep::before,
+  .horizon--asleep::after,
+  .horizon--asleep *,
+  .horizon--asleep *::before,
+  .horizon--asleep *::after {
+    animation-play-state: paused !important;
   }
 
   /* Halloween: the elevator's windows and the pumpkin flicker like candles */
@@ -6173,12 +6189,12 @@ a.quest__top:focus-visible .quest__name {
   }
 
   /* December lights twinkle after dark, a few at a time */
-  :root[data-theme="dark"] .xmas {
+  :root[data-theme="dark"] .horizon--christmas .xmas {
     animation: twinkle-light 2.4s ease-in-out infinite;
   }
 
-  :root[data-theme="dark"] .xmas:nth-child(3n + 1) { animation-delay: -0.8s; }
-  :root[data-theme="dark"] .xmas:nth-child(4n + 2) { animation-delay: -1.6s; }
+  :root[data-theme="dark"] .horizon--christmas .xmas:nth-child(3n + 1) { animation-delay: -0.8s; }
+  :root[data-theme="dark"] .horizon--christmas .xmas:nth-child(4n + 2) { animation-delay: -1.6s; }
 
   @keyframes twinkle-light {
     50% { opacity: 0.35; }

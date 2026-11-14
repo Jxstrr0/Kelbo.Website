@@ -1,0 +1,6231 @@
+/* ==========================================================================
+   Kelbo — shared styles (Longlight "Horizon" brand)
+   --------------------------------------------------------------------------
+   The look follows the Longlight Interactive brand: a half-set sun on a
+   long horizon line. Five colours only (Clay, Purple, Slate, Ivory, Lilac),
+   one typeface (Space Grotesk), no gradients on the mark. The logo is the
+   horizon lockup (sun + line under the name); the sun's ray now lives only
+   in the hero's live horizon.
+
+   THEMES. The site has a light and a dark theme, and main.js picks one
+   from the real position of the sun over Saskatoon ("live horizon"):
+   daytime = light, after sunset = dark. A visitor can override that with
+   the ☀/☾ button in the header. The theme is set as data-theme="light"
+   or data-theme="dark" on <html>. Before main.js runs, the phone's own
+   light/dark setting is used so nothing flashes.
+
+   All colours live in the variables below. Older names used by
+   journal.css (--pylon, --card, --rule, ...) are kept, pointing at the
+   new palette, so the journal page restyles itself automatically.
+   ========================================================================== */
+
+/* ---------- Font: Space Grotesk ----------
+   Kept on this site in assets/fonts/ (free to share under its licence,
+   OFL.txt beside it), so pages don't wait on another website. It's a
+   "variable" font: one file covers every weight from 300 to 700. The
+   latin file has all the letters the site uses; the latin-ext one (accented
+   letters like ā or ł) only downloads if a page ever shows one. */
+@font-face {
+  font-family: "Space Grotesk";
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url("assets/fonts/space-grotesk-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Space Grotesk";
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url("assets/fonts/space-grotesk-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* ---------- Brand palette (never changes) ---------- */
+:root {
+  --ll-clay:   #D97757;
+  --ll-purple: #7B3FC4;
+  --ll-slate:  #141413;
+  --ll-ivory:  #FAF9F5;
+  --ll-lilac:  #B48CE8;
+
+  --font-display: "Space Grotesk", "Helvetica Neue", Arial, system-ui, sans-serif;
+  --font-body: "Space Grotesk", "Helvetica Neue", Arial, system-ui, sans-serif;
+  --font-pixel: "Space Grotesk", "Helvetica Neue", Arial, system-ui, sans-serif; /* kept for journal.css */
+
+  --wrap: 72rem;
+  --gutter: 1.25rem;
+  --radius: 16px;
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --i: 0;
+}
+
+/* ---------- Light theme (daytime) ---------- */
+:root,
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --bg: var(--ll-ivory);
+  --surface: #F1EEE7;
+  --card: #FFFFFF;
+  --ink: var(--ll-slate);
+  --muted: #5F5C56;
+  --rule: #E2DED5;
+
+  --accent: var(--ll-clay);          /* buttons, bars, the sun */
+  --accent-ink: #A8482A;             /* clay, darkened so small text passes contrast on ivory */
+  --on-accent: var(--ll-slate);      /* text on a clay button */
+  --secondary: var(--ll-purple);     /* purple: links, pills */
+  --secondary-soft: #EFE6FA;         /* pale purple: pill backgrounds */
+  --focus: var(--ll-purple);
+
+  /* The sky: the hero and page headers. Light theme = purple ground,
+     ivory horizon, exactly like the light logo. */
+  --sky: var(--ll-purple);
+  --sky-ink: var(--ll-ivory);
+  --sky-muted: #E6D8F7;
+  --horizon: var(--ll-ivory);
+  --logo-line: var(--ll-ivory);  /* the logo's horizon line */
+  --ground: #6A33AD;
+
+  --shadow: 0 6px 22px rgba(20, 20, 19, 0.08);
+  --shadow-lift: 0 14px 34px rgba(123, 63, 196, 0.18);
+
+  /* Old names, still used by journal.css */
+  --pylon: var(--ll-clay);
+  --pylon-text: #A8482A;
+  --cyan: var(--ll-purple);
+  --yellow: var(--ll-clay);
+  --night: var(--ll-slate);
+  --field: #E2DED5;
+  --field-line: rgba(20, 20, 19, 0.08);
+  --on-field: var(--ll-slate);
+  --on-field-accent: var(--ll-purple);
+  --glow-pink: transparent;
+  --glow-cyan: transparent;
+}
+
+/* ---------- Dark theme (after sunset) ---------- */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg: var(--ll-slate);
+  --surface: #1C1B19;
+  --card: #1F1E1B;
+  --ink: var(--ll-ivory);
+  --muted: #B6B2AA;
+  --rule: #2E2C29;
+
+  --accent: var(--ll-clay);
+  --accent-ink: #E8967A;
+  --on-accent: var(--ll-slate);
+  --secondary: var(--ll-lilac);
+  --secondary-soft: #2A2238;
+  --focus: var(--ll-lilac);
+
+  --sky: var(--ll-slate);
+  --sky-ink: var(--ll-ivory);
+  --sky-muted: var(--ll-lilac);
+  --horizon: var(--ll-purple);
+  --logo-line: var(--ll-purple);
+  --ground: #0E0E0D;
+
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  --shadow-lift: 0 16px 40px rgba(0, 0, 0, 0.55);
+
+  --pylon: var(--ll-clay);
+  --pylon-text: #E8967A;
+  --cyan: var(--ll-lilac);
+  --yellow: var(--ll-clay);
+  --night: var(--ll-slate);
+  --field: #2E2C29;
+  --field-line: rgba(250, 249, 245, 0.08);
+  --on-field: var(--ll-ivory);
+  --on-field-accent: var(--ll-lilac);
+}
+
+/* Twilight warming. In the 20 minutes before sunset main.js raises
+   --warm from 0 to 1, and the purple sky blends a little toward clay, so
+   anyone on the site at the right moment watches the sun go down. The
+   pale text on the sky brightens to ivory at the same time so it stays
+   easy to read. Older browsers just skip this and keep the purple. */
+@supports (color: color-mix(in srgb, red, blue)) {
+  :root[data-theme="light"] {
+    --sky: color-mix(in srgb, var(--ll-purple), var(--ll-clay) calc(var(--warm, 0) * 30%));
+    --ground: color-mix(in srgb, #6A33AD, var(--ll-clay) calc(var(--warm, 0) * 22%));
+    --sky-muted: color-mix(in srgb, #E6D8F7, var(--ll-ivory) calc(var(--warm, 0) * 100%));
+  }
+}
+
+/* Before main.js sets data-theme, follow the phone's setting. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    color-scheme: dark;
+    --bg: var(--ll-slate);
+    --surface: #1C1B19;
+    --card: #1F1E1B;
+    --ink: var(--ll-ivory);
+    --muted: #B6B2AA;
+    --rule: #2E2C29;
+    --accent-ink: #E8967A;
+    --secondary: var(--ll-lilac);
+    --secondary-soft: #2A2238;
+    --focus: var(--ll-lilac);
+    --sky: var(--ll-slate);
+    --sky-muted: var(--ll-lilac);
+    --horizon: var(--ll-purple);
+    --logo-line: var(--ll-purple);
+    --ground: #0E0E0D;
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+    --shadow-lift: 0 16px 40px rgba(0, 0, 0, 0.55);
+    --pylon-text: #E8967A;
+    --cyan: var(--ll-lilac);
+    --field: #2E2C29;
+    --field-line: rgba(250, 249, 245, 0.08);
+    --on-field: var(--ll-ivory);
+    --on-field-accent: var(--ll-lilac);
+  }
+}
+
+/* ---------- Base ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  background: var(--bg);
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  font-weight: 500;
+  transition: background-color 600ms var(--ease), color 600ms var(--ease);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  margin: 0 0 0.75rem;
+}
+
+h2 {
+  font-size: clamp(1.875rem, 6.5vw, 2.5rem);
+}
+
+/* A short horizon under every section heading: a line with a tiny sun on it */
+.section h2:not(.visually-hidden)::after {
+  content: "";
+  display: block;
+  width: 3.5rem;
+  height: 3px;
+  margin-top: 0.7rem;
+  background: var(--secondary);
+  box-shadow: 0 -5px 0 -1px var(--accent); /* fallback dot for old browsers */
+  position: relative;
+}
+
+p {
+  margin: 0 0 1rem;
+}
+
+a {
+  color: inherit;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+a:hover {
+  color: var(--accent-ink);
+}
+
+h2,
+:target {
+  scroll-margin-top: 5rem;
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+.wrap {
+  width: 100%;
+  max-width: var(--wrap);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  z-index: 20;
+  padding: 0.5rem 1rem;
+  background: var(--ink);
+  color: var(--bg);
+}
+
+.skip-link:focus {
+  top: 1rem;
+}
+
+/* ---------- Header ---------- */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--sky);
+  color: var(--sky-ink);
+  transition: background-color 600ms var(--ease);
+}
+
+.site-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  min-height: 3.5rem;
+}
+
+/* ---------- Logo: the horizon lockup ----------
+   Sun + horizon line running under LONGLIGHT, INTERACTIVE spaced to the
+   same width below it. The full lockup also has the ray: a long clay beam
+   running from the sun to the right edge, just under LONGLIGHT. The words are outlined paths, so the logo never
+   waits on the web font. Colours come from the theme tokens below.
+   Phones show the compact mark (sun + line); 40rem and up show the full lockup. */
+.logo {
+  display: block;
+  height: auto;
+  flex-shrink: 0;
+  overflow: visible; /* lets the sun's glow spill past the edge */
+}
+.logo__sun  { fill: var(--ll-clay); }
+/* The glow (a blurred copy of the sun, blur set in the footer's <defs>)
+   and the thin halo ring around it. */
+.logo__glow { fill: var(--ll-clay); opacity: 0.85; }
+/* The logo's sun sits a touch lower near sunrise and sunset and all
+   night (--logo-dip, set by main.js from the real sun). The line drawn
+   in front of it hides the part that drops below. */
+.logo__sun,
+.logo__halo,
+.logo__glow { translate: 0 var(--logo-dip, 0px); }
+.logo__halo { fill: none; stroke: var(--ll-clay); stroke-width: 1.6; opacity: 0.6; }
+.logo--compact .logo__halo { stroke-width: 1.4; }
+.logo__ray  { fill: var(--ll-clay); opacity: 0.6; }
+.logo__line { fill: var(--logo-line); }
+.logo__word { fill: var(--sky-ink); }
+.logo__sub  { fill: var(--sky-muted); }
+
+/* Header */
+.wordmark {
+  display: inline-flex;
+  align-items: center;
+  padding-block: 0.5rem;
+  text-decoration: none;
+  color: inherit;
+}
+.wordmark .logo--compact { width: 3.4rem; }
+.wordmark .logo--full    { display: none; }
+
+@media (min-width: 40rem) {
+  .wordmark .logo--compact { display: none; }
+  .wordmark .logo--full    { display: block; width: 13.8rem; }
+}
+
+/* Footer */
+.site-footer .lockup {
+  display: inline-block;
+  margin: 0 auto 1.25rem;
+  padding: 1.5rem; /* clear space ~ one sun height */
+  text-decoration: none;
+  color: inherit;
+}
+.site-footer .lockup .logo--full { width: min(19rem, 80vw); }
+
+.nav {
+  display: flex;
+  gap: 0.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nav a {
+  display: inline-block;
+  padding: 0.4rem 0.35rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-decoration: none;
+  color: var(--sky-ink); /* full strength: faded text failed contrast */
+}
+
+.nav a:hover {
+  color: var(--sky-ink);
+  background: rgba(20, 20, 19, 0.14);
+}
+
+/* The "you are here" pill is a dark tint, not a light one: a light pill
+   made the purple behind the ivory text paler and failed contrast. */
+.nav a[aria-current="page"] {
+  background: rgba(20, 20, 19, 0.2);
+}
+
+/* New brief: for an hour after the pre-market brief goes out, a clay dot
+   (ivory ring so it shows on the purple sky) sits on the Trading link and
+   the brief's card says "New". main.js sets data-brief-new on <html>; the
+   flashing is in the Motion block at the bottom. */
+:root[data-brief-new] .nav a[href="trading.html"] {
+  position: relative;
+}
+
+:root[data-brief-new] .nav a[href="trading.html"]::after {
+  content: "";
+  position: absolute;
+  top: 0.2rem;
+  right: -0.05rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--ll-clay);
+  box-shadow: 0 0 0 2px var(--ll-ivory);
+}
+
+:root[data-brief-new] .project:has(.project__main[href="briefs.html"]) .project__title::after {
+  content: "New";
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  background: var(--ll-clay);
+  color: var(--on-accent); /* slate on clay, like the buttons */
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  vertical-align: 0.3em;
+}
+
+/* ☀/☾ button: auto → light → dark → auto */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border: 1.5px solid rgba(250, 249, 245, 0.35);
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+}
+
+.theme-toggle:hover {
+  background: rgba(250, 249, 245, 0.12);
+}
+
+.theme-toggle svg {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+/* ---------- Hero (home) and page heads (other pages) ---------- */
+.hero,
+.page-head {
+  position: relative;
+  overflow: hidden;
+  background: var(--sky);
+  color: var(--sky-ink);
+  transition: background-color 600ms var(--ease);
+}
+
+.hero .wrap {
+  position: relative;
+  z-index: 1;
+}
+
+.hero__top {
+  z-index: 2; /* above the cloud veil reaching up from the sky */
+  padding-block: clamp(2rem, 7vw, 4rem) 0;
+}
+
+.eyebrow {
+  margin: 0 0 1rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1.6;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--sky-muted);
+}
+
+/* "See your sky" / "Back to Saskatoon" beside the place name */
+.eyebrow__switch {
+  margin: -0.6rem 0 -0.6rem 0.4rem;
+  padding: 0.6rem 0.2rem;
+  border: 0;
+  background: none;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: var(--sky-ink);
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.3em;
+  cursor: pointer;
+}
+
+.eyebrow__switch::before {
+  content: "· ";
+  color: var(--sky-muted);
+  display: inline-block;
+  margin-right: 0.4rem;
+  text-decoration: none;
+}
+
+.eyebrow__switch[hidden] {
+  display: none;
+}
+
+.eyebrow__switch:disabled {
+  cursor: progress;
+  opacity: 0.75;
+}
+
+.hero__name {
+  font-size: clamp(2.75rem, 11vw, 5.25rem);
+  max-width: 11ch;
+  margin-bottom: 1rem;
+}
+
+.hero__line {
+  max-width: 34rem;
+  font-size: 1.1rem;
+  color: var(--sky-muted);
+  margin-bottom: 1.5rem;
+}
+
+/* "by Kelbo" under the studio name in the home hero */
+.hero__by {
+  margin: -0.35rem 0 1rem;
+  font-size: clamp(1.25rem, 3.5vw, 1.75rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--sky-muted);
+}
+
+/* Links on the sky (like "Kelbo" in the home hero): ivory text with a clay
+   underline, since clay text on purple is too faint to read */
+.hero__by a,
+.hero__line a,
+.page-head__line a {
+  color: var(--sky-ink);
+  text-decoration-color: var(--ll-clay);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
+}
+
+.hero__by a:hover,
+.hero__line a:hover,
+.page-head__line a:hover {
+  color: var(--sky-ink);
+  text-decoration-color: currentColor;
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.page-head {
+  padding-block: 2.5rem 0;
+}
+
+/* The page-head words sit above the cloud veil reaching up from the sky */
+.page-head .wrap > :not(.horizon) {
+  position: relative;
+  z-index: 2;
+}
+
+.page-head h1 {
+  font-size: clamp(2.75rem, 12vw, 5rem);
+  margin-bottom: 0.75rem;
+}
+
+.page-head__line {
+  max-width: 36rem;
+  margin: 0 0 2rem;
+  color: var(--sky-muted);
+}
+
+/* USD/CAD under the Trading intro (main.js fills it in). It pulls up
+   into the intro's bottom gap so the page head keeps its height.
+   It holds its full height before the rate arrives (min-height), so the
+   sky and the list below don't jump down when it fills in: that jump was
+   the Trading page's layout shift. Two rows (the rate, then the note) is
+   0.95rem x 1.6 + the 0.25rem gap + 0.85rem x 1.6 = 3.13rem; on a narrow
+   phone the note wraps to a third row, 4.49rem. Change these with the
+   font sizes below. */
+.fx {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.6rem;
+  max-width: 36rem;
+  min-height: 3.13rem;
+  margin: -1.25rem 0 2rem;
+  color: var(--sky-muted);
+  font-size: 0.95rem;
+}
+
+@media (max-width: 29.99rem) {
+  .fx {
+    min-height: 4.49rem;
+  }
+}
+
+/* Blank while it waits for the bank: keeps its space, shows nothing. */
+.fx:empty {
+  visibility: hidden;
+}
+
+.fx[hidden] {
+  display: none;
+}
+
+.fx__pair {
+  font-weight: 700;
+  color: var(--sky-ink);
+}
+
+.fx__rate {
+  color: var(--sky-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.fx__note {
+  flex-basis: 100%;
+  font-size: 0.85rem;
+}
+
+/* ---------- The live horizon ----------
+   A strip at the bottom of the hero: the sun, its ray, the horizon line
+   and the ground. main.js moves the sun with the real sun over Saskatoon
+   by setting --sun-x (0..1 across the day) and --sun-alt (altitude as a
+   fraction of today's highest point; negative = below the horizon). */
+.horizon {
+  --sun-x: 0.25;
+  --sun-alt: 0.6;
+  --sun-size: clamp(64px, 16vw, 110px);
+  --moon-x: 0.06;
+  --moon-alt: -1; /* below the ground until main.js says it's night */
+  --moon-size: calc(var(--sun-size) * 0.62);
+  --sky-height: clamp(170px, 40vw, 240px);
+  --ground-height: 4.5rem;
+  --cloud-reach: 14rem; /* how far the cloud veil fades up above the sky */
+  position: relative;
+  height: calc(var(--sky-height) + var(--ground-height));
+  margin-top: 1rem;
+  /* Sideways finger swipes wind the sky through time (main.js); up and
+     down still scroll the page, and pinch still zooms. */
+  touch-action: pan-y pinch-zoom;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* With a mouse, the hand cursor hints you can click and drag the sky. */
+@media (hover: hover) and (pointer: fine) {
+  .horizon {
+    cursor: grab;
+  }
+  .horizon--grabbing {
+    cursor: grabbing;
+  }
+}
+
+/* Lilac stars that only come out after dark. main.js swaps the few
+   placeholder stars in the HTML for the real night sky (see STARS). */
+.horizon__stars {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: var(--sky-height);
+  opacity: 0;
+  transition: opacity 900ms var(--ease);
+  pointer-events: none;
+}
+
+.horizon__stars i {
+  position: absolute;
+  width: var(--s, 4px);
+  height: var(--s, 4px);
+  margin: calc(var(--s, 4px) / -2) 0 0 calc(var(--s, 4px) / -2); /* centre the dot on its spot */
+  border-radius: 50%;
+  background: var(--ll-lilac);
+}
+
+.horizon__stars i[hidden] {
+  display: none;
+}
+
+/* Faint constellation lines behind the stars (home page sky only).
+   The SVG is stretched over the sky, so the stroke is kept at a steady
+   1px with non-scaling-stroke. */
+.horizon__lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* While the sky is spinning or being swiped, the lines and the planets'
+   names step out; main.js fits them once it stops and they fade back in. */
+.horizon__lines,
+.planet span {
+  transition: opacity 400ms var(--ease);
+}
+
+.horizon__stars--moving .horizon__lines,
+.horizon__stars--moving .planet span {
+  opacity: 0;
+  transition-duration: 120ms;
+}
+
+.horizon__lines line {
+  stroke: var(--ll-lilac);
+  stroke-width: 1;
+  stroke-opacity: 0.35;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+/* The planets: steady ivory dots with a soft glow (Mars is clay, like
+   the real red planet), plus their name on the home sky. */
+.horizon__stars .planet {
+  position: absolute;
+  width: var(--s);
+  height: var(--s);
+  margin: calc(var(--s) / -2) 0 0 calc(var(--s) / -2);
+  border-radius: 50%;
+  background: var(--ll-ivory);
+  box-shadow: 0 0 9px 2px rgba(250, 249, 245, 0.55);
+}
+
+.horizon__stars .planet--mars {
+  background: var(--ll-clay);
+  box-shadow: 0 0 9px 2px rgba(217, 119, 87, 0.6);
+}
+
+.horizon__stars .planet[hidden] {
+  display: none;
+}
+
+.planet span {
+  position: absolute;
+  left: calc(100% + 6px);
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--ll-ivory);
+  opacity: 0.7;
+}
+
+.planet--flip span {
+  left: auto;
+  right: calc(100% + 6px);
+}
+
+/* Below or above the dot, when a neighbour's name is in the way beside it
+   (main.js placePlanetNames picks the side) */
+.planet--below span,
+.planet--above span {
+  left: 50%;
+  top: calc(100% + 6px);
+  transform: translateX(-50%);
+}
+
+.planet--above span {
+  top: auto;
+  bottom: calc(100% + 6px);
+}
+
+/* The space station (main.js placeIss): its own full-width layer over
+   the stars, so it shows whatever the theme (the real one only after
+   dark; ?critter=iss any time). A bright steady ivory dot, brighter than
+   any star, named "ISS" on the home sky. While it crosses the live sky it
+   moves every second and glides between (no glide with reduce motion). */
+.horizon__iss {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: var(--sky-height);
+  pointer-events: none;
+}
+
+.horizon__iss .iss {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  border-radius: 50%;
+  background: var(--ll-ivory);
+  box-shadow: 0 0 10px 3px rgba(250, 249, 245, 0.7);
+}
+
+.horizon__iss .iss[hidden] {
+  display: none;
+}
+
+.horizon__iss .iss span {
+  position: absolute;
+  left: calc(100% + 6px);
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--ll-ivory);
+  opacity: 0.8;
+}
+
+/* Venus in daylight (main.js placeDayVenus): a faint ivory pinprick
+   with its name, in the light theme only (after dark the planets layer
+   above has the real one). */
+.horizon__day-venus {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: var(--sky-height);
+  pointer-events: none;
+}
+
+:root[data-theme="dark"] .horizon__day-venus {
+  display: none;
+}
+
+.horizon__day-venus .day-venus {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  margin: -2px 0 0 -2px;
+  border-radius: 50%;
+  background: var(--ll-ivory);
+  box-shadow: 0 0 5px 1px rgba(250, 249, 245, 0.5);
+  opacity: 0.85;
+}
+
+.horizon__day-venus .day-venus[hidden] {
+  display: none;
+}
+
+/* The brightest stars (Sirius, Vega, Rigel...) get a soft halo */
+.horizon__stars .star--bright {
+  box-shadow: 0 0 8px 2px rgba(180, 140, 232, 0.75);
+}
+
+:root[data-theme="dark"] .horizon__stars {
+  opacity: 1;
+}
+
+.page-head .horizon {
+  --sky-height: 90px;
+  --sun-size: 64px;
+  --sun-alt: 0.55;
+  --sun-x: 0.12;
+  --ground-height: 1.5rem;
+  --cloud-reach: 7rem;
+}
+
+/* On a phone the page head is shorter, so the page's own content starts
+   higher on the first screen: less padding, a lower sky, a smaller sun. */
+@media (max-width: 39.99rem) {
+  .page-head {
+    padding-top: 1.5rem;
+  }
+
+  .page-head__line,
+  .fx {
+    margin-bottom: 1.25rem;
+  }
+
+  .page-head .horizon {
+    --sky-height: 66px;
+    --sun-size: 50px;
+    --ground-height: 1rem;
+    --cloud-reach: 5rem;
+  }
+
+  .page-head + .section {
+    padding-top: 1.5rem;
+  }
+}
+
+.horizon__sun {
+  position: absolute;
+  left: calc(var(--sun-x) * (100% - var(--sun-size)));
+  top: calc((1 - var(--sun-alt)) * (var(--sky-height) - var(--sun-size) / 2));
+  width: var(--sun-size);
+  height: var(--sun-size);
+  border-radius: 50%;
+  /* In wildfire smoke (--smoke from main.js, 0..1) the sun turns a deeper
+     red and loses its halo, rays and most of its glow */
+  --sun-base: color-mix(in srgb, var(--accent), var(--ll-slate) calc(var(--smoke, 0) * 22%));
+  background-color: var(--accent);
+  /* The disc: a warm, paler core easing out to clay, a touch darker at
+     the very edge (the real sun is dimmer at its rim). Kept separate from
+     the plain colour above, so browsers without color-mix() still get a
+     clay disc. */
+  background-image: radial-gradient(circle,
+    color-mix(in srgb, var(--sun-base), var(--ll-ivory) calc(28% * (1 - var(--smoke, 0)))) 0%,
+    var(--sun-base) 52%,
+    color-mix(in srgb, var(--sun-base) 86%, var(--ll-slate)) 100%);
+  /* A crisp, faint ivory rim just inside the edge, and a tight glow
+     hugging it, so the disc reads sharp against the sky */
+  box-shadow:
+    inset 0 0 0 1.5px rgba(250, 249, 245, calc(0.2 * (1 - var(--smoke, 0)))),
+    0 0 calc(var(--sun-size) * 0.1) rgba(217, 119, 87, calc(0.7 * var(--sun-show, 1) * (1 - 0.8 * var(--smoke, 0))));
+  /* The halo: a thin clay ring around the sun, like the logo's */
+  outline: 2px solid rgba(217, 119, 87, calc((0.45 + 0.3 * var(--sun-low, 0)) * var(--sun-show, 1) * (1 - var(--smoke, 0))));
+  outline-offset: calc(var(--sun-size) * 0.13);
+  transition: top 1200ms var(--ease), left 1200ms var(--ease);
+}
+
+/* A low sun is squashed top to bottom by the air (--sun-flat from
+   main.js: 0 high up, 1 on the horizon), and a touch wider. */
+.horizon--low-sun .horizon__sun {
+  scale: calc(1 + 0.03 * var(--sun-flat, 0)) calc(1 - 0.14 * var(--sun-flat, 0));
+}
+
+/* Tapping the sun: a lens flare (main.js sunFlare animates it). */
+.sun-flare {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.sun-flare__streak {
+  position: absolute;
+  width: 160%;
+  height: 3px;
+  border-radius: 50%;
+  background: linear-gradient(90deg, rgba(217, 119, 87, 0), rgba(217, 119, 87, 0.55) 35%, rgba(250, 249, 245, 0.9) 50%, rgba(217, 119, 87, 0.55) 65%, rgba(217, 119, 87, 0));
+  box-shadow: 0 0 8px rgba(217, 119, 87, 0.6);
+  opacity: 0;
+}
+
+.sun-flare__ring {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(217, 119, 87, 0.08), rgba(217, 119, 87, 0.22) 80%, rgba(217, 119, 87, 0));
+  border: 1px solid rgba(180, 140, 232, 0.35);
+  opacity: 0;
+}
+
+/* Fine rays all round the sun, long and short in turn, fading out
+   before they reach the edge of the glow (turning very slowly in the
+   motion block at the bottom). A mask hides the middle, so they start
+   just outside the disc. */
+.horizon__sun::after {
+  content: "";
+  position: absolute;
+  inset: calc(var(--sun-size) * -0.34);
+  border-radius: 50%;
+  background: repeating-conic-gradient(
+    rgba(217, 119, 87, 0.42) 0deg 1.6deg, rgba(217, 119, 87, 0) 1.6deg 7.5deg,
+    rgba(217, 119, 87, 0.2) 7.5deg 8.6deg, rgba(217, 119, 87, 0) 8.6deg 15deg);
+  -webkit-mask: radial-gradient(closest-side, transparent 64%, #000 69%, transparent 100%);
+  mask: radial-gradient(closest-side, transparent 64%, #000 69%, transparent 100%);
+  opacity: calc(var(--sun-show, 1) * (1 - var(--smoke, 0)));
+  pointer-events: none;
+}
+
+/* The sun's soft glow. --sun-low (set by main.js) is 0 when the sun is
+   high and 1 when it's near the horizon, so the glow grows bigger and
+   stronger at sunrise and sunset. The part below the horizon is hidden
+   by the ground, and --sun-show fades the glow and halo out once the sun
+   has set, so they don't peek over the line at night. */
+.horizon__sun::before {
+  content: "";
+  position: absolute;
+  inset: calc(var(--sun-size) * (-0.4 - 0.4 * var(--sun-low, 0)));
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(217, 119, 87, calc((0.5 + 0.3 * var(--sun-low, 0)) * var(--sun-show, 1) * (1 - 0.7 * var(--smoke, 0)))), rgba(217, 119, 87, 0));
+  pointer-events: none;
+}
+
+/* The ray leaves the right edge of the sun and tapers toward the right
+   edge of the screen. Its length follows the sun's height. */
+.horizon__ray {
+  position: absolute;
+  left: calc(var(--sun-x) * (100% - var(--sun-size)) + var(--sun-size) + 4px);
+  top: calc((1 - var(--sun-alt)) * (var(--sky-height) - var(--sun-size) / 2) + var(--sun-size) / 2 - 3px);
+  right: 0;
+  height: 6px;
+  background: var(--accent);
+  opacity: 0.6;
+  clip-path: polygon(0 0, 100% 35%, 100% 65%, 0 100%);
+  transform-origin: left center;
+  transform: scaleX(var(--ray, 1));
+  transition: top 1200ms var(--ease), left 1200ms var(--ease), transform 1200ms var(--ease), opacity 600ms;
+}
+
+/* The moon: clay, with a soft glow, showing tonight's real phase. It's
+   out from sunset to sunrise: main.js sets --moon-x and --moon-alt so it
+   rises on the left as the sun sets on the right, arcs over the night and
+   sets at sunrise. The glow (drop-shadow) follows the lit shape. */
+.horizon__moon {
+  position: absolute;
+  left: calc(var(--moon-x) * (100% - var(--moon-size)));
+  top: calc((1 - var(--moon-alt)) * (var(--sky-height) - var(--moon-size) / 2));
+  width: var(--moon-size);
+  height: var(--moon-size);
+  /* The glow fades out by day (--moon-day: 0 at night, 1 by day) */
+  --glow-k: calc((1 - var(--moon-day, 0)) * (1 - 0.6 * var(--eclipse, 0)));
+  filter: drop-shadow(0 0 6px rgba(217, 119, 87, calc(0.85 * var(--glow-k))))
+    drop-shadow(0 0 18px rgba(217, 119, 87, calc(0.5 * var(--glow-k))));
+  /* main.js: 1 at night, faint by day (only while the real moon is up),
+     changing over around sunset and sunrise */
+  opacity: var(--moon-show, 0);
+  transition: top 1200ms var(--ease), left 1200ms var(--ease), opacity 1200ms var(--ease);
+}
+
+/* main.js draws tonight's real phase into the moon as a small SVG: the
+   whole disc, faint (the dark part of the moon), with the lit part on top. */
+.horizon__moon svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.moon__dark {
+  fill: var(--ll-clay);
+  opacity: 0.07;
+}
+
+/* A lunar eclipse: the Earth's shadow, a deep copper red, creeping
+   across the moon (main.js moves it). Its edge is soft, like the real
+   one. The moon's glow dims as more of it is in shadow (--eclipse). */
+.moon__shadow {
+  fill: color-mix(in srgb, var(--ll-clay) 40%, var(--ll-slate));
+  opacity: 0.85;
+  filter: blur(0.05px); /* in the moon's own units (it's 2 across), so a soft edge */
+}
+
+.moon__lit {
+  fill: var(--ll-clay);
+  /* By day it turns pale, mixing toward ivory like the real daytime moon */
+  fill: color-mix(in srgb, var(--ll-clay), var(--ll-ivory) calc(var(--moon-day, 0) * 70%));
+}
+
+/* A solar eclipse: the moon's disc takes a bite out of the sun. It's a
+   sky-coloured circle inside the sun; --bx, --by (where it is from the
+   sun's middle) and --br (its size) are in sun radii, set by main.js. */
+.sun__disc {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.sun__bite {
+  position: absolute;
+  width: calc(var(--br) * 100%);
+  height: calc(var(--br) * 100%);
+  left: calc(50% + var(--bx) * 50% - var(--br) * 50%);
+  top: calc(50% + var(--by) * 50% - var(--br) * 50%);
+  border-radius: 50%;
+  background: var(--sky);
+}
+
+.sun__bite[hidden] {
+  display: none;
+}
+
+/* Light on the ground: a soft clay shimmer on the ground strip under
+   the sun (and a fainter one under the moon), like light on water. It
+   follows them across the sky; main.js fades it in with --glint-sun and
+   --glint-moon while they're up. */
+.horizon__glint {
+  position: absolute;
+  z-index: 1; /* same layer as the ground, but later, so it sits on top */
+  top: calc(var(--sky-height) + 3.5px);
+  height: calc(var(--ground-height) * 0.85);
+  background: repeating-linear-gradient(to bottom, rgba(217, 119, 87, 0.75) 0 2px, rgba(217, 119, 87, 0) 2px 5px);
+  /* Fade the stripes out toward the sides and the bottom */
+  -webkit-mask: radial-gradient(farthest-side at 50% 0, #000, transparent);
+  mask: radial-gradient(farthest-side at 50% 0, #000, transparent);
+  pointer-events: none;
+  transition: left 1200ms var(--ease), opacity 600ms var(--ease);
+}
+
+.horizon__glint--sun {
+  width: calc(var(--sun-size) * 1.8);
+  left: calc(var(--sun-x) * (100% - var(--sun-size)) - var(--sun-size) * 0.4);
+  opacity: var(--glint-sun, 0);
+}
+
+.horizon__glint--moon {
+  width: calc(var(--moon-size) * 1.8);
+  left: calc(var(--moon-x) * (100% - var(--moon-size)) - var(--moon-size) * 0.4);
+  opacity: var(--glint-moon, 0);
+}
+
+/* While the opening spin or a swipe plays (main.js), the sun is moved
+   every frame, so the slow easing above would only make it lag behind. */
+.horizon--spin .horizon__sun,
+.horizon--spin .horizon__moon,
+.horizon--spin .horizon__glint,
+.horizon--spin .horizon__ray,
+.horizon--spin .horizon__sundogs,
+.horizon--spin .horizon__pillar,
+.horizon--spin .horizon__shadow {
+  transition: none;
+}
+
+/* Before main.js has placed the sun it would sit in the stand-in spot
+   above (--sun-x, --sun-alt) and then jump, so it stays hidden until
+   main.js adds "horizon--placed". With JavaScript off the stand-in shows. */
+/* The sun and the things that follow it move with translate, not left
+   and top. They look the same, but the browser counts a move by left or
+   top as the page jumping (layout shift, the CLS number in Cloudflare's
+   page speed), and the opening spin moves them every frame. 100cqw is the
+   sky's width (the horizon is a size container), the same as the 100% the
+   left values used. Browsers without container units keep left and top.
+   The moon keeps left and top too: its translate is the phone-tilt
+   parallax (motion section), and it's a small share of the shift. The
+   pillar and the sundogs get the same treatment after their own rules. */
+@supports (width: 1cqw) and (translate: 1px) {
+  .horizon {
+    container-type: inline-size;
+  }
+
+  .horizon__sun {
+    left: 0;
+    top: 0;
+    translate:
+      calc(var(--sun-x) * (100cqw - var(--sun-size)))
+      calc((1 - var(--sun-alt)) * (var(--sky-height) - var(--sun-size) / 2));
+    transition: translate 1200ms var(--ease);
+  }
+
+  .horizon__ray {
+    --ray-left: calc(var(--sun-x) * (100cqw - var(--sun-size)) + var(--sun-size) + 4px);
+    left: 0;
+    top: 0;
+    right: auto;
+    width: max(0px, calc(100cqw - var(--ray-left)));
+    translate:
+      var(--ray-left)
+      calc((1 - var(--sun-alt)) * (var(--sky-height) - var(--sun-size) / 2) + var(--sun-size) / 2 - 3px);
+    transition: translate 1200ms var(--ease), width 1200ms var(--ease), transform 1200ms var(--ease), opacity 600ms;
+  }
+
+  .horizon__glint--sun,
+  .horizon__glint--moon {
+    left: 0;
+    transition: translate 1200ms var(--ease), opacity 600ms var(--ease);
+  }
+
+  .horizon__glint--sun {
+    translate: calc(var(--sun-x) * (100cqw - var(--sun-size)) - var(--sun-size) * 0.4) 0;
+  }
+
+  .horizon__glint--moon {
+    translate: calc(var(--moon-x) * (100cqw - var(--moon-size)) - var(--moon-size) * 0.4) 0;
+  }
+}
+
+@media (scripting: enabled) {
+  .horizon:not(.horizon--placed) .horizon__sun,
+  .horizon:not(.horizon--placed) .horizon__glint,
+  .horizon:not(.horizon--placed) .horizon__ray,
+  .horizon:not(.horizon--placed) .horizon__sundogs,
+  .horizon:not(.horizon--placed) .horizon__pillar,
+  .horizon:not(.horizon--placed) .horizon__shadow {
+    visibility: hidden;
+  }
+}
+
+.horizon__line {
+  position: absolute;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  top: var(--sky-height);
+  height: 3.5px;
+  background: var(--horizon);
+  z-index: 2;
+  transition: background-color 600ms var(--ease);
+}
+
+.horizon__ground {
+  position: absolute;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  top: calc(var(--sky-height) + 3.5px);
+  bottom: -1px;
+  background: var(--ground);
+  z-index: 1;
+  transition: background-color 600ms var(--ease);
+}
+
+/* The readout: "Sun's up over Saskatoon · sets 6:41 PM". It starts below
+   the railway (the line, the 5px gap and the 5px track, plus a little
+   breathing room) so the words never crowd the rails. */
+.horizon__readout {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--sky-height) + 3.5px + 10px + 0.35rem);
+  bottom: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.15rem;
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--sky-ink);
+}
+
+.horizon__readout span:last-child {
+  color: var(--sky-muted);
+}
+
+/* Shooting stars (main.js makes them on dark nights): a thin streak,
+   bright at its head and fading to nothing along its tail. */
+.horizon__meteors {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: var(--sky-height);
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.meteor {
+  position: absolute;
+  height: 2px;
+  margin-top: -1px;
+  border-radius: 2px;
+  background: linear-gradient(to right, rgba(250, 249, 245, 0), rgba(250, 249, 245, 0.95));
+  box-shadow: 0 0 6px rgba(180, 140, 232, 0.6);
+  transform-origin: 100% 50%; /* turns around its head */
+  opacity: 0;
+}
+
+/* ---------- Weather, northern lights and the seasons ----------
+   main.js adds these layers to the horizon and switches them with
+   classes on .horizon: --rain, --snow, --storm, --fog, --overcast and
+   --snowy (snow lying on the ground), plus --aurora (0..1). */
+
+/* Northern lights: soft lilac and purple curtains across the top of the
+   night sky, each with a thin ivory glow at its brightest. The palette has
+   no green, so these stay in the brand colours. */
+.horizon__aurora {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: calc(var(--sky-height) * 0.85);
+  background:
+    repeating-linear-gradient(90deg,
+      rgba(180, 140, 232, 0) 0 4%, rgba(180, 140, 232, 0.75) 6%, rgba(250, 249, 245, 0.7) 7%, rgba(180, 140, 232, 0.75) 8%, rgba(180, 140, 232, 0) 10%,
+      rgba(180, 140, 232, 0) 13%, rgba(180, 140, 232, 0.45) 14.5%, rgba(250, 249, 245, 0.4) 15%, rgba(180, 140, 232, 0.45) 15.5%, rgba(180, 140, 232, 0) 18%,
+      rgba(123, 63, 196, 0.8) 22%, rgba(123, 63, 196, 0) 27%),
+    linear-gradient(to bottom, rgba(123, 63, 196, 0), rgba(180, 140, 232, 0.35) 65%, rgba(180, 140, 232, 0));
+  background-size: 180% 100%, 100% 100%;
+  -webkit-mask: linear-gradient(to bottom, transparent, #000 30%, #000 60%, transparent);
+  mask: linear-gradient(to bottom, transparent, #000 30%, #000 60%, transparent);
+  filter: blur(5px);
+  opacity: calc(var(--aurora, 0) * 0.9);
+  transition: opacity 3s var(--ease);
+  pointer-events: none;
+}
+
+:root:not([data-theme="dark"]) .horizon__aurora {
+  opacity: 0;
+}
+
+/* Clouds: soft ivory blobs drifting across, fainter at night. Each is a
+   rounded bar with two bumps on top. */
+.horizon__clouds {
+  /* Full-bleed like the line and the ground, and reaching up past the
+     sky by --cloud-reach, where it fades out, so an overcast veil has
+     no box edges: it melts into the purple behind the words. */
+  position: absolute;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  top: calc(-1 * var(--cloud-reach));
+  height: calc(var(--sky-height) + var(--cloud-reach));
+  overflow: hidden;
+  -webkit-mask: linear-gradient(to bottom, transparent, #000 var(--cloud-reach));
+  mask: linear-gradient(to bottom, transparent, #000 var(--cloud-reach));
+  opacity: 0.45;
+  transition: opacity 1.2s var(--ease);
+  pointer-events: none;
+}
+
+:root[data-theme="dark"] .horizon__clouds {
+  opacity: 0.08;
+}
+
+.cloud {
+  position: absolute;
+  height: var(--h);
+  width: calc(var(--h) * 3.2);
+  left: var(--x, 0);
+  border-radius: 999px;
+  background: var(--ll-ivory);
+}
+
+.cloud::before,
+.cloud::after {
+  content: "";
+  position: absolute;
+  bottom: 35%;
+  border-radius: 50%;
+  background: inherit;
+  aspect-ratio: 1;
+}
+
+.cloud::before {
+  left: 16%;
+  width: 46%;
+}
+
+.cloud::after {
+  left: 50%;
+  width: 34%;
+}
+
+/* Overcast: a pale veil over the whole sky; the stars and sun dim */
+.horizon--overcast .horizon__clouds::before,
+.horizon--fog .horizon__clouds::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--ll-ivory);
+  opacity: 0.45;
+}
+
+/* Fog sits low, thickest at the horizon */
+.horizon--fog .horizon__clouds::after {
+  top: calc(var(--cloud-reach) + var(--sky-height) * 0.35);
+  background: linear-gradient(to bottom, rgba(250, 249, 245, 0), var(--ll-ivory));
+  opacity: 1;
+}
+
+:root[data-theme="dark"] .horizon--overcast .horizon__stars {
+  opacity: 0.12;
+}
+
+.horizon--overcast .horizon__sun {
+  opacity: 0.6;
+}
+
+/* Rain and snow: an ivory pattern of streaks or flakes (an SVG tile used
+   as a mask), falling (style.css motion block) */
+.horizon__precip {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: calc(var(--sky-height) + 3.5px);
+  display: none;
+  pointer-events: none;
+}
+
+.horizon--rain .horizon__precip,
+.horizon--snow .horizon__precip {
+  display: block;
+}
+
+.horizon__precip::before,
+.horizon__precip::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--ll-ivory);
+  -webkit-mask: var(--drops) 0 0 / var(--tile) repeat;
+  mask: var(--drops) 0 0 / var(--tile) repeat;
+  opacity: 0.4;
+}
+
+.horizon--rain .horizon__precip {
+  --drops: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='96'%3E%3Cpath d='M6 2l-2 14M30 34l-2 14M52 62l-2 14M18 70l-2 14M44 6l-2 14M60 40l-2 12' stroke='%23000' stroke-width='1.2' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+.horizon--snow .horizon__precip {
+  --drops: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cg%3E%3Ccircle cx='10' cy='14' r='1.8'/%3E%3Ccircle cx='52' cy='40' r='2.2'/%3E%3Ccircle cx='96' cy='10' r='1.5'/%3E%3Ccircle cx='30' cy='82' r='2'/%3E%3Ccircle cx='78' cy='70' r='1.6'/%3E%3Ccircle cx='108' cy='100' r='2.1'/%3E%3Ccircle cx='62' cy='108' r='1.4'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+.horizon__precip::before { --tile: 64px 96px; }
+.horizon__precip::after { --tile: 96px 144px; opacity: 0.25; }
+.horizon--snow .horizon__precip::before { --tile: 120px 120px; opacity: 0.85; }
+.horizon--snow .horizon__precip::after { --tile: 190px 190px; opacity: 0.6; }
+
+/* Snow lying on the ground: a soft ivory band under the horizon line */
+.horizon__snowline {
+  position: absolute;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  top: calc(var(--sky-height) + 3.5px);
+  height: 7px;
+  z-index: 2;
+  display: none;
+  background: linear-gradient(to bottom, var(--ll-ivory) 40%, rgba(250, 249, 245, 0));
+  opacity: 0.85;
+}
+
+.horizon--snowy .horizon__snowline {
+  display: block;
+}
+
+/* Frost glitter: on a bitter clear morning the snow flashes with ice
+   crystals. Two layers of tiny ivory glints (an SVG tile used as a mask)
+   over the ground, twinkling out of step (style.css motion block). */
+.horizon__frost {
+  position: absolute;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  top: calc(var(--sky-height) + 3.5px);
+  bottom: -1px;
+  z-index: 2;
+  display: none;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.horizon--frost .horizon__frost {
+  display: block;
+}
+
+.horizon__frost::before,
+.horizon__frost::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--ll-ivory);
+  -webkit-mask: var(--glints) 0 0 / var(--tile) repeat;
+  mask: var(--glints) 0 0 / var(--tile) repeat;
+  opacity: 0.7;
+}
+
+.horizon__frost::before {
+  --tile: 90px 70px;
+  --glints: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='70'%3E%3Cg fill='%23000'%3E%3Ccircle cx='8' cy='12' r='0.9'/%3E%3Ccircle cx='47' cy='6' r='0.8'/%3E%3Ccircle cx='76' cy='30' r='1'/%3E%3Ccircle cx='28' cy='44' r='0.9'/%3E%3Ccircle cx='62' cy='60' r='0.8'/%3E%3C/g%3E%3Cpath d='M38 28v6M35 31h6' stroke='%23000' stroke-width='0.8'/%3E%3C/svg%3E");
+}
+
+.horizon__frost::after {
+  --tile: 130px 100px;
+  --glints: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='130' height='100'%3E%3Cg fill='%23000'%3E%3Ccircle cx='20' cy='30' r='0.9'/%3E%3Ccircle cx='97' cy='18' r='0.8'/%3E%3Ccircle cx='60' cy='72' r='1'/%3E%3Ccircle cx='118' cy='84' r='0.8'/%3E%3C/g%3E%3Cpath d='M84 52v7M80.5 55.5h7' stroke='%23000' stroke-width='0.8'/%3E%3C/svg%3E");
+  opacity: 0.55;
+}
+
+/* Drifting snow: pale streaks of loose snow sliding along the ground
+   across the horizon line. Streaks are an SVG tile used as a mask and
+   they slide the way the wind blows (--drift-dir, 1 right and -1 left;
+   style.css motion block). */
+.horizon__drift {
+  position: absolute;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  top: calc(var(--sky-height) - 5px);
+  height: 16px;
+  z-index: 2;
+  display: none;
+  background: var(--ll-ivory);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='16'%3E%3Cg stroke='%23000' stroke-width='1.2' stroke-linecap='round'%3E%3Cpath d='M6 11h26M70 6h18M110 13h34M168 8h22M204 12h30M140 4h12' opacity='0.9'/%3E%3C/g%3E%3C/svg%3E") 0 0 / 240px 16px repeat-x;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='16'%3E%3Cg stroke='%23000' stroke-width='1.2' stroke-linecap='round'%3E%3Cpath d='M6 11h26M70 6h18M110 13h34M168 8h22M204 12h30M140 4h12' opacity='0.9'/%3E%3C/g%3E%3C/svg%3E") 0 0 / 240px 16px repeat-x;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.horizon--drift .horizon__drift {
+  display: block;
+}
+
+/* Geese and fireflies */
+.horizon__critters {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 100vw; /* full-bleed like the line and ground, so things fly in from the screen's edges */
+  margin-left: -50vw;
+  height: var(--sky-height);
+  overflow: hidden;
+  color: var(--ll-slate);
+  pointer-events: none;
+}
+
+:root[data-theme="dark"] .horizon__critters {
+  color: var(--ll-lilac);
+}
+
+.geese {
+  position: absolute;
+  left: 0;
+  overflow: visible;
+  opacity: 0.6;
+}
+
+.geese path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+
+.firefly {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  margin: -1.5px 0 0 -1.5px;
+  border-radius: 50%;
+  background: var(--ll-clay);
+  box-shadow: 0 0 6px 2px rgba(217, 119, 87, 0.7);
+  opacity: 0;
+}
+
+/* Autumn leaves (main.js blows them across): a little leaf shape,
+   pointed at two corners, in clay, gold or rust */
+.leaf {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 9px;
+  height: 6px;
+  margin: -3px 0 0 -4.5px;
+  border-radius: 0 100% 0 100%;
+  background: var(--ll-clay);
+}
+
+.leaf--gold {
+  background: color-mix(in srgb, var(--ll-clay) 55%, var(--ll-ivory));
+}
+
+.leaf--rust {
+  background: color-mix(in srgb, var(--ll-clay) 70%, var(--ll-slate));
+}
+
+/* A jet high up: a tiny ivory plane, and its contrail as a row of short
+   dashes that main.js fades out behind it */
+.jet-path {
+  position: absolute;
+  left: -40px;
+  height: 0;
+}
+
+.jet {
+  position: absolute;
+  left: 0;
+  top: -5px;
+  width: 12px;
+  height: 10px;
+  overflow: visible;
+}
+
+.jet path {
+  fill: none;
+  stroke: var(--ll-ivory);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+}
+
+/* Each dash fades in and out along its length and overlaps the next,
+   so together they make one smooth trail */
+.contrail {
+  position: absolute;
+  top: -1px;
+  height: 2px;
+  background: linear-gradient(to right, rgba(250, 249, 245, 0), var(--ll-ivory), rgba(250, 249, 245, 0));
+  opacity: 0;
+}
+
+/* A hawk circling (slate, like the geese) */
+.hawk-drift {
+  position: absolute;
+  left: 0;
+}
+
+.hawk {
+  position: absolute;
+  width: 23px;
+  margin: -5px 0 0 -11.5px;
+  overflow: visible;
+}
+
+.page-head .hawk {
+  width: 16px;
+  margin: -3.5px 0 0 -8px;
+}
+
+.hawk path {
+  fill: currentColor;
+  opacity: 0.75;
+}
+
+/* A kite on a long string: clay with ivory spars and a lilac tail */
+.kite {
+  position: absolute;
+  bottom: 0;
+  overflow: visible;
+}
+
+.kite__string {
+  fill: none;
+  stroke: var(--ll-ivory);
+  stroke-width: 0.8;
+  stroke-opacity: 0.5;
+}
+
+.kite__body {
+  fill: var(--ll-clay);
+}
+
+.kite__spars {
+  fill: none;
+  stroke: var(--ll-ivory);
+  stroke-width: 0.7;
+  stroke-opacity: 0.7;
+}
+
+.kite__tail {
+  fill: none;
+  stroke: var(--ll-lilac);
+  stroke-width: 1.1;
+  stroke-linecap: round;
+}
+
+/* American white pelicans circling up a thermal (main.js pelicans):
+   white, with black wingtips. Lilac-white in the dark theme. */
+.pelicans {
+  position: absolute;
+  left: 0;
+}
+
+.pelican {
+  position: absolute;
+  width: 18px;
+  margin: -4.5px 0 0 -9px;
+  overflow: visible;
+}
+
+.page-head .pelican {
+  width: 12px;
+  margin: -3px 0 0 -6px;
+}
+
+.pelican__wing,
+.pelican__body {
+  fill: var(--ll-ivory);
+}
+
+.pelican__tips {
+  fill: var(--ll-slate);
+}
+
+:root[data-theme="dark"] .pelican__wing,
+:root[data-theme="dark"] .pelican__body {
+  fill: color-mix(in srgb, var(--ll-lilac) 40%, var(--ll-ivory));
+}
+
+/* A hot-air balloon (main.js balloon): clay with an ivory middle panel,
+   a lilac band, and a slate basket under its burner */
+.balloon {
+  position: absolute;
+  left: 0;
+  overflow: visible;
+}
+
+.balloon__body {
+  fill: var(--ll-clay);
+}
+
+.balloon__gore {
+  fill: var(--ll-ivory);
+  opacity: 0.85;
+}
+
+.balloon__band {
+  fill: var(--ll-lilac);
+}
+
+.balloon__ropes {
+  fill: none;
+  stroke: var(--ll-slate);
+  stroke-width: 0.5;
+  stroke-opacity: 0.7;
+}
+
+.balloon__basket {
+  fill: var(--ll-slate);
+}
+
+.balloon__flame {
+  fill: var(--ll-ivory);
+  opacity: 0;
+}
+
+:root[data-theme="dark"] .balloon__ropes {
+  stroke: var(--ll-lilac);
+}
+
+:root[data-theme="dark"] .balloon__basket {
+  fill: var(--ll-lilac);
+}
+
+/* A flock of snow buntings (main.js buntings): tiny white birds */
+.buntings {
+  position: absolute;
+  inset: 0;
+}
+
+.bunting {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 3.4px;
+  height: 2.2px;
+  margin: -1.1px 0 0 -1.7px;
+  border-radius: 50%;
+  background: var(--ll-ivory);
+}
+
+.page-head .bunting {
+  width: 2.4px;
+  height: 1.6px;
+}
+
+/* Cloud shadows (main.js paintWeather): soft dark patches drifting over
+   the fields on a partly cloudy day, over the snow too, under the
+   readout. They drift left to right like the clouds (motion block). */
+.horizon__cloud-shadows {
+  position: absolute;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  top: calc(var(--sky-height) + 3.5px);
+  bottom: 0;
+  z-index: 1;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 3s var(--ease);
+  pointer-events: none;
+}
+
+.horizon--cloud-shadows .horizon__cloud-shadows {
+  opacity: 1;
+}
+
+:root[data-theme="dark"] .horizon__cloud-shadows {
+  display: none;
+}
+
+.cloud-shadow {
+  position: absolute;
+  width: var(--w);
+  height: 45%;
+  border-radius: 50%;
+  background: var(--ll-slate);
+  opacity: 0.2;
+  left: var(--x, 0);
+  filter: blur(8px);
+}
+
+/* Tap a cloud and it breaks into these puffs (main.js) */
+.cloud-puff {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--ll-ivory);
+}
+
+/* ---------- Sun dogs, rainbows and smoke ----------
+   One layer over the sky, cut off at its top and bottom (but free to
+   run past the sides to the edges of the screen). main.js sets
+   --sundogs, --rainbow and --smoke (each 0..1), plus --bow-x (where the
+   rainbow's middle is across the sky) and --bow-d (how far under the
+   horizon its centre is, as a share of its size). */
+.horizon__optics {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: var(--sky-height);
+  clip-path: polygon(-100vw 0, calc(100% + 100vw) 0, calc(100% + 100vw) 100%, -100vw 100%);
+  pointer-events: none;
+}
+
+/* Wildfire smoke: a warm haze across the whole width, thickest near
+   the horizon */
+.horizon__optics::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  background: linear-gradient(to bottom, rgba(217, 119, 87, 0), rgba(217, 119, 87, 0.45) 65%, rgba(250, 249, 245, 0.45));
+  opacity: calc(var(--smoke, 0) * 0.9);
+  transition: opacity 3s var(--ease);
+}
+
+:root[data-theme="dark"] .horizon__optics::before {
+  background: linear-gradient(to bottom, rgba(217, 119, 87, 0), rgba(217, 119, 87, 0.28));
+}
+
+/* The Belt of Venus (main.js beltStrength): just after sunset (and
+   before sunrise) on a clear day, a pink band low on the far side of
+   the sky from the sun, with the Earth's own blue-grey shadow under it,
+   rising as the sun sinks (--belt-rise, 0..1). Full width, brightest at
+   --belt-x (a share of the screen's width) and fainter toward the sun. */
+.horizon__belt {
+  --belt-shadow: calc(8% + var(--belt-rise, 0) * 30%); /* the Earth's shadow, from the bottom up */
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 100vw;
+  margin-left: -50vw;
+  height: 60%;
+  background: linear-gradient(to top,
+    color-mix(in srgb, var(--ll-slate) 35%, var(--ll-purple)) 0,
+    color-mix(in srgb, var(--ll-purple) 60%, var(--ll-lilac)) var(--belt-shadow),
+    color-mix(in srgb, var(--ll-clay) 60%, var(--ll-lilac)) calc(var(--belt-shadow) + 8%),
+    color-mix(in srgb, var(--ll-clay) 45%, var(--ll-ivory)) calc(var(--belt-shadow) + 22%),
+    rgba(250, 249, 245, 0) 100%);
+  -webkit-mask: radial-gradient(ellipse 75% 140% at calc(var(--belt-x, 0.2) * 100%) 100%, #000 25%, rgba(0, 0, 0, 0.3) 100%);
+  mask: radial-gradient(ellipse 75% 140% at calc(var(--belt-x, 0.2) * 100%) 100%, #000 25%, rgba(0, 0, 0, 0.3) 100%);
+  opacity: calc(var(--belt, 0) * 0.7);
+  transition: opacity 3s var(--ease);
+}
+
+:root[data-theme="dark"] .horizon__belt {
+  opacity: calc(var(--belt, 0) * 0.5);
+}
+
+/* A sun pillar (main.js pillarStrength): a narrow column of light
+   standing straight up from a low sun on a bitterly cold day. It starts
+   at the sun's middle, or at the horizon once the sun has set. */
+.horizon__pillar {
+  --pillar-w: calc(var(--sun-size) * 0.26);
+  --pillar-foot: min(var(--sky-height), calc((1 - var(--sun-alt)) * (var(--sky-height) - var(--sun-size) / 2) + var(--sun-size) / 2));
+  --pillar-len: calc(var(--sun-size) * 2.4);
+  position: absolute;
+  left: calc(var(--sun-x) * (100% - var(--sun-size)) + var(--sun-size) / 2 - var(--pillar-w) / 2);
+  top: calc(var(--pillar-foot) - var(--pillar-len));
+  width: var(--pillar-w);
+  height: var(--pillar-len);
+  border-radius: 50% 50% 0 0 / 12% 12% 0 0;
+  background: linear-gradient(to top, rgba(250, 249, 245, 0.95), rgba(217, 119, 87, 0.75) 35%, rgba(217, 119, 87, 0));
+  filter: blur(3px);
+  opacity: calc(var(--pillar, 0) * 0.85);
+  transition: top 1200ms var(--ease), left 1200ms var(--ease), opacity 3s var(--ease);
+}
+
+/* The rainbow: bands of the five colours (clay outside, then ivory,
+   lilac and purple inside, like red to violet), a fainter second bow
+   outside it the other way round, and the sky a touch brighter inside.
+   It fades out toward the ground. */
+.horizon__rainbow {
+  --bow-r: min(calc(var(--sky-height) * 0.8), 30vw); /* smaller on narrow phones */
+  --bow-box: calc(var(--bow-r) * 2.5); /* room for both bows, centred on their middle */
+  --to-ground: calc((1.25 - var(--bow-d, 0.3)) * var(--bow-r)); /* from the box's top down to the horizon */
+  position: absolute;
+  left: calc(var(--bow-x, 0.6) * 100% - var(--bow-box) / 2);
+  top: calc(100% + var(--bow-d, 0.3) * var(--bow-r) - var(--bow-box) / 2);
+  width: var(--bow-box);
+  height: var(--bow-box);
+  background:
+    radial-gradient(circle var(--bow-r),
+      rgba(250, 249, 245, 0.1) 0 80%, rgba(123, 63, 196, 0) 84%, rgba(123, 63, 196, 0.9) 87%,
+      rgba(180, 140, 232, 0.9) 90%, rgba(250, 249, 245, 0.9) 93%, rgba(217, 119, 87, 0.95) 96.5%,
+      rgba(217, 119, 87, 0) 100%),
+    radial-gradient(circle calc(var(--bow-r) * 1.24),
+      rgba(217, 119, 87, 0) 89%, rgba(217, 119, 87, 0.4) 91.5%, rgba(250, 249, 245, 0.35) 94.5%,
+      rgba(180, 140, 232, 0.3) 97%, rgba(180, 140, 232, 0) 100%);
+  -webkit-mask: linear-gradient(to bottom, #000 calc(var(--to-ground) - var(--sky-height) * 0.3), transparent var(--to-ground));
+  mask: linear-gradient(to bottom, #000 calc(var(--to-ground) - var(--sky-height) * 0.3), transparent var(--to-ground));
+  opacity: calc(var(--rainbow, 0) * 0.75);
+  transition: opacity 3s var(--ease);
+}
+
+:root[data-theme="dark"] .horizon__rainbow {
+  opacity: calc(var(--rainbow, 0) * 0.3);
+}
+
+/* Sun dogs: a faint ring around the sun (clay on its inside edge), and
+   a bright spot where it crosses the sun's height on either side. The
+   box is centred on the sun, so it moves with it, and is wider than the
+   ring (--dog-pad each side) so the dogs fit inside: the mask that fades
+   the ring's top also cuts off anything outside the box. The fade is
+   measured from the top of the sky, so a high sun's ring doesn't end in
+   a flat cut there. */
+.horizon__sundogs {
+  --dog-r: calc(var(--sun-size) * 1.45);
+  --dog-pad: calc(var(--sun-size) * 0.5);
+  /* Where the box's top sits (negative = above the top of the sky) */
+  --dog-top: calc((1 - var(--sun-alt)) * (var(--sky-height) - var(--sun-size) / 2) + var(--sun-size) / 2 - var(--dog-r));
+  /* The ring's fade starts at the top of the sky (or 4% down the box,
+     whichever is lower), so it never meets the sky's top as a flat cut */
+  --dog-fade: max(4%, calc(-1 * var(--dog-top)));
+  position: absolute;
+  left: calc(var(--sun-x) * (100% - var(--sun-size)) + var(--sun-size) / 2 - var(--dog-r) - var(--dog-pad));
+  top: var(--dog-top);
+  width: calc((var(--dog-r) + var(--dog-pad)) * 2);
+  height: calc(var(--dog-r) * 2);
+  background: radial-gradient(circle var(--dog-r), rgba(217, 119, 87, 0) 88%, rgba(217, 119, 87, 0.3) 92%, rgba(250, 249, 245, 0.22) 96%, rgba(250, 249, 245, 0) 100%);
+  /* The top of the ring fades away, so it never ends in a hard edge */
+  -webkit-mask: linear-gradient(to bottom, transparent var(--dog-fade), #000 calc(var(--dog-fade) + var(--sun-size) * 0.45));
+  mask: linear-gradient(to bottom, transparent var(--dog-fade), #000 calc(var(--dog-fade) + var(--sun-size) * 0.45));
+  opacity: var(--sundogs, 0);
+  transition: top 1200ms var(--ease), left 1200ms var(--ease), opacity 3s var(--ease);
+}
+
+/* The pillar and the sundogs move with translate too, like the sun above
+   (see "The sun and the things that follow it"), so the opening spin
+   doesn't count as the page jumping. */
+@supports (width: 1cqw) and (translate: 1px) {
+  .horizon__pillar {
+    left: 0;
+    top: 0;
+    translate:
+      calc(var(--sun-x) * (100cqw - var(--sun-size)) + var(--sun-size) / 2 - var(--pillar-w) / 2)
+      calc(var(--pillar-foot) - var(--pillar-len));
+    transition: translate 1200ms var(--ease), opacity 3s var(--ease);
+  }
+
+  .horizon__sundogs {
+    left: 0;
+    top: 0;
+    translate:
+      calc(var(--sun-x) * (100cqw - var(--sun-size)) + var(--sun-size) / 2 - var(--dog-r) - var(--dog-pad))
+      var(--dog-top);
+    transition: translate 1200ms var(--ease), opacity 3s var(--ease);
+  }
+}
+
+/* On phones the ring sits closer in, so the morning dog isn't off the
+   left edge while the sun is still low in the east */
+@media (max-width: 40rem) {
+  .horizon__sundogs {
+    --dog-r: calc(var(--sun-size) * 1.15);
+  }
+}
+
+/* Each dog: clay on the side facing the sun, then bright ivory, then a
+   lilac tail pointing away */
+.horizon__sundogs::before,
+.horizon__sundogs::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: calc(var(--sun-size) * 0.5);
+  height: calc(var(--sun-size) * 0.42);
+  margin-top: calc(var(--sun-size) * -0.21);
+  border-radius: 50%;
+  filter: blur(3px);
+}
+
+.horizon__sundogs::before {
+  left: calc(var(--dog-pad) - var(--sun-size) * 0.41);
+  background: linear-gradient(to left, rgba(217, 119, 87, 0.9), rgba(250, 249, 245, 0.95) 30%, rgba(180, 140, 232, 0.5) 65%, rgba(180, 140, 232, 0));
+}
+
+.horizon__sundogs::after {
+  right: calc(var(--dog-pad) - var(--sun-size) * 0.41);
+  background: linear-gradient(to right, rgba(217, 119, 87, 0.9), rgba(250, 249, 245, 0.95) 30%, rgba(180, 140, 232, 0.5) 65%, rgba(180, 140, 232, 0));
+}
+
+/* ---------- The land ----------
+   A prairie grain elevator on the horizon where the sun is at noon
+   (main.js draws its shadow on the ground, following the real sun),
+   plus the season along the horizon (main.js switches these on):
+   prairie crocuses in April (.horizon--crocus), young wheat in June and
+   July (.horizon--wheat) turning gold in August (.horizon--gold). */
+.horizon__elevator,
+.horizon__depot,
+.horizon__windmill,
+.horizon__pumpkin,
+.train-path,
+.tumble-path,
+.harvest-path {
+  --elevator-h: clamp(50px, 12.5vw, 72.5px);
+}
+
+.page-head .horizon__elevator,
+.page-head .horizon__depot,
+.page-head .horizon__windmill,
+.page-head .horizon__pumpkin,
+.page-head .train-path,
+.page-head .tumble-path,
+.page-head .harvest-path {
+  --elevator-h: 37.5px;
+}
+
+.horizon__elevator {
+  position: absolute;
+  z-index: 1;
+  left: calc(0.38 * (100% - var(--sun-size)) + var(--sun-size) / 2 - var(--elevator-h) * 30 / 72);
+  top: calc(var(--sky-height) - var(--elevator-h) + 0.5px);
+  width: calc(var(--elevator-h) * 86 / 72);
+  height: var(--elevator-h);
+  overflow: visible;
+  transform-origin: 50% 100%;
+  pointer-events: none;
+}
+
+/* The station depot, a third as tall as the elevator and just to its
+   right (its left edge is the elevator's right edge plus a small gap) */
+.horizon__depot {
+  position: absolute;
+  z-index: 1;
+  left: calc(0.38 * (100% - var(--sun-size)) + var(--sun-size) / 2 + var(--elevator-h) * 56 / 72 + var(--elevator-h) * 0.06);
+  top: calc(var(--sky-height) - var(--elevator-h) * 0.31 + 0.5px);
+  width: calc(var(--elevator-h) * 0.31 * 40 / 22);
+  height: calc(var(--elevator-h) * 0.31);
+  overflow: visible;
+  pointer-events: none;
+}
+
+/* The rails: a lilac line with sleepers under it, running right across the
+   ground just below the horizon (full-bleed like the line and the ground) */
+.horizon__track {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  top: calc(var(--sky-height) + 3.5px + 5px);
+  height: 5px;
+  background:
+    linear-gradient(to bottom, var(--rail) 0 1.5px, transparent 1.5px),
+    repeating-linear-gradient(to right, var(--sleeper) 0 2px, transparent 2px 7px) 0 1.5px / 100% 3.5px no-repeat;
+  --rail: color-mix(in srgb, var(--ll-lilac) 80%, var(--ll-purple));
+  --sleeper: color-mix(in srgb, var(--ll-slate) 55%, transparent);
+  pointer-events: none;
+}
+
+:root[data-theme="dark"] .horizon__track {
+  --rail: color-mix(in srgb, var(--ll-lilac) 55%, var(--ll-slate));
+  --sleeper: color-mix(in srgb, var(--ll-purple) 45%, transparent);
+}
+
+/* The freight train: same silhouette colour as the elevator, sitting on
+   the rails, running in from one edge (main.js; motion only). The cars are
+   taller than the gap between the rails and the horizon line, so the train
+   sits in front of the line (z-index 3, the line is 2) to stay whole. */
+.train-path {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  top: calc(var(--sky-height) + 3.5px + 5px - var(--elevator-h) * 0.2 + 1.5px);
+  height: calc(var(--elevator-h) * 0.2);
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.train {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: auto;
+  overflow: visible;
+}
+
+.train path,
+.train circle {
+  fill: color-mix(in srgb, var(--ll-slate) 72%, var(--ll-purple));
+}
+
+:root[data-theme="dark"] .train path,
+:root[data-theme="dark"] .train circle {
+  fill: color-mix(in srgb, var(--ll-slate) 55%, var(--ll-purple));
+}
+
+/* The headlight (named twice so it beats the dark-theme fill above) */
+.train .elevator__light,
+:root[data-theme="dark"] .train .elevator__light {
+  fill: var(--ll-clay);
+}
+
+/* A dark silhouette, a little purple so it sits in the sky */
+.horizon__elevator path,
+.horizon__depot path {
+  fill: var(--ll-slate);
+  fill: color-mix(in srgb, var(--ll-slate) 72%, var(--ll-purple));
+}
+
+:root[data-theme="dark"] .horizon__elevator path,
+:root[data-theme="dark"] .horizon__depot path {
+  fill: color-mix(in srgb, var(--ll-slate) 55%, var(--ll-purple));
+}
+
+/* The annex's barn door: a darker panel in the silhouette */
+.elevator__door {
+  fill: var(--ll-slate);
+  opacity: 0.55;
+}
+
+/* The little windows, on after dark */
+.elevator__light {
+  fill: var(--ll-clay);
+  opacity: 0;
+  transition: opacity 600ms var(--ease);
+}
+
+:root[data-theme="dark"] .elevator__light {
+  opacity: 1;
+  filter: drop-shadow(0 0 2px rgba(217, 119, 87, 0.9));
+}
+
+/* Valentine's Day: the elevator's windows glow lilac instead of clay */
+:root[data-theme="dark"] .horizon--valentines .horizon__elevator .elevator__light {
+  fill: var(--ll-lilac);
+  filter: drop-shadow(0 0 2px rgba(180, 140, 232, 0.9));
+}
+
+/* The small heart that floats up from the Home Base window and from a
+   rare wish (floatHeart in main.js moves and fades it) */
+.horizon__heart {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  overflow: visible;
+  fill: var(--ll-lilac);
+  filter: drop-shadow(0 0 3px rgba(180, 140, 232, 0.8));
+  pointer-events: none;
+}
+
+/* Valentine's Day hearts drifting up the sky: lilac after dark, and a
+   paler lilac by day so they show against the purple daytime sky */
+.valentine-heart {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: visible;
+  fill: color-mix(in srgb, var(--ll-lilac) 55%, var(--ll-ivory));
+}
+
+:root[data-theme="dark"] .valentine-heart {
+  fill: var(--ll-lilac);
+}
+
+/* Its shadow, on the ground strip (--land-shadow: 0..1 from main.js),
+   drawn over the snow band so it stays joined to the elevator's foot */
+.horizon__shadow {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  top: calc(var(--sky-height) + 3.5px);
+  height: var(--ground-height);
+  overflow: hidden;
+  opacity: calc(var(--land-shadow, 0) * 0.4);
+  transition: opacity 1200ms var(--ease);
+  pointer-events: none;
+}
+
+.horizon__shadow polygon {
+  fill: var(--ll-slate);
+}
+
+/* Wheat: a fringe of stalks along the horizon (an SVG pattern used as a
+   mask, like the rain). Pale and short while it's young, taller with
+   heads and gold from August. */
+.horizon__wheat {
+  --wheat-h: 6px;
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  top: calc(var(--sky-height) - var(--wheat-h) + 0.5px);
+  height: var(--wheat-h);
+  display: none;
+  background: color-mix(in srgb, var(--ll-lilac) 60%, var(--ll-ivory));
+  /* the second layer hides the part of the field the combine has cut (main.js sets --cut) */
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='6'%3E%3Cpath d='M1 6Q2 3 3.5 1.5M5 6Q5 3 4 1M8 6Q9 3.5 11 2.5M12 6Q12.5 3 14.5 1.5' fill='none' stroke='%23000' stroke-width='1' stroke-linecap='round'/%3E%3C/svg%3E") 0 0 / auto 100% repeat-x, linear-gradient(var(--cut-dir, to right), transparent var(--cut, 0px), #000 var(--cut, 0px));
+  -webkit-mask-composite: source-in;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='6'%3E%3Cpath d='M1 6Q2 3 3.5 1.5M5 6Q5 3 4 1M8 6Q9 3.5 11 2.5M12 6Q12.5 3 14.5 1.5' fill='none' stroke='%23000' stroke-width='1' stroke-linecap='round'/%3E%3C/svg%3E") 0 0 / auto 100% repeat-x, linear-gradient(var(--cut-dir, to right), transparent var(--cut, 0px), #000 var(--cut, 0px));
+  mask-composite: intersect;
+  transform-origin: 50% 100%;
+  pointer-events: none;
+}
+
+.horizon--wheat .horizon__wheat {
+  display: block;
+}
+
+.horizon--gold .horizon__wheat {
+  --wheat-h: 10px;
+  background: color-mix(in srgb, var(--ll-clay) 70%, var(--ll-ivory));
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='10'%3E%3Cpath d='M2 10V4.5M6 10V2.8M10 10V5' stroke='%23000' stroke-width='0.8'/%3E%3Cellipse cx='2' cy='3.2' rx='1.1' ry='2'/%3E%3Cellipse cx='6' cy='1.9' rx='1.1' ry='1.9'/%3E%3Cellipse cx='10' cy='3.8' rx='1.1' ry='2'/%3E%3C/svg%3E"), linear-gradient(var(--cut-dir, to right), transparent var(--cut, 0px), #000 var(--cut, 0px));
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='10'%3E%3Cpath d='M2 10V4.5M6 10V2.8M10 10V5' stroke='%23000' stroke-width='0.8'/%3E%3Cellipse cx='2' cy='3.2' rx='1.1' ry='2'/%3E%3Cellipse cx='6' cy='1.9' rx='1.1' ry='1.9'/%3E%3Cellipse cx='10' cy='3.8' rx='1.1' ry='2'/%3E%3C/svg%3E"), linear-gradient(var(--cut-dir, to right), transparent var(--cut, 0px), #000 var(--cut, 0px));
+}
+
+.page-head .horizon__wheat {
+  --wheat-h: 4px;
+}
+
+.page-head .horizon--gold .horizon__wheat {
+  --wheat-h: 7px;
+}
+
+:root[data-theme="dark"] .horizon__wheat {
+  opacity: 0.35;
+}
+
+/* Prairie crocuses: clumps of pale purple cups with gold hearts */
+.horizon__crocuses {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  top: calc(var(--sky-height) - 11px + 0.5px);
+  height: 11px;
+  display: none;
+  pointer-events: none;
+}
+
+.page-head .horizon__crocuses {
+  top: calc(var(--sky-height) - 8px + 0.5px);
+  height: 8px;
+}
+
+.horizon--crocus .horizon__crocuses {
+  display: block;
+}
+
+.horizon__crocuses svg {
+  position: absolute;
+  bottom: 0;
+  height: 100%;
+  overflow: visible;
+}
+
+.crocus__cup {
+  fill: var(--ll-lilac);
+}
+
+.crocus__heart {
+  fill: color-mix(in srgb, var(--ll-clay) 45%, var(--ll-ivory));
+}
+
+:root[data-theme="dark"] .horizon__crocuses {
+  opacity: 0.45;
+}
+
+/* Stubble where the combine has been: short gold stalks, only on the
+   cut part of the field (the opposite of the wheat's mask) */
+.horizon__stubble {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  top: calc(var(--sky-height) - 3px + 0.5px);
+  height: 3px;
+  display: none;
+  background: color-mix(in srgb, var(--ll-clay) 55%, var(--ll-ivory));
+  -webkit-mask:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='3'%3E%3Cpath d='M1 3V0.5M3 3V1.2' stroke='%23000' stroke-width='0.7'/%3E%3C/svg%3E") 0 0 / auto 100% repeat-x,
+    linear-gradient(var(--cut-dir, to right), #000 var(--cut, 0px), transparent var(--cut, 0px));
+  -webkit-mask-composite: source-in;
+  mask:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='3'%3E%3Cpath d='M1 3V0.5M3 3V1.2' stroke='%23000' stroke-width='0.7'/%3E%3C/svg%3E") 0 0 / auto 100% repeat-x,
+    linear-gradient(var(--cut-dir, to right), #000 var(--cut, 0px), transparent var(--cut, 0px));
+  mask-composite: intersect;
+  pointer-events: none;
+}
+
+.horizon--harvest.horizon--gold .horizon__stubble {
+  display: block;
+}
+
+:root[data-theme="dark"] .horizon__stubble {
+  opacity: 0.35;
+}
+
+/* The combine and its grain truck, on the horizon line in front of the
+   wheat (main.js drives it across; motion only) */
+.harvest-path {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  top: calc(var(--sky-height) - var(--elevator-h) * 0.32 + 1px);
+  height: calc(var(--elevator-h) * 0.32);
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.combine {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: calc(var(--elevator-h) * 0.32 * 70 / 21);
+  overflow: visible;
+}
+
+.combine path,
+.combine circle,
+.horizon__windmill path,
+.pumpkin__stalk {
+  fill: color-mix(in srgb, var(--ll-slate) 72%, var(--ll-purple));
+}
+
+.combine__glass {
+  fill: var(--ll-lilac);
+  opacity: 0.7;
+}
+
+:root[data-theme="dark"] .combine path,
+:root[data-theme="dark"] .combine circle,
+:root[data-theme="dark"] .horizon__windmill path,
+:root[data-theme="dark"] .pumpkin__stalk {
+  fill: color-mix(in srgb, var(--ll-slate) 55%, var(--ll-purple));
+}
+
+/* The windmill: a lattice tower and a wheel of blades, left of the
+   elevator (at 16% across, the elevator is at 38%). main.js sets
+   --mill-s (seconds per turn, from the real wind) and --mill-flip
+   (1 or -1, so the tail trails downwind). */
+.horizon__windmill {
+  position: absolute;
+  z-index: 1;
+  left: calc(0.16 * (100% - var(--sun-size)) + var(--sun-size) / 2 - var(--elevator-h) * 0.72 * 15 / 50);
+  top: calc(var(--sky-height) - var(--elevator-h) * 0.72 + 0.5px);
+  width: calc(var(--elevator-h) * 0.72 * 30 / 50);
+  height: calc(var(--elevator-h) * 0.72);
+  overflow: visible;
+  transform: scaleX(var(--mill-flip, 1));
+  pointer-events: none;
+}
+
+.horizon__windmill circle {
+  fill: color-mix(in srgb, var(--ll-slate) 72%, var(--ll-purple));
+}
+
+.horizon__windmill .windmill__rim {
+  fill: none;
+  stroke: color-mix(in srgb, var(--ll-slate) 72%, var(--ll-purple));
+  stroke-width: 0.8;
+}
+
+:root[data-theme="dark"] .horizon__windmill circle {
+  fill: color-mix(in srgb, var(--ll-slate) 55%, var(--ll-purple));
+}
+
+:root[data-theme="dark"] .horizon__windmill .windmill__rim {
+  fill: none;
+  stroke: color-mix(in srgb, var(--ll-slate) 55%, var(--ll-purple));
+}
+
+.windmill__wheel {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* Halloween: a jack-o'-lantern just left of the elevator's foot, its
+   carved face glowing after dark */
+.horizon__pumpkin {
+  position: absolute;
+  z-index: 1;
+  left: calc(0.38 * (100% - var(--sun-size)) + var(--sun-size) / 2 - var(--elevator-h) * 30 / 72 - var(--elevator-h) * 0.2);
+  top: calc(var(--sky-height) - var(--elevator-h) * 0.22 * 13 / 16 + 0.5px);
+  width: calc(var(--elevator-h) * 0.22);
+  height: calc(var(--elevator-h) * 0.22 * 13 / 16);
+  display: none;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.horizon--halloween .horizon__pumpkin {
+  display: block;
+}
+
+.pumpkin__body {
+  fill: var(--ll-clay);
+}
+
+.pumpkin__face {
+  fill: var(--ll-slate);
+  opacity: 0.75;
+}
+
+:root[data-theme="dark"] .pumpkin__body {
+  fill: color-mix(in srgb, var(--ll-clay) 60%, var(--ll-slate));
+}
+
+:root[data-theme="dark"] .pumpkin__face {
+  fill: color-mix(in srgb, var(--ll-clay) 40%, var(--ll-ivory));
+  opacity: 1;
+  filter: drop-shadow(0 0 1.5px rgba(217, 119, 87, 0.95));
+}
+
+/* December: lights along the elevator's rooflines, in clay, lilac and
+   ivory, glowing (and twinkling, below) after dark */
+.elevator__xmas {
+  display: none;
+}
+
+.horizon--christmas .elevator__xmas {
+  display: inline;
+}
+
+.xmas--0 { fill: var(--ll-clay); }
+.xmas--1 { fill: var(--ll-lilac); }
+.xmas--2 { fill: var(--ll-ivory); }
+
+:root:not([data-theme="dark"]) .elevator__xmas {
+  opacity: 0.75;
+}
+
+:root[data-theme="dark"] .xmas {
+  filter: drop-shadow(0 0 1.2px currentColor);
+}
+
+:root[data-theme="dark"] .xmas--0 { color: var(--ll-clay); }
+:root[data-theme="dark"] .xmas--1 { color: var(--ll-lilac); }
+:root[data-theme="dark"] .xmas--2 { color: var(--ll-ivory); }
+
+/* A tumbleweed rolling along the ground in front of the rails (main.js
+   bounces it across on a dry, windy day; motion only) */
+.tumble-path {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  top: calc(var(--sky-height) - 20px);
+  height: calc(var(--ground-height) + 20px);
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.tumbleweed {
+  position: absolute;
+  left: 0;
+  top: calc(20px + 17px - var(--elevator-h) * 0.22);
+  width: calc(var(--elevator-h) * 0.22);
+  height: calc(var(--elevator-h) * 0.22);
+  overflow: visible;
+}
+
+.page-head .tumbleweed {
+  top: calc(20px + 12px - var(--elevator-h) * 0.22);
+}
+
+.tumbleweed path {
+  fill: none;
+  stroke: color-mix(in srgb, var(--ll-clay) 45%, var(--ll-slate));
+  stroke-width: 1.1;
+  stroke-linecap: round;
+}
+
+:root[data-theme="dark"] .tumbleweed path {
+  stroke: color-mix(in srgb, var(--ll-lilac) 45%, var(--ll-slate));
+}
+
+/* The secret stock car (main.js stockCar): a small silhouette with a clay
+   stripe, on the ground just under the rails, in the tumbleweed's lane. */
+.stockcar {
+  position: absolute;
+  left: 0;
+  top: calc(20px + 19px - var(--elevator-h) * 0.15);
+  width: calc(var(--elevator-h) * 0.39);
+  height: calc(var(--elevator-h) * 0.15);
+  overflow: visible;
+}
+
+.page-head .stockcar {
+  top: calc(20px + 14px - var(--elevator-h) * 0.15);
+}
+
+.stockcar path,
+.stockcar circle {
+  fill: color-mix(in srgb, var(--ll-slate) 72%, var(--ll-purple));
+}
+
+:root[data-theme="dark"] .stockcar path,
+:root[data-theme="dark"] .stockcar circle {
+  fill: color-mix(in srgb, var(--ll-slate) 55%, var(--ll-purple));
+}
+
+.stockcar .stockcar__stripe {
+  fill: var(--ll-clay);
+}
+
+/* Lightning bolts in a storm (main.js draws them from the clouds down
+   to the horizon, on its own or where the sky is tapped) */
+.horizon__bolts {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  height: var(--sky-height);
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.bolt {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: visible;
+}
+
+.bolt path {
+  fill: none;
+  stroke: var(--ll-ivory);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 4px var(--ll-lilac));
+}
+
+/* Halloween bats (the critters' colour: slate by day, lilac at night) */
+.bat {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: visible;
+}
+
+.bat path {
+  fill: currentColor;
+  transform-box: fill-box;
+  transform-origin: 50% 40%;
+}
+
+/* Fireworks: sparks in the palette's light colours */
+.spark {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  margin: -2px 0 0 -2px;
+  border-radius: 50%;
+  background: var(--ll-ivory);
+  box-shadow: 0 0 8px 2px rgba(250, 249, 245, 0.75);
+}
+
+.spark--clay {
+  background: var(--ll-clay);
+  box-shadow: 0 0 9px 2px rgba(217, 119, 87, 0.85);
+}
+
+.spark--lilac {
+  background: var(--ll-lilac);
+  box-shadow: 0 0 9px 2px rgba(180, 140, 232, 0.85);
+}
+
+.page-head .spark {
+  width: 3px;
+  height: 3px;
+  margin: -1.5px 0 0 -1.5px;
+}
+
+/* The secret parade turns the northern lights on, day or night */
+.horizon--parade {
+  --aurora: 1 !important;
+}
+
+/* Older browsers without color-mix() would drop the mixed colours above
+   (they hold var(), so the browser can't fall back), so they get plain
+   brand colours instead */
+@supports not (color: color-mix(in srgb, red, blue)) {
+  .leaf--gold,
+  .leaf--rust,
+  .horizon--gold .horizon__wheat {
+    background: var(--ll-clay);
+  }
+
+  .horizon__wheat {
+    background: var(--ll-lilac);
+  }
+
+  .horizon__elevator path,
+  .horizon__depot path,
+  .train path,
+  .train circle,
+  :root[data-theme="dark"] .horizon__elevator path,
+  :root[data-theme="dark"] .horizon__depot path,
+  :root[data-theme="dark"] .train path,
+  :root[data-theme="dark"] .train circle {
+    fill: var(--ll-slate);
+  }
+
+  .crocus__heart {
+    fill: var(--ll-ivory);
+  }
+}
+
+/* The label from tapping a star, planet, the moon or the sun (or a wish).
+   main.js puts it just above whatever was tapped. */
+.horizon__tip {
+  position: absolute;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  margin: 0;
+  padding: 0.45rem 0.7rem;
+  white-space: nowrap;
+  border-radius: 0.6rem;
+  background: var(--ll-slate);
+  border: 1px solid rgba(180, 140, 232, 0.45);
+  color: var(--ll-ivory);
+  font-size: 0.75rem;
+  line-height: 1.3;
+  text-align: center;
+  transform: translate(-50%, calc(-100% - 10px));
+  pointer-events: none;
+}
+
+.horizon__tip--below {
+  transform: translate(-50%, 10px);
+}
+
+.horizon__tip strong {
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.horizon__tip span {
+  opacity: 0.8;
+}
+
+.horizon__tip[hidden] {
+  display: none;
+}
+
+/* "Longest day of the year · 16h 45m of light": a pill just above the
+   horizon line, shown by main.js on the two solstices only */
+.horizon__badge {
+  position: absolute;
+  right: 0;
+  bottom: calc(var(--ground-height) + 0.75rem);
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  background: var(--sky-ink);
+  color: var(--sky);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.horizon__badge::before {
+  content: "";
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.horizon__badge[hidden] {
+  display: none;
+}
+
+/* "Fog advisory · until 5:39 PM": Environment Canada's alert for the
+   spot under the sky (main.js setUpAlert). On phones it sits in the
+   ground strip on the right, beside the readout, which leaves it room
+   (--alert-room, set by main.js to the pill's width). From 40rem the
+   readout spreads across the strip, so the pill goes back above the
+   horizon line on the left. Warnings are solid clay. */
+.horizon__alert {
+  position: absolute;
+  right: 0;
+  top: calc(var(--sky-height) + 3.5px + 10px + 0.35rem);
+  bottom: 0;
+  margin: auto 0;
+  height: max-content;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  max-width: calc(100% - 1rem);
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  background: var(--sky-ink);
+  color: var(--sky);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.horizon__alert::before {
+  content: "!";
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background: var(--ll-clay);
+  color: var(--ll-slate);
+  letter-spacing: 0;
+}
+
+.horizon__alert--warning {
+  background: var(--ll-clay);
+  color: var(--ll-slate);
+}
+
+.horizon__alert--warning::before {
+  background: var(--ll-slate);
+  color: var(--ll-clay);
+}
+
+.horizon__alert:focus-visible {
+  outline: 2px solid var(--sky-ink);
+  outline-offset: 3px;
+}
+
+.horizon__alert[hidden] {
+  display: none;
+}
+
+/* The "until 5:39 PM" part only fits from tablet size up */
+.horizon__alert-extra {
+  display: none;
+}
+
+@media (max-width: 39.99rem) {
+  .horizon__readout {
+    right: var(--alert-room, 0px);
+  }
+}
+
+@media (min-width: 40rem) {
+  .horizon__alert {
+    right: auto;
+    left: 0;
+    top: auto;
+    bottom: calc(var(--ground-height) + 0.75rem);
+    margin: 0;
+  }
+
+  .horizon__alert-extra {
+    display: inline;
+  }
+}
+
+/* "Facing southwest": shown in the corner while the compass turns the
+   sky (Tilt sky, main.js) */
+.horizon__facing {
+  position: absolute;
+  left: 0;
+  top: 0.4rem;
+  z-index: 3;
+  margin: 0;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--sky-muted);
+  pointer-events: none;
+}
+
+.horizon__facing[hidden] {
+  display: none;
+}
+
+/* With the compass on, the sun or moon fades when it's behind you */
+.horizon--sun-behind .horizon__sun,
+.horizon--sun-behind .horizon__ray {
+  opacity: 0.15;
+}
+
+.horizon--moon-behind .horizon__moon {
+  opacity: calc(var(--moon-show, 0) * 0.15);
+}
+
+/* The "· 16h 46m of light" part only fits from tablet size up */
+.horizon__badge-extra {
+  display: none;
+}
+
+@media (min-width: 40rem) {
+  .horizon__badge-extra {
+    display: inline;
+  }
+}
+
+/* ---------- Buttons ---------- */
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 2.75rem;
+  padding: 0.55rem 1.3rem;
+  border: 2px solid transparent;
+  border-radius: 999px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 200ms var(--ease), background-color 200ms, color 200ms, border-color 200ms;
+}
+
+.button:hover {
+  transform: translateY(-1px);
+}
+
+.button--play,
+.button--start,
+.button--send {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.button--play::before,
+.button--start::before {
+  content: "▶";
+  font-size: 0.7em;
+}
+
+.button--play:hover,
+.button--start:hover,
+.button--send:hover {
+  color: var(--on-accent);
+  background: #E88A6A;
+}
+
+.button--send:disabled {
+  opacity: 0.6;
+  cursor: wait;
+  transform: none;
+}
+
+.button--ghost {
+  border-color: currentColor;
+  background: transparent;
+  color: inherit;
+}
+
+.button--ghost:hover {
+  color: inherit;
+  background: rgba(250, 249, 245, 0.12);
+}
+
+.hero .button--ghost {
+  color: var(--sky-ink);
+}
+
+/* ---------- Sections ---------- */
+.section {
+  padding-block: clamp(2.5rem, 7vw, 4.5rem) 0;
+}
+
+.section:last-of-type {
+  padding-bottom: clamp(3rem, 8vw, 5rem);
+}
+
+.section__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.more-link {
+  font-weight: 700;
+  color: var(--secondary);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.more-link:hover {
+  color: var(--accent-ink);
+}
+
+/* ---------- "Now building" strip ----------
+   A row of pills with what's on the bench this week, from now.json.
+   main.js shows it once the file loads; it stays hidden otherwise. */
+.now {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem 1.25rem;
+  margin-top: 1.5rem;
+  padding: 0.9rem 1.1rem;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--card);
+  box-shadow: var(--shadow);
+}
+
+.now[hidden] {
+  display: none;
+}
+
+.now__label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  line-height: 1.4;
+  text-transform: uppercase;
+  color: var(--secondary);
+}
+
+/* A little clay sun that glows (see the motion section at the bottom) */
+.now__label::before {
+  content: "";
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.now__list {
+  flex: 1 1 18rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.now__item {
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  background: var(--secondary-soft);
+  color: var(--secondary);
+  font-size: 0.85rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.now__item a {
+  color: inherit;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.15em;
+}
+
+.now__updated {
+  margin: 0;
+  margin-left: auto;
+  font-size: 0.78rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* ---------- Sky this week ----------
+   The card under "Now building" on the home page: a short dated list of
+   what's coming up in the sky (main.js, skyWeek), then the wish counter
+   and its badges. */
+.sky-week {
+  margin-top: 1rem;
+  padding: 0.9rem 1.1rem;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--card);
+  box-shadow: var(--shadow);
+}
+
+.sky-week[hidden] {
+  display: none;
+}
+
+/* Sky this week needs JavaScript, so like the badges box below it only
+   shows once the <head> script has added the "js" class. It shows from
+   the first frame, folded to its title and next-up line (which keeps its
+   height while empty), so nothing below it moves when main.js fills it. */
+:root:not(.js) .sky-week[data-sky-week] {
+  display: none;
+}
+
+.sky-week__list {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Date on the left, what's happening on the right; stacked on phones */
+.sky-week__item {
+  display: grid;
+  grid-template-columns: 6.5rem 1fr;
+  gap: 0.15rem 0.75rem;
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.sky-week__when {
+  font-weight: 700;
+  color: var(--secondary);
+}
+
+@media (max-width: 26rem) {
+  .sky-week__item {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* "Clear sky" / "Some cloud" / "Cloudy": the cloud forecast tag on
+   each thing to look at (main.js setUpSkyWeek) */
+.sky-week__cloud {
+  display: inline-block;
+  margin-left: 0.2rem;
+  padding: 0.05rem 0.5rem;
+  border: 1px solid var(--secondary);
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.sky-week__cloud--clear {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--ll-slate);
+}
+
+.sky-week__cloud--cloudy {
+  border-style: dashed;
+  color: var(--muted);
+  border-color: var(--muted);
+}
+
+.sky-week__wishes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.6rem;
+  margin: 0.9rem 0 0;
+  padding-top: 0.8rem;
+  border-top: 1px solid var(--rule);
+  font-size: 0.9rem;
+}
+
+.sky-week__wishes strong::before {
+  content: "\2726  "; /* a four-point star */
+  color: var(--accent);
+}
+
+.sky-week__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.sky-week__badge {
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: var(--secondary-soft);
+  color: var(--secondary);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.sky-week__next,
+.sky-week__note {
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.sky-week__note {
+  margin: 0.5rem 0 0;
+}
+
+/* ---------- Your badges (home page) and the "Badge earned" note ---------- */
+/* The badges box folds: its summary line is the label, the "2 of 12
+   earned" count and a chevron at the right; tapping anywhere on it opens
+   the list below. */
+.badges__summary {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  column-gap: 1rem;
+  cursor: pointer;
+  list-style: none;
+}
+
+/* The badges box needs JavaScript, so it only shows once the <head> script
+   has added the "js" class. The count line keeps its height while it's
+   still empty, so nothing below it moves when main.js fills it in. */
+:root:not(.js) .badges {
+  display: none;
+}
+
+.badges__count:empty::before {
+  content: "\00a0";
+}
+
+.badges__summary::-webkit-details-marker {
+  display: none;
+}
+
+.badges__summary > * {
+  grid-column: 1;
+}
+
+/* The chevron: a square's two sides, turned to point down (up when open) */
+.badges__summary::after {
+  content: "";
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  width: 0.65rem;
+  height: 0.65rem;
+  margin: 0 0.3rem 0.3rem 0;
+  border-right: 2px solid var(--secondary);
+  border-bottom: 2px solid var(--secondary);
+  transform: rotate(45deg);
+  transition: transform 220ms var(--ease);
+}
+
+.badges[open] .badges__summary::after {
+  margin: 0.3rem 0.3rem 0 0;
+  transform: rotate(225deg);
+}
+
+.badges__summary:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+
+.badges__count {
+  margin: 0.35rem 0 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+/* Sky this week borrows this fold. Its one line is a sentence, not a
+   count, so it's smaller, and it goes away once the full list is open. */
+.badges__count--line {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.badges[open] .badges__count--line {
+  display: none;
+}
+
+.badges[open] .badges__list {
+  margin-top: 0.9rem;
+}
+
+.badges__list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.badge {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: 0.55rem 0.75rem;
+  border: 1px dashed var(--rule);
+  border-radius: 12px;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.badge strong {
+  font-size: 0.9rem;
+  color: var(--ink);
+}
+
+.badge--earned {
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.badge--earned strong {
+  color: var(--on-accent);
+}
+
+.badge--earned strong::before {
+  content: "\2726  "; /* a four-point star */
+}
+
+.badge-toast {
+  position: fixed;
+  left: 50%;
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  z-index: 110; /* above the Play here frame, so a badge for playing shows */
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  max-width: min(22rem, calc(100vw - 2rem));
+  padding: 0.7rem 1.1rem;
+  border: 2px solid var(--ll-clay);
+  border-radius: 14px;
+  background: var(--ll-slate);
+  color: var(--ll-ivory);
+  box-shadow: var(--shadow);
+  font-size: 0.9rem;
+  text-align: center;
+  transform: translate(-50%, 0);
+  visibility: hidden;
+  opacity: 0;
+}
+
+/* Confetti from a new badge (main.js throws it; motion only) */
+.confetti {
+  position: fixed;
+  z-index: 111;
+  width: 8px;
+  height: 4px;
+  margin: -2px 0 0 -4px;
+  border-radius: 1px;
+  pointer-events: none;
+}
+
+.confetti--0 { background: var(--ll-clay); }
+.confetti--1 { background: var(--ll-purple); }
+.confetti--2 { background: var(--ll-lilac); }
+.confetti--3 { background: color-mix(in srgb, var(--ll-clay) 50%, var(--ll-ivory)); }
+
+.badge-toast.is-shown {
+  visibility: visible;
+  opacity: 1;
+}
+
+.badge-toast strong {
+  color: var(--ll-clay);
+}
+
+/* ---------- Memory card ("Continue?") ----------
+   main.js shows this on the home page when the phone remembers a game
+   you opened before. Hidden otherwise. */
+.continue {
+  display: none;
+  margin-top: 1.25rem;
+}
+
+.continue.is-on {
+  display: block;
+}
+
+.continue__card {
+  display: grid;
+  grid-template-columns: 5rem 1fr;
+  gap: 0.9rem 1rem;
+  align-items: center;
+  padding: 0.9rem;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--card);
+  box-shadow: var(--shadow);
+}
+
+.continue__cover {
+  width: 5rem;
+  height: 5rem;
+  border-radius: 12px;
+  object-fit: cover;
+  background: var(--surface);
+  display: block;
+}
+
+.continue__label {
+  margin: 0;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--secondary);
+}
+
+.continue__title {
+  margin: 0.1rem 0 0;
+  font-size: 1.25rem;
+}
+
+.continue__when {
+  margin: 0.1rem 0 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.continue__actions {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.continue__actions .button--ghost {
+  color: var(--ink);
+}
+
+/* ---------- Project cards ---------- */
+.project-list {
+  display: grid;
+  gap: 1.25rem;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* While main.js is still filling a list or a game page, hold the space
+   (about a screen's worth), so the footer doesn't jump down when the cards
+   arrive. Only the "Loading..." placeholders in the HTML carry is-loading;
+   main.js replaces them, and the empty-list messages don't have it. */
+:has(> .is-loading) {
+  min-height: 100svh;
+}
+
+.project-list__note {
+  color: var(--muted);
+}
+
+.project {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--card);
+  box-shadow: var(--shadow);
+  transition: transform 260ms var(--ease), box-shadow 260ms var(--ease), border-color 260ms;
+}
+
+/* The lift is for a mouse or the keyboard. On a phone "hover" sticks to
+   the last card touched, so a card stayed raised after every swipe. */
+.project:focus-within {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lift);
+  border-color: var(--secondary);
+}
+
+@media (hover: hover) {
+  .project:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lift);
+    border-color: var(--secondary);
+  }
+}
+
+.project__cover {
+  display: block;
+  aspect-ratio: 4 / 3;
+  background: var(--secondary);
+  overflow: hidden;
+}
+
+.project__cover img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Moving covers: main.js lays a game's recorded clip over its cover
+   picture while the card is on screen, and fades it in once it plays. */
+.project__cover {
+  position: relative;
+}
+
+.project__clip {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 400ms var(--ease);
+  pointer-events: none;
+}
+
+.project__cover.is-playing .project__clip {
+  opacity: 1;
+}
+
+.project__cover[data-cat="trading"] {
+  background: var(--ll-purple);
+}
+
+.project__cover[data-cat="ai"] {
+  background: var(--ll-slate);
+}
+
+.project__initials {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  color: var(--ll-ivory);
+  font-weight: 700;
+  font-size: clamp(2.5rem, 10vw, 4rem);
+  letter-spacing: -0.04em;
+}
+
+.project__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1rem 1.1rem 1.2rem;
+}
+
+.project__title {
+  font-size: 1.4rem;
+  margin: 0;
+}
+
+.project__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0;
+  font-size: 0.8rem;
+}
+
+.project__status {
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  background: var(--secondary-soft);
+  color: var(--secondary);
+  font-weight: 700;
+}
+
+/* Status colours by stage (the "stage" in STATUSES at the top of main.js).
+   "dev" (being built) keeps the purple pill above. */
+.project__status[data-stage="out"] { /* Complete, Released */
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.project__status[data-stage="live"] { /* Live */
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px var(--accent);
+  color: var(--accent-ink);
+}
+
+.project__status[data-stage="idea"] { /* Concept */
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px var(--ll-lilac);
+  color: var(--secondary);
+}
+
+.project__category {
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid var(--rule);
+  color: var(--muted);
+  font-weight: 700;
+}
+
+/* "Plays in your browser": a quiet promise next to the category pill */
+.project__instant {
+  padding: 0.2rem 0;
+  color: var(--secondary);
+  font-weight: 700;
+}
+
+/* The game page's clip: a phone-shaped video, never wider than the screen */
+.game__clip video {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: 30rem;
+  aspect-ratio: 1 / 2;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--ll-slate);
+}
+
+/* The game page's cinematic: a wide 16:9 video, never wider than the screen */
+.game__film video {
+  display: block;
+  width: 100%;
+  max-width: 48rem;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--ll-slate);
+}
+
+.game__clip-note {
+  margin: 0.5rem 0 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.project__summary {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+/* "v1.4 · Added night mode", from "version" and "latest" in projects.json */
+.project__version {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.project__version strong {
+  color: var(--accent-ink);
+}
+
+/* Screenshots drawer: a closed "Screenshots (4)" line that opens a strip
+   you swipe sideways. Every picture is the same height and keeps its own
+   width, so tall phone shots and wide desktop shots sit side by side. */
+.project,
+.project__body {
+  min-width: 0; /* lets the strip scroll inside the card instead of stretching it */
+}
+
+.shots summary {
+  display: inline-block;
+  padding: 0.2rem 0;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--secondary);
+  cursor: pointer;
+}
+
+.shots summary:hover {
+  color: var(--accent-ink);
+}
+
+.shots summary:focus-visible,
+.shots__strip:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.shots__strip {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 0.5rem;
+  padding-bottom: 0.4rem;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  overscroll-behavior-x: contain;
+}
+
+.shots__strip img {
+  flex: none;
+  display: block;
+  height: 12rem;
+  width: auto;
+  border: 1px solid var(--rule);
+  border-radius: calc(var(--radius) / 2);
+  background: var(--secondary-soft); /* shows while a picture loads */
+  scroll-snap-align: start;
+}
+
+/* ---------- Home page: the "Pick a game" swipe row ----------
+   Every game in one sideways row of small cards (main.js setUpGameRow).
+   They are the normal cards with the long parts hidden: the summary,
+   version line, progress bar, code link and screenshots are all on the
+   Games page and each game's own page. The row runs to the screen edges
+   on a phone, and the next card always peeks in to show there is more. */
+.project-list--row {
+  display: flex;
+  gap: 0.85rem;
+  margin-inline: calc(var(--gutter) * -1);
+  padding: 0.3rem var(--gutter) 0.9rem; /* room for the hover lift and shadow */
+  overflow-x: auto;
+  /* Sideways only. Left on "auto" the row could also slide a few pixels
+     up and down inside itself, and on an iPhone it bounced under the
+     thumb on every swipe. */
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  scroll-padding-inline: var(--gutter);
+  scrollbar-width: thin;
+}
+
+.project-list--row:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.project-list--row > .project {
+  flex: 0 0 min(70vw, 15rem);
+  scroll-snap-align: start;
+}
+
+.project-list--row .project__body {
+  flex: 1;
+  gap: 0.5rem;
+  padding: 0.8rem 0.9rem 0.95rem;
+}
+
+.project-list--row .project__title {
+  font-size: 1.15rem;
+}
+
+.project-list--row .project__links {
+  margin-top: auto; /* buttons line up along the bottom of every card */
+  padding-top: 0.3rem;
+  gap: 0.5rem 0.8rem;
+}
+
+.project-list--row .project__summary,
+.project-list--row .project__version,
+.project-list--row .project__category,
+.project-list--row .project__instant,
+.project-list--row .field,
+.project-list--row .shots,
+.project-list--row .project__links a:not(.button):not(.project__main) {
+  display: none;
+}
+
+/* The arrows under the row: for mice, so hidden on phones */
+.row-nav {
+  display: none;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin: 0.25rem 0 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.row-nav__btn {
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.row-nav__btn:hover:not(:disabled) {
+  border-color: var(--secondary);
+  color: var(--secondary);
+}
+
+.row-nav__btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.row-nav__btn:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+@media (min-width: 40rem) {
+  .row-nav:not([hidden]) {
+    display: flex;
+  }
+}
+
+/* ---------- What's new page ----------
+   One row per project with a version or a latest line: a small cover
+   beside the text. On a 360px phone the cover shrinks to 6rem. */
+.news {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.75rem;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--card);
+  box-shadow: var(--shadow);
+}
+
+.news__cover {
+  flex: none;
+  width: 6rem;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: calc(var(--radius) / 2);
+  background: var(--ll-purple);
+  display: grid;
+  place-items: center;
+}
+
+.news__cover img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.news__body {
+  min-width: 0;
+}
+
+.news__title {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.news__line {
+  margin: 0.2rem 0 0;
+  font-size: 0.95rem;
+}
+
+.news__line strong {
+  color: var(--accent-ink);
+}
+
+.news__status {
+  margin: 0.15rem 0 0;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.news .project__links {
+  margin-top: 0.5rem;
+}
+
+@media (min-width: 40rem) {
+  .news__cover {
+    width: 9rem;
+  }
+}
+
+/* Progress bar, drawn as a little horizon: the fill is the ground, the
+   ball is a sun sitting where the project has got to. */
+.field {
+  position: relative;
+  height: 6px;
+  margin-top: 0.25rem;
+  border-radius: 3px;
+  background: var(--field);
+  overflow: visible;
+}
+
+.field__drive {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: calc(var(--progress, 0) * 1%);
+  border-radius: 3px;
+  background: var(--secondary);
+  transition: width 900ms var(--ease);
+}
+
+.field__ball {
+  position: absolute;
+  top: 50%;
+  left: calc(var(--progress, 0) * 1%);
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  border-radius: 50%;
+  background: var(--accent);
+  transition: left 900ms var(--ease);
+}
+
+/* The bar's fill follows the status colour too. It's a lighter clay
+   than the ball so the sun still stands out at the end of a full bar. */
+.field[data-stage="out"] .field__drive,
+.field[data-stage="live"] .field__drive {
+  background: color-mix(in srgb, var(--accent) 55%, var(--field));
+}
+
+.field[data-stage="idea"] .field__drive {
+  background: var(--ll-lilac);
+}
+
+.field.is-waiting .field__drive {
+  width: 0;
+}
+
+.field.is-waiting .field__ball {
+  left: 0;
+}
+
+.project__links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1rem;
+  margin: 0.4rem 0 0;
+}
+
+.project__link {
+  font-weight: 700;
+  color: var(--secondary);
+  text-decoration: none;
+}
+
+.project__link:hover {
+  color: var(--accent-ink);
+}
+
+/* ---------- One game's own page (game.html) ---------- */
+.game {
+  display: grid;
+  gap: 1.75rem;
+  margin-top: 1.5rem;
+  min-width: 0;
+}
+
+.game__top {
+  display: grid;
+  gap: 1.1rem;
+}
+
+.game__cover {
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.game__info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  min-width: 0;
+}
+
+.game__summary {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.game__note {
+  color: var(--muted);
+}
+
+.game h2 {
+  margin: 0 0 0.6rem;
+  font-size: 1.25rem;
+}
+
+.game__story p {
+  max-width: 40rem;
+}
+
+.game__more-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.game__more-list a {
+  font-weight: 700;
+  color: var(--secondary);
+  text-decoration: none;
+}
+
+.game__more-list a:hover {
+  color: var(--accent-ink);
+}
+
+/* "Play here": the game in a frame over the whole screen (openPlayer in
+   main.js). The bar stays slate in both themes so it reads as part of
+   the player, not the page. */
+.has-player,
+.has-player body {
+  overflow: hidden;
+}
+
+.player {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  background: var(--ll-slate);
+}
+
+.player__bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: max(0.4rem, env(safe-area-inset-top)) max(0.75rem, env(safe-area-inset-right)) 0.4rem max(0.75rem, env(safe-area-inset-left));
+  border-bottom: 2px solid var(--ll-clay);
+  color: var(--ll-ivory);
+}
+
+.player__title {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  font-family: var(--font-display);
+  font-weight: 700;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.player__tools {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.player__tool {
+  min-height: 2.5rem;
+  padding: 0.3rem 0.8rem;
+  border: 1px solid rgba(250, 249, 245, 0.35);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ll-ivory);
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+}
+
+.player__tool:hover {
+  border-color: var(--ll-ivory);
+  color: var(--ll-ivory);
+}
+
+.player__close {
+  background: var(--ll-clay);
+  border-color: var(--ll-clay);
+  color: var(--ll-slate);
+}
+
+.player__close:hover {
+  color: var(--ll-slate);
+  background: #E88A6A;
+}
+
+.player__frame {
+  flex: 1;
+  width: 100%;
+  border: 0;
+  background: #000;
+}
+
+@media (min-width: 48rem) {
+  .game__top {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+    gap: 1.75rem;
+  }
+}
+
+/* The whole card is one big tap target. The main button ("Play it" or
+   "Take a look") stretches an invisible layer over the card; the other
+   links, the screenshots drawer and the strip sit above it so they still
+   work on their own. */
+.project,
+.news {
+  position: relative;
+}
+
+.project__main::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.project__main:hover {
+  transform: none; /* a transform would shrink the stretched layer to the button */
+}
+
+.project:has(.project__main),
+.news:has(.project__main) {
+  cursor: pointer;
+}
+
+.project__links a:not(.project__main),
+.shots {
+  position: relative;
+  z-index: 2;
+}
+
+/* ---------- About: Kelbo's character sheet ----------
+   One card laid out like a character-select screen: a purple header with
+   the name and three stats, then titled blocks, with the party members as
+   small cards of their own. */
+.sheet {
+  max-width: 44rem;
+  margin: 0 auto;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--card);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.sheet__head {
+  padding: 1.25rem 1.25rem 1.1rem;
+  background: var(--ll-purple);
+  color: var(--ll-ivory);
+  border-bottom: 4px solid var(--ll-clay);
+}
+
+.sheet__label {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #E6D8F7;
+}
+
+.sheet__name {
+  margin: 0.15rem 0 0;
+  font-size: clamp(2.4rem, 12vw, 3.6rem);
+  line-height: 1;
+  letter-spacing: 0.04em;
+}
+
+/* Class / Home base / Studio: three stat boxes, stacked on small phones */
+.sheet__stats {
+  display: grid;
+  gap: 0.5rem;
+  margin: 1rem 0 0;
+}
+
+.sheet__stats div {
+  padding: 0.5rem 0.75rem;
+  border-radius: 10px;
+  background: rgba(250, 249, 245, 0.12);
+}
+
+.sheet__stats dt {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #E6D8F7;
+}
+
+.sheet__stats dd {
+  margin: 0.1rem 0 0;
+  font-weight: 700;
+}
+
+@media (min-width: 34rem) {
+  .sheet__stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.sheet__block {
+  padding: 1.1rem 1.25rem;
+  border-top: 1px solid var(--rule);
+}
+
+.sheet__head + .sheet__block {
+  border-top: 0;
+}
+
+.sheet__block p {
+  margin: 0.5rem 0 0;
+}
+
+.sheet__title {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+}
+
+.party {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.party__member {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.85rem;
+  padding: 0.9rem;
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.party__icon {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 10px;
+  background: var(--secondary-soft);
+  font-size: 1.4rem;
+}
+
+/* The chihuahua portrait. These are his real coat colours, so they stay
+   the same in light and dark themes. */
+.party__dog {
+  --dog-choc: #5c3020;
+  --dog-tan: #d9a066;
+  --dog-cream: #fbf3e6;
+  --dog-nose: #7a4a3a;
+  --dog-eye: #24110c;
+  width: 2.35rem;
+  height: 2.35rem;
+}
+
+.party__dog .dog-choc { fill: var(--dog-choc); }
+.party__dog .dog-tan { fill: var(--dog-tan); }
+.party__dog .dog-cream { fill: var(--dog-cream); }
+.party__dog .dog-nose { fill: var(--dog-nose); }
+.party__dog .dog-eye { fill: var(--dog-eye); }
+
+.party__dog .dog-wisp,
+.party__dog .dog-mouth {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.party__dog .dog-wisp { stroke: var(--dog-tan); stroke-width: 0.9; }
+.party__dog .dog-mouth { stroke: var(--dog-nose); stroke-width: 0.9; }
+
+/* A secret: his portrait can be tapped (setUpMooseAttack in main.js).
+   Each tap is a small headbutt toward the finger; the fifth quick one
+   earns a happy wiggle. Nothing moves with "reduce motion". */
+.party__icon:has(.party__dog) {
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* More specific than the slide-in pop, so a tap always plays */
+  .party .party__member .party__icon.party__icon--bump {
+    animation: moose-bump 250ms ease-out;
+  }
+
+  .party .party__member .party__icon.party__icon--petted {
+    animation: moose-petted 600ms ease-in-out;
+  }
+
+  @keyframes moose-bump {
+    35% { transform: translate(var(--bump-x, 0), var(--bump-y, -4px)) rotate(-6deg); }
+    70% { transform: translate(calc(var(--bump-x, 0) * -0.25), calc(var(--bump-y, -4px) * -0.25)) rotate(2deg); }
+  }
+
+  @keyframes moose-petted {
+    15% { transform: rotate(-12deg) scale(1.08); }
+    35% { transform: rotate(10deg) scale(1.1); }
+    55% { transform: rotate(-8deg) scale(1.08); }
+    75% { transform: rotate(6deg) scale(1.04); }
+  }
+}
+
+/* The 404 page: the same portrait, bigger, beside "Lost?" */
+.lost__head {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.lost__head .hero__name {
+  margin-bottom: 0;
+}
+
+.lost__dog {
+  width: 3.5rem;
+  height: 3.5rem;
+  flex: none;
+}
+
+.party__name {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.party__member p {
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+/* Buff lines read as a stat line, not body text: small, bold, purple,
+   with a clay bar down the left */
+.sheet__block .party__buff {
+  margin-top: 0.6rem;
+  padding: 0.35rem 0.6rem;
+  border-left: 3px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  background: var(--secondary-soft);
+  color: var(--secondary);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.sheet__block .party__buff + .party__buff {
+  margin-top: 0.35rem;
+}
+
+.sheet__after {
+  max-width: 44rem;
+  margin: 1.25rem auto 0;
+  text-align: center;
+}
+
+/* The quest log under Status: one short row per project, with the same
+   progress bar the cards use (main.js setUpQuests). */
+.quests {
+  display: grid;
+  gap: 0.9rem;
+  margin: 1rem 0 0.35rem;
+  padding: 0;
+  list-style: none;
+}
+
+.quest__top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  color: inherit;
+  text-decoration: none;
+}
+
+.quest__name {
+  font-weight: 700;
+  min-width: 0;
+}
+
+a.quest__top:hover .quest__name,
+a.quest__top:focus-visible .quest__name {
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-underline-offset: 0.2em;
+}
+
+.quest__state {
+  flex: none;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.quest .field {
+  margin-top: 0.45rem;
+}
+
+/* ---------- The scroll sun ----------
+   A thin clay line down the right edge with a small sun that travels down
+   it as the page scrolls (main.js sets --p from 0 to 1) and sinks into a
+   little horizon at the bottom. It sits in the page's right gutter. */
+.scroll-sun {
+  position: fixed;
+  z-index: 5;
+  top: var(--top, 5rem);
+  bottom: max(1.25rem, env(safe-area-inset-bottom));
+  right: max(1px, env(safe-area-inset-right));
+  width: 16px;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 400ms var(--ease);
+  pointer-events: none;
+}
+
+.scroll-sun.is-shown {
+  opacity: 1;
+}
+
+/* the line */
+.scroll-sun::before {
+  content: "";
+  position: absolute;
+  left: 7px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  border-radius: 1px;
+  background: color-mix(in srgb, var(--ll-clay) 40%, transparent);
+}
+
+/* the little horizon it sets into */
+.scroll-sun::after {
+  content: "";
+  position: absolute;
+  left: 1px;
+  right: 1px;
+  bottom: 0;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--ll-clay);
+}
+
+.scroll-sun__sun {
+  position: absolute;
+  left: 3px;
+  top: calc(var(--p, 0) * (100% - 6px));
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--ll-clay);
+  box-shadow: 0 0 6px rgba(217, 119, 87, 0.75);
+}
+
+/* On touch screens the sun stands in for the browser's own scroll bar, so
+   hide that one while the sun is showing. Mouse users keep theirs (they
+   may drag it). */
+@media (pointer: coarse) {
+  html.has-scroll-sun {
+    scrollbar-width: none;
+  }
+
+  html.has-scroll-sun::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media print {
+  .scroll-sun {
+    display: none;
+  }
+}
+
+/* ---------- The pull sky ----------
+   Pull the page down past the top on a phone and, instead of a blank gap,
+   the sky carries on up above the header: stars at night, soft clouds by
+   day, and a little clay sun peeking over a horizon line. main.js adds it
+   (setUpPullSky) as the first thing in <body>, parked just above the page,
+   so you only ever see it in that pull-down gap. In the home-screen app it
+   also does pull-to-refresh: main.js sets --pull (0 to 1) as you pull, the
+   sun rises with it, and letting go once it's up reloads the page. */
+.pull-sky {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -70vh;
+  height: 70vh;
+  overflow: hidden;
+  z-index: 1; /* above the colour blobs behind the page */
+  pointer-events: none;
+  /* plain colours (no color-mix) so every phone paints them */
+  background-color: #7B3FC4;
+  background-image: linear-gradient(to bottom, #B48CE8, #7B3FC4);
+}
+
+/* the horizon line the sun sits on, just above the header */
+.pull-sky::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 14px;
+  height: 2px;
+  background: var(--ll-lilac);
+  opacity: 0.6;
+}
+
+/* stars (night) or clouds (day), drawn with soft dots */
+.pull-sky__dots {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(60px 18px at 22% 62%, rgba(250, 249, 245, 0.35), transparent 70%),
+    radial-gradient(90px 24px at 30% 66%, rgba(250, 249, 245, 0.28), transparent 70%),
+    radial-gradient(80px 20px at 74% 78%, rgba(250, 249, 245, 0.3), transparent 70%);
+}
+
+.pull-sky__sun {
+  position: absolute;
+  left: 50%;
+  bottom: 15px;
+  width: 44px;
+  height: 22px;
+  margin-left: -22px;
+  border-radius: 44px 44px 0 0;
+  background: var(--ll-clay);
+  box-shadow: 0 0 18px rgba(217, 119, 87, 0.7);
+  transform: translateY(calc((1 - var(--pull, 0.4)) * 16px));
+}
+
+.pull-sky__label {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 48px;
+  text-align: center;
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sky-ink);
+  opacity: var(--pull, 0);
+}
+
+.pull-sky.is-ready .pull-sky__sun {
+  box-shadow: 0 0 28px rgba(217, 119, 87, 0.95);
+}
+
+/* Night: a deep sky with stars. Mirrors the two ways the dark theme turns
+   on (main.js from the real sun, or the phone's setting before JS runs). */
+:root[data-theme="dark"] .pull-sky {
+  background-color: #141413;
+  background-image: linear-gradient(to bottom, #1E1030, #141413);
+}
+
+:root[data-theme="dark"] .pull-sky__dots {
+  background-image:
+    radial-gradient(circle at 12% 30%, #FAF9F5 1.5px, transparent 2.5px),
+    radial-gradient(circle at 27% 55%, #FAF9F5 1px, transparent 2px),
+    radial-gradient(circle at 41% 18%, #FAF9F5 2px, transparent 3px),
+    radial-gradient(circle at 58% 44%, #B48CE8 1.5px, transparent 2.5px),
+    radial-gradient(circle at 69% 72%, #FAF9F5 1.5px, transparent 2.5px),
+    radial-gradient(circle at 83% 26%, #FAF9F5 1px, transparent 2px),
+    radial-gradient(circle at 91% 60%, #B48CE8 2px, transparent 3px),
+    radial-gradient(circle at 6% 80%, #FAF9F5 1px, transparent 2px),
+    radial-gradient(circle at 35% 86%, #B48CE8 1.5px, transparent 2.5px),
+    radial-gradient(circle at 76% 90%, #FAF9F5 1px, transparent 2px),
+    radial-gradient(circle at 50% 38%, #FAF9F5 1px, transparent 2px),
+    radial-gradient(circle at 18% 64%, #FAF9F5 1.5px, transparent 2.5px);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .pull-sky {
+    background-color: #141413;
+    background-image: linear-gradient(to bottom, #1E1030, #141413);
+  }
+}
+
+@media print {
+  .pull-sky {
+    display: none;
+  }
+}
+
+/* ---------- Mode tiles (Games / Trading / All) ---------- */
+.tiles {
+  display: grid;
+  gap: 0.9rem;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Each tile fills its whole grid cell, so a row of tiles lines up even
+   when one has a longer line of text */
+.tiles > li {
+  display: flex;
+}
+
+.tiles .tile {
+  flex: 1;
+}
+
+.tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-height: 8rem;
+  padding: 1.1rem 1.2rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--rule);
+  background: var(--card);
+  color: var(--ink);
+  text-decoration: none;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: transform 260ms var(--ease), box-shadow 260ms var(--ease);
+}
+
+.tile > * {
+  position: relative;
+}
+
+/* A sun peeking over the tile's bottom-right corner */
+.tile::before {
+  content: "";
+  position: absolute;
+  right: -1.5rem;
+  bottom: -3rem;
+  width: 6rem;
+  height: 6rem;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0.9;
+}
+
+.tile::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  background: var(--secondary);
+}
+
+.tile--trading::before {
+  background: var(--ll-purple);
+}
+
+.tile--tools::before {
+  background: var(--ll-lilac);
+}
+
+/* The drawing behind each tile's words: bottom right, over the sun, soft
+   enough that the words on top stay easy to read. Colours come from the
+   theme, so it works in light and dark. */
+.tile > .tile__art {
+  position: absolute;
+  right: 0.75rem;
+  bottom: 0.5rem;
+  width: 7.5rem;
+  height: auto;
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.tile__art-a { fill: var(--accent); }
+.tile__art-b { fill: var(--secondary); }
+.tile__art-line { fill: var(--secondary); opacity: 0.6; }
+
+.tile__art-wick path,
+.tile__art-dash,
+.tile__art-wrench {
+  fill: none;
+  stroke-linecap: round;
+}
+
+.tile__art-wick path {
+  stroke: var(--secondary);
+  stroke-width: 2;
+}
+
+.tile__art-dash {
+  stroke: var(--accent);
+  stroke-width: 3;
+}
+
+.tile__art-wrench {
+  stroke: var(--accent);
+  stroke-width: 6;
+}
+
+.tile:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lift);
+  color: var(--ink);
+}
+
+.tile__name {
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.tile__name::after {
+  content: " →";
+  color: var(--secondary);
+}
+
+.tile__line {
+  color: var(--muted);
+  font-size: 0.95rem;
+  max-width: 85%;
+}
+
+.tile__count {
+  margin-top: auto;
+  padding-top: 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--secondary);
+}
+
+/* Market light on the Trading tile: "● Market open", on its own line
+   under the count so it stays clear of the tile's drawing */
+.tile__live {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.35rem;
+  color: var(--muted);
+}
+
+.tile__live::before {
+  content: "";
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--rule);
+}
+
+.tile__live.is-open {
+  color: var(--accent-ink);
+}
+
+.tile__live.is-open::before {
+  background: var(--accent);
+}
+
+/* ---------- Filters (projects page, journal) ---------- */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1rem 0 0.5rem;
+}
+
+.filters button {
+  min-height: 2.5rem;
+  padding: 0.4rem 1rem;
+  border: 1.5px solid var(--rule);
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.filters button:hover {
+  border-color: var(--secondary);
+}
+
+.filters button[aria-pressed="true"] {
+  background: var(--secondary);
+  border-color: var(--secondary);
+  color: var(--bg); /* ivory on purple by day, slate on lilac at night */
+}
+
+.filters__count {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* ---------- About ---------- */
+.prose {
+  max-width: 40rem;
+}
+
+.prose p:first-child {
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+}
+
+/* Player-card facts beside the prose */
+.facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.facts li {
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  background: var(--card);
+}
+
+.facts dt,
+.facts .facts__k {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--secondary);
+}
+
+/* An odd one out at the end fills the whole row */
+.facts li:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
+
+.facts .facts__v {
+  display: block;
+  font-weight: 700;
+  margin-top: 0.15rem;
+}
+
+/* ---------- Devlog (devlog.html, and "From the devlog" on a game page) ---------- */
+.devlog {
+  display: grid;
+  gap: 1.25rem;
+  max-width: 44rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.post {
+  padding: 1.25rem;
+  border: 1px solid var(--rule);
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radius);
+  background: var(--card);
+  scroll-margin-top: 5rem;
+}
+
+.post__meta {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--secondary);
+}
+
+/* No section-heading underline on each post's title */
+.section .post__title::after {
+  display: none;
+}
+
+.post__meta a {
+  color: inherit;
+}
+
+.post__title {
+  margin: 0.3rem 0 0.6rem;
+  font-size: 1.35rem;
+}
+
+.post p:last-child {
+  margin-bottom: 0;
+}
+
+.game__devlog-list {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.game__devlog-list li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.1rem 0.75rem;
+  align-items: baseline;
+}
+
+.game__devlog-list time {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.game__devlog-list a {
+  font-weight: 700;
+  color: var(--secondary);
+}
+
+/* ---------- Press kit (press.html) ---------- */
+.press-logos {
+  display: grid;
+  gap: 1rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.press-logo {
+  padding: 1.25rem;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+}
+
+.press-logo img {
+  display: block;
+  width: 100%;
+  max-width: 22rem;
+  height: auto;
+  margin: 0 auto 1rem;
+}
+
+.press-logo p {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+/* Each logo sits on the background it's made for, in both themes. */
+.press-logo--dark {
+  background: var(--ll-purple);
+  color: var(--ll-ivory);
+}
+
+.press-logo--dark a {
+  color: var(--ll-ivory);
+}
+
+.press-logo--light {
+  background: var(--ll-ivory);
+  color: var(--ll-slate);
+}
+
+.press-logo--light a {
+  color: var(--ll-purple);
+}
+
+.press-logo--icon {
+  background: var(--card);
+}
+
+.press-logo--icon img {
+  max-width: 6rem;
+  border-radius: 22%;
+}
+
+.press-colours {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+  margin: 1rem 0;
+  padding: 0;
+  list-style: none;
+}
+
+.press-colours li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.press-swatch {
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+}
+
+.press-games {
+  display: grid;
+  gap: 1.5rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.press-game {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--card);
+  min-width: 0;
+}
+
+.press-game__cover img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+.press-game__body {
+  min-width: 0;
+}
+
+.press-game__title {
+  margin: 0 0 0.4rem;
+  font-size: 1.3rem;
+}
+
+.press-game__summary {
+  margin: 0.6rem 0;
+}
+
+.press-game__shots {
+  display: flex;
+  gap: 0.5rem;
+  margin: 0.75rem 0 0;
+  padding: 0 0 0.25rem;
+  overflow-x: auto;
+  list-style: none;
+}
+
+.press-game__shots img {
+  display: block;
+  height: 5.5rem;
+  width: auto;
+  border-radius: 8px;
+}
+
+@media (min-width: 48rem) {
+  .press-logos {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .press-game {
+    grid-template-columns: minmax(0, 18rem) minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+/* ---------- Contact ---------- */
+.contact-form {
+  max-width: 36rem;
+  margin-top: 0.5rem;
+}
+
+.form-row {
+  margin-bottom: 1rem;
+}
+
+.form-row label {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+}
+
+.form-row__hint {
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.contact-form input[type="text"],
+.contact-form input[type="email"],
+.contact-form textarea {
+  width: 100%;
+  min-height: 2.9rem;
+  padding: 0.65rem 0.9rem;
+  border: 1.5px solid var(--rule);
+  border-radius: 12px;
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+}
+
+.contact-form textarea {
+  resize: vertical;
+}
+
+.contact-form input:focus-visible,
+.contact-form textarea:focus-visible {
+  border-color: var(--secondary);
+  outline-offset: 0;
+}
+
+.contact-form__actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.contact-form__status {
+  margin: 0;
+  color: var(--muted);
+}
+
+.contact-form__status.is-sent {
+  color: var(--secondary);
+  font-weight: 700;
+}
+
+.contact-form__status.is-error {
+  color: var(--accent-ink);
+  font-weight: 700;
+}
+
+/* ---------- Footer (its logo rules are in the Logo section) ---------- */
+.site-footer {
+  margin-top: 2rem;
+  padding: 2.5rem 0 2rem;
+  background: var(--sky);
+  color: var(--sky-ink);
+  text-align: center;
+  transition: background-color 600ms var(--ease);
+}
+
+.site-footer p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--sky-muted);
+}
+
+.site-footer a {
+  color: var(--sky-ink);
+  text-decoration-color: var(--accent);
+}
+
+/* The footer's Sound switch (setUpSound in main.js): looks like the links
+   beside it, with a tall enough tap area. */
+.sound-toggle {
+  font: inherit;
+  color: var(--sky-ink);
+  background: none;
+  border: 0;
+  padding: 0.6rem 0.2rem;
+  margin: -0.6rem 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+}
+.sound-toggle[aria-pressed="true"] { text-decoration-style: solid; font-weight: 700; }
+.sound-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ---------- Wider screens ---------- */
+@media (min-width: 40rem) {
+  .project-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .tiles {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  /* Taller header bar once there's room for the full logo */
+  .site-header__inner {
+    min-height: 4.25rem;
+  }
+
+  .nav {
+    gap: 0.35rem;
+  }
+
+  .nav a {
+    padding: 0.45rem 0.7rem;
+    font-size: 0.95rem;
+  }
+
+  .horizon__readout {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+
+  .horizon__readout span:last-child {
+    text-align: right;
+  }
+
+  .continue__card {
+    grid-template-columns: 5rem 1fr auto;
+  }
+
+  .continue__actions {
+    grid-column: auto;
+  }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    gap: 2rem;
+    align-items: start;
+  }
+
+  .facts {
+    margin-top: 0;
+  }
+}
+
+@media (min-width: 64rem) {
+  .project-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+}
+
+/* ---------- Glass ----------
+   A frosted-glass look, like the newer iPhone screens: the header, cards,
+   buttons and pop-ups are see-through panes that blur whatever is behind
+   them, with a bright edge where light catches the top-left rim.
+   Behind the page sit three soft blobs of the brand colours (body::before),
+   so the glass has something to show as you scroll.
+   Only browsers that can blur (backdrop-filter) get it; everyone else keeps
+   the solid cards above. Phones set to "Reduce transparency" get solid
+   cards too (the last block here). */
+:root,
+:root[data-theme="light"] {
+  --glass: rgba(255, 255, 255, 0.55);        /* the pane itself */
+  --glass-line: rgba(123, 63, 196, 0.16);    /* its outline, faintly purple */
+  --glass-rim: rgba(255, 255, 255, 0.95);    /* light catching the top-left edge */
+  --glass-rim-low: rgba(255, 255, 255, 0.45);/* and, fainter, the bottom-right */
+  --glass-drop: 0 10px 30px rgba(76, 40, 130, 0.12);
+  --glass-blob-1: rgba(180, 140, 232, 0.38); /* lilac */
+  --glass-blob-2: rgba(217, 119, 87, 0.22);  /* clay */
+  --glass-blob-3: rgba(123, 63, 196, 0.2);   /* purple */
+  --glass-warm: rgba(217, 119, 87, 0.3);     /* the lens edge: clay fringe one side... */
+  --glass-cool: rgba(180, 140, 232, 0.45);   /* ...lilac the other */
+  --glass-band: rgba(123, 63, 196, 0.14);    /* the darker band just inside the rim */
+}
+
+:root[data-theme="dark"] {
+  --glass: rgba(31, 30, 27, 0.52);
+  --glass-line: rgba(180, 140, 232, 0.2);
+  --glass-rim: rgba(250, 249, 245, 0.2);
+  --glass-rim-low: rgba(250, 249, 245, 0.06);
+  --glass-drop: 0 14px 36px rgba(0, 0, 0, 0.5);
+  --glass-blob-1: rgba(123, 63, 196, 0.32);
+  --glass-blob-2: rgba(217, 119, 87, 0.12);
+  --glass-blob-3: rgba(180, 140, 232, 0.14);
+  --glass-warm: rgba(217, 119, 87, 0.22);
+  --glass-cool: rgba(180, 140, 232, 0.3);
+  --glass-band: rgba(0, 0, 0, 0.35);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --glass: rgba(31, 30, 27, 0.52);
+    --glass-line: rgba(180, 140, 232, 0.2);
+    --glass-rim: rgba(250, 249, 245, 0.2);
+    --glass-rim-low: rgba(250, 249, 245, 0.06);
+    --glass-drop: 0 14px 36px rgba(0, 0, 0, 0.5);
+    --glass-blob-1: rgba(123, 63, 196, 0.32);
+    --glass-blob-2: rgba(217, 119, 87, 0.12);
+    --glass-blob-3: rgba(180, 140, 232, 0.14);
+    --glass-warm: rgba(217, 119, 87, 0.22);
+    --glass-cool: rgba(180, 140, 232, 0.3);
+    --glass-band: rgba(0, 0, 0, 0.35);
+  }
+}
+
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  /* The colour blobs behind everything. They stay still while the page
+     scrolls past, so each card's tint shifts as it moves. */
+  body {
+    background: transparent; /* <html> paints the page colour underneath */
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      radial-gradient(42vmax 42vmax at 10% 22%, var(--glass-blob-1), transparent 70%),
+      radial-gradient(38vmax 38vmax at 92% 46%, var(--glass-blob-2), transparent 70%),
+      radial-gradient(46vmax 46vmax at 34% 96%, var(--glass-blob-3), transparent 70%);
+  }
+
+  /* The header: the sky colour, a little see-through, so the page blurs
+     behind it as it scrolls under. Over the hero it looks the same as before.
+     88% (not less) keeps the ivory menu text readable over the light page. */
+  .site-header {
+    background: color-mix(in srgb, var(--sky) 88%, transparent);
+    -webkit-backdrop-filter: blur(22px) saturate(180%);
+    backdrop-filter: blur(22px) saturate(180%);
+    box-shadow: inset 0 -1px 0 rgba(250, 249, 245, 0.16);
+  }
+
+  /* The lens edge (every browser). Real glass is thickest at the rim, so
+     each pane gets: a 1px bright rim top-left, a clay fringe just inside
+     it and a lilac fringe bottom-right (light splits into colours at a
+     curved edge), and a soft darker band all round for the thickness.
+     The fringes and the ring of light (the conic border below) slide with
+     --tilt-x/--tilt-y, so the edge moves like a reflection when the phone
+     tilts (Tilt sky) or the mouse moves. */
+  :root {
+    --pane-edge:
+      inset 1px 1px 0 var(--glass-rim),
+      inset -1px -1px 0 var(--glass-rim-low),
+      inset calc(2.5px + var(--tilt-x, 0) * 1.5px) calc(2.5px + var(--tilt-y, 0) * 1.5px) 0 -1px var(--glass-warm),
+      inset calc(-2.5px + var(--tilt-x, 0) * 1.5px) calc(-2.5px + var(--tilt-y, 0) * 1.5px) 0 -1px var(--glass-cool),
+      inset 0 0 14px -5px var(--glass-band);
+    --pane-ring: conic-gradient(
+      from calc(200deg + var(--tilt-x, 0) * 50deg + var(--tilt-y, 0) * -30deg),
+      var(--glass-line) 0deg,
+      var(--glass-cool) 40deg,
+      var(--glass-line) 95deg,
+      var(--glass-rim) 135deg,
+      var(--glass-warm) 165deg,
+      var(--glass-line) 220deg,
+      var(--glass-cool) 290deg,
+      var(--glass-line) 360deg
+    );
+  }
+
+  /* Cards and boxes */
+  .now,
+  .sky-week,
+  .continue__card,
+  .project,
+  .news,
+  .tile,
+  .facts li,
+  .post,
+  .press-game,
+  .contact-form input[type="text"],
+  .contact-form input[type="email"],
+  .contact-form textarea {
+    background: var(--glass);
+    border-color: var(--glass-line);
+    -webkit-backdrop-filter: blur(20px) saturate(170%);
+    backdrop-filter: blur(20px) saturate(170%);
+    box-shadow: var(--pane-edge), var(--glass-drop);
+  }
+
+  /* The ring of light: a 1px overlay of the conic gradient, masked to the
+     border strip, painted over the pane's own border. (The home tiles
+     use both their ::before and ::after already, so they only get the
+     inset fringes above.) */
+  .now,
+  .sky-week,
+  .continue__card,
+  .project,
+  .news,
+  .facts li,
+  .press-game {
+    position: relative;
+  }
+
+  .now::after,
+  .sky-week::after,
+  .continue__card::after,
+  .project::after,
+  .news::after,
+  .facts li::after,
+  .press-game::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    padding: 1px;
+    border-radius: inherit;
+    background: var(--pane-ring);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .post {
+    border-left-color: var(--accent); /* keep the clay stripe */
+  }
+
+  .project:hover,
+  .project:focus-within,
+  .tile:hover {
+    box-shadow: var(--pane-edge), var(--shadow-lift);
+  }
+
+  /* The real lens bend. main.js adds data-lens on browsers that can run
+     an SVG filter behind a pane (Chrome, on computers and Android) and
+     puts the #glass-lens filter in the page: it finds the pane's edges,
+     bends what's behind them inward like thick glass, then frosts. Safari
+     can't do this yet, so iPhones keep the plain frost above. */
+  :root[data-lens] .now,
+  :root[data-lens] .sky-week,
+  :root[data-lens] .continue__card,
+  :root[data-lens] .project,
+  :root[data-lens] .news,
+  :root[data-lens] .tile,
+  :root[data-lens] .post,
+  :root[data-lens] .press-game,
+  :root[data-lens] .horizon__tip,
+  :root[data-lens] .badge-toast {
+    -webkit-backdrop-filter: url(#glass-lens);
+    backdrop-filter: url(#glass-lens);
+  }
+
+  /* Round glass buttons: the filters, the ☀/☾ button, and the outline
+     buttons on the purple sky. */
+  .filters button:not([aria-pressed="true"]) {
+    background: var(--glass);
+    border-color: var(--glass-line);
+    -webkit-backdrop-filter: blur(16px) saturate(170%);
+    backdrop-filter: blur(16px) saturate(170%);
+    box-shadow: var(--pane-edge);
+  }
+
+  .theme-toggle,
+  .hero .button--ghost,
+  .page-head .button--ghost {
+    background: rgba(250, 249, 245, 0.1);
+    border-color: rgba(250, 249, 245, 0.32);
+    box-shadow: inset 1px 1px 0 rgba(250, 249, 245, 0.4), inset -1px -1px 0 rgba(250, 249, 245, 0.1);
+  }
+
+  /* (No blur of their own: the ☀/☾ button sits in the glass header, and a
+     blur inside a blur stops the header's from working in Chrome.) */
+
+  .theme-toggle:hover,
+  .hero .button--ghost:hover,
+  .page-head .button--ghost:hover {
+    background: rgba(250, 249, 245, 0.2);
+  }
+
+  /* Pop-ups: the sky's tap tip and the "Badge earned" note are smoked glass */
+  .horizon__tip,
+  .badge-toast {
+    background: rgba(20, 20, 19, 0.58);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    backdrop-filter: blur(16px) saturate(180%);
+    box-shadow:
+      inset 1px 1px 0 rgba(250, 249, 245, 0.22),
+      inset -1px -1px 0 rgba(250, 249, 245, 0.06),
+      0 10px 30px rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* Solid clay buttons get a glossy top and the same bright rim (every
+   browser; it's only a shine over the clay). */
+.button--play,
+.button--start,
+.button--send {
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0) 55%);
+  box-shadow:
+    inset 1px 1px 0 rgba(255, 255, 255, 0.5),
+    inset -1px -1px 0 rgba(20, 20, 19, 0.12),
+    0 4px 14px rgba(217, 119, 87, 0.28);
+}
+
+/* "Reduce transparency" (iPhone: Settings > Accessibility > Display &
+   Text Size) turns the glass back into solid cards. */
+@media (prefers-reduced-transparency: reduce) {
+  body {
+    background: var(--bg);
+  }
+
+  body::before {
+    display: none;
+  }
+
+  .site-header {
+    background: var(--sky);
+  }
+
+  .now,
+  .sky-week,
+  .continue__card,
+  .project,
+  .news,
+  .tile,
+  .facts li,
+  .post,
+  .press-game,
+  .contact-form input[type="text"],
+  .contact-form input[type="email"],
+  .contact-form textarea,
+  .filters button:not([aria-pressed="true"]) {
+    background: var(--card);
+    border-color: var(--rule);
+    box-shadow: var(--shadow);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  .post {
+    border-left-color: var(--accent);
+  }
+
+  .filters button:not([aria-pressed="true"]) {
+    box-shadow: none;
+  }
+
+  .now::after,
+  .sky-week::after,
+  .continue__card::after,
+  .project::after,
+  .news::after,
+  .facts li::after,
+  .press-game::after {
+    display: none;
+  }
+
+  .horizon__tip,
+  .badge-toast {
+    background: var(--ll-slate);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+/* ---------- Motion ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  /* New brief: the dot and the "New" badges blink softly for the hour. */
+  :root[data-brief-new] .nav a[href="trading.html"]::after,
+  :root[data-brief-new] .project:has(.project__main[href="briefs.html"]) .project__title::after,
+  .brief-new {
+    animation: brief-flash 1.2s ease-in-out infinite;
+  }
+
+  @keyframes brief-flash {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.25; }
+  }
+
+  /* The "Badge earned" note slides up and fades. */
+  .badge-toast {
+    transform: translate(-50%, 1rem);
+    transition: opacity 300ms var(--ease), transform 300ms var(--ease), visibility 300ms;
+  }
+
+  .badge-toast.is-shown {
+    transform: translate(-50%, 0);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  @view-transition {
+    navigation: auto;
+  }
+
+  ::view-transition-old(root) {
+    animation: page-out 180ms ease-in both;
+  }
+
+  ::view-transition-new(root) {
+    animation: page-in 260ms var(--ease) both;
+  }
+
+  @keyframes page-out {
+    to { opacity: 0; }
+  }
+
+  @keyframes page-in {
+    from { opacity: 0; transform: translateY(8px); }
+  }
+
+  /* The header and the page-head sky stay put while the page under them
+     changes, so moving between pages feels like one place. If the sky is
+     a different height on the next page it slides smoothly into place. */
+  .site-header {
+    view-transition-name: site-header;
+  }
+
+  .page-head .horizon {
+    view-transition-name: page-sky;
+  }
+
+  ::view-transition-group(site-header),
+  ::view-transition-group(page-sky) {
+    animation-duration: 320ms;
+    animation-timing-function: var(--ease);
+  }
+
+  /* The cover hop: a tapped game card's cover grows into the big cover on
+     the game's page (main.js setUpCoverHop gives the tapped cover the
+     same name just before the page changes). */
+  .game__cover {
+    view-transition-name: game-cover;
+  }
+
+  ::view-transition-group(game-cover) {
+    animation-duration: 420ms;
+    animation-timing-function: var(--ease);
+  }
+
+  /* A band of light sweeps across each cover once as its card arrives */
+  .project.reveal .project__cover::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(105deg, rgba(250, 249, 245, 0) 35%, rgba(250, 249, 245, 0.4) 50%, rgba(250, 249, 245, 0) 65%);
+    translate: -120% 0;
+    pointer-events: none;
+  }
+
+  .project.reveal.is-in .project__cover::before {
+    animation: cover-sheen 950ms var(--ease) calc(var(--i, 0) * 70ms + 350ms) both;
+  }
+
+  @keyframes cover-sheen {
+    from { translate: -120% 0; }
+    to { translate: 120% 0; }
+  }
+
+  /* The character sheet boots up (main.js setUpSheet adds sheet--boot,
+     then is-on when it scrolls into view): "Player 1" blinks on, the name
+     types in behind a clay cursor, then the stat boxes tick on. */
+  .sheet--boot .sheet__label,
+  .sheet--boot .sheet__ch,
+  .sheet--boot .sheet__stats div {
+    opacity: 0;
+  }
+
+  .sheet--boot.is-on .sheet__label {
+    animation: sheet-on 60ms steps(1) 100ms forwards;
+  }
+
+  .sheet--boot.is-on .sheet__ch {
+    animation: sheet-on 60ms steps(1) calc(var(--i, 0) * 120ms + 350ms) forwards;
+  }
+
+  @keyframes sheet-on {
+    to { opacity: 1; }
+  }
+
+  .sheet--boot .sheet__name::after {
+    content: "";
+    display: inline-block;
+    width: 0.09em;
+    height: 0.72em;
+    margin-left: 0.08em;
+    background: var(--ll-clay);
+    opacity: 0;
+  }
+
+  .sheet--boot.is-on .sheet__name::after {
+    animation: sheet-cursor 460ms steps(1) 100ms 5;
+  }
+
+  @keyframes sheet-cursor {
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  .sheet--boot.is-on .sheet__stats div {
+    animation: sheet-tick 480ms var(--ease) calc(var(--i, 0) * 150ms + 1100ms) forwards;
+  }
+
+  @keyframes sheet-tick {
+    0% { opacity: 0; scale: 0.92; background: rgba(217, 119, 87, 0.85); }
+    35% { opacity: 1; scale: 1.03; background: rgba(217, 119, 87, 0.6); }
+    100% { opacity: 1; scale: 1; }
+  }
+
+  /* Party members slide in from the left as each one scrolls into view;
+     the icon pops and the buff lines give two soft pulses. */
+  .party__member--slide.reveal {
+    translate: -28px 0;
+  }
+
+  .party__member--slide.reveal.is-in {
+    translate: 0 0;
+  }
+
+  .party__member--slide.is-in .party__icon {
+    animation: party-pop 520ms cubic-bezier(0.34, 1.4, 0.64, 1) 250ms backwards;
+  }
+
+  @keyframes party-pop {
+    from { scale: 0.4; opacity: 0; }
+  }
+
+  .party__member--slide.is-in .party__buff {
+    animation: buff-pulse 1100ms ease-in-out 750ms 2;
+  }
+
+  @keyframes buff-pulse {
+    50% { box-shadow: 0 0 0 4px color-mix(in srgb, var(--ll-clay) 40%, transparent); }
+  }
+
+  /* Scroll reveal: main.js adds "reveal", then "is-in" when in view.
+     Content is never hidden if JavaScript doesn't run. */
+  .reveal {
+    opacity: 0;
+    translate: 0 22px;
+    transition:
+      opacity 650ms var(--ease) calc(var(--i, 0) * 70ms),
+      translate 650ms var(--ease) calc(var(--i, 0) * 70ms),
+      transform 260ms var(--ease),
+      box-shadow 260ms var(--ease),
+      border-color 260ms var(--ease);
+  }
+
+  .reveal.is-in {
+    opacity: 1;
+    translate: 0 0;
+  }
+
+  /* The home swipe row arrives as one piece (main.js setUpGameRow), with
+     a shorter rise so no card pokes out under the row. */
+  .project-list--row > .project.reveal:not(.is-in) {
+    translate: 0 10px;
+  }
+
+  /* The clay dot on "Now building" breathes slowly */
+  .now__label::before {
+    animation: now-glow 2.6s ease-in-out infinite;
+  }
+
+  @keyframes now-glow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(217, 119, 87, 0.45); }
+    50% { box-shadow: 0 0 0 5px rgba(217, 119, 87, 0); }
+  }
+
+  /* The moon's glow breathes slowly, and the moon floats up and down a
+     little */
+  .horizon__moon {
+    animation: moon-glow 5s ease-in-out infinite, moon-float 7s ease-in-out infinite alternate;
+  }
+
+  @keyframes moon-float {
+    to { transform: translateY(calc(var(--moon-size) * -0.1)); }
+  }
+
+  /* Tilt sky (main.js sets --tilt-x and --tilt-y, -1..1, from the
+     phone's tilt): the far-off things slide a little against the land,
+     like looking through a window. Stars and meteors move most. */
+  .horizon__stars,
+  .horizon__iss,
+  .horizon__meteors {
+    translate: calc(var(--tilt-x, 0) * -14px) calc(var(--tilt-y, 0) * -9px);
+  }
+
+  /* The space station glides between its once-a-second spots */
+  .horizon__iss .iss--glide {
+    transition: left 1s linear, top 1s linear;
+  }
+
+  .horizon__aurora {
+    translate: calc(var(--tilt-x, 0) * -12px) calc(var(--tilt-y, 0) * -7px);
+  }
+
+  .horizon__moon {
+    translate: calc(var(--tilt-x, 0) * -9px) calc(var(--tilt-y, 0) * -6px);
+  }
+
+  .horizon__clouds {
+    translate: calc(var(--tilt-x, 0) * -6px) calc(var(--tilt-y, 0) * -3px);
+  }
+
+  /* A new line in the horizon readout fades in (main.js adds .is-new) */
+  .horizon__readout .is-new {
+    animation: readout-in 500ms var(--ease);
+  }
+
+  /* Weather and the seasons on the move */
+  .horizon__aurora {
+    animation: aurora-shimmer 26s linear infinite, aurora-sway 9s ease-in-out infinite alternate;
+  }
+
+  @keyframes aurora-shimmer {
+    to { background-position: 180% 0, 0 0; }
+  }
+
+  /* Frost glitter twinkles; drifting snow slides with the wind (faster
+     in a stronger one) */
+  .horizon__frost::before { animation: frost-glint 2.8s ease-in-out infinite; }
+  .horizon__frost::after { animation: frost-glint 3.9s ease-in-out -1.6s infinite; }
+
+  @keyframes frost-glint {
+    0%, 100% { opacity: 0.15; }
+    50% { opacity: 0.85; }
+  }
+
+  .horizon__drift {
+    animation: snow-drift calc(11s - var(--wind, 0.5) * 7s) linear infinite;
+  }
+
+  @keyframes snow-drift {
+    to {
+      -webkit-mask-position: calc(var(--drift-dir, -1) * 240px) 0;
+      mask-position: calc(var(--drift-dir, -1) * 240px) 0;
+    }
+  }
+
+  @keyframes aurora-sway {
+    from { transform: skewX(-6deg) scaleY(0.92); }
+    to { transform: skewX(6deg) scaleY(1.05); }
+  }
+
+  /* The clouds slide with transform, not left: moving left re-lays out
+     the page every frame and snaps to whole pixels, so a slow drift
+     stuttered (Kelbo, 2026-11-12). The layer is 100vw wide. */
+  .cloud {
+    left: 0;
+    will-change: transform;
+    animation: cloud-drift 200s linear infinite;
+  }
+
+  @keyframes cloud-drift {
+    from { transform: translateX(calc(var(--h) * -4)); }
+    to { transform: translateX(100vw); }
+  }
+
+  .horizon__precip::before {
+    animation: rain-fall 0.55s linear infinite;
+  }
+
+  .horizon__precip::after {
+    animation: rain-fall-far 0.8s linear infinite;
+  }
+
+  @keyframes rain-fall {
+    to { -webkit-mask-position: -14px 96px; mask-position: -14px 96px; }
+  }
+
+  @keyframes rain-fall-far {
+    to { -webkit-mask-position: -21px 144px; mask-position: -21px 144px; }
+  }
+
+  .horizon--snow .horizon__precip::before {
+    animation: snow-fall 8s linear infinite;
+  }
+
+  .horizon--snow .horizon__precip::after {
+    animation: snow-fall-far 13s linear infinite;
+  }
+
+  @keyframes snow-fall {
+    to { -webkit-mask-position: 24px 120px; mask-position: 24px 120px; }
+  }
+
+  @keyframes snow-fall-far {
+    to { -webkit-mask-position: 38px 190px; mask-position: 38px 190px; }
+  }
+
+  /* Lightning: main.js adds .horizon--flash now and then in a storm */
+  .horizon--flash .horizon__clouds {
+    animation: lightning 700ms ease-out;
+  }
+
+  @keyframes lightning {
+    10% { opacity: 1; }
+    25% { opacity: 0.3; }
+    40% { opacity: 0.9; }
+  }
+
+  .geese path {
+    animation: flap 0.6s ease-in-out infinite alternate;
+  }
+
+  /* Pelicans flap now and then between long glides; the balloon bobs and
+     its burner flares; cloud shadows slide over the fields */
+  .pelican__wing,
+  .pelican__tips {
+    transform-box: view-box;
+    transform-origin: 50% 50%;
+    animation: pelican-flap 7s ease-in-out infinite;
+  }
+
+  .pelican:nth-child(2n) :is(.pelican__wing, .pelican__tips) { animation-delay: -2.3s; }
+  .pelican:nth-child(3n) :is(.pelican__wing, .pelican__tips) { animation-delay: -4.1s; }
+
+  @keyframes pelican-flap {
+    0%, 80%, 100% { transform: scaleY(1); }
+    84%, 92% { transform: scaleY(-0.6); }
+    88%, 96% { transform: scaleY(1); }
+  }
+
+  .balloon {
+    animation: balloon-bob 6s ease-in-out infinite alternate;
+  }
+
+  @keyframes balloon-bob {
+    from { transform: translateY(-2px); }
+    to { transform: translateY(2px); }
+  }
+
+  .balloon__flame {
+    animation: balloon-burn 9s ease-in-out infinite;
+  }
+
+  @keyframes balloon-burn {
+    0%, 70%, 100% { opacity: 0; }
+    74%, 86% { opacity: 1; }
+    80% { opacity: 0.6; }
+  }
+
+  .cloud-shadow {
+    left: 0;
+    will-change: transform;
+    animation: shadow-drift 80s linear infinite;
+  }
+
+  @keyframes shadow-drift {
+    from { transform: translateX(calc(var(--w) * -1.2)); }
+    to { transform: translateX(100vw); }
+  }
+
+  @keyframes flap {
+    to { transform: scaleY(-0.4); }
+  }
+
+  .firefly {
+    animation-name: firefly-blink, firefly-drift;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    animation-direction: normal, alternate;
+  }
+
+  @keyframes firefly-blink {
+    0%, 55%, 100% { opacity: 0; }
+    70% { opacity: 1; }
+  }
+
+  @keyframes firefly-drift {
+    from { translate: 0 0; }
+    to { translate: 14px -10px; }
+  }
+
+  /* The kite sways about the hand holding it, tilts, and flicks its tail */
+  .kite {
+    animation: kite-sway 3.6s ease-in-out infinite alternate;
+  }
+
+  @keyframes kite-sway {
+    from { transform: rotate(-2.5deg); }
+    to { transform: rotate(2.5deg); }
+  }
+
+  .kite__wobble {
+    transform-box: fill-box;
+    transform-origin: 50% 17%; /* the middle of the kite */
+    animation: kite-tilt 1.9s ease-in-out infinite alternate;
+  }
+
+  @keyframes kite-tilt {
+    from { transform: rotate(-6deg); }
+    to { transform: rotate(6deg); }
+  }
+
+  .kite__tail {
+    transform-box: fill-box;
+    transform-origin: 50% 0; /* where it's tied on */
+    animation: kite-tail 0.8s ease-in-out infinite alternate;
+  }
+
+  @keyframes kite-tail {
+    from { transform: rotate(-10deg); }
+    to { transform: rotate(10deg); }
+  }
+
+  /* Wheat sways, quicker in a stronger wind (--wind, 0..1 from main.js) */
+  .horizon__wheat {
+    animation: wheat-sway calc(4.5s - var(--wind, 0.25) * 3s) ease-in-out infinite alternate;
+  }
+
+  @keyframes wheat-sway {
+    from { transform: skewX(-7deg); }
+    to { transform: skewX(5deg); }
+  }
+
+  /* Heat shimmer on a hot day (.horizon--hot from main.js): the horizon
+     line turns wavy and the waves run along it, the air just above it
+     ripples, and the elevator wavers */
+  .horizon--hot .horizon__line {
+    top: calc(var(--sky-height) - 1.75px);
+    height: 7px;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='7'%3E%3Cpath d='M-24 3.5Q-12 5.8 0 3.5T24 3.5T48 3.5T72 3.5' fill='none' stroke='%23000' stroke-width='3.5'/%3E%3C/svg%3E") 0 0 / 48px 7px repeat-x;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='7'%3E%3Cpath d='M-24 3.5Q-12 5.8 0 3.5T24 3.5T48 3.5T72 3.5' fill='none' stroke='%23000' stroke-width='3.5'/%3E%3C/svg%3E") 0 0 / 48px 7px repeat-x;
+    animation: shimmer-run 1.4s linear infinite, shimmer-jitter 0.31s ease-in-out infinite alternate;
+  }
+
+  @keyframes shimmer-run {
+    to { -webkit-mask-position: 48px 0; mask-position: 48px 0; }
+  }
+
+  @keyframes shimmer-jitter {
+    to { translate: 0 0.6px; }
+  }
+
+  .horizon--hot .horizon__ground::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: calc(100% + 3.5px);
+    height: 12px;
+    background: linear-gradient(to top, rgba(250, 249, 245, 0.25), rgba(250, 249, 245, 0));
+    filter: blur(1px);
+    transform-origin: 50% 100%;
+    animation: shimmer-air 0.55s ease-in-out infinite alternate;
+  }
+
+  @keyframes shimmer-air {
+    from { opacity: 0.5; transform: scaleY(0.8); }
+    to { opacity: 1; transform: scaleY(1.15); }
+  }
+
+  .horizon--hot .horizon__elevator,
+  .horizon--hot .horizon__depot {
+    animation: shimmer-waver 0.42s ease-in-out infinite alternate;
+  }
+
+  @keyframes shimmer-waver {
+    from { transform: skewX(-0.8deg); }
+    to { transform: skewX(0.8deg) scaleY(1.015); }
+  }
+
+  .horizon__tip.is-new {
+    animation: tip-in 260ms var(--ease);
+  }
+
+  @keyframes tip-in {
+    from { opacity: 0; translate: 0 4px; }
+  }
+
+  @keyframes readout-in {
+    from { opacity: 0; translate: 0 3px; }
+  }
+
+  /* The sun's glow breathes too, a little slower */
+  .horizon__sun::before {
+    animation: sun-breathe 6s ease-in-out infinite;
+  }
+
+  @keyframes sun-breathe {
+    0%, 100% { transform: scale(1); opacity: 0.85; }
+    50% { transform: scale(1.08); opacity: 1; }
+  }
+
+  /* ...and its rays turn, once every two minutes */
+  .horizon__sun::after {
+    animation: sun-rays 120s linear infinite;
+  }
+
+  @keyframes sun-rays {
+    to { transform: rotate(360deg); }
+  }
+
+  /* On a breezy day (main.js horizon--breezy) the rays flicker and
+     stretch, more in a stronger wind (--wind, 0..1) */
+  .horizon--breezy .horizon__sun::after {
+    animation: sun-rays 120s linear infinite, ray-flicker 1.9s ease-in-out infinite;
+  }
+
+  @keyframes ray-flicker {
+    0%, 100% { scale: 1; filter: opacity(1); }
+    20% { scale: calc(1 + 0.07 * var(--wind, 0.4)); filter: opacity(calc(1 - 0.3 * var(--wind, 0.4))); }
+    45% { scale: calc(1 - 0.03 * var(--wind, 0.4)); filter: opacity(1); }
+    70% { scale: calc(1 + 0.05 * var(--wind, 0.4)); filter: opacity(calc(1 - 0.45 * var(--wind, 0.4))); }
+  }
+
+  /* A low sun wobbles in the moving air near the ground */
+  .horizon--low-sun .horizon__sun {
+    animation: sun-wobble 2.8s ease-in-out infinite;
+  }
+
+  @keyframes sun-wobble {
+    0%, 100% { scale: calc(1 + 0.03 * var(--sun-flat, 0)) calc(1 - 0.14 * var(--sun-flat, 0)); }
+    30% { scale: calc(1 + 0.045 * var(--sun-flat, 0)) calc(1 - 0.18 * var(--sun-flat, 0)); }
+    65% { scale: calc(1 + 0.015 * var(--sun-flat, 0)) calc(1 - 0.1 * var(--sun-flat, 0)); }
+  }
+
+  /* The last few minutes before it sets, its edge ripples */
+  .horizon--rim .horizon__sun {
+    animation: sun-wobble 2.8s ease-in-out infinite, sun-rim 1.3s ease-in-out infinite;
+  }
+
+  @keyframes sun-rim {
+    0%, 100% { border-radius: 50%; }
+    25% { border-radius: 47% 53% 51% 49% / 52% 48% 53% 47%; }
+    50% { border-radius: 52% 48% 47% 53% / 48% 53% 47% 52%; }
+    75% { border-radius: 49% 51% 53% 47% / 51% 47% 52% 48%; }
+  }
+
+  /* The light on the ground ripples and sways */
+  .horizon__glint {
+    animation: glint-flow 2.4s linear infinite, glint-sway 4.5s ease-in-out infinite alternate;
+  }
+
+  @keyframes glint-flow {
+    to { background-position: 0 5px; }
+  }
+
+  @keyframes glint-sway {
+    from { transform: scaleX(0.88); }
+    to { transform: scaleX(1.12); }
+  }
+
+  /* Stars twinkle, each at its own pace */
+  .horizon__stars i {
+    animation: twinkle 3.2s ease-in-out infinite;
+  }
+  .horizon__stars i:nth-child(2n) { animation-duration: 4.3s; animation-delay: -1.4s; }
+  .horizon__stars i:nth-child(3n) { animation-duration: 2.6s; animation-delay: -0.7s; }
+  .horizon__stars i:nth-child(4n) { animation-duration: 5.1s; animation-delay: -2.2s; }
+  .horizon__stars i:nth-child(5n) { animation-duration: 3.7s; animation-delay: -2.9s; }
+
+  @keyframes twinkle {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.25; transform: scale(0.6); }
+  }
+
+  @keyframes moon-glow {
+    /* --glow-k fades the glow by day and in a lunar eclipse */
+    0%, 100% { filter: drop-shadow(0 0 6px rgba(217, 119, 87, calc(0.85 * var(--glow-k)))) drop-shadow(0 0 18px rgba(217, 119, 87, calc(0.5 * var(--glow-k)))); }
+    50% { filter: drop-shadow(0 0 9px rgba(217, 119, 87, calc(0.95 * var(--glow-k)))) drop-shadow(0 0 28px rgba(217, 119, 87, calc(0.6 * var(--glow-k)))); }
+  }
+
+  /* The logo's sun rises up out of its line when a page opens: the sun
+     first, then the halo, then the glow. Each one grows from the line
+     (its bottom edge). "backwards" only holds the start pose during the
+     delay, so the hover lift below still works once it's done. */
+  .logo__sun,
+  .logo__halo,
+  .logo__glow {
+    transform-box: fill-box;
+    transform-origin: 50% 100%;
+    transition: transform 300ms var(--ease), opacity 300ms var(--ease);
+  }
+
+  .logo__sun {
+    animation: logo-rise 900ms cubic-bezier(0.34, 1.4, 0.64, 1) 150ms backwards;
+  }
+
+  .logo__glow {
+    animation: logo-fade 900ms var(--ease) 700ms backwards, logo-glow 7s ease-in-out 2.5s infinite;
+  }
+
+  /* Once it's up, the logo's glow and halo slowly breathe */
+  .logo__halo {
+    animation: logo-rise 900ms cubic-bezier(0.34, 1.4, 0.64, 1) 400ms backwards, logo-halo 7s ease-in-out 2.5s infinite;
+  }
+
+  @keyframes logo-glow {
+    0%, 100% { opacity: 0.85; }
+    50% { opacity: 0.55; }
+  }
+
+  @keyframes logo-halo {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 0.85; }
+  }
+
+  /* The sting (main.js stingRise): the sun swells up slowly with the
+     sound and lands on its cut at 1.33 s, then the halo pops and the
+     ray shoots out. logo--hold keeps it down until the sound starts. */
+  .logo--sting .logo__sun {
+    animation: logo-swell 1330ms cubic-bezier(0.5, 0, 0.3, 1) backwards;
+  }
+
+  .logo--sting .logo__glow {
+    animation: logo-fade 1330ms ease-in backwards, logo-glow 7s ease-in-out 3s infinite;
+  }
+
+  .logo--sting .logo__halo {
+    animation: logo-rise 500ms cubic-bezier(0.34, 1.4, 0.64, 1) 1200ms backwards, logo-halo 7s ease-in-out 3s infinite;
+  }
+
+  .logo--sting .logo__ray {
+    animation: logo-ray 900ms cubic-bezier(0.22, 1, 0.36, 1) 1330ms backwards;
+  }
+
+  .logo--hold .logo__sun,
+  .logo--hold .logo__glow,
+  .logo--hold .logo__halo,
+  .logo--hold .logo__ray {
+    animation-play-state: paused;
+  }
+
+  @keyframes logo-swell {
+    0% { transform: scale(0.6, 0); }
+    92% { transform: scale(1.05); }
+    100% { transform: none; }
+  }
+
+  /* The logo's sun drifts with the real one (see --logo-dip) */
+  .logo__sun,
+  .logo__halo,
+  .logo__glow {
+    transition: transform 300ms var(--ease), opacity 300ms var(--ease), translate 1200ms var(--ease);
+  }
+
+  /* Once the sun is up, the ray shoots out from it to the right. */
+  .logo__ray {
+    transform-box: fill-box;
+    transform-origin: 0 50%;
+    transition: opacity 300ms var(--ease);
+    animation: logo-ray 1100ms cubic-bezier(0.22, 1, 0.36, 1) 550ms backwards;
+  }
+
+  @keyframes logo-ray {
+    from { transform: scaleX(0); opacity: 0; }
+  }
+
+  .lockup:hover .logo__ray,
+  .lockup:focus-visible .logo__ray,
+  .wordmark:hover .logo__ray,
+  .wordmark:focus-visible .logo__ray {
+    opacity: 0.85;
+  }
+
+  @keyframes logo-rise {
+    from { transform: scale(0.6, 0); }
+  }
+
+  @keyframes logo-fade {
+    from { opacity: 0; }
+  }
+
+  /* Hover or keyboard focus on the logo: the sun lifts a touch and the
+     halo brightens. */
+  .wordmark:hover .logo__sun,
+  .wordmark:focus-visible .logo__sun,
+  .lockup:hover .logo__sun,
+  .lockup:focus-visible .logo__sun {
+    transform: scale(1.08);
+  }
+
+  .wordmark:hover .logo__halo,
+  .wordmark:focus-visible .logo__halo,
+  .lockup:hover .logo__halo,
+  .lockup:focus-visible .logo__halo {
+    transform: scale(1.06);
+    opacity: 0.95;
+  }
+
+  /* The windmill's wheel, at the real wind's speed (still when calm) */
+  .windmill__wheel {
+    animation: mill-spin var(--mill-s, 2s) linear infinite;
+  }
+
+  .horizon--calm .windmill__wheel {
+    animation-play-state: paused;
+  }
+
+  @keyframes mill-spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* While the hero sky is scrolled out of view (main.js setUpSkySleep),
+     everything in it holds still, so nobody pays for stars they can't see */
+  .horizon--asleep,
+  .horizon--asleep::before,
+  .horizon--asleep::after,
+  .horizon--asleep *,
+  .horizon--asleep *::before,
+  .horizon--asleep *::after {
+    animation-play-state: paused !important;
+  }
+
+  /* Halloween: the elevator's windows and the pumpkin flicker like candles */
+  :root[data-theme="dark"] .horizon--halloween .elevator__light,
+  :root[data-theme="dark"] .pumpkin__face {
+    animation: candle 2.3s steps(1) infinite;
+  }
+
+  @keyframes candle {
+    0%, 100% { opacity: 1; }
+    20% { opacity: 0.7; }
+    35% { opacity: 0.95; }
+    55% { opacity: 0.6; }
+    70% { opacity: 1; }
+    85% { opacity: 0.8; }
+  }
+
+  .bat path {
+    animation: bat-flap 0.2s ease-in-out infinite alternate;
+  }
+
+  @keyframes bat-flap {
+    to { transform: scaleY(-0.5); }
+  }
+
+  /* December lights twinkle after dark, a few at a time */
+  :root[data-theme="dark"] .horizon--christmas .xmas {
+    animation: twinkle-light 2.4s ease-in-out infinite;
+  }
+
+  :root[data-theme="dark"] .horizon--christmas .xmas:nth-child(3n + 1) { animation-delay: -0.8s; }
+  :root[data-theme="dark"] .horizon--christmas .xmas:nth-child(4n + 2) { animation-delay: -1.6s; }
+
+  @keyframes twinkle-light {
+    50% { opacity: 0.35; }
+  }
+
+  /* The wheat grows back after the harvest */
+  .horizon--regrow .horizon__wheat {
+    animation: regrow 2.5s var(--ease);
+  }
+
+  @keyframes regrow {
+    from { opacity: 0; }
+  }
+
+  /* Game cards tip toward the mouse (or a pressing finger) with a glint.
+     main.js setUpCoverTilt adds is-tilting and the numbers. */
+  .project.is-tilting {
+    transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(-3px);
+    transition: transform 90ms linear, box-shadow 260ms var(--ease), border-color 260ms;
+  }
+
+  .project.is-tilting .project__cover::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(250, 249, 245, 0.3), rgba(250, 249, 245, 0) 55%);
+    pointer-events: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
+}
