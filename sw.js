@@ -85,9 +85,21 @@ self.addEventListener("fetch", (event) => {
   if (url.origin !== location.origin) return; // weather and other sites: not ours to save
   if (url.pathname.endsWith(".mp4")) return; // game clips: let the browser stream them itself
 
+  // The studio sting (only ever fetched once Sound is on): the saved copy
+  // straight away, so it plays on the tap and with no signal, and a fresh
+  // copy saved for next time. A changed sound should get a new file name.
+  if (url.pathname.includes("/assets/sounds/")) {
+    event.respondWith(caches.match(request).then((saved) => {
+      const fresh = fetch(request).then((response) => keep(request, response, event));
+      if (saved) { event.waitUntil(fresh.catch(() => {})); return saved; }
+      return fresh;
+    }));
+    return;
+  }
+
   event.respondWith(
     fetch(request)
-      .then((response) => keep(request, response))
+      .then((response) => keep(request, response, event))
       .catch(() =>
         // No signal: the saved copy (ignoring ?at= and ?v= on the end),
         // or the home page for a page that was never opened.
@@ -100,11 +112,12 @@ self.addEventListener("fetch", (event) => {
   );
 });
 
-// Saves a good answer for later and passes it on.
-function keep(request, response) {
+// Saves a good answer for later and passes it on. waitUntil keeps the
+// helper awake until the copy is written.
+function keep(request, response, event) {
   if (response.status === 200) {
     const copy = response.clone();
-    caches.open(CACHE).then((cache) => cache.put(request, copy)).catch(() => {});
+    event.waitUntil(caches.open(CACHE).then((cache) => cache.put(request, copy)).catch(() => {}));
   }
   return response;
 }
