@@ -188,7 +188,7 @@ that part, and update it when how something works changes. The short map:
   newest GitHub Release, so don't "fix" newer live values by hand.
   `"hidden": true` takes a project off the site everywhere; Escapement, Ink,
   Station Keeper and The Whip are hidden (Kelbo, 2026-11-11), and so are
-  Quench and Hull Down, the newest games, until they're more built. Funded
+  Quench, Hull Down, Burn Rate and Rollback, the newest games, until they're more built. Funded
   went on the site on 2026-11-12, so the site lists seven games. Their repos and live games stay up.
   Screenshots are `shots` in `assets/shots/` (with `@2x` twins). Status
   names live in `STATUSES` (`main.js`), kept in step with `KNOWN_STATUS` in
