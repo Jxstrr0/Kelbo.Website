@@ -744,6 +744,10 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   and screenshots were recorded from the live game at a phone size. Its
   `publish-release.yml` (from 0.8.0.0) publishes a release whenever
   `VERSION` in its `js/config.js` changes.
+  Rollback (the roller coaster engineering game, rollback.longlight.games)
+  was added hidden (Kelbo, 2026-11-14), with no cover yet. Its address is
+  the `rollback` CNAME in longlight-assets' `dns/records.json`. It has no
+  release workflow yet, so it carries no version until one is added.
   Each game keeps its own look (fonts, colours, art). The Longlight logo,
   the five colours and Space Grotesk belong to studio pieces only (logo or
   splash, credit line, studio block, links back here); every game repo's
