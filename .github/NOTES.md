@@ -594,7 +594,9 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   still calls `keepStorage`, which asks once per page for the site's own
   storage (badges, last played). Old saves stay on `jxstrr0.github.io`.
 - Sun motion (November 2026): the logo's sun breathes (`logo-glow`,
-  `logo-halo`) and sits up to `LOGO_DIP` (3) logo units lower near sunrise,
+  `logo-halo`; in the header logo they play once and hold still, since the
+  frosted header redraws whole for any change inside it, Kelbo 2026-11-14;
+  the footer logo keeps breathing) and sits up to `LOGO_DIP` (3) logo units lower near sunrise,
   sunset and at night (`--logo-dip` on `<html>`, set in `placeSun`, so it
   follows swipes and the spin; the line in front hides the drop).
   `stingRise` replays the rise on `.logo--sting` timed to the sting (swell,
@@ -619,7 +621,9 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   (`click`/`keydown`; taps on links are skipped so the next page does it). Not in `sw.js` `CORE`. It's the site's only sound.
 - Offline: `sw.js` (root, registered in `init`) precaches `CORE` and is
   network-first for same-origin GETs (saved copy on failure, `index.html`
-  for unknown pages offline). Bump `CACHE`
+  for unknown pages offline), except `assets/sounds/`: saved copy first,
+  refreshed in the background (so a sound replaced under the same name
+  arrives on the visit after; give it a new name to switch at once). Bump `CACHE`
   if it ever serves stale files; add new top-level pages to `CORE`. Its
   cleanup deletes only `longlight-*` caches; keep it that way (never delete
   another prefix).
