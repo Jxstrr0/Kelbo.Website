@@ -6077,6 +6077,14 @@ a.quest__top:focus-visible .quest__name {
     animation: logo-ray 900ms cubic-bezier(0.22, 1, 0.36, 1) 1330ms backwards;
   }
 
+  /* The header is frosted glass, which the browser redraws whole for every
+     change inside it, so its logo rises and then holds still; the footer's
+     big logo keeps breathing. */
+  .site-header .logo__glow,
+  .site-header .logo__halo {
+    animation-iteration-count: 1, 0;
+  }
+
   .logo--hold .logo__sun,
   .logo--hold .logo__glow,
   .logo--hold .logo__halo,
