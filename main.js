@@ -5912,17 +5912,25 @@ const LOGO_TAPS = 5;
 function setUpLogoSecret() {
   const mark = document.querySelector(".site-header .wordmark");
   if (!mark || !/(^|\/)(index\.html)?$/.test(location.pathname)) return;
+  // Sound on: have the sting ready for the fifth tap, once the page is
+  // quiet (Safari has no requestIdleCallback: a short wait instead).
+  if (soundOn()) {
+    if (window.requestIdleCallback) requestIdleCallback(loadSting, { timeout: 3000 });
+    else setTimeout(loadSting, 1500);
+  }
   let taps = [];
   mark.addEventListener("click", (e) => {
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button) return; // "open in a new tab" still works
     e.preventDefault();
+    if (soundOn()) loadSting(); // ready by the fifth tap
     window.scrollTo({ top: 0, behavior: REDUCE_MOTION ? "auto" : "smooth" });
     const at = performance.now();
     taps = taps.filter((tap) => at - tap < 3000).concat(at);
     if (taps.length < LOGO_TAPS) return;
     taps = [];
     writeJSON(LOGO_KEY, Date.now());
-    if (soundOn()) playSting(); // plays, and raises the sun in time with it
+    // Plays, and raises the sun in time with it; no sound, the sun still rises
+    if (soundOn()) playSting().then((ok) => { if (!ok) stingRise(); });
     else stingRise();
     confetti(mark);
     buzz([40, 30, 40, 30, 120]);
@@ -6915,7 +6923,7 @@ function setUpLens() {
 }
 
 /* ---------- The studio sting ----------
-   A 2-second "sun coming up" sound (assets/sounds/longlight-sting.mp3,
+   A 2-second "sun coming up" sound (assets/sounds/longlight-sting-v2.mp3,
    made by Kelbo with ElevenLabs). Off unless the visitor turns Sound on
    with the footer switch (saved in localStorage["kelbo.sound"]).
    Turning it on plays the sting once. With Sound on, the first page of a
@@ -6925,56 +6933,194 @@ function setUpLens() {
    key (up to STING_WAIT_MS, then it comes up quietly so the logo is
    never left empty; the first tap after that still plays the sound and
    raises the sun again with it).
+   It plays through Web Audio, not an <audio> element: the file is fetched
+   and decoded once, ahead of time, and a tap only has to wake the audio
+   engine, so the sound starts at once and the sun can be timed to the
+   moment it is heard. Web Audio also mixes with the visitor's own music
+   instead of pausing it, never puts lock-screen media controls up, and on
+   an iPhone follows the silent switch (STING_SESSION). Once the sting
+   ends, the engine is suspended so it doesn't keep the speaker awake.
    The file is only downloaded once Sound is on. */
 const SOUND_KEY = "kelbo.sound";
-const STING_URL = "assets/sounds/longlight-sting.mp3";
+const STING_URL = "assets/sounds/longlight-sting-v2.mp3"; // a changed sound gets a new name (sw.js keeps sounds)
 const STING_DONE = "kelbo.stingPlayed"; // sessionStorage: once per visit
 const STING_WAIT_MS = 4000; // how long the sun waits below its line for the sound
+const STING_VOLUME = 1; // 0 to 1 (the file itself is mastered to -16 LUFS)
+const STING_LEAD_S = 0.03; // the sound is booked this far ahead, so it starts cleanly
+const STING_FADE_S = 0.005; // the file starts at full level: a 5 ms fade-in stops a click
+const STING_WAKE_MS = 400; // how long to wait for the engine to wake before calling it refused
+// Safari 16.4+ only: "ambient" mixes with the visitor's music and stays
+// quiet when the iPhone is on silent; "playback" always sounds but pauses
+// their music. (Web Audio is "ambient" in Safari anyway; said here so it stays so.)
+const STING_SESSION = "ambient";
 
 function soundOn() {
   try { return localStorage.getItem(SOUND_KEY) === "on"; } catch (e) { return false; }
 }
 
-let stingAudio = null;
-// Fetches the whole file (a plain 200, which sw.js can keep for offline),
-// then plays it from memory. Resolves true once it starts.
-async function playSting() {
-  try {
-    if (!stingAudio) {
-      const res = await fetch(STING_URL);
-      if (!res.ok) return false;
-      stingAudio = new Audio(URL.createObjectURL(await res.blob()));
-      stingAudio.volume = 0.6;
-    }
-    stingAudio.currentTime = 0;
-    await stingAudio.play();
-    stingRise();
-    return true;
-  } catch (e) {
-    return false; // blocked until a tap, or no file
+const AudioEngine = window.AudioContext || window.webkitAudioContext;
+let stingEngine = null; // one AudioContext for the page, made the first time it's needed
+let stingFile = null; // the decoded sound (a promise), fetched once
+let stingNow = null; // the sound playing right now
+let stingTurn = 0; // the newest request wins (a second tap, or Sound off)
+let stingTimer = 0; // lets the sun go when the sound is heard
+let stingWant = false; // a sting has been asked for and not stopped since
+let stingHeard = null; // setUpSound's "it has played this visit" (any way it starts)
+
+function engine() {
+  if (!stingEngine && AudioEngine) {
+    try {
+      if (navigator.audioSession) navigator.audioSession.type = STING_SESSION;
+    } catch (e) {}
+    try { stingEngine = new AudioEngine(); } catch (e) {}
   }
+  return stingEngine;
+}
+
+// Fetches and decodes the file once (a plain 200, which sw.js can keep for
+// offline). Resolves the sound, or null with no file; a failure is
+// forgotten so the next try fetches again. With no engine yet (a page
+// still in a background tab), a throwaway offline one decodes it.
+function loadSting() {
+  if (!stingFile) {
+    stingFile = fetch(STING_URL)
+      .then((res) => (res.ok ? res.arrayBuffer() : null))
+      .then((data) => {
+        if (!data) return null;
+        const Offline = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+        const decoder = stingEngine || (Offline ? new Offline(2, 1, 44100) : engine());
+        return new Promise((done, fail) => {
+          // Safari before 14.1 only answers through the two callbacks
+          const p = decoder.decodeAudioData(data, done, fail);
+          if (p && p.catch) p.catch(fail);
+        });
+      })
+      .catch(() => null);
+    stingFile.then((sound) => { if (!sound) stingFile = null; });
+  }
+  return stingFile;
+}
+
+// Plays the sting and lets the sun rise when it is heard. Call it straight
+// from a tap or key where possible: waking the engine has to happen in the
+// tap itself on phones, so that part runs before anything is awaited.
+// Resolves true once the sound is booked, false if sound is refused or
+// the file is missing.
+function playSting() {
+  const turn = ++stingTurn;
+  stingWant = true;
+  const ctx = engine();
+  if (!ctx) return Promise.resolve(false);
+  let woke = Promise.resolve();
+  if (ctx.state !== "running") {
+    // resume() just stays pending while sound is blocked, so give it a moment
+    let resume;
+    try { resume = ctx.resume(); } catch (e) {}
+    woke = Promise.race([
+      Promise.resolve(resume).catch(() => {}),
+      new Promise((r) => setTimeout(r, STING_WAKE_MS)),
+    ]);
+  }
+  return Promise.all([loadSting(), woke]).then(([sound]) => {
+    if (turn !== stingTurn) {
+      // Overtaken: by Sound off (already asleep) or a newer try, which
+      // decides for itself. Only an engine left awake for nothing sleeps.
+      if (!stingNow && !stingWant) ctx.suspend().catch(() => {});
+      return false;
+    }
+    if (!sound || ctx.state !== "running") {
+      if (!stingNow) ctx.suspend().catch(() => {}); // no file: don't leave the engine awake
+      return false;
+    }
+    startSting(ctx, sound);
+    return true;
+  }, () => false);
+}
+
+function startSting(ctx, sound) {
+  stopSound(false); // a new sting replaces the old one; the engine stays awake for it
+  const src = ctx.createBufferSource();
+  const gain = ctx.createGain();
+  const at = ctx.currentTime + STING_LEAD_S;
+  gain.gain.setValueAtTime(0, at);
+  gain.gain.linearRampToValueAtTime(STING_VOLUME, at + STING_FADE_S);
+  src.buffer = sound;
+  src.connect(gain);
+  gain.connect(ctx.destination);
+  src.onended = () => {
+    if (stingNow !== src) return;
+    stingNow = null;
+    ctx.suspend().catch(() => {}); // let the speaker sleep
+  };
+  src.start(at);
+  stingNow = src;
+  if (stingHeard) stingHeard();
+  // The sun goes when the sound comes out of the speaker: the booking
+  // lead plus the output's own delay (Bluetooth can add a lot). Where the
+  // browser can say when its last sound reached the speaker, that's used.
+  let wait = (at - ctx.currentTime + (ctx.outputLatency || ctx.baseLatency || 0)) * 1000;
+  try {
+    const out = ctx.getOutputTimestamp();
+    if (out.performanceTime > 0) wait = out.performanceTime + (at - out.contextTime) * 1000 - performance.now();
+  } catch (e) {}
+  clearTimeout(stingTimer);
+  stingTimer = setTimeout(stingRise, Math.max(0, Math.min(wait, 500)));
+}
+
+// Stops the sound (and any sound still being got ready) and lets the
+// engine sleep, even if it was only woken and nothing has started yet.
+function stopSting() {
+  stingTurn++;
+  stingWant = false;
+  stopSound(true);
+}
+
+function stopSound(sleep) {
+  clearTimeout(stingTimer);
+  const src = stingNow;
+  stingNow = null;
+  if (src) {
+    try { src.stop(); } catch (e) {}
+  }
+  // (a suspend asked for while a wake is still pending is queued after it)
+  if (sleep && stingEngine) stingEngine.suspend().catch(() => {});
 }
 
 // The logo's sun rises in time with the sting: it swells up slowly with
-// the sound and lands on the cut at about 1.33 s, then the ray shoots
-// out (style.css, .logo--sting, motion only). Restarting the class
-// plays it again from the start.
+// the sound and lands on its stop at about 1.39 s, then the ray shoots
+// out (style.css, .logo--sting, motion only). Waiting for its first
+// sting, the rise is already in place, paused at its start (logo--hold),
+// so letting it go is all it takes. Otherwise the whole sting restarts:
+// one frame with no animation at all (logo--reset), then the sting from
+// its start. (A plain remove and re-add would only restart the sun: the
+// glow, halo and ray keep their animation names, so the browser keeps the
+// old, finished animations. This way also forces no style flush.)
 function stingRise() {
   const root = document.documentElement;
-  root.classList.remove("logo--sting", "logo--hold");
-  void root.offsetWidth;
-  root.classList.add("logo--sting");
+  if (root.classList.contains("logo--hold")) return root.classList.remove("logo--hold");
+  root.classList.remove("logo--sting");
+  root.classList.add("logo--reset");
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    root.classList.remove("logo--reset");
+    root.classList.add("logo--sting");
+  }));
 }
 
 function setUpSound() {
   const line = document.querySelector(".site-footer p");
-  if (!line || typeof Audio === "undefined") return;
+  if (!line || !AudioEngine) return;
   const btn = document.createElement("button");
   btn.type = "button";
   btn.className = "sound-toggle";
+  // The name stays "Sound" and aria-pressed carries the state, so a screen
+  // reader says "Sound, toggle button, pressed" rather than "Sound on,
+  // pressed". The visible on/off word is for eyes only.
+  const state = document.createElement("span");
+  state.setAttribute("aria-hidden", "true");
+  btn.append("Sound ", state);
   const paint = () => {
     const on = soundOn();
-    btn.textContent = on ? "Sound on" : "Sound off";
+    state.textContent = on ? "on" : "off";
     btn.setAttribute("aria-pressed", on ? "true" : "false");
   };
   btn.addEventListener("click", () => {
@@ -6984,11 +7130,21 @@ function setUpSound() {
       else localStorage.removeItem(SOUND_KEY);
     } catch (e) {}
     paint();
-    if (on) playSting();
-    else if (stingAudio) stingAudio.pause();
+    // Waking the audio engine the first time costs about 20 ms, so it
+    // runs just after this tap instead of holding up the switch's own
+    // repaint. It still counts as part of the tap (a timer set inside a
+    // tap keeps it for a second in Safari, five in Chrome and Firefox).
+    if (on) setTimeout(playSting, 0);
+    else stopSting();
   });
   paint();
-  line.append(" \u00b7 ", btn);
+  line.append(" · ", btn);
+  // Sound switched in another tab: show it here too, and stop if it went off.
+  addEventListener("storage", (e) => {
+    if (e.key !== SOUND_KEY && e.key !== null) return;
+    paint();
+    if (!soundOn()) stopSting();
+  });
 
   // First page of the visit, Sound on: the sun and the sound go together.
   // Each page's <head> script has already put the sun below its line
@@ -6999,32 +7155,48 @@ function setUpSound() {
   const release = () => {
     if (root.classList.contains("logo--hold")) root.classList.remove("logo--sting", "logo--hold");
   };
+  // Leaving the page (or it going into the back/forward cache) stops the
+  // sound and puts the sun up, so coming back never shows an empty logo
+  // or replays it.
+  addEventListener("pagehide", () => { stopSting(); release(); });
   let done = false;
   try { done = sessionStorage.getItem(STING_DONE) === "1"; } catch (e) {}
   if (!soundOn() || done) return release();
-  const mark = () => { try { sessionStorage.setItem(STING_DONE, "1"); } catch (e) {} };
   root.classList.add("logo--sting", "logo--hold"); // in case the <head> script didn't
   const giveUp = setTimeout(release, STING_WAIT_MS);
-  playSting().then((ok) => {
-    if (ok) { clearTimeout(giveUp); return mark(); }
-    if (!stingAudio) { clearTimeout(giveUp); return release(); } // no file: nothing to wait for
-    // Refused (no tap yet): keep the sun down and play at the first tap
-    // or key. Browsers only allow sound once a tap has finished (finger
-    // up), so listen for click, not pointerdown. A tap on a link is left
-    // alone: the next page starts its own wait instead of cutting the
-    // sound off mid-rise.
-    const events = ["click", "keydown"];
-    const once = (e) => {
-      if (e.target === btn || !soundOn()) return;
-      if (e.target.closest && e.target.closest("a[href]")) return;
-      playSting().then((played) => {
-        if (!played) return; // still refused: keep listening
-        clearTimeout(giveUp);
-        mark();
-        events.forEach((name) => removeEventListener(name, once, true));
-      });
-    };
-    events.forEach((name) => addEventListener(name, once, true));
+  // Browsers allow sound from a finished tap (finger up: pointerup), a
+  // click or a key. A tap on a link is left alone: the next page starts
+  // its own wait instead of cutting the sound off mid-rise.
+  // (A tap sends pointerup then click: the newer try takes over the older
+  // one, so the sound still starts only once.)
+  const events = ["pointerup", "click", "keydown"];
+  const once = (e) => {
+    if (btn.contains(e.target) || !soundOn()) return;
+    if (e.target.closest && e.target.closest("a[href]")) return;
+    playSting();
+  };
+  // A page opened in a background tab waits until it is looked at.
+  const shown = () => {
+    if (document.visibilityState === "visible" && soundOn()) playSting();
+  };
+  // However it starts (a tap, the switch, the logo secret), it counts.
+  stingHeard = () => {
+    stingHeard = null;
+    clearTimeout(giveUp);
+    try { sessionStorage.setItem(STING_DONE, "1"); } catch (e) {}
+    events.forEach((name) => removeEventListener(name, once, true));
+    document.removeEventListener("visibilitychange", shown);
+  };
+  events.forEach((name) => addEventListener(name, once, true));
+  document.addEventListener("visibilitychange", shown);
+  shown(); // plays straight away where the browser allows it (desktop Chrome often does)
+  loadSting().then((sound) => {
+    if (sound) return;
+    // No file (offline, or it's gone): put the sun up and stop listening
+    // for taps; the switch and the logo secret still try again.
+    clearTimeout(giveUp);
+    release();
+    events.forEach((name) => removeEventListener(name, once, true));
   });
 }
 

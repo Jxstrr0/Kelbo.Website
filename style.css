@@ -6059,22 +6059,22 @@ a.quest__top:focus-visible .quest__name {
   }
 
   /* The sting (main.js stingRise): the sun swells up slowly with the
-     sound and lands on its cut at 1.33 s, then the halo pops and the
+     sound and lands on its stop at 1.39 s, then the halo pops and the
      ray shoots out. logo--hold keeps it down until the sound starts. */
   .logo--sting .logo__sun {
-    animation: logo-swell 1330ms cubic-bezier(0.5, 0, 0.3, 1) backwards;
+    animation: logo-swell 1390ms cubic-bezier(0.5, 0, 0.3, 1) backwards;
   }
 
   .logo--sting .logo__glow {
-    animation: logo-fade 1330ms ease-in backwards, logo-glow 7s ease-in-out 3s infinite;
+    animation: logo-fade 1390ms ease-in backwards, logo-glow 7s ease-in-out 3s infinite;
   }
 
   .logo--sting .logo__halo {
-    animation: logo-rise 500ms cubic-bezier(0.34, 1.4, 0.64, 1) 1200ms backwards, logo-halo 7s ease-in-out 3s infinite;
+    animation: logo-rise 500ms cubic-bezier(0.34, 1.4, 0.64, 1) 1260ms backwards, logo-halo 7s ease-in-out 3s infinite;
   }
 
   .logo--sting .logo__ray {
-    animation: logo-ray 900ms cubic-bezier(0.22, 1, 0.36, 1) 1330ms backwards;
+    animation: logo-ray 900ms cubic-bezier(0.22, 1, 0.36, 1) 1390ms backwards;
   }
 
   /* The header is frosted glass, which the browser redraws whole for every
@@ -6090,6 +6090,14 @@ a.quest__top:focus-visible .quest__name {
   .logo--hold .logo__halo,
   .logo--hold .logo__ray {
     animation-play-state: paused;
+  }
+
+  /* stingRise: one frame with no animation, so the sting restarts whole */
+  .logo--reset .logo__sun,
+  .logo--reset .logo__glow,
+  .logo--reset .logo__halo,
+  .logo--reset .logo__ray {
+    animation: none;
   }
 
   @keyframes logo-swell {

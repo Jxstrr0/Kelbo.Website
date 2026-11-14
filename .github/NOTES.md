@@ -599,8 +599,9 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   the footer logo keeps breathing) and sits up to `LOGO_DIP` (3) logo units lower near sunrise,
   sunset and at night (`--logo-dip` on `<html>`, set in `placeSun`, so it
   follows swipes and the spin; the line in front hides the drop).
-  `stingRise` replays the rise on `.logo--sting` timed to the sting (swell,
-  lands on its cut at 1.33 s); `logo--hold` keeps the sun down until the
+  `stingRise` replays the whole rise on `.logo--sting` timed to the sting
+  (swell, lands on its stop at 1.39 s), restarting it with one frame of
+  `logo--reset` (no animation) so the glow, halo and ray replay too; `logo--hold` keeps the sun down until the
   sound starts (set by each page's `<head>` script before the first frame;
   released quietly after `STING_WAIT_MS`, 4 s, or at once with no file). `placeLowSun` sets
   `--sun-flat` below `LOW_SUN_DEG` (4°) with `horizon--low-sun` (squashed
@@ -610,15 +611,32 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   Tapping the sun calls `sunFlare` (`.sun-flare`: streak and rings, WAAPI,
   not with reduce motion). `skyIcon` adds SMIL `<animate>` to the tab
   icon's glow (only Firefox animates tab icons).
-- Studio sting: `assets/sounds/longlight-sting.mp3` (2 s, made by Kelbo with
-  ElevenLabs; `assets/sounds/CREDITS.md`). `setUpSound` (main.js) adds a
-  "Sound off/on" button to the end of every footer line (`.sound-toggle`),
-  saved in `localStorage["kelbo.sound"]`; off by default, and the file is
-  only fetched once it's on. Turning it on plays the sting; with Sound on,
+- Studio sting: `assets/sounds/longlight-sting-v2.mp3` (2 s, made by Kelbo
+  with ElevenLabs, mastered to -16 LUFS; `assets/sounds/CREDITS.md`; the
+  original `longlight-sting.mp3` stays for reference, unloaded). A changed
+  sound needs a new file name, because `sw.js` serves sounds from its saved
+  copy first. `setUpSound` (main.js) adds a "Sound off/on" button to the
+  end of every footer line (`.sound-toggle`; its name is "Sound" with
+  `aria-pressed`, the on/off word is `aria-hidden`), saved in
+  `localStorage["kelbo.sound"]` and kept in step across tabs (`storage`
+  event); off by default, and the file is only fetched once it's on.
+  It plays through Web Audio, not `<audio>`: one `AudioContext`, made the
+  first time it's needed, and the file decoded once (`loadSting`); a tap
+  only wakes the engine (`playSting`), the sound is booked `STING_LEAD_S`
+  ahead with a `STING_FADE_S` fade-in, the sun is let go when the sound
+  reaches the speaker (`getOutputTimestamp`, else the output latency), and
+  the engine is suspended once it ends or on Sound off. `STING_SESSION`
+  ("ambient") makes an iPhone mix it with the visitor's music and keep
+  quiet on silent. Turning it on plays the sting (just after the tap, so
+  the switch repaints first); with Sound on,
   the first page of a visit (`sessionStorage["kelbo.stingPlayed"]`) plays it
   with the logo's rise: the sun waits below its line for the sound, so on a
   phone (sound blocked until a tap) both start at the first tap or key
-  (`click`/`keydown`; taps on links are skipped so the next page does it). Not in `sw.js` `CORE`. It's the site's only sound.
+  (`pointerup`/`click`/`keydown`; taps on links are skipped so the next page
+  does it; a page in a background tab waits until it's shown). `pagehide`
+  stops it. With Sound on, the home page also loads it when idle
+  (`setUpLogoSecret`), so the logo secret's fifth tap plays at once. Not in
+  `sw.js` `CORE`. It's the site's only sound.
 - Offline: `sw.js` (root, registered in `init`) precaches `CORE` and is
   network-first for same-origin GETs (saved copy on failure, `index.html`
   for unknown pages offline), except `assets/sounds/`: saved copy first,
