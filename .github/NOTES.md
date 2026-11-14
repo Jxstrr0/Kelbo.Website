@@ -403,7 +403,11 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   inset ivory rim and a tight `box-shadow` glow, and `::after` is the fine
   rays (a `repeating-conic-gradient` masked to a ring). Motion
   (sun-breathe, sun-rays, moon-float, glint-flow/sway, twinkle) is in the
-  reduced-motion-safe block. The ☀/☾ button cycles auto → light → dark and is
+  reduced-motion-safe block. `setUpSkySleep` (an IntersectionObserver)
+  adds `horizon--asleep` while the sky is off screen, which pauses every
+  CSS animation in it (`animation-play-state: paused`); the WAAPI meteors
+  and the timer-driven trains, critters and geese are not paused, so one
+  can finish its trip unseen (2026-11-14, tap-speed fix). The ☀/☾ button cycles auto → light → dark and is
   saved in `localStorage["kelbo.theme"]`; a tiny inline script in every
   page's `<head>` applies it before paint. The home page also has the
   "Continue?" memory card (`kelbo.lastPlayed`, `kelbo.visits`, set when any
@@ -429,11 +433,12 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   box's fold styles and remembers open or closed in `kelbo.skyWeekOpen`.
 
 - Fun extras (2026-10-30): `setUpLand` adds `.horizon__windmill` (SVG,
-  `WINDMILL_TOWER`/`WINDMILL_TAIL`, at 16% across; `.windmill__wheel`
-  spins at `--mill-s` from `breeze()`, paused by `horizon--calm` under
+  `WINDMILL_TOWER`/`WINDMILL_TAIL`, at 16% across; `.windmill__wheel`,
+  its own small `<svg>` placed over the tower's hub so the spin runs on
+  the graphics card instead of a layout every frame (2026-11-14), spins at `--mill-s` from `breeze()`, paused by `horizon--calm` under
   3 km/h, flipped downwind by `--mill-flip`; tap: `windmillFact`),
   `.horizon__pumpkin` and `.elevator__xmas` (lights sampled along
-  `ELEVATOR`). `holidayAt` (`?holiday=halloween|christmas|canada|newyear|valentines`)
+  `ELEVATOR`; they twinkle only under `horizon--christmas`). `holidayAt` (`?holiday=halloween|christmas|canada|newyear|valentines`)
   toggles `horizon--halloween/christmas` in `paintWeather`; `setUpCritters`
   adds `bats()` (`batsTime`), `firework()` (`fireworksTime`, Canada Day
   after dark and 11 PM to 1 AM at New Year), `tumbleweed()` (`tumbleTime`:
@@ -520,7 +525,10 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   differences → displacement map, then frost and saturate) and
   `data-lens` on `<html>` only where `CSS.supports("backdrop-filter",
   "url(#x)")` and not Firefox; `:root[data-lens]` panes use
-  `backdrop-filter: url(#glass-lens)`. Safari never gets it.
+  `backdrop-filter: url(#glass-lens)`. Safari never gets it. The sticky
+  `.site-header` keeps the plain frost everywhere: the lens re-filters the
+  whole pane whenever anything inside it moves (the breathing logo), which
+  made taps slow (2026-11-14).
 - Tilt sky: `setUpMotion` (home hero `[data-motion-switch]`, shown only
   with `pointer: coarse` and DeviceOrientationEvent; iPhone
   `requestPermission` after the tap; choice in `localStorage["kelbo.motion"]`,
