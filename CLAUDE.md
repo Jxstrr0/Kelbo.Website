@@ -162,8 +162,8 @@ keep the Co-Authored-By trailer for Claude in each message.
 - The link preview image is `assets/social-preview.jpg` (1200×630, the
   Longlight sky, the sun with its glow and halo on the horizon line,
   "Longlight Interactive", plus the four featured game covers in a 2×2
-  grid: Frontier Lab, Prairie Engine Works, Scrapline, Season Ticket). Every `og:image`
-  ends `?v=21` so apps refetch it; bump it on every page when the picture
+  grid: Burn Rate, Prairie Engine Works, Scrapline, Season Ticket). Every `og:image`
+  ends `?v=22` so apps refetch it; bump it on every page when the picture
   changes. Regenerate it if the covers change a lot. The favicon and
   home-screen icons are the logo's sun (glow, halo, sun) on an ivory line
   on a purple tile (the favicon turns slate in dark mode):
@@ -188,8 +188,10 @@ that part, and update it when how something works changes. The short map:
   newest GitHub Release, so don't "fix" newer live values by hand.
   `"hidden": true` takes a project off the site everywhere; Escapement
   and The Whip are hidden (Kelbo, 2026-11-11), and so are
-  Quench, Hull Down and Burn Rate, the newest games, until they're more built.
-  Funded went on the site on 2026-11-12, so the site lists six games. Their repos and live games stay up.
+  Quench and Hull Down, the newest games, until they're more built.
+  Funded went on the site on 2026-11-12. On 2026-11-15 Burn Rate took
+  Frontier Lab's place and Frontier Lab was hidden (Kelbo), so the site
+  still lists six games. Their repos and live games stay up.
   Screenshots are `shots` in `assets/shots/` (with `@2x` twins). Status
   names live in `STATUSES` (`main.js`), kept in step with `KNOWN_STATUS` in
   `check-site.mjs`. Notes: "Projects, cards and game pages".

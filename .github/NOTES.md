@@ -12,8 +12,8 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
 - `projects.json` is the single source of truth for projects. `main.js`
   renders it. Its order is the display order everywhere (Games, Projects,
   What's new, home swipe row, "More games"): Kelbo's own ranking, games
-  first. Shown games (Kelbo, 2026-11-12): Prairie Engine Works, Scrapline,
-  Season Ticket, Funded, Lombard, Frontier Lab; the hidden games
+  first. Shown games (Kelbo, 2026-11-15): Prairie Engine Works, Scrapline,
+  Season Ticket, Funded, Lombard, Burn Rate; the hidden games
   follow. Nothing sorts by progress except the
   Projects page's filter buttons (`sortByProgress`). Adding a project should never need an HTML edit. Each project
   can carry a `version` ("1.4.0.0", no "v") and `latest` (what changed),
