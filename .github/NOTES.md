@@ -406,7 +406,18 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   adds `horizon--asleep` while the sky is off screen, which pauses every
   CSS animation in it (`animation-play-state: paused`); the WAAPI meteors
   and the timer-driven trains, critters and geese are not paused, so one
-  can finish its trip unseen (2026-11-14, tap-speed fix). The ☀/☾ button cycles auto → light → dark and is
+  can finish its trip unseen (2026-11-14, tap-speed fix). **Always-on
+  motion animates only `transform`, `opacity` (and `translate`/`scale`),
+  which the graphics chip runs by itself.** Anything else (background- or
+  mask-position, box-shadow, an SVG's insides) makes the page restyle and
+  repaint every frame, even when the part is hidden by day, and taps wait
+  behind it: Cloudflare showed home-page taps at 0.47 s. So the glint's
+  stripes and the aurora's curtains are `::before` layers that slide with
+  transform, the Now dot's glow is a `::after` disc that scales, and
+  `setUpLogoSleep` adds `logo--asleep` to the footer logo while it's off
+  screen (2026-11-15, security cycle; idle home page 65% → 1% busy on a
+  4× slowed CPU). Weather-only motion (rain, snow, drift, heat shimmer)
+  still moves masks: it only runs in that weather. The ☀/☾ button cycles auto → light → dark and is
   saved in `localStorage["kelbo.theme"]`; a tiny inline script in every
   page's `<head>` applies it before paint. The home page also has the
   "Continue?" memory card (`kelbo.lastPlayed`, `kelbo.visits`, set when any
