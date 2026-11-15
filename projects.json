@@ -305,54 +305,6 @@
     ]
   },
   {
-    "title": "Ink",
-    "hidden": true,
-    "status": "Polishing",
-    "category": "Game",
-    "summary": "A tattoo artist career game set in Mostograd. Start as an apprentice sweeping floors, learn on fake skin, build a client list and open your own studio, with every piece aging on people who keep walking back through your door.",
-    "version": "0.1.0.0",
-    "latest": "First build: the back room in 3D, five tabs and save codes",
-    "link": "https://ink.longlight.games/",
-    "code": "https://github.com/Jxstrr0/Ink",
-    "image": "assets/covers/ink.jpg",
-    "featured": false,
-    "clip": "assets/clips/ink.mp4",
-    "cardClip": "assets/clips/ink-card.mp4",
-    "shots": [
-      {
-        "src": "assets/shots/ink-1.jpg",
-        "alt": "The rented chair: a client sitting in the studio in 3D"
-      },
-      {
-        "src": "assets/shots/ink-2.jpg",
-        "alt": "Picking a design element: rose, swallow, dagger, anchor and more"
-      },
-      {
-        "src": "assets/shots/ink-3.jpg",
-        "alt": "The design board with a rose placed on a forearm, and how it will age"
-      },
-      {
-        "src": "assets/shots/ink-4.jpg",
-        "alt": "Practising a rose on fake skin, following the line with the needle"
-      }
-    ]
-  },
-  {
-    "title": "Station Keeper",
-    "hidden": true,
-    "status": "In development",
-    "category": "Game",
-    "summary": "A space station tycoon. Build a commercial station module by module and keep it alive, solvent and full of paying guests. Power, cooling, air, crew and money all share one network, so when one thing fails, the rest follow.",
-    "version": "0.1.2.0",
-    "latest": "A home screen icon and a proper loading screen",
-    "link": "https://stationkeeper.longlight.games/",
-    "code": "https://github.com/Jxstrr0/StationKeeper",
-    "image": "assets/covers/station-keeper.jpg",
-    "clip": "assets/clips/station-keeper.mp4",
-    "cardClip": "assets/clips/station-keeper-card.mp4",
-    "featured": false
-  },
-  {
     "title": "The Whip",
     "hidden": true,
     "status": "Released",
