@@ -186,8 +186,8 @@ that part, and update it when how something works changes. The short map:
   games first). Adding a project never needs an HTML edit. Games use
   four-number versions; the deploy fills `version`/`latest` from each game's
   newest GitHub Release, so don't "fix" newer live values by hand.
-  `"hidden": true` takes a project off the site everywhere; Escapement, Ink,
-  Station Keeper and The Whip are hidden (Kelbo, 2026-11-11), and so are
+  `"hidden": true` takes a project off the site everywhere; Escapement
+  and The Whip are hidden (Kelbo, 2026-11-11), and so are
   Quench, Hull Down, Burn Rate and Rollback, the newest games, until they're more built. Funded
   went on the site on 2026-11-12, so the site lists seven games. Their repos and live games stay up.
   Screenshots are `shots` in `assets/shots/` (with `@2x` twins). Status

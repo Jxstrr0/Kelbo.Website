@@ -25,8 +25,8 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   in from the newest release (tag `v1.4.0.0` → `"1.4.0.0"`, release title →
   `latest`), so the live values can be newer than this file. Don't "fix"
   that by hand. Prefer publishing a release in the game's repo; editing
-  them here is the fallback for games without releases. Escapement,
-  Scrapline and Ink publish their own: `publish-release.yml` in each repo
+  them here is the fallback for games without releases. Escapement
+  and Scrapline publish their own: `publish-release.yml` in each repo
   (key-free) makes release `v<VERSION>` on a push to `main` when that
   version has none, titled from the `x.y.z.w: summary` merge commit.
   It can also carry `shots` (`[{src, alt}]`, files in `assets/shots/`,
@@ -737,13 +737,10 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   every footer ("What's new") and listed in `sitemap.xml`.
 - Games each live in their own repo with their own GitHub Pages site
   (RedSkies, 350Chev, SeasonTicket, The-Whip, FrontierLab,
-  Lombard, StationKeeper, Escapement, Ink, Scrapline). Lombard keeps its drawn cover until its real art
-  pass is done; Station Keeper's cover is the live game in sunlight with the
-  panels hidden; Escapement's is the live bench's balance wheel with the UI
+  Lombard, Escapement, Scrapline). Lombard keeps its drawn cover until its real art
+  pass is done; Escapement's is the live bench's balance wheel with the UI
   hidden (a placeholder in the game; retake it once real movements are on
-  the bench); Ink's is the live Studio tab's back room with the UI hidden
-  (the scaffold's placeholder room; retake it once the real studio is in);
-  Scrapline's is a live fight with the UI hidden: Splinter and Türkeil
+  the bench); Scrapline's is a live fight with the UI hidden: Splinter and Türkeil
   locked together in the corner by the SCRAPLINE boards. This site only links to
   them via `link` (the pink Play it button) and `code` (the repo). The home
   page "Pick a game" is a swipe row (2026-11-09): `setUpGameRow` fills
@@ -758,7 +755,7 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   affects the page; it only records the four covers in the link preview.
   `hidden: true` drops a project everywhere: both `projects.json` loads in
   `main.js` filter it out, `make-game-pages.mjs` makes no page for it, and
-  `devlog-draft.mjs` / `release-lines.mjs` skip it. The Whip, Escapement, Ink and Station Keeper
+  `devlog-draft.mjs` / `release-lines.mjs` skip it. The Whip and Escapement
   are hidden (Kelbo, 2026-11-11); their repos and live games stay up.
   Quench was added hidden the same day (Kelbo: leave it hidden until it's
   more built); its cover and card clip are a hot bar on the anvil under the
