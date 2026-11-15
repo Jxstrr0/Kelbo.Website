@@ -89,6 +89,9 @@ jobs:
         if: steps.compare.outputs.deploy != 'false'
         with:
           path: _site
+          # .well-known/security.txt lives in a dot-folder, which is left
+          # out unless we ask for hidden files.
+          include-hidden-files: true
 
       # First try. A failure here doesn't stop the run: the two steps below
       # wait and try once more. Only a second failure turns the run red.
