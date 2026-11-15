@@ -1091,12 +1091,23 @@ img {
   z-index: 1; /* same layer as the ground, but later, so it sits on top */
   top: calc(var(--sky-height) + 3.5px);
   height: calc(var(--ground-height) * 0.85);
-  background: repeating-linear-gradient(to bottom, rgba(217, 119, 87, 0.75) 0 2px, rgba(217, 119, 87, 0) 2px 5px);
+  overflow: hidden;
   /* Fade the stripes out toward the sides and the bottom */
   -webkit-mask: radial-gradient(farthest-side at 50% 0, #000, transparent);
   mask: radial-gradient(farthest-side at 50% 0, #000, transparent);
   pointer-events: none;
   transition: left 1200ms var(--ease), opacity 600ms var(--ease);
+}
+
+/* The stripes live on a layer one stripe taller than the glint, so the
+   ripple can slide them down with transform (drawn by the graphics chip)
+   instead of moving the background, which redrew the page every frame
+   and made taps slow to answer on phones (security cycle, 2026-11-15). */
+.horizon__glint::before {
+  content: "";
+  position: absolute;
+  inset: -5px 0 0 0;
+  background: repeating-linear-gradient(to bottom, rgba(217, 119, 87, 0.75) 0 2px, rgba(217, 119, 87, 0) 2px 5px);
 }
 
 .horizon__glint--sun {
@@ -1270,19 +1281,29 @@ img {
   position: absolute;
   inset: 0 0 auto 0;
   height: calc(var(--sky-height) * 0.85);
-  background:
-    repeating-linear-gradient(90deg,
-      rgba(180, 140, 232, 0) 0 4%, rgba(180, 140, 232, 0.75) 6%, rgba(250, 249, 245, 0.7) 7%, rgba(180, 140, 232, 0.75) 8%, rgba(180, 140, 232, 0) 10%,
-      rgba(180, 140, 232, 0) 13%, rgba(180, 140, 232, 0.45) 14.5%, rgba(250, 249, 245, 0.4) 15%, rgba(180, 140, 232, 0.45) 15.5%, rgba(180, 140, 232, 0) 18%,
-      rgba(123, 63, 196, 0.8) 22%, rgba(123, 63, 196, 0) 27%),
-    linear-gradient(to bottom, rgba(123, 63, 196, 0), rgba(180, 140, 232, 0.35) 65%, rgba(180, 140, 232, 0));
-  background-size: 180% 100%, 100% 100%;
+  overflow: hidden;
+  background: linear-gradient(to bottom, rgba(123, 63, 196, 0), rgba(180, 140, 232, 0.35) 65%, rgba(180, 140, 232, 0));
   -webkit-mask: linear-gradient(to bottom, transparent, #000 30%, #000 60%, transparent);
   mask: linear-gradient(to bottom, transparent, #000 30%, #000 60%, transparent);
   filter: blur(5px);
   opacity: calc(var(--aurora, 0) * 0.9);
   transition: opacity 3s var(--ease);
   pointer-events: none;
+}
+
+/* The curtains: a layer three skies wide that the shimmer slides along
+   with transform (one tile is 1.8 skies, as before; 60% of 300%). Sliding
+   the background instead redrew and re-blurred the sky every frame, even
+   by day when the aurora is hidden (security cycle, 2026-11-15). */
+.horizon__aurora::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 300%;
+  background: repeating-linear-gradient(90deg,
+      rgba(180, 140, 232, 0) 0 4%, rgba(180, 140, 232, 0.75) 6%, rgba(250, 249, 245, 0.7) 7%, rgba(180, 140, 232, 0.75) 8%, rgba(180, 140, 232, 0) 10%,
+      rgba(180, 140, 232, 0) 13%, rgba(180, 140, 232, 0.45) 14.5%, rgba(250, 249, 245, 0.4) 15%, rgba(180, 140, 232, 0.45) 15.5%, rgba(180, 140, 232, 0) 18%,
+      rgba(123, 63, 196, 0.8) 22%, rgba(123, 63, 196, 0) 27%) 0 0 / 60% 100% repeat-x;
 }
 
 :root:not([data-theme="dark"]) .horizon__aurora {
@@ -2950,6 +2971,21 @@ img {
   height: 0.6rem;
   border-radius: 50%;
   background: var(--accent);
+}
+
+/* Its glow: a fainter disc drawn first (order -1) and pulled back under
+   the dot by a negative margin (its width plus the gap), so the dot sits
+   on top. It grows and fades with transform and opacity. */
+.now__label::after {
+  content: "";
+  order: -1;
+  flex: none;
+  width: 0.6rem;
+  height: 0.6rem;
+  margin-right: -1.1rem;
+  border-radius: 50%;
+  background: rgba(217, 119, 87, 0.45);
+  opacity: 0;
 }
 
 .now__list {
@@ -5617,14 +5653,17 @@ a.quest__top:focus-visible .quest__name {
     translate: 0 10px;
   }
 
-  /* The clay dot on "Now building" breathes slowly */
-  .now__label::before {
+  /* The clay dot on "Now building" breathes slowly: the disc behind it
+     swells 5px past its edge and fades, like a growing shadow. Transform
+     and opacity only, so the graphics chip runs it and taps stay quick
+     (it was box-shadow, redrawn every frame; security cycle, 2026-11-15). */
+  .now__label::after {
     animation: now-glow 2.6s ease-in-out infinite;
   }
 
   @keyframes now-glow {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(217, 119, 87, 0.45); }
-    50% { box-shadow: 0 0 0 5px rgba(217, 119, 87, 0); }
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(2.05); opacity: 0; }
   }
 
   /* The moon's glow breathes slowly, and the moon floats up and down a
@@ -5670,11 +5709,17 @@ a.quest__top:focus-visible .quest__name {
 
   /* Weather and the seasons on the move */
   .horizon__aurora {
-    animation: aurora-shimmer 26s linear infinite, aurora-sway 9s ease-in-out infinite alternate;
+    animation: aurora-sway 9s ease-in-out infinite alternate;
+  }
+
+  /* The curtains slide three stripes along per loop (48.6% of the 300%
+     layer = 3 x 27% of a 1.8-sky tile), so the loop is seamless */
+  .horizon__aurora::before {
+    animation: aurora-shimmer 26s linear infinite;
   }
 
   @keyframes aurora-shimmer {
-    to { background-position: 180% 0, 0 0; }
+    to { transform: translateX(-48.6%); }
   }
 
   /* Frost glitter twinkles; drifting snow slides with the wind (faster
@@ -5991,11 +6036,16 @@ a.quest__top:focus-visible .quest__name {
 
   /* The light on the ground ripples and sways */
   .horizon__glint {
-    animation: glint-flow 2.4s linear infinite, glint-sway 4.5s ease-in-out infinite alternate;
+    animation: glint-sway 4.5s ease-in-out infinite alternate;
+  }
+
+  /* The stripes ripple down one stripe per loop (see .horizon__glint::before) */
+  .horizon__glint::before {
+    animation: glint-flow 2.4s linear infinite;
   }
 
   @keyframes glint-flow {
-    to { background-position: 0 5px; }
+    to { transform: translateY(5px); }
   }
 
   @keyframes glint-sway {
@@ -6083,6 +6133,15 @@ a.quest__top:focus-visible .quest__name {
   .site-header .logo__glow,
   .site-header .logo__halo {
     animation-iteration-count: 1, 0;
+  }
+
+  /* The footer logo only breathes while it's on screen (main.js
+     setUpLogoSleep): an SVG's insides are redrawn by the page itself every
+     frame, which made taps higher up slow to answer (security cycle,
+     2026-11-15). It picks up where it was. */
+  .logo--asleep .logo__glow,
+  .logo--asleep .logo__halo {
+    animation-play-state: paused;
   }
 
   .logo--hold .logo__sun,
