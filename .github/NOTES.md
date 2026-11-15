@@ -13,7 +13,8 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   renders it. Its order is the display order everywhere (Games, Projects,
   What's new, home swipe row, "More games"): Kelbo's own ranking, games
   first. Shown games (Kelbo, 2026-11-12): Prairie Engine Works, Scrapline,
-  Season Ticket, Funded, Lombard, Red Skies, Frontier Lab; the hidden games
+  Season Ticket, Funded, Lombard, Frontier Lab (Red Skies hidden since
+  2026-11-15); the hidden games
   follow. Nothing sorts by progress except the
   Projects page's filter buttons (`sortByProgress`). Adding a project should never need an HTML edit. Each project
   can carry a `version` ("1.4.0.0", no "v") and `latest` (what changed),
@@ -771,10 +772,7 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   and screenshots were recorded from the live game at a phone size. Its
   `publish-release.yml` (from 0.8.0.0) publishes a release whenever
   `VERSION` in its `js/config.js` changes.
-  Rollback (the roller coaster engineering game, rollback.longlight.games)
-  was added hidden (Kelbo, 2026-11-14), with no cover yet. Its address is
-  the `rollback` CNAME in longlight-assets' `dns/records.json`. It has no
-  release workflow yet, so it carries no version until one is added.
+  Red Skies was hidden on 2026-11-15 (Kelbo); its repo and live game stay up.
   Each game keeps its own look (fonts, colours, art). The Longlight logo,
   the five colours and Space Grotesk belong to studio pieces only (logo or
   splash, credit line, studio block, links back here); every game repo's
