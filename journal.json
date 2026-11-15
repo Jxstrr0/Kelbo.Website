@@ -69,32 +69,38 @@
       {
         "call": "Equal weight beats cap weight for a sixth straight week: RSP beats SPY",
         "wrongIf": "SPY finishes the week (Nov 13 close vs Nov 6 close) ahead of RSP.",
-        "grade": null
+        "grade": "miss",
+        "result": "SPY rose 2.59% (735.29 to 754.37) and RSP rose 2.37% (216.05 to 221.16), so cap weight won."
       },
       {
         "call": "Health care beats tech again: XLV beats XLK on the week",
         "wrongIf": "XLK finishes the week (Nov 13 close vs Nov 6 close) ahead of XLV.",
-        "grade": null
+        "grade": "miss",
+        "result": "XLK gained 3.36% on the week against 2.19% for XLV, so tech finished ahead."
       },
       {
         "call": "MU holds $600 on every close this week",
         "wrongIf": "MU closes under $600 on any day from Nov 9 to Nov 13.",
-        "grade": null
+        "grade": "hit",
+        "result": "MU's lowest close of the week was $725.11 on Nov 10, well above $600."
       },
       {
         "call": "MU stays under its 200-day near $754 at the end of the week",
         "wrongIf": "MU closes at or above $754 on Friday, Nov 13.",
-        "grade": null
+        "grade": "miss",
+        "result": "MU closed Friday at $778.31, above $754, after closing at $811.30 on Wednesday."
       },
       {
         "call": "The S&P stays capped under the 7,600 double-top neckline",
         "wrongIf": "The S&P 500 closes above 7,600 on any day from Nov 9 to Nov 13.",
-        "grade": null
+        "grade": "miss",
+        "result": "The S&P 500 closed at 7,619.38 on Wednesday, Nov 11, above 7,600."
       },
       {
         "call": "The S&P holds 7,225 support on the weekly close",
         "wrongIf": "The S&P 500 closes under 7,225 on Friday, Nov 13.",
-        "grade": null
+        "grade": "hit",
+        "result": "The S&P 500 closed Friday at 7,561.67, well above 7,225."
       }
     ],
     "scenarios": [
@@ -232,7 +238,56 @@
         "url": "https://blockchain.news/news/20261107-price-prediction-mu-oversold-bounce-faces-heavy-overhead-resistance"
       }
     ],
-    "by": "forecaster"
+    "by": "forecaster",
+    "recap": "Stocks bounced hard instead of breaking down. The S&P 500 rose 2.35% on Monday, dipped on CPI Tuesday and closed at 7,619.38 on Wednesday, its high close of the week. That day CoreWeave jumped 24.71% after a smaller loss than expected. Thursday and Friday gave back 57.71 points after Nvidia's Jensen Huang resigned. The S&P still finished at 7,561.67 (+2.51%), its first weekly gain in five weeks. The Nasdaq ended at 25,136.27 (+2.27%), the Dow at 52,347.55 (+2.07%) and the Russell 2000 at 2,790.49 (+1.32%).\n\nCPI came in hot at 0.4% with core at 0.3%, both above forecasts. Friday's PPI showed 6.5% yearly growth, the fastest since November 2022. The 10-year yield rose every day, from 4.86% to 5.15%. The VIX still fell to 19.30, and Brent settled Friday at $95.84. All eleven sector ETFs rose. Energy led at +5.42%, tech gained 3.36% and health care 2.19%. RSP rose 2.37% against 2.59% for SPY, ending equal weight's winning streak. Micron closed at $733.15 Monday, $725.11 Tuesday and $811.30 Wednesday, then ended at $778.31 (+12.8%).\n\nScore: 2 hits, 0 partials, 4 misses.",
+    "ai": "The two floors were the right tool. The MU $600 line sat 13% below the last close, and the 7,225 S&P line was judged only on Friday's close. Both held easily because they left room for noise. The bear case was also reasonable on the data: CPI did come in hot, and yields jumped about 30 basis points. The market simply ignored it and bought the oversold chips anyway.\n\nThe four misses were really one bet made four times: AI hardware and big tech stay weak. The rankings worked in a selloff, and the forecast assumed they would keep working, but rankings like these usually flip in a rebound after a capitulation week. RSP and XLV lost by small margins in a broad rally. The 7,600 cap sat only 3% above the close, the same tight-line mistake the forecast had promised to fix. The MU $754 cap sat 9% above a stock that had just lost 22% in a week. MU closed at $733 on Monday, so that line was a coin flip from day one. The bull scenario got only 25%, yet it described what happened almost exactly.",
+    "lesson": "Keep the wide, close-only floors, since they held. Stop stacking calls that all depend on tech staying weak: limit it to two such calls and add one that wins if the oversold bounce comes.",
+    "gradeSources": [
+      {
+        "title": "S&P 500 (SP500) - FRED",
+        "url": "https://fred.stlouisfed.org/series/sp500"
+      },
+      {
+        "title": "Closing Look - Friday, November 13, 2026 - CappNotes",
+        "url": "https://cappnotes.substack.com/p/closing-look-friday-november-13-2026"
+      },
+      {
+        "title": "Weekly Market Review: Nov 13, 2026 - The Glass Desk",
+        "url": "https://theglassdesk.substack.com/p/weekly-market-review-nov-13-2026"
+      },
+      {
+        "title": "The Weekly Recap: The Cost of a Comeback - tastylive",
+        "url": "https://tastylive.substack.com/p/the-weekly-recap-the-cost-of-a-comeback"
+      },
+      {
+        "title": "Stock Market Weekly Recap: Sector Winners, Losers Nov 9-13",
+        "url": "https://currentlogic.substack.com/p/dispersion-brief-week-in-review-nov-b00"
+      },
+      {
+        "title": "Week #46 - Market Update for November 9-13, 2026",
+        "url": "https://atranicapital.substack.com/p/week-46-market-update-for-november-8a7"
+      },
+      {
+        "title": "State Street SPDR S&P 500 ETF Trust (SPY) Stock Historical Prices & Data - Yahoo Finance",
+        "url": "https://finance.yahoo.com/quote/SPY/history/"
+      },
+      {
+        "title": "SPY Historical Stock Price Data",
+        "url": "https://stockanalysis.com/etf/spy/history/"
+      },
+      {
+        "title": "Invesco S&P 500 Equal Weight ETF (RSP) Stock Historical Prices & Data - Yahoo Finance",
+        "url": "https://finance.yahoo.com/quote/RSP/history/"
+      },
+      {
+        "title": "RSP ETF Stock Price History - Investing.com",
+        "url": "https://www.investing.com/etfs/rydex-s-p-equal-weight-historical-data"
+      }
+    ],
+    "graded": {
+      "by": "scorekeeper",
+      "at": "2026-11-15T17:35:18.016Z"
+    }
   },
   {
     "date": "2026-11-03",
