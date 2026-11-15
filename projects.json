@@ -142,7 +142,25 @@
     "image": "assets/covers/lombard.jpg",
     "clip": "assets/clips/lombard.mp4",
     "cardClip": "assets/clips/lombard-card.mp4",
-    "featured": true
+    "featured": true,
+    "shots": [
+      {
+        "src": "assets/shots/lombard-1.jpg",
+        "alt": "A customer at the counter with a soprano ukulele and a story about learning songs online"
+      },
+      {
+        "src": "assets/shots/lombard-2.jpg",
+        "alt": "Inspecting a silver 1924 coin, with the loupe, scale, magnet and reference book below"
+      },
+      {
+        "src": "assets/shots/lombard-3.jpg",
+        "alt": "Setting a price estimate on the keypad while the customer waits"
+      },
+      {
+        "src": "assets/shots/lombard-4.jpg",
+        "alt": "The Evening Mostograd front page announcing the shop's new owner"
+      }
+    ]
   },
   {
     "title": "Red Skies",
@@ -188,7 +206,25 @@
     "image": "assets/covers/frontier-lab.jpg",
     "clip": "assets/clips/frontier-lab.mp4",
     "cardClip": "assets/clips/frontier-lab-card.mp4",
-    "featured": false
+    "featured": false,
+    "shots": [
+      {
+        "src": "assets/shots/frontier-lab-1.jpg",
+        "alt": "The Frontier Lab title screen over an isometric city drawing"
+      },
+      {
+        "src": "assets/shots/frontier-lab-2.jpg",
+        "alt": "The isometric city map of Calgary with the lab's first-day guide"
+      },
+      {
+        "src": "assets/shots/frontier-lab-3.jpg",
+        "alt": "Building a sales office: the brick storefront drawing and its parts with prices"
+      },
+      {
+        "src": "assets/shots/frontier-lab-4.jpg",
+        "alt": "Weekly results with the cash flow table and The Weekly Inference newspaper"
+      }
+    ]
   },
   {
     "title": "Quench",
