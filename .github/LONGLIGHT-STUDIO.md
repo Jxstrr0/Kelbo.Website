@@ -9,12 +9,13 @@
 > `projects.json` and leaves out Kelbo's private and parked repos. Ask Kelbo
 > about those.
 >
-> **Only six are listed on the site.** Since 11 November 2026 Escapement
-> and The Whip carry `"hidden": true` in `projects.json`:
+> **Only five are listed on the site.** Since 11 November 2026 Escapement
+> and The Whip carry `"hidden": true` in `projects.json`, and Red Skies
+> since 15 November:
 > no card, no game page, no devlog or release lines. Their repos and live
 > games stay up, and everything in this file still applies to them. The
-> listed six are Prairie Engine Works, Season Ticket, Scrapline, Lombard,
-> Frontier Lab and Red Skies. Quench, the newest game, was added hidden on
+> listed five are Prairie Engine Works, Season Ticket, Scrapline, Lombard
+> and Frontier Lab. Quench, the newest game, was added hidden on
 > the same day and stays hidden until Kelbo says to show it.
 
 ---
@@ -68,7 +69,7 @@ on its own subdomain of **longlight.games** (November 2026; the old
 | Season Ticket | [Jxstrr0/SeasonTicket](https://github.com/Jxstrr0/SeasonTicket) | https://seasonticket.longlight.games/ | Listed |
 | Frontier Lab | [Jxstrr0/FrontierLab](https://github.com/Jxstrr0/FrontierLab) | https://frontierlab.longlight.games/ | Listed |
 | The Whip | [Jxstrr0/The-Whip](https://github.com/Jxstrr0/The-Whip) | https://thewhip.longlight.games/ | Hidden |
-| Red Skies | [Jxstrr0/RedSkies](https://github.com/Jxstrr0/RedSkies) | https://redskies.longlight.games/ | Listed |
+| Red Skies | [Jxstrr0/RedSkies](https://github.com/Jxstrr0/RedSkies) | https://redskies.longlight.games/ | Hidden |
 | Quench | [Jxstrr0/Quench](https://github.com/Jxstrr0/Quench) | https://quench.longlight.games/ | Hidden |
 | Studio site | [Jxstrr0/Kelbo.Website](https://github.com/Jxstrr0/Kelbo.Website) | https://longlight.games/ | — |
 

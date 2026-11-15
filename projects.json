@@ -164,6 +164,7 @@
   },
   {
     "title": "Red Skies",
+    "hidden": true,
     "status": "Complete",
     "category": "Game",
     "summary": "A phone game where you run an air-defence battery. Watch the radar, sort friendly jets from enemies, and hold your fire until you're sure, because shooting down a friendly ends the shift.",
@@ -258,16 +259,6 @@
     "link": "https://burnrate.longlight.games/",
     "code": "https://github.com/Jxstrr0/BurnRate",
     "image": "assets/covers/burn-rate.jpg",
-    "featured": false
-  },
-  {
-    "title": "Rollback",
-    "hidden": true,
-    "status": "In development",
-    "category": "Game",
-    "summary": "A roller coaster engineering game. Bid on a park's brief, design the ride from real elements, run the test train and read the g-traces, then fix it before opening day, so the train always makes the crest.",
-    "link": "https://rollback.longlight.games/",
-    "code": "https://github.com/Jxstrr0/Rollback",
     "featured": false
   },
   {
