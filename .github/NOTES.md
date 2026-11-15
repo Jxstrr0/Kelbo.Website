@@ -13,8 +13,7 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   renders it. Its order is the display order everywhere (Games, Projects,
   What's new, home swipe row, "More games"): Kelbo's own ranking, games
   first. Shown games (Kelbo, 2026-11-12): Prairie Engine Works, Scrapline,
-  Season Ticket, Funded, Lombard, Frontier Lab (Red Skies hidden since
-  2026-11-15); the hidden games
+  Season Ticket, Funded, Lombard, Frontier Lab; the hidden games
   follow. Nothing sorts by progress except the
   Projects page's filter buttons (`sortByProgress`). Adding a project should never need an HTML edit. Each project
   can carry a `version` ("1.4.0.0", no "v") and `latest` (what changed),
@@ -113,8 +112,7 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   (640×480 JPG plus a 1280×960 `name@2x.jpg` twin for sharp 3x phones; every
   cover and shot `<img>` goes through `setPicture` in `main.js`, which adds
   `srcset` "1x, @2x 2x" and drops it if the twin fails to load; check-site
-  warns when a twin is missing; captured from each live game; Red Skies is portrait-only, so
-  it's shot at 600px wide mid-shift with a jet on the TV camera, cropped 4:3;
+  warns when a twin is missing; captured from each live game;
   Prairie Engine Works is the Three-fifty small-block (`sbc350`) on its stand
   in the garage: photo mode with the turntable spin and the UI hidden; Season Ticket is
   the game's dusk title scene (ground and town) at 1280 wide, with every element except the 3D
@@ -737,7 +735,7 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   `projects.json` order, with no dates (the file has none). Linked from
   every footer ("What's new") and listed in `sitemap.xml`.
 - Games each live in their own repo with their own GitHub Pages site
-  (RedSkies, 350Chev, SeasonTicket, The-Whip, FrontierLab,
+  (350Chev, SeasonTicket, The-Whip, FrontierLab,
   Lombard, Escapement, Scrapline). Lombard keeps its drawn cover until its real art
   pass is done; Escapement's is the live bench's balance wheel with the UI
   hidden (a placeholder in the game; retake it once real movements are on
@@ -772,7 +770,6 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   and screenshots were recorded from the live game at a phone size. Its
   `publish-release.yml` (from 0.8.0.0) publishes a release whenever
   `VERSION` in its `js/config.js` changes.
-  Red Skies was hidden on 2026-11-15 (Kelbo); its repo and live game stay up.
   Each game keeps its own look (fonts, colours, art). The Longlight logo,
   the five colours and Space Grotesk belong to studio pieces only (logo or
   splash, credit line, studio block, links back here); every game repo's
@@ -1087,7 +1084,7 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   characters, no version number; stored as `{line, title, at}`, existing
   entries never overwritten (Kelbo may hand-edit them; broken JSON stops
   the script). Commits as release-writer, then runs deploy.yml.
-  `SKIP_REPOS` (Season Ticket, Lombard, Frontier Lab, Red Skies; Kelbo,
+  `SKIP_REPOS` (Season Ticket, Lombard, Frontier Lab; Kelbo,
   2026-11-11) are never sent: their cards show the release title as is.
   `sync-releases.mjs` uses that `line` for the exact repo@tag as `latest`,
   else the cleaned release title (missing/broken file = old behaviour).

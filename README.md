@@ -145,7 +145,7 @@ Paste it after the last one and change the values:
 **The order in this file is the order on the site.** The Games page,
 Projects page, What's new and the home cards all follow it from top to
 bottom, so it's your own ranking (games are Prairie Engine Works, Lombard, Escapement,
-Scrapline, Season Ticket, Frontier Lab, The Whip, Red Skies).
+Scrapline, Season Ticket, Frontier Lab, The Whip).
 To move something up, cut its block and paste it higher. A new block pasted
 at the bottom shows up last. Only the Projects page's filter buttons run in
 progress order.
@@ -212,7 +212,7 @@ progress order.
   missing the site uses the small one and the Site check gives a warning.
 - **hidden**: `true` takes a project off the site (cards, lists, the All
   page, its game page, the robots) but keeps its entry here. Delete the
-  line to bring it back. The Whip, Escapement and Red Skies are hidden for now,
+  line to bring it back. The Whip and Escapement are hidden for now,
   and so are Quench, Hull Down and Burn Rate (new, still being built).
 - **featured**: no longer changes the home page, which now shows every game
   in one swipe row under "Pick a game", in the order they have in this
@@ -251,7 +251,7 @@ progress order.
 **Adding a game:** use `"category": "Game"` and it shows up on the Games
 page automatically, with a big clay "Play it" button. Each game lives in its
 own repo with GitHub Pages turned on, so `link` is that game's Pages address
-(like `https://redskies.longlight.games/`) and `code` is the repo address.
+(like `https://lombard.longlight.games/`) and `code` is the repo address.
 
 **Watch the commas.** Every block needs a comma after its closing `}`,
 except the very last one. If the projects disappear and the page says

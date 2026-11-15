@@ -163,39 +163,6 @@
     ]
   },
   {
-    "title": "Red Skies",
-    "hidden": true,
-    "status": "Complete",
-    "category": "Game",
-    "summary": "A phone game where you run an air-defence battery. Watch the radar, sort friendly jets from enemies, and hold your fire until you're sure, because shooting down a friendly ends the shift.",
-    "version": "1.6.1.0",
-    "latest": "A home screen icon",
-    "link": "https://redskies.longlight.games/",
-    "code": "https://github.com/Jxstrr0/RedSkies",
-    "image": "assets/covers/red-skies.jpg",
-    "clip": "assets/clips/red-skies.mp4",
-    "cardClip": "assets/clips/red-skies-card.mp4",
-    "featured": false,
-    "shots": [
-      {
-        "src": "assets/shots/red-skies-1.jpg",
-        "alt": "The Red Skies title screen over a dusk sky"
-      },
-      {
-        "src": "assets/shots/red-skies-2.jpg",
-        "alt": "The free watch setup screen with seed, difficulty and random events"
-      },
-      {
-        "src": "assets/shots/red-skies-3.jpg",
-        "alt": "The fire-control console with the radar sweeping and a contact on the scope"
-      },
-      {
-        "src": "assets/shots/red-skies-4.jpg",
-        "alt": "The same console a moment later, with the contact closer"
-      }
-    ]
-  },
-  {
     "title": "Frontier Lab",
     "status": "Polishing",
     "category": "Game",
