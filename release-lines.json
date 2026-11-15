@@ -98,5 +98,10 @@
     "line": "Fixes for tutorial replays, fired desks, phone audio, and Rewind after reloading.",
     "title": "v0.9.0.1 - Bug fixes: tutorial replay kept save, fired-desk race, phone audio, Rewind after reload",
     "at": "2026-11-13T20:06:14.579Z"
+  },
+  "Funded@v0.9.0.4": {
+    "line": "Tier 3 is rebalanced with stronger news, a $5k target and a cheaper Theta Shield.",
+    "title": "v0.9.0.4 - Tier 3 tuning: stronger news, $5k target, cheaper Theta Shield",
+    "at": "2026-11-15T19:09:11.442Z"
   }
 }
