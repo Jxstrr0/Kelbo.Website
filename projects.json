@@ -142,7 +142,7 @@
     "image": "assets/covers/lombard.jpg",
     "clip": "assets/clips/lombard.mp4",
     "cardClip": "assets/clips/lombard-card.mp4",
-    "featured": true,
+    "featured": false,
     "shots": [
       {
         "src": "assets/shots/lombard-1.jpg",
@@ -163,7 +163,40 @@
     ]
   },
   {
+    "title": "Burn Rate",
+    "status": "Released",
+    "category": "Game",
+    "summary": "A rocket motor design game. Rent a stand on an old state test range, design a solid motor to a client's spec, predict its curve, then fire it and find out why the real one didn't match.",
+    "version": "1.6.1.0",
+    "latest": "A Job button on the bench",
+    "link": "https://burnrate.longlight.games/",
+    "code": "https://github.com/Jxstrr0/BurnRate",
+    "image": "assets/covers/burn-rate.jpg",
+    "clip": "assets/clips/burn-rate.mp4",
+    "cardClip": "assets/clips/burn-rate-card.mp4",
+    "featured": true,
+    "shots": [
+      {
+        "src": "assets/shots/burn-rate-1.jpg",
+        "alt": "The work-order board: a rocketry club wants a G motor for field day, with the impulse and burn time it needs and the pay"
+      },
+      {
+        "src": "assets/shots/burn-rate-2.jpg",
+        "alt": "The design bench: the predicted pressure and thrust curves for an M motor, its numbers, and the propellant grades to choose from"
+      },
+      {
+        "src": "assets/shots/burn-rate-3.jpg",
+        "alt": "An M motor firing on Stand 1 at dusk, with live pressure and thrust drawn over the predicted curves"
+      },
+      {
+        "src": "assets/shots/burn-rate-4.jpg",
+        "alt": "The range report: a B pass, the measured curves with a casting void marked, and why it differed from the bench"
+      }
+    ]
+  },
+  {
     "title": "Frontier Lab",
+    "hidden": true,
     "status": "Polishing",
     "category": "Game",
     "summary": "An AI-lab tycoon. Raise a seed round, open sales offices, buy compute or build data centers, train your own models and ship products, keep the safety regulator happy, then take the lab public and grow it across the world's tech capitals, all on an engraved isometric city map.",
@@ -215,17 +248,6 @@
     "link": "https://hulldown.longlight.games/",
     "code": "https://github.com/Jxstrr0/hull-down",
     "image": "assets/covers/hull-down.jpg",
-    "featured": false
-  },
-  {
-    "title": "Burn Rate",
-    "hidden": true,
-    "status": "Released",
-    "category": "Game",
-    "summary": "A rocket motor design game. Rent a stand on an old state test range, design a solid motor to a client's spec, predict its curve, then fire it and find out why the real one didn't match.",
-    "link": "https://burnrate.longlight.games/",
-    "code": "https://github.com/Jxstrr0/BurnRate",
-    "image": "assets/covers/burn-rate.jpg",
     "featured": false
   },
   {
