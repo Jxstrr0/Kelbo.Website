@@ -1142,6 +1142,21 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   copies the tag; a new outside service must be added to it, or the
   browser blocks it (the console says "Content Security Policy"). GitHub
   Pages can't send real security headers, so this tag is the next best.
+  Inline scripts (Nov 2026): the tag no longer allows any inline script.
+  It lists a fingerprint (`'sha256-...'`) for each script written into a
+  page: the theme setter (the home page has its own version), the 404
+  page's address fixer and the game page's cover hop. Editing one of
+  those `<script>` blocks, or adding a new one, changes its fingerprint:
+  run `node .github/scripts/csp-hashes.mjs`, which rewrites the list in
+  every page. The Site check fails and names the missing fingerprint if
+  they disagree. Never add inline `onclick=` style handlers; they would
+  be blocked.
+- **Security contact file** (Nov 2026): `.well-known/security.txt` tells
+  someone who finds a security problem to use the contact form (no email
+  address in it). Its `Expires` date must be renewed about once a year;
+  the Site check warns 45 days ahead and fails once it has passed. The
+  deploy passes `include-hidden-files: true` so the dot-folder is
+  published.
 - **Contact form spam guard** (Nov 2026): Cloudflare Turnstile, the free
   "I'm human" check, sits above Send on the home page. Its site key in
   `index.html` is public by design; the secret is the contact-form

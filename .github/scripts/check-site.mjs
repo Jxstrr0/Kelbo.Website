@@ -21,6 +21,7 @@
 import { readFileSync, existsSync, readdirSync, statSync, appendFileSync } from "node:fs";
 import { join, dirname, relative, extname } from "node:path";
 import { execFileSync } from "node:child_process";
+import { inlineScriptHashes, scriptSrc } from "./csp-hashes.mjs";
 
 const ROOT = process.argv[2] || ".";
 const errors = [];
@@ -371,6 +372,31 @@ for (const f of files.filter((f) => TEXT_EXT.includes(extname(f)))) {
       error(rel(f), `Looks like ${what} ("${m[0]}"). The site is public, so this can't go live. If it's a false alarm, reword it or widen the check in check-site.mjs.`);
     }
   }
+}
+
+// ---------------------------------------------------------------------
+// Security tag: every page has one, it doesn't allow just any inline
+// script, and it lists the fingerprint of each inline script the page has
+// (otherwise the browser silently refuses to run that script).
+// ---------------------------------------------------------------------
+for (const f of files.filter((f) => extname(f) === ".html")) {
+  const html = readFileSync(f, "utf8");
+  const rule = scriptSrc(html);
+  if (!rule) { error(rel(f), "This page has no Content-Security-Policy tag. Copy the one from index.html, right after the viewport line."); continue; }
+  if (rule.includes("'unsafe-inline'")) error(rel(f), "The security tag's script-src allows 'unsafe-inline', which lets any injected script run. Run: node .github/scripts/csp-hashes.mjs");
+  for (const hash of inlineScriptHashes(html)) {
+    if (!rule.includes(`'${hash}'`)) error(rel(f), `A script written into this page changed (or is new), so the browser would block it. Run: node .github/scripts/csp-hashes.mjs (it needs '${hash}' in script-src).`);
+  }
+}
+
+// The security contact file must be there and not about to run out.
+if (!exists(".well-known/security.txt")) {
+  error(".well-known/security.txt", "The security contact file is missing.");
+} else {
+  const expires = readFileSync(join(ROOT, ".well-known/security.txt"), "utf8").match(/^Expires:\s*(\S+)/m);
+  const daysLeft = expires ? (Date.parse(expires[1]) - Date.now()) / 86400000 : NaN;
+  if (!(daysLeft > 0)) error(".well-known/security.txt", "The Expires date is missing or has passed. Set it to about a year from now.");
+  else if (daysLeft < 45) warn(".well-known/security.txt", `The Expires date is ${Math.round(daysLeft)} days away. Set it to about a year from now.`);
 }
 
 // ---------------------------------------------------------------------
