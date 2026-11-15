@@ -5988,6 +5988,20 @@ function setUpSkySleep(scene) {
   }).observe(scene);
 }
 
+// The footer's big logo breathes (style.css), but an SVG's insides are
+// redrawn by the page itself every frame, so it holds still while it's
+// scrolled out of view (.logo--asleep), like the sky above.
+function setUpLogoSleep() {
+  if (!("IntersectionObserver" in window)) return;
+  const watch = new IntersectionObserver((entries) => {
+    entries.forEach((e) => e.target.classList.toggle("logo--asleep", !e.isIntersecting));
+  });
+  document.querySelectorAll(".site-footer .logo").forEach((logo) => {
+    logo.classList.add("logo--asleep"); // asleep until it first scrolls into view
+    watch.observe(logo);
+  });
+}
+
 function setUpHorizon() {
   const scene = document.querySelector("[data-horizon]");
   const readout = document.querySelector("[data-horizon-readout]");
@@ -7204,6 +7218,7 @@ async function init() {
   setUpLens();
   setUpHorizon();
   setUpSkySwitch();
+  setUpLogoSleep();
   setUpSkyWeek();
   setUpAlert();
   rememberPlays();
