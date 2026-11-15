@@ -101,7 +101,7 @@ for that game. For it right away, open **Actions** → **Deploy site** →
 release, the site keeps the `projects.json` one and the deploy notes remind
 you to publish a release.
 
-Escapement, Scrapline and Ink do this by themselves: a small helper in each
+Escapement and Scrapline do this by themselves: a small helper in each
 repo (`.github/workflows/publish-release.yml`, free, no keys) publishes a
 release whenever a merge to `main` carries a version that has none yet. It
 only matters for the version number on this site, so deleting a helper is
@@ -145,7 +145,7 @@ Paste it after the last one and change the values:
 **The order in this file is the order on the site.** The Games page,
 Projects page, What's new and the home cards all follow it from top to
 bottom, so it's your own ranking (games are Prairie Engine Works, Lombard, Escapement,
-Scrapline, Ink, Station Keeper, Season Ticket, Frontier Lab, The Whip, Red Skies).
+Scrapline, Season Ticket, Frontier Lab, The Whip, Red Skies).
 To move something up, cut its block and paste it higher. A new block pasted
 at the bottom shows up last. Only the Projects page's filter buttons run in
 progress order.
@@ -212,7 +212,7 @@ progress order.
   missing the site uses the small one and the Site check gives a warning.
 - **hidden**: `true` takes a project off the site (cards, lists, the All
   page, its game page, the robots) but keeps its entry here. Delete the
-  line to bring it back. The Whip, Escapement, Ink and Station Keeper are hidden for now, and so are
+  line to bring it back. The Whip and Escapement are hidden for now, and so are
   Quench, Hull Down, Burn Rate and Rollback (new, still being built).
 - **featured**: no longer changes the home page, which now shows every game
   in one swipe row under "Pick a game", in the order they have in this
