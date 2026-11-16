@@ -98,5 +98,15 @@
     "line": "Visits to Burn Rate are now counted without using cookies.",
     "title": "v1.6.1.1 - cookieless visit counts (#30)",
     "at": "2026-11-16T07:22:15.084Z"
+  },
+  "Funded@v0.10.0.0": {
+    "line": "Adds a Daily Challenge, achievements, day types, funded payouts, review, and new edges.",
+    "title": "v0.10.0.0 - 0.10: Daily Challenge, funded payouts, day types, review, achievements, new edges",
+    "at": "2026-11-16T22:34:31.469Z"
+  },
+  "BurnRate@v1.7.0.0": {
+    "line": "Adds hints, your motors, and personal bests, and tweaks the game's balance.",
+    "title": "v1.7.0.0 - hints, your motors, personal bests, balance pass (#31)",
+    "at": "2026-11-16T22:34:31.469Z"
   }
 }
