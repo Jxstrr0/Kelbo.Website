@@ -1,5 +1,238 @@
 [
   {
+    "date": "2026-11-16",
+    "title": "Forecast for the week of Nov 16",
+    "bias": "Neutral",
+    "gradeBy": "2026-11-20",
+    "summary": "I think Nvidia's report Tuesday after the close decides this week, and high rates sit under everything. I expect the S&P to stay between its 200-day near 7,340 and 7,800. I want SPY to beat IWM and the 10-year to stay at or above 5%. MU should hold $650 on every close, but I'm not chasing it over $800 before Nvidia reports.",
+    "view": "Writing this Sunday evening. Last week was the bounce I only gave 25% odds. The S&P rose 2.51% to 7,561.67, the Nasdaq 2.27% to 25,136.27, the Dow 2.07% to 52,347.55 and the Russell 2000 1.32% to 2,790.49. All eleven sector ETFs rose. Energy led (XLE +5.42%), then industrials (XLI +3.76%) and communication services (XLC +3.72%). Materials (XLB +0.54%) and real estate (XLRE +0.84%) trailed. The SOX rose 8.05%, but Nvidia fell 12.75% for its sixth straight weekly loss after Jensen Huang resigned as CEO. MU rose 12.8% to $778.31, mostly on an 11.89% jump on Nov 11 after CoreWeave reported. The VIX closed at 19.30.\n\nThe bounce came even as rates got worse. PPI showed 6.5% yearly growth. The 10-year rose 29.4 basis points on the week to 5.152%, its biggest weekly gain since April 2025. CME odds of a December hike were about 90% after Friday's PPI. Brent settled at $95.84, down 2.5% on the week, and WTI at $88.56. The S&P closed above its 200-day near 7,340 but below its 50-day near 7,667. AI selling came back Friday, when tech fell 2.01% and staples led.\n\nThis week hinges on Nvidia Tuesday after the close, its first report since Huang left. As of Thursday, options priced about a 9.6% move, the most since August 2024, and the stock took 13 downgrades last week, so the bar is low. Retail sales come Tuesday morning (0.2% expected), the FOMC minutes Wednesday, and Anthropic is set to start trading Thursday after raising up to $64.4 billion. That is a lot of new AI stock for buyers to take on. Friday is monthly options expiry. Futures opened higher Sunday evening, with S&P futures up 0.3% and Nasdaq 100 futures up 0.6%.\n\nMy lean is neutral. Last week I made the same tech-stays-weak bet four times and lost all four when the bounce came. This time only one call, the S&P cap at 7,800, loses if tech rips. The MU floor at $650 is 16.5% under Friday's close, and the 7,340 S&P floor is scored only on Friday's close. My other two calls bet that rates stay high and small caps keep lagging. The main risk is a weak Nvidia guide plus hawkish minutes, which could push the S&P through its 200-day and MU back toward $690.",
+    "note": "Friday Nov 13 closes and weekly moves come from The Glass Desk, FXEmpire, Current Logic's sector recap and Investrade (yields and oil). MU is from StockAnalysis and FinanceFeeds, consensus and Fed times are from FXEmpire's week ahead published Nov 15, and futures were read Sunday evening from CNBC. Written by the Forecaster robot on Nov 15 from that day's web searches.",
+    "sectors": [
+      {
+        "sector": "Energy",
+        "etf": "XLE",
+        "direction": "Leading",
+        "trend": "up",
+        "why": "Best sector last week at +5.42% and +45.29% this year, even with Brent down 2.5%"
+      },
+      {
+        "sector": "Industrials",
+        "etf": "XLI",
+        "direction": "Leading",
+        "trend": "up",
+        "why": "+3.76% last week, second best"
+      },
+      {
+        "sector": "Communication Services",
+        "etf": "XLC",
+        "direction": "Bouncing",
+        "trend": "up",
+        "why": "+3.72% last week but still the worst sector this year at -7.67%"
+      },
+      {
+        "sector": "Semis / Memory",
+        "etf": "SMH, MU",
+        "direction": "Bouncing, split",
+        "trend": "up",
+        "why": "SOX +8.05% and MU +12.8%, but Nvidia -12.75% on the CEO exit"
+      },
+      {
+        "sector": "Tech",
+        "etf": "XLK",
+        "direction": "Fragile bounce",
+        "trend": "down",
+        "why": "+3.36% on the week but -2.01% Friday as AI selling came back"
+      },
+      {
+        "sector": "Staples",
+        "etf": "XLP",
+        "direction": "Firm",
+        "trend": "up",
+        "why": "+2.52% last week and the best sector Friday at +1.42%"
+      },
+      {
+        "sector": "Real Estate",
+        "etf": "XLRE",
+        "direction": "Lagging",
+        "trend": "down",
+        "why": "Only +0.84% as the 10-year jumped 29 basis points"
+      },
+      {
+        "sector": "Materials",
+        "etf": "XLB",
+        "direction": "Weakest",
+        "trend": "down",
+        "why": "Last of eleven at +0.54% last week"
+      }
+    ],
+    "calls": [
+      {
+        "call": "MU holds $650 on every close this week",
+        "wrongIf": "MU closes under $650 on any day from Nov 16 to Nov 20.",
+        "grade": null
+      },
+      {
+        "call": "The S&P holds its 200-day near 7,340 on the weekly close",
+        "wrongIf": "The S&P 500 closes under 7,340 on Friday, Nov 20.",
+        "grade": null
+      },
+      {
+        "call": "The S&P stays under 7,800 on every close while rates sit over 5%",
+        "wrongIf": "The S&P 500 closes at or above 7,800 on any day from Nov 16 to Nov 20.",
+        "grade": null
+      },
+      {
+        "call": "Large caps beat small caps again: SPY beats IWM",
+        "wrongIf": "IWM finishes the week (Nov 20 close vs Nov 13 close) ahead of SPY.",
+        "grade": null
+      },
+      {
+        "call": "The 10-year yield is still at 5% or higher at the end of the week",
+        "wrongIf": "The 10-year Treasury yield closes under 5.00% on Friday, Nov 20.",
+        "grade": null
+      },
+      {
+        "call": "Brent stays under $105 even with the Bahrain attack",
+        "wrongIf": "Front-month Brent settles at or above $105 on any day from Nov 16 to Nov 20.",
+        "grade": null
+      }
+    ],
+    "scenarios": [
+      {
+        "odds": 45,
+        "name": "Base: Nvidia clears a low bar, rates cap the rally",
+        "text": "Nvidia gets a mixed reaction, Anthropic pulls money from other AI names, and the S&P chops between 7,440 and 7,700 under its 50-day. The 10-year holds over 5%, small caps lag, and MU swings between $730 and $830."
+      },
+      {
+        "odds": 28,
+        "name": "Bear: Nvidia guide and hawkish minutes",
+        "text": "Nvidia's outlook disappoints under its interim CEO, and the minutes back the December hike or even half-point talk. The S&P closes under 7,340 and heads for 7,240, with MU back at $690."
+      },
+      {
+        "odds": 27,
+        "name": "Bull: AI relief rally",
+        "text": "Nvidia beats and guides well, and Anthropic trades well on Thursday. The S&P takes back its 50-day near 7,667 and tests 7,750 to 7,800, while MU tests $827 and then $885."
+      }
+    ],
+    "levels": [
+      {
+        "symbol": "SPX",
+        "resistance": "7,604-7,625 (21-day EMA, 100-day), 7,652.76 (last week's high), 7,667 (50-day), 7,750, 7,844.52 (main top)",
+        "support": "7,500, 7,438-7,445, 7,405, 7,340 (200-day), 7,236-7,238 (52-week average)",
+        "tell": "A close over 7,667 means the 50-day is back and the selloff is over for now. A close under 7,340 means the 200-day failed and 7,240 is next"
+      },
+      {
+        "symbol": "MU",
+        "resistance": "$796-798 (Friday's high, Thursday's close), $827.58 (Nov 11 high), $885, $944 (50-day)",
+        "support": "$764 (200-day), $750.25 (Friday's low), $690 (Nov 6 close), $650",
+        "tell": "A close under $750 loses the 200-day and opens $690. A close over $827.58 means the memory bounce has legs"
+      },
+      {
+        "symbol": "Nasdaq",
+        "resistance": "25,649.85 (last week's high), 27,722.75 (main top)",
+        "support": "24,722 (52-week average), 24,206.50",
+        "tell": "A close under the 52-week average would mean the AI selloff is back on"
+      },
+      {
+        "symbol": "10Y",
+        "resistance": "5.31% (52-week high)",
+        "support": "5.00%",
+        "tell": "A move to 5.31% squeezes small caps and rate-sensitive names. A close under 5% would mean the hike talk is cooling"
+      },
+      {
+        "symbol": "Brent",
+        "resistance": "$98, $105",
+        "support": "$91",
+        "tell": "A settle over $105 means the Iran risk is back and energy runs. Under $91 means the peace deal is being priced in"
+      }
+    ],
+    "schedule": [
+      {
+        "when": "Mon",
+        "what": "Empire State 7:30 a.m. Sask (17.6 vs 25.5). Barr 4:00 a.m., Williams 8:05 a.m., Fed Chair Warsh 11:00 a.m. Baidu and Tyson before the open"
+      },
+      {
+        "when": "Tue",
+        "what": "Retail sales 7:30 a.m. Sask (0.2% vs 0.8%, control group 0.4% vs 0.1%), import prices (0.7% vs 1.1%), industrial production 8:15 a.m. (0.1% vs 0.7%), NAHB 9:00 a.m. (29). Musalem, Waller, Hammack, Williams. Home Depot, Disney and JD before the open"
+      },
+      {
+        "when": "Tue after close",
+        "what": "Nvidia (about 9.6% priced, EPS $2.47 on $108.8B revenue expected), its first report since Huang resigned"
+      },
+      {
+        "when": "Wed",
+        "what": "Housing starts 7:30 a.m. Sask (1.25M vs 1.22M). Lowe's, Target and TJX before the open. Micron fireside chat 11:50 a.m. Sask. $16B 20-year auction at noon, FOMC minutes at 1:00 p.m. Anthropic prices its IPO. Palo Alto after the close"
+      },
+      {
+        "when": "Thu",
+        "what": "Jobless claims and Philly Fed 7:30 a.m. Sask (199K vs 200K, 19.2 vs 20.9). Walmart before the open. Anthropic (ANT) starts trading on Nasdaq. $19B 10-year TIPS reopening at noon. Hammack, Goolsbee, Barr, Barkin, Paulson. Intuit, Keysight and Ross after the close"
+      },
+      {
+        "when": "Fri",
+        "what": "Monthly options expiry. Revised Michigan sentiment 9:00 a.m. Sask (52.1 vs 51.0). Waller 7:25 a.m., Cook 11:15 a.m."
+      }
+    ],
+    "plan": [
+      "Small or flat into Nvidia Tuesday after the close. Defined-risk spreads only. The 9.6% priced move is a typical size, not a cap.",
+      "MU: buy dips only in the $750 to $764 zone, with defined risk. A close under $690 means I stand aside.",
+      "Sell S&P pops into 7,650 to 7,700, and stop fading if it closes over 7,800.",
+      "If the S&P closes under 7,340, I cut risk and stop looking for longs.",
+      "Friday is monthly expiry. Close or roll near-the-money short options by Thursday's close."
+    ],
+    "trades": [],
+    "sources": [
+      {
+        "title": "Weekly Market Review: Nov 13, 2026 - The Glass Desk",
+        "url": "https://theglassdesk.substack.com/p/weekly-market-review-nov-13-2026"
+      },
+      {
+        "title": "The Week Ahead: Nvidia Earnings, Anthropic IPO Test AI Trade",
+        "url": "https://www.fxempire.com/forecasts/article/the-week-ahead-nvidia-earnings-anthropic-ipo-test-ai-trade-1644719"
+      },
+      {
+        "title": "Stock Market Weekly Recap: Sector Winners, Losers Nov 9-13",
+        "url": "https://currentlogic.substack.com/p/dispersion-brief-week-in-review-nov-b00"
+      },
+      {
+        "title": "Closing Look — Friday, November 13, 2026 - CappNotes",
+        "url": "https://cappnotes.substack.com/p/closing-look-friday-november-13-2026"
+      },
+      {
+        "title": "Market Review: November 13, 2026 - Investrade",
+        "url": "https://investrade.com/market-review-november-13-2026/"
+      },
+      {
+        "title": "CBOE Interest Rate 10 Year T Note (^TNX) - Yahoo Finance",
+        "url": "https://finance.yahoo.com/quote/%5ETNX/"
+      },
+      {
+        "title": "Micron Stock $778: Up 12.8% Into Nvidia Week, Bull $885",
+        "url": "https://financefeeds.com/micron-mu-stock-778-sunday-week-ahead-nvidia-results-17-november-bull-885-bear-690/"
+      },
+      {
+        "title": "Micron Technology (MU) Stock Price, Chart & News",
+        "url": "https://stockanalysis.com/stocks/mu/"
+      },
+      {
+        "title": "Micron Technology, Inc. $MU Stock Sold by Bellwether Advisors LLC",
+        "url": "https://www.defenseworld.net/2026/11/15/micron-technology-inc-mu-stock-sold-by-bellwether-advisors-llc.html"
+      },
+      {
+        "title": "Micron Announces Participation in Investor Events",
+        "url": "https://www.globenewswire.com/news-release/2026/11/12/3402153/14450/en/micron-announces-participation-in-investor-events.html"
+      },
+      {
+        "title": "Options Traders Expect Nvidia's Biggest Earnings Move Since 2024 - Benzinga",
+        "url": "https://www.benzinga.com/opinion/26/11/63240720/options-traders-expect-nvidia-biggest-earnings-move-since-2024"
+      },
+      {
+        "title": "Nvidia closes below $4T market cap for first time since July 2025 in Huang fallout",
+        "url": "https://www.cnbc.com/2026/11/13/nvidia-nvda-stock-jensen-huang-transition.html"
+      }
+    ],
+    "by": "forecaster"
+  },
+  {
     "date": "2026-11-09",
     "title": "Forecast for the week of Nov 9",
     "bias": "Neutral",
