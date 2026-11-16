@@ -790,6 +790,13 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   recorded from the live game with Playwright on a stepped clock. Its
   `publish-release.yml` publishes a release when `VERSION` changes, titled
   from the `PR <n>: summary — v<version>` merge.
+  Kick (the drilling game, repo `Jxstrr0/Kick2`, address
+  kick.longlight.games once its first build is merged and the domain is
+  set) was added hidden the same day (Kelbo). Its cover is the drill
+  house's weight indicator and drawworks lever from the first build (PR 0),
+  taken from a local build because the game wasn't live yet. It has no
+  clip, screenshots or version yet: record them, and a cover from the real
+  game, when there's more to show and its releases start.
   Each game keeps its own look (fonts, colours, art). The Longlight logo,
   the five colours and Space Grotesk belong to studio pieces only (logo or
   splash, credit line, studio block, links back here); every game repo's
