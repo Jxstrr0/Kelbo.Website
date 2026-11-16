@@ -623,7 +623,7 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   icon's glow (only Firefox animates tab icons).
 - Studio sting: `assets/sounds/longlight-sting-v2.mp3` (2 s, made by Kelbo
   with ElevenLabs, mastered to -16 LUFS; `assets/sounds/CREDITS.md`; the
-  original `longlight-sting.mp3` stays for reference, unloaded). A changed
+  louder original was deleted on 2026-11-16). A changed
   sound needs a new file name, because `sw.js` serves sounds from its saved
   copy first. `setUpSound` (main.js) adds a "Sound off/on" button to the
   end of every footer line (`.sound-toggle`; its name is "Sound" with
