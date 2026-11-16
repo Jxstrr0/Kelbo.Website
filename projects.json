@@ -251,6 +251,39 @@
     "featured": false
   },
   {
+    "title": "Laminar",
+    "hidden": true,
+    "status": "In development",
+    "category": "Game",
+    "summary": "An aerodynamics consultancy game. Shape a rider's position in 3D, build a scale model, prove it in the wind tunnel, then find out at the real race whether your tunnel told the truth.",
+    "version": "0.8.0.0",
+    "latest": "Sports in the sim, the speed skater",
+    "link": "https://laminar.longlight.games/",
+    "code": "https://github.com/Jxstrr0/Laminar",
+    "image": "assets/covers/laminar.jpg",
+    "clip": "assets/clips/laminar.mp4",
+    "cardClip": "assets/clips/laminar-card.mp4",
+    "featured": false,
+    "shots": [
+      {
+        "src": "assets/shots/laminar-1.jpg",
+        "alt": "The Jobs screen: the firm's money and reputation, a box to name the firm, and the partner's guide to the first client's job"
+      },
+      {
+        "src": "assets/shots/laminar-2.jpg",
+        "alt": "The Shape screen: a time-trial rider on a bike in 3D, with the drag estimate, comfort and the position sliders"
+      },
+      {
+        "src": "assets/shots/laminar-3.jpg",
+        "alt": "The wind tunnel with a dark wall: smoke from the rake streaming past the scale model, with the fan and yaw controls"
+      },
+      {
+        "src": "assets/shots/laminar-4.jpg",
+        "alt": "The tunnel's live drag chart during a run, under the model on the turntable"
+      }
+    ]
+  },
+  {
     "title": "Escapement",
     "hidden": true,
     "film": "assets/films/escapement.mp4",

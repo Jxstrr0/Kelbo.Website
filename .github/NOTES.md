@@ -781,6 +781,15 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   and screenshots were recorded from the live game at a phone size. Its
   `publish-release.yml` (from 0.8.0.0) publishes a release whenever
   `VERSION` in its `js/config.js` changes.
+  Laminar (the wind-tunnel aerodynamics consultancy game,
+  laminar.longlight.games, repo `Jxstrr0/Laminar`) was added hidden
+  (Kelbo, 2026-11-16) with the full set: a cover and card clip of the
+  rider on the tunnel's turntable, dark wall on, smoke from the rake
+  streaming past while the camera swings gently, plus a tall clip (a yaw
+  sweep, the tufts, then the Shape screen) and four screenshots, all
+  recorded from the live game with Playwright on a stepped clock. Its
+  `publish-release.yml` publishes a release when `VERSION` changes, titled
+  from the `PR <n>: summary — v<version>` merge.
   Each game keeps its own look (fonts, colours, art). The Longlight logo,
   the five colours and Space Grotesk belong to studio pieces only (logo or
   splash, credit line, studio block, links back here); every game repo's
