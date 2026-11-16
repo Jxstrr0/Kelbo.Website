@@ -284,40 +284,6 @@
     ]
   },
   {
-    "title": "Escapement",
-    "hidden": true,
-    "film": "assets/films/escapement.mp4",
-    "status": "Released",
-    "category": "Game",
-    "summary": "A watchmaking career game. Build mechanical movements part by part, put them on the timegrapher, chase chronometer certification and sell to collectors, until a shared repair bench in the Haldis becomes a manufacture making its own calibres.",
-    "version": "1.0.1.0",
-    "latest": "First build: the workshop, the bench and a balance wheel ticking in 3D",
-    "link": "https://escapement.longlight.games/",
-    "code": "https://github.com/Jxstrr0/Escapement",
-    "image": "assets/covers/escapement.jpg",
-    "featured": false,
-    "clip": "assets/clips/escapement.mp4",
-    "cardClip": "assets/clips/escapement-card.mp4",
-    "shots": [
-      {
-        "src": "assets/shots/escapement-1.jpg",
-        "alt": "The bench: a finished movement ticking in 3D, with its beat rate and power reserve"
-      },
-      {
-        "src": "assets/shots/escapement-2.jpg",
-        "alt": "The loupe view, close on the balance wheel and escapement"
-      },
-      {
-        "src": "assets/shots/escapement-3.jpg",
-        "alt": "The build screen, where you design a movement part by part"
-      },
-      {
-        "src": "assets/shots/escapement-4.jpg",
-        "alt": "The timegrapher test, showing rate, amplitude and beat error"
-      }
-    ]
-  },
-  {
     "title": "The Whip",
     "hidden": true,
     "status": "Released",

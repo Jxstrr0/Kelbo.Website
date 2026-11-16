@@ -101,7 +101,7 @@ for that game. For it right away, open **Actions** → **Deploy site** →
 release, the site keeps the `projects.json` one and the deploy notes remind
 you to publish a release.
 
-Escapement and Scrapline do this by themselves: a small helper in each
+Every game does this by itself: a small helper in each
 repo (`.github/workflows/publish-release.yml`, free, no keys) publishes a
 release whenever a merge to `main` carries a version that has none yet. It
 only matters for the version number on this site, so deleting a helper is
@@ -212,7 +212,7 @@ progress order.
   missing the site uses the small one and the Site check gives a warning.
 - **hidden**: `true` takes a project off the site (cards, lists, the All
   page, its game page, the robots) but keeps its entry here. Delete the
-  line to bring it back. The Whip and Escapement are hidden for now,
+  line to bring it back. The Whip is hidden for now,
   and so are Quench, Hull Down and Laminar (new, still being built).
 - **featured**: no longer changes the home page, which now shows every game
   in one swipe row under "Pick a game", in the order they have in this
