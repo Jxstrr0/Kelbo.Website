@@ -1,14 +1,14 @@
 {
   "latest": {
-    "date": "2026-11-13",
-    "time": "2026-11-13T12:35:51.674Z",
-    "headline": "Huang is out at Nvidia; MU steadies near $800 before PPI",
-    "tldr": "Nvidia's CEO resigned Thursday and chips absorbed it (MU closed $798.44, −1.59%, after opening −5.18%), and MU's latest pre-market print is $806.07 (+0.96%) with futures slightly positive ahead of October PPI at 8:30 ET (7:30 SK)."
+    "date": "2026-11-16",
+    "time": "2026-11-16T12:34:28.121Z",
+    "headline": "Asian chip rout points MU about 4% lower into Nvidia week",
+    "tldr": "Memory sold off hard across Asia (SK Hynix −7.89%, Kioxia −7.7%, Taiex −6.03%) and MU's last print was $744.00 (−4.41%) at 6:32 ET after Friday's $778.31 close, so expect a gap down of roughly 2.5% to 6.5% the day before Nvidia reports."
   },
   "months": [
     {
       "month": "2026-11",
-      "count": 11
+      "count": 12
     }
   ]
 }
