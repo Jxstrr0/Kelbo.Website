@@ -1,6 +1,6 @@
 # Longlight Interactive: studio catalogue
 
-> **Snapshot: 7 November 2026** (Quench added 11 November). One reference file for every Longlight game.
+> **Snapshot: 7 November 2026** (Quench added 11 November, Laminar and Kick 16 November). One reference file for every Longlight game.
 > The same file is dropped into each game repo. Versions and details drift;
 > when something matters, check the live repo. A game's own `CLAUDE.md` always
 > wins over this file inside that game's repo.
@@ -15,7 +15,8 @@
 > games stay up, and everything in this file still applies to them. The
 > listed five are Prairie Engine Works, Season Ticket, Scrapline, Lombard
 > and Frontier Lab. Quench, the newest game, was added hidden on
-> the same day and stays hidden until Kelbo says to show it.
+> the same day and stays hidden until Kelbo says to show it. Laminar and
+> Kick were added hidden on 16 November 2026, on the same terms.
 
 ---
 
@@ -69,6 +70,8 @@ on its own subdomain of **longlight.games** (November 2026; the old
 | Frontier Lab | [Jxstrr0/FrontierLab](https://github.com/Jxstrr0/FrontierLab) | https://frontierlab.longlight.games/ | Listed |
 | The Whip | [Jxstrr0/The-Whip](https://github.com/Jxstrr0/The-Whip) | https://thewhip.longlight.games/ | Hidden |
 | Quench | [Jxstrr0/Quench](https://github.com/Jxstrr0/Quench) | https://quench.longlight.games/ | Hidden |
+| Laminar | [Jxstrr0/Laminar](https://github.com/Jxstrr0/Laminar) | https://laminar.longlight.games/ | Hidden |
+| Kick | [Jxstrr0/Kick2](https://github.com/Jxstrr0/Kick2) | https://kick.longlight.games/ (not live yet) | Hidden |
 | Studio site | [Jxstrr0/Kelbo.Website](https://github.com/Jxstrr0/Kelbo.Website) | https://longlight.games/ | — |
 
 Kelbo's private and parked repos are not covered here (section 11).
@@ -171,6 +174,8 @@ cost nothing, keep old copies apart, and let a game move again safely.
 | Frontier Lab | `frontierlab.*` + IndexedDB `frontierlab` | content-hash name | `FL<schema>:` |
 | The Whip | `whip:*`; sessionStorage `whip:backup-reminded` | none (no service worker) | no prefix: plain base64 JSON (see profile) |
 | Quench | `quench.*` | `quench-` | `QNC1:` |
+| Laminar | `laminar.*` + IndexedDB `laminar` (slots) | none yet (use `laminar-` when one is added) | `LAM1:` (designs `LAMD1:`) |
+| Kick | `kick.*` + IndexedDB `kick` | `kick-` | `KICK1:` (well codes `KICKW1:`) |
 
 > **Fixed on 7 November 2026:** the studio site's `sw.js` used to delete every
 > cache that wasn't its own when it updated, which wiped the games' offline
@@ -197,6 +202,8 @@ new and hidden until Kelbo says to show it.
 | Frontier Lab | In development | 0.1.63.0 | AI-lab tycoon (fork of Vault Street) | Real cities on procedural maps | Portrait | TypeScript, Preact, 2D canvas/SVG |
 | The Whip | Released, **hidden** | 1.0.0.0 | Political career: votes, deals, whip | Dominion of Caledor (Westminster) | Portrait first | ES modules, no build, three 0.160 (CDN) |
 | Quench | Polishing, **hidden** | 1.0.0.0 (11 Nov) | Bladesmithing: heat, hammer, grind, quench, temper, trial | Aldersay, the Skerrow Isles (present day) | Portrait first | TypeScript, Vite, three 0.187 (npm) |
+| Kick | Prototype, **hidden** | 0.1.0.0 (PR 0, not merged yet) | Drilling contractor: plan, bid, drill each well live from the driller's chair; kicks and blowouts | Laminar's Tarnovia (rubles) | Portrait first | TypeScript, Vite, three 0.187 (npm) |
+| Laminar | In development, **hidden** | 0.8.0.0 (16 Nov) | Aero consultancy: shape in 3D, scale model, wind tunnel, real event | Tarnovia, Stavren (2010–2040; rubles) | Portrait first | TypeScript, Vite, three 0.187 (npm) |
 
 Studio site trading projects (not games): Pre-market brief, AI Trading Journal,
 Agent Fleet.
@@ -590,6 +597,26 @@ are as of this snapshot.
 - **Rules worth knowing:** the sim (`src/sim/`, `src/data/`) is pure and deterministic: seeded RNG, fixed step, its own `det.ts` maths, every number in a table. Names live in `docs/NAMES.md`.
 - **Saves:** localStorage `quench.*`, caches `quench-`, save code `QNC1:`.
 
+### Laminar
+
+- **Status:** the site's label is "In development", hidden on the studio site (added 16 November 2026). 0.8.0.0 on 16 November (`VERSION` file): PRs 0 to 7 of `docs/LAMINAR-PLAN.md` section 14 are built (the aero sim, shaping, the tunnel and its quirks, contracts and bids, failures, the career to the 2040 ending) and PR 8, the rest of sport, has started with speed skating. `docs/STATUS.md` says where it stands.
+- **What is in it:** a cycling career from a rented university tunnel: bid for a client's brief, shape the rider's position and kit in 3D, order a scale model, run it on the yaw turntable (smoke wand, rake, tufts, pressure taps), correct for the tunnel's hidden quirks, deliver a prediction, then watch the real event as a 3D replay. Rival firms, your own tunnel, workshop tools, staff, a soft landing when broke, save slots, save codes and backup files.
+- **Pitch:** an aerodynamics consultancy game. Shape a fix in 3D, build a scale model, prove it in the wind tunnel, then find out at the real event whether your tunnel told the truth.
+- **Setting and tone:** Laminar's own Tarnovia, 2010 to 2040, money in rubles (₽); Mostograd is one of its cities (Lombard owns Mostograd's canon). It is a separate take on the country from Hull Down's and shares none of its names. People are never hurt: riders lose time, pilots abort, models break. Real aero terms (CdA, Reynolds number, yaw); a fictional Tarnovian Cycling Federation, never the real UCI.
+- **Look:** "Cobalt lab": a bright, clean wind-tunnel lab, light first with a dark mode, cobalt instruments (`#2456E8`), Instrument Sans and Spline Sans Mono (no other Longlight game uses either).
+- **Stack:** TypeScript (strict), Vite, three.js 0.187 from npm, plain DOM UI, Vitest. Pages from Actions, `base: './'`. Release per `VERSION`, titled from the `PR <n>: summary — v<version>` merge.
+- **Rules worth knowing:** the sim (`src/sim/`, `src/data/`) is pure and deterministic, with its own `det.ts` maths and named RNG streams; one truth, three views (hidden full-scale truth, the tunnel reading, the field result); the renderer only draws what the sim says. Names live in `docs/NAMES.md`.
+- **Saves:** three slots in IndexedDB `laminar` (falling back to `laminar.slot.<n>`), other keys `laminar.*`, save code `LAM1:`, design codes `LAMD1:`. No service worker yet (plan PR 14); its caches will start `laminar-`.
+
+### Kick (repo `Kick2`)
+
+- **Status:** the site's label is "Prototype", hidden on the studio site (added 16 November 2026). PR 0 (0.1.0.0, the grey-box drill house) is in review and not merged, so the game isn't live yet; its address will be `https://kick.longlight.games/` once Kelbo sets the Pages domain and its DNS record. The plan is `docs/KICK-PLAN.md` (build plan in section 16); `docs/STATUS.md` says where it stands. A ground-up remake of an old Kick prototype whose source is gone.
+- **Pitch:** a drilling game. Run a small drilling contractor and be its driller: plan each well from offset data that might be wrong, bid for it, then drill it in real time (weight on bit, rotary speed, pump rate, mud weight), keeping the bottom-hole pressure above the pore pressure and below the pressure that cracks the rock. Get it wrong and the well kicks.
+- **Setting and tone:** follows Laminar's Tarnovia (rubles; Mostograd is in the country) and reuses no Hull Down names. Names live in `docs/NAMES.md`.
+- **Look:** the rig is the look (worn at tier 1, big and clean at the top); office screens are a light "tour sheet" with a dark option, hazard yellow and oxide red, Overpass and DM Mono.
+- **Stack:** TypeScript (strict), Vite, three.js 0.187 from npm, a fully 3D chair and plain DOM office screens, Vitest. Pages from Actions, `base: './'`. Cookieless Cloudflare beacon like the other games.
+- **Saves:** localStorage `kick.*`, IndexedDB `kick`, caches `kick-`, save code `KICK1:`, well codes `KICKW1:`, backup file `kick-backup-YYYY-MM-DD.txt`.
+
 ---
 
 ## 8. Names already taken
@@ -608,6 +635,7 @@ noted, so a repeated name reads as a mistake.
 | Valmere (Valmeran dollar), Kestrel Football League | Season Ticket |
 | Dominion of Caledor, capital Ostrava | The Whip |
 | Aldersay, a harbour town on the Skerrow Isles; Skerrow crown (`kr`) | Quench |
+| Tarnovia (rubles), the town of Stavren; Mostograd borrowed from Lombard | Laminar (its own take on Tarnovia, separate from Hull Down's); Kick follows Laminar's |
 | Real world cities on procedural maps | Frontier Lab |
 
 **Names used in more than one game** (already clashing; avoid adding more):
@@ -648,6 +676,8 @@ date or institution.
   `docs/DESIGN.md`, the **Setting** and **Money** lines (euros; Kessel Peak; the Haldis Chronometry Bureau). Scrapline borrowed the
   names only: its `CLAUDE.md` says not to read or follow the Escapement repo
   for anything else, and that rule wins inside Scrapline.
+- **Mostograd in Laminar:** Laminar puts Mostograd in its Tarnovia; any
+  Mostograd place or institution there follows Lombard's file above.
 
 ---
 
