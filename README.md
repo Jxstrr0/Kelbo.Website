@@ -213,7 +213,7 @@ progress order.
 - **hidden**: `true` takes a project off the site (cards, lists, the All
   page, its game page, the robots) but keeps its entry here. Delete the
   line to bring it back. The Whip and Escapement are hidden for now,
-  and so are Quench, Hull Down and Burn Rate (new, still being built).
+  and so are Quench, Hull Down, Laminar and Kick (new, still being built).
 - **featured**: no longer changes the home page, which now shows every game
   in one swipe row under "Pick a game", in the order they have in this
   file. The four marked `true` are the covers in the link preview picture.
