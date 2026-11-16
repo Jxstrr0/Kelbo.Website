@@ -284,17 +284,6 @@
     ]
   },
   {
-    "title": "Kick",
-    "hidden": true,
-    "status": "Prototype",
-    "category": "Game",
-    "summary": "A drilling game. Run a small drilling contractor and sit in the driller's chair: plan each well, bid for it, then drill it in real time, keeping the pressure at the bottom of the hole between too little and too much. Get it wrong and the well kicks.",
-    "link": "https://kick.longlight.games/",
-    "code": "https://github.com/Jxstrr0/Kick2",
-    "image": "assets/covers/kick.jpg",
-    "featured": false
-  },
-  {
     "title": "Escapement",
     "hidden": true,
     "film": "assets/films/escapement.mp4",
