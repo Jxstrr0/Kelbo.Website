@@ -103,5 +103,10 @@
     "line": "Tier 3 is rebalanced with stronger news, a $5k target and a cheaper Theta Shield.",
     "title": "v0.9.0.4 - Tier 3 tuning: stronger news, $5k target, cheaper Theta Shield",
     "at": "2026-11-15T19:09:11.442Z"
+  },
+  "BurnRate@v1.6.1.1": {
+    "line": "Visits to Burn Rate are now counted without using cookies.",
+    "title": "v1.6.1.1 - cookieless visit counts (#30)",
+    "at": "2026-11-16T07:22:15.084Z"
   }
 }
