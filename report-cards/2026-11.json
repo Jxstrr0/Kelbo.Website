@@ -1,4 +1,86 @@
 {
+  "2026-11-16": {
+    "date": "2026-11-16",
+    "time": "2026-11-16T22:46:45.333Z",
+    "summary": "The gap-down call was right in direction and size, but MU kept falling during the day and closed below the 733.15 and 725.11 pivots without reaching the supports lower down.",
+    "gap": {
+      "call": "Down about 2.5% to 6.5%",
+      "result": "MU opened at 735.31, a gap of about -5.5% from 778.31.",
+      "grade": "hit"
+    },
+    "mu": {
+      "prev_close": 778.31,
+      "open": 735.31,
+      "high": 739.12,
+      "low": 716.38,
+      "close": 719.02,
+      "open_pct": -5.52,
+      "close_pct": -7.62
+    },
+    "levels": [
+      {
+        "level": "Opening pivot $750.25 (Friday's low)",
+        "result": "The day's high of 739.12 stayed about 1.5% below it.",
+        "grade": "untested"
+      },
+      {
+        "level": "Opening pivot $733.15 (Nov 9 close)",
+        "result": "MU opened just above it and closed below it at 719.02.",
+        "grade": "broke"
+      },
+      {
+        "level": "Opening pivot $725.11 (Nov 10 close)",
+        "result": "MU fell through it to 716.38 and closed below it at 719.02.",
+        "grade": "broke"
+      },
+      {
+        "level": "First resistance $764.57 (Thursday's low)",
+        "result": "The high of 739.12 stayed more than 3% below it.",
+        "grade": "untested"
+      },
+      {
+        "level": "Next resistance $796.18 (Friday's high)",
+        "result": "The price never got near it.",
+        "grade": "untested"
+      },
+      {
+        "level": "First support $699.63 (Nov 10 low)",
+        "result": "The low of 716.38 stayed about 2.4% above it.",
+        "grade": "untested"
+      },
+      {
+        "level": "Next support $690.00 (Nov 6 close)",
+        "result": "The low of 716.38 stayed about 3.8% above it.",
+        "grade": "untested"
+      }
+    ],
+    "sources": [
+      {
+        "title": "Why Micron Stock Dove Today",
+        "url": "https://www.fool.com/investing/2026/11/16/why-micron-stock-dove-today/"
+      },
+      {
+        "title": "Micron Stock Price History - Investing.com",
+        "url": "https://www.investing.com/equities/micron-tech-historical-data"
+      },
+      {
+        "title": "MICRON TECHNOLOGY, INC. (MU) Stock, Price, News, Quotes - MSN Money",
+        "url": "https://www.msn.com/en-us/money/stockdetails/mu-us-stock/fi-a1y4oc"
+      },
+      {
+        "title": "Micron Technology, Inc. (MU) Stock Price, News, Quote & History - Yahoo Finance",
+        "url": "https://finance.yahoo.com/quote/MU/"
+      },
+      {
+        "title": "Micron Shares Fall 7.6% Following New U.S. Export Rules and DRAM Antitrust Ruling : JKN",
+        "url": "https://news.jkn.co.kr/editions/english/post/1100027"
+      },
+      {
+        "title": "Micron Technology (MU) Stock Price History 1984-2026",
+        "url": "https://stockanalysis.com/stocks/mu/history/"
+      }
+    ]
+  },
   "2026-11-13": {
     "date": "2026-11-13",
     "time": "2026-11-13T22:46:03.798Z",
