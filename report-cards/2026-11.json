@@ -1,4 +1,91 @@
 {
+  "2026-11-17": {
+    "date": "2026-11-17",
+    "time": "2026-11-17T22:48:55.196Z",
+    "summary": "The gap call was a hit (opened +1.0%), but MU then fell to 666.88 below all named supports before recovering to close at 712.42, below Monday's low.",
+    "gap": {
+      "call": "Flat to up about 4%",
+      "result": "Opened at 726.20, up 1.0% from 719.02",
+      "grade": "hit"
+    },
+    "mu": {
+      "prev_close": 719.02,
+      "open": 726.2,
+      "high": 726.99,
+      "low": 666.88,
+      "close": 712.42,
+      "open_pct": 1,
+      "close_pct": -0.92
+    },
+    "levels": [
+      {
+        "level": "Lower-edge pivot $716.38 (Monday's low)",
+        "result": "Fell through it to 666.88 and closed below it at 712.42",
+        "grade": "broke"
+      },
+      {
+        "level": "Opening pivot $725.11 (Nov 10 close)",
+        "result": "Day's high of 726.99 poked just above it, then the close was 712.42 below",
+        "grade": "held"
+      },
+      {
+        "level": "Opening pivot $733.15 (Nov 9 close)",
+        "result": "Day's high of 726.99 stayed more than 0.5% below it",
+        "grade": "untested"
+      },
+      {
+        "level": "Opening pivot $739.12 (Monday's high)",
+        "result": "Never reached; day's high was 726.99",
+        "grade": "untested"
+      },
+      {
+        "level": "Upper-edge pivot $750.25 (Friday's low)",
+        "result": "Never reached; day's high was 726.99",
+        "grade": "untested"
+      },
+      {
+        "level": "First resistance $764.57 (Thursday's low)",
+        "result": "Never reached; day's high was 726.99",
+        "grade": "untested"
+      },
+      {
+        "level": "First support $699.63 (Nov 10 low)",
+        "result": "Fell through to 666.88 but closed back above at 712.42",
+        "grade": "held"
+      },
+      {
+        "level": "Next support $690.00 (Nov 6 close)",
+        "result": "Fell through to 666.88 but closed back above at 712.42",
+        "grade": "held"
+      }
+    ],
+    "sources": [
+      {
+        "title": "Micron Technology (MU) Stock Price, Chart & News",
+        "url": "https://stockanalysis.com/stocks/mu/"
+      },
+      {
+        "title": "MICRON TECHNOLOGY, INC. (MU) Stock, Price, News, Quotes, Forecast and Insights",
+        "url": "https://www.msn.com/en-us/money/stockdetails/mu-us-stock/fi-a1y4oc"
+      },
+      {
+        "title": "Micron Technology, Inc. (MU) Stock Forum & Discussion - Yahoo Finance",
+        "url": "https://finance.yahoo.com/quote/MU/community/"
+      },
+      {
+        "title": "Micron (MU) Stock Chart - Investing.com",
+        "url": "https://www.investing.com/equities/micron-tech-chart"
+      },
+      {
+        "title": "Why Micron Stock Keeps On Going Down",
+        "url": "https://www.fool.com/investing/2026/11/17/why-micron-stock-keeps-on-going-down/"
+      },
+      {
+        "title": "Micron Technology (MU) Stock Price, News & Analysis $MU",
+        "url": "https://www.marketbeat.com/stocks/NASDAQ/MU/"
+      }
+    ]
+  },
   "2026-11-16": {
     "date": "2026-11-16",
     "time": "2026-11-16T22:46:45.333Z",
