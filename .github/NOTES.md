@@ -13,7 +13,7 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   renders it. Its order is the display order everywhere (Games, Projects,
   What's new, home swipe row, "More games"): Kelbo's own ranking, games
   first. Shown games (Kelbo, 2026-11-15): Prairie Engine Works, Scrapline,
-  Season Ticket, Funded, Lombard, Burn Rate; the hidden games
+  Season Ticket, Funded, Lombard, Burn Rate, Laminar (on 2026-11-17); the hidden games
   follow. Nothing sorts by progress except the
   Projects page's filter buttons (`sortByProgress`). Adding a project should never need an HTML edit. Each project
   can carry a `version` ("1.4.0.0", no "v") and `latest` (what changed),
@@ -788,7 +788,10 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   sweep, the tufts, then the Shape screen) and four screenshots, all
   recorded from the live game with Playwright on a stepped clock. Its
   `publish-release.yml` publishes a release when `VERSION` changes, titled
-  from the `PR <n>: summary — v<version>` merge.
+  from the `PR <n>: summary — v<version>` merge. It went on the site on
+  2026-11-17 (Kelbo), with four new screenshots in its Isobar look (Jobs,
+  Shape, the tunnel with smoke, the tunnel in dark mode with tufts and the
+  rake). The cover and clips are still the first recordings.
   Each game keeps its own look (fonts, colours, art). The Longlight logo,
   the five colours and Space Grotesk belong to studio pieces only (logo or
   splash, credit line, studio block, links back here); every game repo's
