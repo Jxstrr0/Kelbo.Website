@@ -12,22 +12,28 @@
 // Spam protection: Cloudflare Turnstile (the free "I'm human" check on the
 // form; its secret is the TURNSTILE_SECRET setting, never in the repo), a
 // hidden "botcheck" box that people never see (bots tick it and get a fake
-// "sent"), messages only from the site's own pages, length limits, and a
-// Cloudflare rate-limit rule on contact.longlight.games, a size check before
-// anything is read, and a daily cap on sends (the SENDS KV store counts them,
-// so a flood that somehow gets past Turnstile still stops at DAILY_CAP).
-// Sending to your own verified address is free.
+// "sent"), messages only from the site's own pages, length limits, a size
+// limit on the whole upload, a cap on how many messages can be sent in one
+// day, and a Cloudflare rate-limit rule on contact.longlight.games. Sending
+// to your own verified address is free.
+//
+// The daily cap needs one extra setting: a KV namespace bound to this Worker
+// as COUNTER (KV is Cloudflare's small key-value store; free). Without it the
+// form still works, just with no daily cap.
 //
 // Logs: Workers Logs are on for this Worker (Cloudflare > contact-form >
-// Logs). Refusals log a short reason only, never the name, email or message.
+// Logs). Each refusal logs a short reason, never the name, email or message.
 
 const SITES = ["https://longlight.games"];
 const LIMITS = { name: 100, email: 200, message: 5000 };
-// Biggest post the Worker will read, in bytes. A full 5000-character message
-// of emoji plus the Turnstile token is about 23 KB, so 32 KB leaves room.
-const MAX_BYTES = 32 * 1024;
-// Most messages emailed in one day (UTC). Past it, senders are asked to try
-// again tomorrow. The count is approximate (KV isn't instant everywhere).
+// The biggest upload the Worker will read. A full-length message in any
+// language fits: 5,000 Chinese or Japanese characters come to about 45 KB in
+// the worst case (a form sent without JavaScript spells each one out as nine
+// characters). 64 KB leaves room and still stops someone posting megabytes.
+const MAX_BODY_BYTES = 64 * 1024;
+// The most messages the form will email in one day (UTC). Turnstile and the
+// rate-limit rule stop ordinary bots; this limits the damage if someone gets
+// past both, so the inbox can't be flooded.
 const DAILY_CAP = 50;
 
 export default {
@@ -38,7 +44,8 @@ export default {
     const wantsJson = (request.headers.get("Accept") || "").includes("application/json");
 
     // Answer in the form main.js expects, or as a small page when the form
-    // was posted without JavaScript.
+    // was posted without JavaScript. `text` is always one of the fixed
+    // sentences in this file, never anything the visitor typed.
     function reply(ok, text, status) {
       if (wantsJson) {
         return Response.json({ success: ok, message: text }, { status, headers: cors });
@@ -49,6 +56,11 @@ export default {
 <p>${text}</p><p><a href="https://longlight.games/">Back to Longlight Interactive</a></p>`;
       return new Response(page, { status, headers: { "Content-Type": "text/html; charset=utf-8" } });
     }
+    // A refusal worth seeing in the logs: note why (never what was sent), then answer.
+    function refuse(why, text, status) {
+      console.warn("Refused:", why);
+      return reply(false, text, status);
+    }
 
     if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: { ...cors, "Access-Control-Allow-Methods": "POST", "Access-Control-Allow-Headers": "Accept" } });
     // Someone opening the bare address in a browser is sent to the form on the site.
@@ -57,20 +69,23 @@ export default {
     if (request.method !== "POST") return new Response("Not found", { status: 404 });
     if (!allowed) return refuse("wrong origin", "Please send your message from longlight.games.", 403);
 
-    // Check the size before reading anything, so a huge upload costs nothing.
-    // Browsers always say how big a form post is; a post that doesn't is refused.
-    const size = Number(request.headers.get("Content-Length"));
-    if (!size || size > MAX_BYTES) return refuse("too big or no length", "That message is too long.", 413);
+    // Too big to be a real message: refuse before reading any of it.
+    if (Number(request.headers.get("Content-Length") || 0) > MAX_BODY_BYTES) {
+      return refuse("too big (stated size)", "That message is too long.", 413);
+    }
 
     let form;
-    try { form = await request.formData(); } catch { return refuse("unreadable", "That message couldn't be read.", 400); }
-    const field = (k) => String(form.get(k) || "");
-    // Name and email: every control character (line breaks, tabs, nulls...)
-    // becomes a space, so neither can add lines to the email. The message
-    // keeps its line breaks and tabs and loses the other control characters.
-    const flat = (s) => s.replace(/[\u0000-\u001F\u007F-\u009F\u2028\u2029]+/g, " ").trim();
-    const name = flat(field("name")), email = flat(field("email"));
-    const message = field("message").replace(/\r\n?/g, "\n").replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u009F]/g, "").trim();
+    try {
+      // The size above is only what the sender claims, so the upload is also
+      // counted as it arrives and dropped the moment it goes over.
+      const body = await readUpTo(request, MAX_BODY_BYTES);
+      if (!body) return refuse("too big (counted)", "That message is too long.", 413);
+      form = await new Response(body, { headers: { "Content-Type": request.headers.get("Content-Type") || "" } }).formData();
+    } catch { return refuse("unreadable", "That message couldn't be read.", 400); }
+    const field = (k) => String(form.get(k) || "").trim();
+    const name = tidy(field("name")), email = field("email");
+    // The message keeps its line breaks and tabs; other invisible characters go.
+    const message = field("message").replace(/\r\n?/g, "\n").replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f-\u009f\u202a-\u202e\u2066-\u2069]/g, "");
 
     // A bot filled in the hidden box: say "sent" so it moves on, send nothing.
     if (form.get("botcheck")) return reply(true, "Sent. Thanks for reaching out!", 200);
@@ -78,21 +93,18 @@ export default {
     // Turnstile: ask Cloudflare whether this visitor passed the check. A
     // script can fake the Origin header, but it can't fake a pass.
     if (!(await passedCheck(form.get("cf-turnstile-response"), request, env))) {
-      return refuse("turnstile", "Please tick the \u201cI'm human\u201d check above Send, then try again.", 403);
+      return refuse("turnstile", "Please tick the “I'm human” check above Send, then try again.", 403);
     }
 
     if (!name || !message) return reply(false, "Please fill in your name and a message.", 400);
     if (name.length > LIMITS.name || email.length > LIMITS.email || message.length > LIMITS.message) {
       return refuse("field too long", "That message is too long.", 400);
     }
-    const emailOk = /^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(email);
+    const emailOk = /^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(email) && tidy(email) === email;
     if (email && !emailOk) return reply(false, "That email address doesn't look right.", 400);
 
-    // Daily cap. No SENDS store (a setup mistake): send anyway rather than lose mail.
-    const day = "sent:" + new Date().toISOString().slice(0, 10);
-    const sentToday = env.SENDS ? Number(await env.SENDS.get(day)) || 0 : 0;
-    if (sentToday >= DAILY_CAP) {
-      return refuse("daily cap", "The inbox has had a lot of messages today. Please try again tomorrow.", 429);
+    if (!(await underDailyCap(env))) {
+      return refuse("daily cap", "The form has had a lot of messages today. Please try again tomorrow.", 429);
     }
 
     try {
@@ -101,23 +113,64 @@ export default {
         to: env.TO,
         ...(emailOk ? { replyTo: { email, name } } : {}),
         subject: `New message from ${name} (longlight.games)`,
-        text: `${message}\n\n-- \nFrom: ${name}\nEmail: ${email || "(none left)"}\nSent from the contact form on longlight.games`,
+        // The sender's details go first, above the marker, so nothing typed
+        // into the message can pass itself off as them.
+        text: `From: ${name}\nEmail: ${email || "(none left)"}\nSent from the contact form on longlight.games\n\n----- Message -----\n${message}`,
       });
     } catch (err) {
       console.error("Send failed:", err && err.message);
       return reply(false, "That didn't send. Please try again in a minute.", 502);
     }
-    // Count it (kept two days, then Cloudflare deletes the old day's count).
-    if (env.SENDS) await env.SENDS.put(day, String(sentToday + 1), { expirationTtl: 2 * 86400 });
     return reply(true, "Sent. Thanks for reaching out!", 200);
-
-    // A refusal: log why (never what was sent) and answer the visitor.
-    function refuse(why, text, status) {
-      console.warn("Refused:", why);
-      return reply(false, text, status);
-    }
   },
 };
+
+// Makes a short field safe for an email's subject and "reply to" lines: swaps
+// out characters nobody can see but that can cause mischief (line breaks and
+// other control characters, and the marks that make text display backwards).
+function tidy(s) {
+  return s.replace(/[\u0000-\u001f\u007f-\u009f\u2028\u2029\u202a-\u202e\u2066-\u2069]+/g, " ").trim();
+}
+
+// Reads the upload piece by piece and gives up (returns null) as soon as it
+// passes `max` bytes, so an oversized post is never held in memory.
+async function readUpTo(request, max) {
+  if (!request.body) return new Blob([]);
+  const reader = request.body.getReader();
+  const pieces = [];
+  let total = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    total += value.byteLength;
+    if (total > max) {
+      await reader.cancel();
+      return null;
+    }
+    pieces.push(value);
+  }
+  return new Blob(pieces);
+}
+
+// True while today's count of sent messages is under DAILY_CAP, and adds one
+// to the count. The count lives in the COUNTER KV namespace under the day's
+// date and clears itself after two days. KV can lag by up to a minute, so
+// treat the cap as "about 50", not exactly 50. If COUNTER isn't set up or
+// can't be reached, the message is let through: Turnstile is still the main
+// guard, and a storage hiccup shouldn't break the form.
+async function underDailyCap(env) {
+  if (!env.COUNTER) return true;
+  const key = "sent:" + new Date().toISOString().slice(0, 10);
+  try {
+    const count = Number(await env.COUNTER.get(key)) || 0;
+    if (count >= DAILY_CAP) return false;
+    await env.COUNTER.put(key, String(count + 1), { expirationTtl: 172800 });
+    return true;
+  } catch (err) {
+    console.error("Daily cap check failed:", err && err.message);
+    return true;
+  }
+}
 
 // True when Cloudflare confirms the Turnstile pass is real, fresh and for
 // this site. No secret set, or Cloudflare unreachable: refuse (fail closed).
