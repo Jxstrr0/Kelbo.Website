@@ -1125,6 +1125,20 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   success), caps name/email/message at 100/200/5000 characters, and
   answers `{success, message}` JSON when asked (`Accept: application/json`,
   what `setUpContactForm` sends) or a small HTML page otherwise.
+  Hardening (Nov 2026): uploads over 64 KB (`MAX_BODY_BYTES`, room for
+  5,000 Chinese characters sent without JavaScript) are refused, first by
+  the stated size and then by counting bytes as they arrive (`readUpTo`);
+  the name (and the email check) drop control characters and the marks
+  that make text display backwards (`tidy`), and the message keeps only
+  line breaks and tabs; the email puts the sender's name and address
+  first, above a `----- Message -----` line, so nothing typed into the
+  message can pose as them; at most about 50 messages a UTC day are sent
+  (`DAILY_CAP`, counted in the `contact-form-sends` KV store, bound as
+  `COUNTER`; with no binding, or if KV can't be reached, it sends anyway).
+  Workers Logs are on for the Worker (free tier); each refusal logs a
+  short reason only, never what was sent. The logs keep request details,
+  visitor IPs included, inside Kelbo's Cloudflare account; Claude never
+  queries them.
 - **Cloudflare zone rules** (set in the dashboard, free plan, not in the
   repo): a WAF custom rule blocks probes for secret files and admin pages
   (`.env`, `.git`, `wp-login`, `wp-admin`, `phpmyadmin`...); Bot Fight Mode
