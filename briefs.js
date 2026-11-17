@@ -69,7 +69,9 @@ function inline(text) {
   // Only real web links become links; anything else stays as text.
   s = s.replace(
     /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,
-    (_, label, url) => `<a href="${url}" target="_blank" rel="noopener">${label}</a>`
+    // "|" is written as %7C (the same address to a browser) so the
+    // Watchlist's "|" columns can never split a link in two.
+    (_, label, url) => `<a href="${url.replace(/\|/g, "%7C")}" target="_blank" rel="noopener">${label}</a>`
   );
   return s;
 }
