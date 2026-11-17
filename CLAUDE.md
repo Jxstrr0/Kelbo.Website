@@ -188,10 +188,11 @@ that part, and update it when how something works changes. The short map:
   newest GitHub Release, so don't "fix" newer live values by hand.
   `"hidden": true` takes a project off the site everywhere; The Whip
   is hidden (Kelbo, 2026-11-11), and so are
-  Quench and Hull Down, the newest games, until they're more built.
+  Quench, Hull Down and Laminar, the newest games, until they're more
+  built.
   Funded went on the site on 2026-11-12. On 2026-11-15 Burn Rate took
-  Frontier Lab's place and Frontier Lab was hidden (Kelbo). Laminar went
-  on the site on 2026-11-17 (Kelbo), so the site lists seven games. Their repos and live games stay up.
+  Frontier Lab's place and Frontier Lab was hidden (Kelbo), so the site
+  still lists six games. Their repos and live games stay up.
   Screenshots are `shots` in `assets/shots/` (with `@2x` twins). Status
   names live in `STATUSES` (`main.js`), kept in step with `KNOWN_STATUS` in
   `check-site.mjs`. Notes: "Projects, cards and game pages".

@@ -252,6 +252,7 @@
   },
   {
     "title": "Laminar",
+    "hidden": true,
     "status": "In development",
     "category": "Game",
     "summary": "An aerodynamics consultancy game. Shape a design in 3D, build a scale model, prove it in the wind tunnel, then find out at the real event whether your tunnel told the truth. Riders, skaters, ski jumpers, bobsleds, trucks, race cars, record cars, drones and aircraft, from 2010 to 2040.",
