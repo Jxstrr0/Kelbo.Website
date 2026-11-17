@@ -788,7 +788,10 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   sweep, the tufts, then the Shape screen) and four screenshots, all
   recorded from the live game with Playwright on a stepped clock. Its
   `publish-release.yml` publishes a release when `VERSION` changes, titled
-  from the `PR <n>: summary — v<version>` merge.
+  from the `PR <n>: summary — v<version>` merge. On 2026-11-17 it got
+  four new screenshots in its Isobar look (Jobs, Shape, the tunnel with
+  smoke, the tunnel in dark mode with tufts and the rake) and stays hidden
+  (Kelbo). The cover and clips are still the first recordings.
   Each game keeps its own look (fonts, colours, art). The Longlight logo,
   the five colours and Space Grotesk belong to studio pieces only (logo or
   splash, credit line, studio block, links back here); every game repo's
