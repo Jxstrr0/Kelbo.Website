@@ -17,12 +17,15 @@
 // day, and a Cloudflare rate-limit rule on contact.longlight.games. Sending
 // to your own verified address is free.
 //
-// The daily cap needs one extra setting: a KV namespace bound to this Worker
-// as COUNTER (KV is Cloudflare's small key-value store; free). Without it the
-// form still works, just with no daily cap.
+// The daily cap needs one extra setting: the SendCounter class at the bottom
+// of this file, bound to this Worker as SENDS (a Durable Object: a tiny
+// worker with its own storage; free). Without it the form still works, just
+// with no daily cap.
 //
 // Logs: Workers Logs are on for this Worker (Cloudflare > contact-form >
 // Logs). Each refusal logs a short reason, never the name, email or message.
+
+import { DurableObject } from "cloudflare:workers";
 
 const SITES = ["https://longlight.games"];
 const LIMITS = { name: 100, email: 200, message: 5000 };
@@ -153,21 +156,35 @@ async function readUpTo(request, max) {
 }
 
 // True while today's count of sent messages is under DAILY_CAP, and adds one
-// to the count. The count lives in the COUNTER KV namespace under the day's
-// date and clears itself after two days. KV can lag by up to a minute, so
-// treat the cap as "about 50", not exactly 50. If COUNTER isn't set up or
-// can't be reached, the message is let through: Turnstile is still the main
-// guard, and a storage hiccup shouldn't break the form.
+// to the count. The counting is done by SendCounter (below), so it stays
+// exact even when messages arrive at the same moment. If SENDS isn't set up
+// or can't be reached, the message is let through: Turnstile is still the
+// main guard, and a storage hiccup shouldn't break the form.
 async function underDailyCap(env) {
-  if (!env.COUNTER) return true;
-  const key = "sent:" + new Date().toISOString().slice(0, 10);
+  if (!env.SENDS) return true;
+  const day = new Date().toISOString().slice(0, 10);
   try {
-    const count = Number(await env.COUNTER.get(key)) || 0;
-    if (count >= DAILY_CAP) return false;
-    await env.COUNTER.put(key, String(count + 1), { expirationTtl: 172800 });
-    return true;
+    const counter = env.SENDS.get(env.SENDS.idFromName("contact-form"));
+    return await counter.take(day, DAILY_CAP);
   } catch (err) {
     console.error("Daily cap check failed:", err && err.message);
+    return true;
+  }
+}
+
+// Keeps the day's count of sent messages (UTC day). A Durable Object deals
+// with one call at a time and has its own storage, so two messages arriving
+// together can never both read the same count. (The earlier KV counter could:
+// ten messages sent at once were counted as one.)
+export class SendCounter extends DurableObject {
+  // Takes one of the day's slots. True if there was one left, false at the
+  // cap. Other calls wait while this one reads and writes the count.
+  async take(day, cap) {
+    let today = await this.ctx.storage.get("today");
+    if (!today || today.day !== day) today = { day, count: 0 };
+    if (today.count >= cap) return false;
+    today.count += 1;
+    await this.ctx.storage.put("today", today);
     return true;
   }
 }
