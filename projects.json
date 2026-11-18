@@ -255,7 +255,7 @@
     "hidden": true,
     "status": "In development",
     "category": "Game",
-    "summary": "An aerodynamics consultancy game. Shape a rider's position in 3D, build a scale model, prove it in the wind tunnel, then find out at the real race whether your tunnel told the truth.",
+    "summary": "An aerodynamics consultancy game. Shape a design in 3D, build a scale model, prove it in the wind tunnel, then find out at the real event whether your tunnel told the truth. Riders, skaters, ski jumpers, bobsleds, trucks, race cars, record cars, drones and aircraft, from 2010 to 2040.",
     "version": "0.8.0.0",
     "latest": "Sports in the sim, the speed skater",
     "link": "https://laminar.longlight.games/",
@@ -267,19 +267,19 @@
     "shots": [
       {
         "src": "assets/shots/laminar-1.jpg",
-        "alt": "The Jobs screen: the firm's money and reputation, a box to name the firm, and the partner's guide to the first client's job"
+        "alt": "The Jobs screen: the firm's money, reputation and correlation score, a box to name the firm, and the partner's guide to the first client's job"
       },
       {
         "src": "assets/shots/laminar-2.jpg",
-        "alt": "The Shape screen: a time-trial rider on a bike in 3D, with the drag estimate, comfort and the position sliders"
+        "alt": "The Shape screen: a time-trial rider on a bike in 3D with teal handles to reshape, the desk estimate, comfort, frontal area and rules cards, and the position sliders"
       },
       {
         "src": "assets/shots/laminar-3.jpg",
-        "alt": "The wind tunnel with a dark wall: smoke from the rake streaming past the scale model, with the fan and yaw controls"
+        "alt": "The wind tunnel at speed: smoke from the wand streaming past the rider on the turntable, above the fan and yaw dials and the run's cost"
       },
       {
         "src": "assets/shots/laminar-4.jpg",
-        "alt": "The tunnel's live drag chart during a run, under the model on the turntable"
+        "alt": "The wind tunnel in dark mode: the smoke rake and tufts showing the flow round the rider, above the fan and yaw dials"
       }
     ]
   },

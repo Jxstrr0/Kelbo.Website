@@ -1168,6 +1168,13 @@ function setUpContactForm() {
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
+    // The "I'm human" check is still working (it says "Verifying…"): wait
+    // for it rather than sending something the Worker will turn down.
+    const check = form.querySelector('[name="cf-turnstile-response"]');
+    if (!check || !check.value) {
+      say("One moment: the “I'm human” check is still running. Press Send once it shows a tick.", "error");
+      return;
+    }
     button.disabled = true;
     say("Sending…");
     try {
