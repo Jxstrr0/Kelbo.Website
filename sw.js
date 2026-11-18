@@ -14,7 +14,7 @@
    its own folder and below. If it ever gets stuck, change CACHE below
    ("longlight-3") and the old copies are thrown away.
    ====================================================================== */
-const CACHE = "longlight-3";
+const CACHE = "longlight-4";
 
 // Saved as soon as the helper is installed, so these work offline even
 // if they haven't been opened yet.
@@ -89,7 +89,7 @@ self.addEventListener("fetch", (event) => {
   // straight away, so it plays on the tap and with no signal, and a fresh
   // copy saved for next time. A changed sound should get a new file name.
   if (url.pathname.includes("/assets/sounds/")) {
-    event.respondWith(caches.match(request).then((saved) => {
+    event.respondWith(caches.match(request, { ignoreSearch: true }).then((saved) => {
       const fresh = fetch(request).then((response) => keep(request, response, event));
       if (saved) { event.waitUntil(fresh.catch(() => {})); return saved; }
       return fresh;
@@ -117,7 +117,12 @@ self.addEventListener("fetch", (event) => {
 function keep(request, response, event) {
   if (response.status === 200) {
     const copy = response.clone();
-    event.waitUntil(caches.open(CACHE).then((cache) => cache.put(request, copy)).catch(() => {}));
+    // Saved under the address without its "?..." part, so each page is kept
+    // once however it was asked for. (Before, index.html?x=1, ?x=2 and so on
+    // were each saved as a separate copy, with no limit.)
+    const url = new URL(request.url);
+    url.search = "";
+    event.waitUntil(caches.open(CACHE).then((cache) => cache.put(url.href, copy)).catch(() => {}));
   }
   return response;
 }

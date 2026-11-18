@@ -175,6 +175,12 @@ if (now !== undefined) {
   else {
     now.items.forEach((it, i) => {
       if (!it || !it.text) error("now.json", `Item #${i + 1} has no "text".`);
+      // A link must be a web address or a file on the site (never "javascript:" and the like).
+      // (game-<name>.html pages are made by the deploy, so they aren't files in the repo.)
+      const file = String((it && it.link) || "").split(/[?#]/)[0];
+      if (it && it.link && !/^https:\/\//.test(String(it.link)) && !/^game-[a-z0-9-]+\.html$/.test(file) && !exists(file)) {
+        error("now.json", `Item #${i + 1}: the link "${it.link}" isn't a web address (https://...) or a file on the site.`);
+      }
     });
     // An item pointing at a game that projects.json says is finished.
     if (Array.isArray(projects)) {
