@@ -226,7 +226,10 @@ function renderProject(project) {
   body.append(field);
 
   // Links: "link" is where to try the project ("Play it" for games),
-  // "code" is where its code lives on GitHub. Both are optional.
+  // and it is optional.
+  // ("code", the GitHub repo, is kept in projects.json for the
+  // robots and the studio report, but the site doesn't link it: Kelbo,
+  // 2026-11-18, keep the repos findable, not advertised.)
   // Tapping the card opens the main link (project__main, see style.css):
   // a game's own info page, or "Take a look" for everything else. The
   // "Play it" button still goes straight to the game.
@@ -247,12 +250,6 @@ function renderProject(project) {
     more.href = gamePage(title);
     more.setAttribute("aria-label", "About this game: " + title);
     links.append(more);
-  }
-  if (project.code) {
-    const code = el("a", "project__link", "See the code →");
-    code.href = project.code;
-    code.setAttribute("aria-label", "See the code for " + title);
-    links.append(code);
   }
   if (links.children.length) body.append(links);
 
@@ -563,12 +560,6 @@ function setUpGame(box, projects) {
     here.setAttribute("aria-label", "Play here: " + title + ", on this page");
     here.addEventListener("click", () => openPlayer(project, here));
     links.append(here);
-  }
-  if (project.code) {
-    const code = el("a", "project__link", "See the code →");
-    code.href = project.code;
-    code.setAttribute("aria-label", "See the code for " + title);
-    links.append(code);
   }
   if (links.children.length) info.append(links);
   top.append(info);
@@ -1068,12 +1059,6 @@ function renderNews(project) {
     more.href = gamePage(title);
     more.setAttribute("aria-label", "About this game: " + title);
     links.append(more);
-  }
-  if (project.code) {
-    const code = el("a", "project__link", "See the code →");
-    code.href = project.code;
-    code.setAttribute("aria-label", "See the code for " + title);
-    links.append(code);
   }
   if (links.children.length) body.append(links);
   row.append(body);
