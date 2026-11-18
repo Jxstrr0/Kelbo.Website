@@ -88,6 +88,21 @@ function el(tag, className, text) {
   return node;
 }
 
+// A source link's label: the site it goes to, in brackets, for example
+// "(reuters.com)". It goes right after the link in a Sources list. A web
+// page picks its own title, so the title can't be trusted to say where a
+// link leads; the address can. Returns null if the address can't be read.
+// Used by briefs.js and journal.js.
+function siteLabel(url) {
+  let site = "";
+  try {
+    site = new URL(url).hostname.replace(/^www\./, "");
+  } catch (e) {
+    return null;
+  }
+  return site ? el("span", "source__site", `(${site})`) : null;
+}
+
 // Addresses that come from the data files (projects.json, now.json) are only
 // used when they are plain web addresses (https://...) or files on this
 // site. Anything else, such as a "javascript:" address, is dropped, so a

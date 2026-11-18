@@ -991,6 +991,12 @@ function foldSources(part) {
   const list = part.querySelector("ul, ol");
   const heading = part.querySelector("h3");
   if (!list || !heading) return;
+  // Each source shows the site it goes to, after its title (siteLabel is
+  // in main.js).
+  for (const link of list.querySelectorAll("a[href]")) {
+    const site = siteLabel(link.href);
+    if (site) link.after(" ", site);
+  }
   const fold = el("details", "brief__fold");
   const summary = el("summary", "", heading.textContent + " ");
   summary.append(el("span", "brief__count", String(list.children.length)));
@@ -1390,6 +1396,8 @@ async function showCard(date) {
       a.target = "_blank";
       a.rel = "noopener";
       p.append(i ? ", " : "", a);
+      const site = siteLabel(s.url); // the site it goes to (main.js)
+      if (site) p.append(" ", site);
     });
     box.append(p);
   }

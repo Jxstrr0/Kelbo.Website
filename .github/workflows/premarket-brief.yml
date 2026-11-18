@@ -5,7 +5,7 @@
 #   1. runs .github/scripts/premarket-brief.mjs, which asks Claude (with web
 #      search) for today's brief and writes briefs/YYYY-MM-DD.md plus
 #      briefs/index.json,
-#   2. commits those files to main,
+#   2. runs the Site check on them, and only if it passes commits them to main,
 #   3. starts the "Deploy site" run so the brief goes live. (A push made by a
 #      workflow doesn't start other workflows on its own, so it has to ask.)
 #
@@ -56,6 +56,12 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           # "1" when the box was ticked on a hand-started run, else empty.
           FORCE: ${{ inputs.force == true && '1' || '' }}
+
+      # Runs the Site check (with its privacy scan) on the new files
+      # first. If they don't pass, the run stops here and nothing is
+      # saved: everything in the repo is public for good.
+      - name: Check it before saving
+        run: node .github/scripts/check-before-save.mjs
 
       - name: Commit it to main
         id: commit
