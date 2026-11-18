@@ -892,8 +892,9 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   `## SOX` section, the PHLX Semiconductor Index as a co-main ticker;
   dropped 2026-11-09, MU stays the headline),
   `## Watchlist`, `## Calendar`, then
-  `## Sources` (the model lists its own; the script keeps only links that
-  appear in that run's search results, plus inline citations, max 15) and a
+  `## Sources` (the model lists its own; the script keeps only https
+  links whose address is a search result or an opened page of that run,
+  each under the page's own title, plus inline citations, max 15) and a
   `<small>` stamp; if a heading is missing it asks once,
   with search off, for a rewrite in the format), then calls `updateIndex`
   in `.github/scripts/brief-index.mjs` (also runnable alone to rebuild):
@@ -1116,7 +1117,8 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   is graded; `gradeSources`; `graded {by, at}`. Commits as scorekeeper,
   runs deploy.yml. journal.js shows a graded call's `result` ("What
   happened") and a closed "Sources (N)" fold from `sources` + `gradeSources`.
-  `askClaudeWeb`, `logWebCost` and `seenSources` live at the bottom of
+  `askClaudeWeb`, `logWebCost` and the source filter (`resultPages`,
+  `pickSources`, `seenSources`, `sameAddress`) live at the bottom of
   `claude.mjs`.
 - Release Writer: `release-lines.yml` (cron `53 */6 * * *`) runs
   `release-lines.mjs` (`claude-sonnet-5-5`, effort high): each game's
@@ -1148,7 +1150,15 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
     instructions.
   - **Links.** The brief's text has no links: the Morning Writer turns
     any into plain words, and links live only in Sources (https only,
-    pages seen that run). `hasLink(text)` makes the Coach drop a lesson
+    pages seen that run). "Seen" means the address is a search result
+    (`web_search_result`), a page the run opened (`web_fetch_result`) or
+    an inline citation: `resultPages(blocks)` in `claude.mjs` collects
+    just those, however deep they sit in the reply. A link that only
+    shows up inside a page's text, in the model's own search words or in
+    printed code output doesn't count, and a kept source gets the page's
+    own title (or the site's name), never the label the model wrote
+    (`pickSources`). All four web robots use it (Morning Writer, Grader,
+    Forecaster, Scorekeeper). `hasLink(text)` makes the Coach drop a lesson
     holding a web address, and the Morning Writer skip one.
   - **Check before save.** The six robots that commit to `main` (all but
     the Devlog Writer, whose pull request gets the Site check anyway) run
@@ -1189,8 +1199,12 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   Hardening (Nov 2026): uploads over 64 KB (`MAX_BODY_BYTES`, room for
   5,000 Chinese characters sent without JavaScript) are refused, first by
   the stated size and then by counting bytes as they arrive (`readUpTo`);
-  the name (and the email check) drop control characters and the marks
-  that make text display backwards (`tidy`), and the message keeps only
+  the name (and the email check) drop control characters, the marks
+  that make text display backwards and zero-width characters that could
+  disguise a name (`tidy`; the two joiners Persian, Indian scripts and
+  family emoji need are kept), the email must be one plain address
+  (letters and digits in any alphabet plus `. _ % + -`; no commas,
+  semicolons, brackets or quotes), and the message keeps only
   line breaks and tabs; the email puts the sender's name and address
   first, above a `----- Message -----` line, so nothing typed into the
   message can pose as them; at most 50 messages a UTC day are sent
@@ -1258,12 +1272,16 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   rate-limit rule on `contact.longlight.games` slows floods. `main.js`
   resets the check after each send.
 - **Domain email safety** (Nov 2026, set in Cloudflare DNS, not here): a
-  DMARC record sends fake mail "from" longlight.games to spam, CAA
+  DMARC record tells mail servers to refuse fake mail "from"
+  longlight.games (`p=reject`, with SPF ending `-all`, since 2026-11-18;
+  before that it only went to spam; the contact form's own mail is signed
+  by Cloudflare, so it passes), CAA
   records say which certificate companies may issue for the domain, and
   DNSSEC is switched on (it only takes effect once the registrar has the
   DS record from Cloudflare).
 - **Privacy scan** (`check-site.mjs`, section 8): errors on an email
-  address (`EMAIL_OK` allows example.com and GitHub no-reply ones), a phone
+  address with any ending (`EMAIL_OK` allows example.com and GitHub
+  no-reply ones; `FILE_END` lets file names like `cover@2x.jpg` through), a phone
   number, a 9+ digit number not inside a URL, id or version, or a
   key-shaped string (`sk-ant-`, `sk-`, `ghp_`, `github_pat_`, `AKIA`,
   `xox`), in every text file (`TEXT_EXT`; pictures, fonts and sounds are

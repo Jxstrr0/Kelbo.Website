@@ -9,7 +9,7 @@
 // Needs ANTHROPIC_API_KEY in the environment.
 
 import { readFile, writeFile, mkdir, readdir } from "node:fs/promises";
-import { costNote, noTags } from "./claude.mjs";
+import { costNote, noTags, seenSources } from "./claude.mjs";
 import { marketHolidays } from "./market-days.mjs";
 
 const MODEL = "claude-opus-5-5"; // the same model as the brief (Sonnet 5.5 until Nov 2026)
@@ -324,32 +324,9 @@ if (hasSox && raw.sox && typeof raw.sox === "object") {
   console.warn("The brief had a SOX section but Claude returned no SOX grades.");
 }
 
-// Only links that really came back from this run's searches and page reads.
-const normUrl = (u) => {
-  try {
-    const x = new URL(u);
-    return (x.host.replace(/^www\./, "") + x.pathname.replace(/\/+$/, "") + x.search).toLowerCase();
-  } catch { return ""; }
-};
-const seenUrls = new Set();
-for (const block of allBlocks) {
-  if (block.type === "text") {
-    for (const c of block.citations ?? []) if (c.url) seenUrls.add(normUrl(c.url));
-    continue;
-  }
-  for (const m of JSON.stringify(block).matchAll(/https?:\/\/[^\s"'<>\\)\]]+/g)) seenUrls.add(normUrl(m[0]));
-}
-seenUrls.delete("");
-const sources = [];
-for (const s of Array.isArray(raw.sources) ? raw.sources : []) {
-  const url = text(s?.url, 500);
-  if (!/^https:\/\//.test(url)) continue;
-  if (!seenUrls.has(normUrl(url))) {
-    console.warn(`Dropped a source this run never saw: ${url}`);
-    continue;
-  }
-  if (!sources.some((x) => x.url === url)) sources.push({ title: text(s.title, 140) || url, url });
-}
+// Only https links this run's searches returned or pages it opened, each
+// with the page's own title (see "SOURCES A ROBOT MAY PUBLISH" in claude.mjs).
+const sources = seenSources(allBlocks, raw.sources, 6);
 
 const card = {
   date: isoDate,

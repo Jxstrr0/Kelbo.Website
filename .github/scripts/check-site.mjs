@@ -363,9 +363,14 @@ for (const f of files.filter((f) => extname(f) === ".html")) {
 const TEXT_EXT = [".html", ".css", ".js", ".json", ".md", ".txt", ".xml", ".webmanifest", ".svg"];
 // Fake addresses used as examples in the editing guide, and GitHub's no-reply ones.
 const EMAIL_OK = /@(example\.com|users\.noreply\.github\.com)$/;
+// File names like "cover@2x.jpg" and "350Chev@v1.2.0.json" have an @ too. A
+// match that ends in one of these file endings is a file, not an address.
+const FILE_END = /\.(?:jpe?g|png|webp|avif|gif|svg|ico|mp4|webm|mp3|ogg|wav|woff2?|json|m?js|css|html?|md|txt|xml|webmanifest)$/i;
 const PRIVACY = [
-  // Picture names like "cover@2x.jpg" look like emails to a loose pattern, so the part before @ must have 2+ characters and the end must be a real-looking domain.
-  { re: /\b[a-z0-9._%+-]{2,}@[a-z0-9-]+(?:\.[a-z0-9-]+)*\.(?:com|ca|net|org|io|me|dev|co|games)\b/gi, what: "an email address", ok: (s) => EMAIL_OK.test(s) },
+  // Any address, whatever it ends in (.com, .ca, .edu, .uk ...): the part
+  // before @ has 2+ characters and the ending is 2+ letters. File names
+  // with an @ in them are let through by FILE_END above.
+  { re: /\b[a-z0-9._%+-]{2,}@[a-z0-9-]+(?:\.[a-z0-9-]+)*\.[a-z]{2,24}\b/gi, what: "an email address", ok: (s) => EMAIL_OK.test(s) || FILE_END.test(s) },
   { re: /(?<!\d)(?:\+?1[ .-]?)?\(?\b[2-9]\d{2}\)?[ .-]\d{3}[ .-]\d{4}\b(?!\d)/g, what: "a phone number" },
   // Not numbers inside a web address (/2026110212345), an id (user+123) or a version.
   { re: /(?<![\w.\-/+=:])\d{9,}(?![\w.\-/+=:])/g, what: "a long number that could be an account or card number" },
