@@ -9,6 +9,10 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
 
 ## Projects, cards and game pages
 
+- Addresses in `projects.json` and `now.json` (links, covers, clips,
+  screenshots) are only used when they are `https://...` or a file on the
+  site (`safeAddress`, `cleanProject` in `main.js`); anything else is
+  dropped. The Site check also rejects a `now.json` link that isn't one.
 - `projects.json` is the single source of truth for projects. `main.js`
   renders it. Its order is the display order everywhere (Games, Projects,
   What's new, home swipe row, "More games"): Kelbo's own ranking, games
@@ -654,7 +658,9 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   network-first for same-origin GETs (saved copy on failure, `index.html`
   for unknown pages offline), except `assets/sounds/`: saved copy first,
   refreshed in the background (so a sound replaced under the same name
-  arrives on the visit after; give it a new name to switch at once). Bump `CACHE`
+  arrives on the visit after; give it a new name to switch at once). Each
+  page is saved once, under its address without the `?...` part (`keep`),
+  so the cache can't grow with every different `?x=`. Bump `CACHE`
   if it ever serves stale files; add new top-level pages to `CORE`. Its
   cleanup deletes only `longlight-*` caches; keep it that way (never delete
   another prefix).
@@ -1174,7 +1180,9 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   viewport line. It lists the only places the browser may load scripts
   (the site, Cloudflare's analytics beacon and Turnstile), data (the
   contact Worker, the analytics endpoint, and the weather, aurora, ISS and
-  exchange-rate APIs `main.js` reads) and frames (Turnstile). A new page
+  exchange-rate APIs `main.js` reads) and frames (Turnstile; `game.html`
+  also lists `https://*.longlight.games`, or "Play here" can't show the
+  game). A new page
   copies the tag; a new outside service must be added to it, or the
   browser blocks it (the console says "Content Security Policy"). GitHub
   Pages can't send real security headers, so this tag is the next best.
