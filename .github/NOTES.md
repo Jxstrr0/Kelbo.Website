@@ -752,6 +752,14 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   where `setUpPress` shows every game (cover, status, version, summary,
   game page and Play links, each screenshot as a link to the file).
   Linked from every footer ("Press kit"), in `sitemap.xml` and `sw.js` `CORE`.
+- `gallery.html` is the art gallery: plain HTML, no script. Pictures sit
+  in `assets/gallery/` (640 wide, 480 for tall ones, plus `@2x`), grouped
+  under each listed game (`.gallery`, CSS columns so tall and wide mix
+  uncropped); each links to its big copy. Every caption says how the
+  picture was made (captured from the live game, a Blender render, or
+  AI key art, which reuses `assets/art/` and `assets/films/` and says so).
+  Linked from every footer ("Gallery") and the bottom of `games.html`
+  (`.games-more`), in `sitemap.xml` and `sw.js` `CORE`. Hidden games stay out.
 - `whats-new.html` is a `data-projects="news"` list: `setUpNews` in
   `main.js` shows every project with a `version` or `latest`, in
   `projects.json` order, with no dates (the file has none). Linked from
