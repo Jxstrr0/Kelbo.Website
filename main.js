@@ -88,6 +88,35 @@ function el(tag, className, text) {
   return node;
 }
 
+// Addresses that come from the data files (projects.json, now.json) are only
+// used when they are plain web addresses (https://...) or files on this
+// site. Anything else, such as a "javascript:" address, is dropped, so a
+// typo or a tampered file can't turn a link into something that runs code.
+function safeAddress(value) {
+  const text = String(value || "").trim();
+  if (!text) return "";
+  try {
+    const url = new URL(text, location.href);
+    if (url.protocol === "https:" || url.origin === location.origin) return text;
+  } catch (e) {}
+  return "";
+}
+
+// One project from projects.json, with each of its addresses checked.
+function cleanProject(project) {
+  if (!project || typeof project !== "object") return project;
+  const clean = { ...project };
+  for (const key of ["link", "code", "image", "art", "clip", "cardClip", "film"]) {
+    if (key in clean) clean[key] = safeAddress(clean[key]);
+  }
+  if (Array.isArray(clean.shots)) {
+    clean.shots = clean.shots
+      .map((shot) => ({ ...shot, src: safeAddress(shot && shot.src) }))
+      .filter((shot) => shot.src);
+  }
+  return clean;
+}
+
 // True if a project's category matches (ignores upper/lower case).
 function inCategory(project, category) {
   return (
@@ -726,7 +755,7 @@ async function setUpDevlog() {
   try {
     const response = await fetch("projects.json", { cache: "no-cache" });
     if (response.ok) {
-      const all = await response.json();
+      const all = (await response.json()).map(cleanProject);
       games = all.filter((p) => isGame(p) && !p.hidden);
       // A post about a hidden game ("game" names it) stays off the page
       // until that game is un-hidden; devlog.json keeps every post.
@@ -746,7 +775,11 @@ async function setUpDevlog() {
   });
   // Opened from a link to one post: bring it into view now that it exists.
   if (location.hash) {
-    const target = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+    let id = location.hash.slice(1);
+    try {
+      id = decodeURIComponent(id);
+    } catch (e) {} // a stray "%" in the address: use it as typed
+    const target = document.getElementById(id);
     if (target) target.scrollIntoView();
   }
 }
@@ -6553,9 +6586,10 @@ async function setUpNow() {
   const list = box.querySelector("[data-now-list]");
   items.forEach((it) => {
     const item = el("li", "now__item");
-    if (it.link) {
+    const href = safeAddress(it.link);
+    if (href) {
       const link = el("a", null, it.text);
-      link.href = it.link;
+      link.href = href;
       item.append(link);
     } else {
       item.textContent = it.text;
@@ -7284,7 +7318,7 @@ async function init() {
     // "hidden": true in projects.json takes a project off the site (cards,
     // lists, its game page) without deleting its entry. Remove the line to
     // bring it back.
-    projects = projects.filter((p) => !p.hidden);
+    projects = projects.filter((p) => !p.hidden).map(cleanProject);
   } catch (err) {
     // Most likely a typo in projects.json (a missing comma or quote).
     console.error("Couldn't load projects.json:", err);
