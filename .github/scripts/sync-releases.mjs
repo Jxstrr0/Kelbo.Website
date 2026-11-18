@@ -58,6 +58,7 @@ function fourPart(v) {
 // Takes the version tag off the front of a release title.
 function cleanTitle(title, tag) {
   return String(title || "")
+    .replace(/\s+/g, " ") // one line: it is shown on a card and printed in the run log
     .replace(new RegExp(`^\\s*${tag.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s*`, "i"), "")
     .replace(/^\s*v?\d+(\.\d+)*\s*/i, "")
     .replace(/^[\s\-–—:·|]+/, "")

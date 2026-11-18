@@ -139,6 +139,46 @@ export function setOutput(name, value) {
 export const DRY_RUN = process.env.DRY_RUN === "1";
 
 /* =====================================================================
+   SAFE TEXT (for the run log, and for text that goes back into a prompt)
+   ---------------------------------------------------------------------
+   GitHub reads every line a script prints. A line that starts with "::"
+   is a command to GitHub itself ("::notice ...", "::stop-commands::..."),
+   so text that came from Claude, a web page or a release title must
+   never be able to start a new line in the log.
+
+   oneLine() squeezes any value onto one line (line breaks and other
+   control characters become spaces) and cuts it to `max` characters.
+   Use it on anything printed that the script didn't write itself.
+   ===================================================================== */
+export const oneLine = (value, max = 200) =>
+  String(value ?? "").replace(/[\x00-\x1f\x7f\u{2028}\u{2029}]+/gu, " ").trim().slice(0, max);
+
+// For a reply that wasn't in the expected format. The reply itself is
+// never printed: run logs on a public repo can be read by anyone, and
+// they may only hold counts, grades, costs and text already on the site.
+export const badAnswerNote = (text) =>
+  `Claude's answer wasn't the expected JSON, so nothing was written. (The answer was ${String(text ?? "").length} characters long; it isn't printed, because run logs are public.)`;
+
+// Earlier robot output (yesterday's brief, pull request text, journal
+// entries) goes back into the next prompt between tags such as
+// <brief>...</brief>. Text inside could hold its own "</brief>" and
+// pretend the block had ended, with instructions after it.
+//   noTags(text, "brief")  takes those tag names out of plain text;
+//   asJson(value)          writes JSON with every "<" as its code, so no
+//                          tag at all survives inside it (Claude reads
+//                          the code as "<" just the same).
+// Either way a block can only end where the script ends it.
+export const noTags = (text, ...names) =>
+  String(text ?? "").replace(new RegExp(`<\\s*/?\\s*(?:${names.join("|")})\\b[^>]*>`, "gi"), "");
+const LESS_THAN_CODE = "\\" + "u003c"; // a backslash then u003c: how JSON writes "<" as a code
+export const asJson = (value, indent) => JSON.stringify(value, null, indent).replace(/</g, LESS_THAN_CODE);
+
+// True when text holds a web address. Lessons and coach notes are about
+// how the brief works, so they never need one; a link in there is a sign
+// the text came from somewhere it shouldn't have.
+export const hasLink = (text) => /https?:\/\/|\bwww\.[a-z0-9-]+\./i.test(String(text ?? ""));
+
+/* =====================================================================
    WITH WEB SEARCH (the Forecaster and the Scorekeeper)
    ---------------------------------------------------------------------
    The same call, with Claude's server-side web search and page reads
@@ -417,9 +457,10 @@ export function seenSources(blocks, list, max = 12) {
   const kept = [];
   for (const s of Array.isArray(list) ? list : []) {
     const url = typeof s?.url === "string" ? s.url.trim() : "";
-    if (!/^https:\/\//.test(url) || url.length > 500) continue;
+    // A real address is one unbroken piece: no spaces or line breaks in it.
+    if (!/^https:\/\/\S+$/.test(url) || url.length > 500) continue;
     if (!seen.has(norm(url))) {
-      console.warn(`Dropped a source this run never saw: ${url}`);
+      console.warn(`Dropped a source this run never saw: ${oneLine(url)}`);
       continue;
     }
     if (kept.some((k) => k.url === url)) continue;
