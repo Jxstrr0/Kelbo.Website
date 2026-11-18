@@ -6456,18 +6456,40 @@ function agoText(ms) {
   return "a while ago";
 }
 
+// The "last played" game is kept in the browser, and the home page turns it
+// back into a button, so it is only trusted when it points at one of our own
+// addresses: this site, or a game at <name>.longlight.games. It is checked
+// both when it is saved and when it is read back, so a link to anywhere else
+// is never saved and never shown (even if some other bug let a page add a
+// fake Play button).
+function isOurLink(href) {
+  try {
+    const url = new URL(href, location.href);
+    if (url.origin === location.origin) return true;
+    return url.protocol === "https:" && (url.hostname === "longlight.games" || url.hostname.endsWith(".longlight.games"));
+  } catch (e) {
+    return false;
+  }
+}
+
+// The same for its cover: only a picture from this site's assets folder.
+function isOurPicture(src) {
+  return /^assets\/[\w./@-]+$/.test(src || "") && !src.includes("..");
+}
+
 function rememberPlays() {
   document.addEventListener("click", (event) => {
     const link = event.target.closest("a.button--play");
-    if (!link) return;
+    if (!link || !isOurLink(link.href)) return;
     const card = link.closest(".project");
     const titleEl = card && card.querySelector(".project__title");
     const img = card && card.querySelector(".project__cover img");
     const previous = readJSON(LAST_KEY);
+    const image = img ? img.getAttribute("src") : (link.dataset.image || (previous && previous.image) || "");
     writeJSON(LAST_KEY, {
       title: titleEl ? titleEl.textContent : (link.dataset.title || (previous && previous.title) || "a game"),
       link: link.href,
-      image: img ? img.getAttribute("src") : (link.dataset.image || (previous && previous.image) || ""),
+      image: isOurPicture(image) ? image : "",
       at: Date.now(),
     });
     notePlayed(titleEl ? titleEl.textContent : link.dataset.title);
@@ -6490,6 +6512,9 @@ function setUpContinue() {
 
   const last = readJSON(LAST_KEY);
   if (!last || !last.link) return;
+  // A saved link that isn't one of ours is thrown away, not shown.
+  if (!isOurLink(last.link)) return writeJSON(LAST_KEY, null);
+  if (!isOurPicture(last.image)) last.image = "";
 
   box.querySelector("[data-continue-title]").textContent = last.title;
   box.querySelector("[data-continue-when]").textContent = `Last played ${agoText(Date.now() - last.at)}`;
