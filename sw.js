@@ -30,6 +30,7 @@ const CORE = [
   "whats-new.html",
   "devlog.html",
   "press.html",
+  "gallery.html",
   "journal.html",
   "agent-fleet.html",
   "briefs.html",
