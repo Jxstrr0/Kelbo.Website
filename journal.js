@@ -680,6 +680,8 @@ function renderEntry(entry) {
       link.rel = "noopener";
       const row = el("li");
       row.append(link);
+      const site = siteLabel(s.url); // the site it goes to (main.js)
+      if (site) row.append(" ", site);
       list.append(row);
     });
     box.append(list);

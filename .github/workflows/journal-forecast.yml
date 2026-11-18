@@ -7,7 +7,7 @@
 #      scenarios, levels, schedule and plan, in the same shape as the
 #      entries Kelbo wrote by hand. It goes at the top of journal.json.
 #      A week that already has an entry is skipped before any call.
-#   2. commits journal.json to main,
+#   2. runs the Site check on the result, and only if it passes commits journal.json to main,
 #   3. starts the "Deploy site" run so the journal page shows it.
 # The Scorekeeper (journal-grade.yml) grades the calls on Friday.
 #
@@ -64,6 +64,13 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           DRY_RUN: ${{ inputs.dry_run == true && '1' || '' }}
           FORCE: ${{ inputs.force == true && '1' || '' }}
+
+      # Runs the Site check (with its privacy scan) on the new files
+      # first. If they don't pass, the run stops here and nothing is
+      # saved: everything in the repo is public for good.
+      - name: Check it before saving
+        if: inputs.dry_run != true
+        run: node .github/scripts/check-before-save.mjs
 
       - name: Commit them to main
         id: commit

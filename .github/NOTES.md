@@ -1140,6 +1140,22 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
     any into plain words, and links live only in Sources (https only,
     pages seen that run). `hasLink(text)` makes the Coach drop a lesson
     holding a web address, and the Morning Writer skip one.
+  - **Check before save.** The six robots that commit to `main` (all but
+    the Devlog Writer, whose pull request gets the Site check anyway) run
+    `check-before-save.mjs` between writing and committing. It runs
+    `check-site.mjs` on the tree; errors the robot's files brought in fail
+    the run, so nothing is committed and nothing flagged becomes public.
+    Errors already on `main` (found by checking a clean `git worktree`
+    copy of HEAD) only warn, and the work is saved as before. Its log
+    hides anything in quotes, since the privacy scan's messages quote
+    what they found. A stopped run's work is gone (the Cost note still
+    shows what it cost); the Morning Writer's 7:15 back-up try will then
+    write the brief again, once.
+  Source links show the site they go to after the title, "(reuters.com)":
+  `siteLabel(url)` in `main.js`, used by the brief's Sources fold and the
+  report card's "Checked against" (briefs.js) and the journal's Sources
+  fold (journal.js); styled by `.source__site` in `style.css`. A page
+  picks its own title, so the address is the part a reader can trust.
   `devlog-draft.yml` hands step outputs to its shell through `env:`,
   never by pasting `${{ }}` into a command. `make-game-pages.mjs` `swap`
   takes a function, so a `$` in a game's title or summary stays a `$`;
