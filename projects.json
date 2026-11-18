@@ -31,7 +31,20 @@
         "src": "assets/shots/prairie-engine-works-4.jpg",
         "alt": "The analysis screen listing how the parts you picked interact"
       }
-    ]
+    ],
+    "guide": {
+      "start": [
+        "Tap Career on the first screen; on your first visit a short First Fire run has you tap Start, then Run, to break and fix an engine.",
+        "When the tour opens on the Team tab, tap Sign with… on an offer, then on Build pick a green-tagged Starter engine within its class rules and budget.",
+        "Tap Run for a dyno pull to certify it, then on the Team tab tap Close week or To race week until Race round 1 appears."
+      ],
+      "tips": [
+        "If the dyno breaks something, open the Analysis tab: the teardown names one change that fixes the failed part, and Use it fits it for you.",
+        "For more help, tap the Settings button, then Lessons, for 17 short guided tours that run on a scratch engine and put your own build back.",
+        "Autosave only keeps your game on this device, so open Settings, then Save, and tap Back up to get a code you can Restore on any phone."
+      ],
+      "mistake": "If you tap Close week on race week with no engine built for the team, the team sits the round out. The game asks first, so cancel and certify an engine with a clean dyno pull."
+    }
   },
   {
     "title": "Scrapline",
@@ -64,7 +77,20 @@
         "src": "assets/shots/scrapline-4.jpg",
         "alt": "Two robots trading hits beside the pit"
       }
-    ]
+    ],
+    "guide": {
+      "start": [
+        "Tap Career on the home screen, then Show me for a coached first fight of about five minutes on a loaner bot that leaves your workshop alone.",
+        "When it ends, tap Back to my workshop, then Start a career on the Career tab; you begin with €2,500, hand tools and a rented corner.",
+        "On Build, tap Fit to pay for your bot, enter this week's event from the Career tab, then tap Close week to bring in new workshop hours."
+      ],
+      "tips": [
+        "Sparring on the Fight tab is free practice, even in a career: nothing is charged and nothing is kept, so try ideas there first.",
+        "After a fight, read the post-mortem and tap its Fix it button to jump straight to the Build row that needs changing.",
+        "To keep a backup, open Settings, find Saves and tap Back up to get a code you can paste into Restore on another phone."
+      ],
+      "mistake": "Changing parts only edits a draft, and the bot you fitted is the one that goes to an event, damage and all. Tap Fit, then Fit again on the bill, before you enter."
+    }
   },
   {
     "title": "Season Ticket",
@@ -100,7 +126,20 @@
         "alt": "The same ground at night, with the town lit up round it"
       }
     ],
-    "featured": true
+    "featured": true,
+    "guide": {
+      "start": [
+        "On the title screen tap Start a career, choose Easy, Normal, Hard or Very hard, then tap a club; easy clubs have money and a good squad.",
+        "On Make it yours, set the name, colours and crest, decide the homegrown rule now because it is fixed for the career, then tap Start the career.",
+        "Set your team on the Squad and Lineup tabs, then tap the big top-right button: Next week, or Match day to play, or Quick sim to skip watching."
+      ],
+      "tips": [
+        "Renew players on the Squad tab before their contracts run out, or they leave for nothing at the end of the season.",
+        "Buy players on the Market tab while a transfer window is open (pre-season and the mid-season break); a Window open label shows in the top bar.",
+        "To keep a backup, tap your club's name at the top left to open the menu, tap Save code, then Copy or Save backup file."
+      ],
+      "mistake": "If your cash stays below zero, the lenders step in, and they are the only way to lose the club. Watch the cash figure in the top bar and get it back above zero quickly."
+    }
   },
   {
     "title": "Funded",
@@ -127,7 +166,20 @@
         "src": "assets/shots/funded-3.jpg",
         "alt": "Day 1 closed, up $200, with the balance, days counted, distance to target and the drawdown floor"
       }
-    ]
+    ],
+    "guide": {
+      "start": [
+        "On the title screen, tap Start training day, then follow the coach bubbles, tapping Next or the button they point at, like BUY or FLATTEN.",
+        "When training ends, tap Start your eval: the firm gives you $25,000 and five days to make +$1,500 without breaking a rule.",
+        "On each day card, tap Open the market, pick a size (25%, 50% or MAX), then trade with BUY, SELL and FLATTEN through the 3-minute day."
+      ],
+      "tips": [
+        "The ◆ marks on the chart's time axis show when news will land, but not which way the price will jump.",
+        "Keep an eye on the LOSS, DD and TGT meters, because losing $750 in a day or touching the drawdown floor gets you fired.",
+        "A day only counts if you make at least one trade, and you need 3 counted days before you can pass."
+      ],
+      "mistake": "Holding any position at the 16:00 closing bell gets you fired on the spot. When the BELL countdown appears in the last 20 seconds, tap FLATTEN."
+    }
   },
   {
     "title": "Lombard",
@@ -160,7 +212,20 @@
         "src": "assets/shots/lombard-4.jpg",
         "alt": "The Evening Mostograd front page announcing the shop's new owner"
       }
-    ]
+    ],
+    "guide": {
+      "start": [
+        "On the title screen, tap an empty slot under Careers, name your shop or keep Lombard No. 7, then tap Next.",
+        "Tap Next through the short story cards (or Skip), then Begin, then Open shop, and Open the door if the morning paper appears.",
+        "When a customer walks in, tap Inspect, check the item with the Loupe, Scale and Magnet, then type its worth, tap Set estimate and make your Offer."
+      ],
+      "tips": [
+        "Every tool costs time on the shop clock, and people in the queue give up and leave if you take too long.",
+        "On day 1 the clock stops while you inspect an item and type a price, so use that day to learn the tools.",
+        "Before your first buy on day 1 the reference book's price range is shown free; after that, tap Reference to see a range."
+      ],
+      "mistake": "Paying too much for a fake is the main way to lose money, so check with the tools and start from the 40% or 60% keys, which work from your own estimate. Don't go much lower: an offer under about a quarter of what the seller thinks it's worth is an insult."
+    }
   },
   {
     "title": "Burn Rate",
@@ -192,7 +257,20 @@
         "src": "assets/shots/burn-rate-4.jpg",
         "alt": "The range report: a B pass, the measured curves with a casting void marked, and why it differed from the bench"
       }
-    ]
+    ],
+    "guide": {
+      "start": [
+        "On the title screen, tap New career, name your startup, then tap Sign the lease to start on Stand 3 with 2 500 cr.",
+        "On Work orders, tap Take the job on A G for field day, then To the bench, and tap Got it on each coach card.",
+        "Clear the red flag with a bigger Throat diameter on the Nozzle tab, tap To the stand, pick a slot, then Clear the range and fire."
+      ],
+      "tips": [
+        "Designing on the bench is free; only a firing costs a range day, the stand's fee and the motor's materials, so tune until the flags clear.",
+        "Dawn fires cold grain and Noon fires hot grain, which changes the burn, so tap the temperature chip on the bench to predict at your slot.",
+        "If you're stuck, tap Job on the bench, then Hint: it costs 5% of the pay (at least 50 cr) and is free after 2 misses on that job."
+      ],
+      "mistake": "Firing a motor with a red flag still costs a range day, the fee and materials, and on the first job it bursts. Fix it with a bigger throat, because a thicker wall alone makes it burn out too fast for the spec."
+    }
   },
   {
     "title": "Frontier Lab",

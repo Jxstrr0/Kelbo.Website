@@ -88,7 +88,9 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   `link` in a full-screen `.player` iframe with a slate bar of Full screen
   where `requestFullscreen` exists, New tab and Close; it pushes a history
   step so Back closes it, and removing the frame stops the game), an optional `story` (paragraphs split
-  on blank lines), all `shots` open in a strip, and the other games. It sets
+  on blank lines), an optional `guide` (a "How to play" card,
+  `#how-to-play`: `start` and `tips` lists and a `mistake` line, all text; check-site
+  checks the shape), all `shots` open in a strip, and the other games. It sets
   the tab title and description in JS; link-preview crawlers don't run JS, so
   only the `game-<slug>.html` copies show the game's own link preview.
   `game.html` itself is not in `sitemap.xml`; it is in `sw.js` `CORE`.
