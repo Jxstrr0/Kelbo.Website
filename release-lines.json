@@ -108,5 +108,10 @@
     "line": "Adds hints, your motors, and personal bests, and tweaks the game's balance.",
     "title": "v1.7.0.0 - hints, your motors, personal bests, balance pass (#31)",
     "at": "2026-11-16T22:34:31.469Z"
+  },
+  "350Chev@v1.76.141.0": {
+    "line": "The pull, bog, salt, boat and hill runs now load in the background.",
+    "title": "v1.76.141.0 - the pull, bog, salt, boat and hill runs load in the background",
+    "at": "2026-11-18T20:55:51.950Z"
   }
 }
