@@ -5,7 +5,7 @@
 
 import { readFile, readdir, writeFile, mkdir, access } from "node:fs/promises";
 import { updateIndex, BRIEFS_DIR } from "./brief-index.mjs";
-import { costNote, oneLine, noTags, hasLink } from "./claude.mjs";
+import { costNote, oneLine, noTags, hasLink, resultPages, pickSources, sameAddress } from "./claude.mjs";
 import { request } from "node:https";
 
 const MODEL = "claude-fable-5-2"; // the top model (history: Fable 5.1 wrote the Nov 9, 2026 brief; Opus 5.5 at xhigh before that)
@@ -355,26 +355,17 @@ for (const block of allBlocks) {
   if (block.type !== "text") continue;
   text += block.text;
   for (const c of block.citations ?? []) {
-    if (c.url && !sources.has(c.url)) sources.set(c.url, c.title || c.url);
+    // https only: a plain http link is never listed as a source.
+    if (c.url && /^https:\/\/\S+$/.test(c.url) && !sources.has(c.url)) sources.set(c.url, c.title || c.url);
   }
 }
 
-// Every web address that came back from the searches this run, so the
-// Sources list can only hold pages the model really saw. Search results can
-// arrive in different block types, so this just scans them all for links.
-const seenUrls = new Set();
-const normUrl = (u) => {
-  try {
-    const x = new URL(u);
-    return (x.host.replace(/^www\./, "") + x.pathname.replace(/\/+$/, "") + x.search).toLowerCase();
-  } catch { return ""; }
-};
-for (const block of allBlocks) {
-  if (block.type === "text") continue;
-  for (const m of JSON.stringify(block).matchAll(/https?:\/\/[^\s"'<>\\)\]]+/g)) seenUrls.add(normUrl(m[0]));
-}
-seenUrls.delete("");
-console.log(`Blocks: ${Object.entries(allBlocks.reduce((n, b) => (n[b.type] = (n[b.type] || 0) + 1, n), {})).map(([k, v]) => `${k} ${v}`).join(", ")}; ${seenUrls.size} links seen in search results, ${sources.size} cited.`);
+// Every page this run's searches returned or opened, so the Sources list
+// can only hold pages the model really saw. Links inside a page's own
+// text, and the model's own search words, don't count: see resultPages in
+// claude.mjs.
+const pages = resultPages(allBlocks);
+console.log(`Blocks: ${Object.entries(allBlocks.reduce((n, b) => (n[b.type] = (n[b.type] || 0) + 1, n), {})).map(([k, v]) => `${k} ${v}`).join(", ")}; ${pages.size} pages returned by the searches, ${sources.size} cited.`);
 
 const markerAt = text.lastIndexOf(MARKER);
 let brief = (markerAt >= 0 ? text.slice(markerAt + MARKER.length) : text).trim();
@@ -423,12 +414,14 @@ if (srcAt >= 0) {
   brief = brief.slice(0, srcAt).trimEnd();
   const picked = new Map();
   // A title stays on its own line ([^\]\n]), so it can't smuggle extra
-  // lines into the Sources list.
-  for (const m of listed.matchAll(/\[([^\]\n]+)\]\((https?:\/\/[^\s)]+)\)/g)) {
-    if (seenUrls.has(normUrl(m[2]))) picked.set(m[2], m[1]);
-    else console.warn(`Dropped a source the searches never returned: ${oneLine(m[2])}`);
+  // lines into the Sources list. pickSources keeps only https links the
+  // searches returned and gives each its page's own title, not the model's.
+  const asked = [...listed.matchAll(/\[([^\]\n]+)\]\((https?:\/\/[^\s)]+)\)/g)].map((m) => ({ title: m[1], url: m[2] }));
+  for (const s of pickSources(pages, asked, 15)) picked.set(s.url, s.title);
+  // Inline citations come from the API itself; https only, no repeats.
+  for (const [url, title] of sources) {
+    if (/^https:\/\/\S+$/.test(url) && ![...picked.keys()].some((k) => sameAddress(k) === sameAddress(url))) picked.set(url, title);
   }
-  for (const [url, title] of sources) picked.set(url, title);
   sources.clear();
   for (const [url, title] of picked) sources.set(url, title);
 }

@@ -103,7 +103,10 @@ export default {
     if (name.length > LIMITS.name || email.length > LIMITS.email || message.length > LIMITS.message) {
       return refuse("field too long", "That message is too long.", 400);
     }
-    const emailOk = /^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(email) && tidy(email) === email;
+    // One address, made of letters and digits (in any alphabet) and the few
+    // marks real addresses use. Commas, semicolons, brackets and quotes are
+    // refused, so the "reply to" line can only ever hold one plain address.
+    const emailOk = /^[\p{L}\p{N}._%+-]+@[\p{L}\p{N}-]+(?:\.[\p{L}\p{N}-]+)+$/u.test(email) && tidy(email) === email;
     if (email && !emailOk) return reply(false, "That email address doesn't look right.", 400);
 
     if (!(await underDailyCap(env))) {
@@ -130,9 +133,12 @@ export default {
 
 // Makes a short field safe for an email's subject and "reply to" lines: swaps
 // out characters nobody can see but that can cause mischief (line breaks and
-// other control characters, and the marks that make text display backwards).
+// other control characters, the marks that make text display backwards, and
+// zero-width characters that can hide inside a name to disguise it).
+// The two joiners real writing needs are kept: \u200c and \u200d
+// (Persian and Indian scripts, and family emoji).
 function tidy(s) {
-  return s.replace(/[\u0000-\u001f\u007f-\u009f\u2028\u2029\u202a-\u202e\u2066-\u2069]+/g, " ").trim();
+  return s.replace(/[\u0000-\u001f\u007f-\u009f\u00ad\u061c\u180e\u200b\u200e\u200f\u2028\u2029\u202a-\u202e\u2060-\u2069\ufeff]+/g, " ").trim();
 }
 
 // Reads the upload piece by piece and gives up (returns null) as soon as it
