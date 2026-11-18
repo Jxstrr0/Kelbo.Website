@@ -112,10 +112,15 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git switch -c "$branch"
           git add devlog.json now.json
-          git commit -m "Devlog draft for the week of ${{ steps.draft.outputs.week }}"
+          git commit -m "Devlog draft for the week of $WEEK"
           git push -u origin "$branch"
           gh pr create --base main --head "$branch" \
-            --title "Devlog draft for the week of ${{ steps.draft.outputs.week }}" \
-            --body-file "${{ steps.draft.outputs.body_file }}"
+            --title "Devlog draft for the week of $WEEK" \
+            --body-file "$BODY_FILE"
         env:
           GH_TOKEN: ${{ github.token }}
+          # The script's answers come in as plain values. They are never
+          # pasted into the commands above, where odd text could be run
+          # as a command.
+          WEEK: ${{ steps.draft.outputs.week }}
+          BODY_FILE: ${{ steps.draft.outputs.body_file }}
