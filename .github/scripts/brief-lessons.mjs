@@ -24,7 +24,7 @@
 
 import { existsSync } from "node:fs";
 import { readFile, readdir, writeFile, mkdir } from "node:fs/promises";
-import { askClaude, logCost, readJson, skDate, DRY_RUN } from "./claude.mjs";
+import { askClaude, logCost, readJson, skDate, oneLine, noTags, asJson, hasLink, badAnswerNote, DRY_RUN } from "./claude.mjs";
 
 const MODEL = "claude-opus-5-5";
 const WINDOW_DAYS = 28; // how far back to read report cards
@@ -76,7 +76,8 @@ const briefs = [];
 for (const date of dates) {
   try {
     const text = await readFile(`${BRIEFS_DIR}/${date}.md`, "utf8");
-    briefs.push(`<brief date="${date}">\n${text.split(/^## Sources\s*$/m)[0].trim()}\n</brief>`);
+    // noTags: a brief can't close its own block, or the report cards' block, early (see claude.mjs).
+    briefs.push(`<brief date="${date}">\n${noTags(text.split(/^## Sources\s*$/m)[0].trim(), "brief", "report_cards")}\n</brief>`);
   } catch {
     briefs.push(`<brief date="${date}">(This brief is no longer in the archive.)</brief>`);
   }
@@ -89,13 +90,14 @@ let previous = null;
 try {
   previous = JSON.parse(await readFile(`${LESSONS_DIR}/latest.json`, "utf8"));
 } catch { /* first week */ }
-const previousActive = (previous?.lessons || []).filter((l) => l && l.status !== "retired");
+// Last week's lessons go back into the prompt, so one holding a web address is left out here too.
+const previousActive = (previous?.lessons || []).filter((l) => l && l.status !== "retired" && typeof l.text === "string" && !hasLink(l.text));
 
 // The cards without their sources and timestamps (not needed for lessons).
 const cardText = dates
   .map((d) => {
     const { sources, time, ...rest } = cards[d];
-    return JSON.stringify({ ...rest, date: d });
+    return asJson({ ...rest, date: d });
   })
   .join("\n");
 
@@ -120,7 +122,7 @@ Output the line ${MARKER} and then only this JSON, nothing after it:
 {"lessons": [{"text": "...", "evidence": {"count": "5 of 7 gap calls too big", "dates": ["YYYY-MM-DD", "..."]}, "status": "new"}]}`;
 
 const lastWeek = previousActive.length
-  ? previousActive.map((l) => `- ${l.text} (evidence: ${l.evidence?.count || "none given"})`).join("\n")
+  ? previousActive.map((l) => `- ${oneLine(l.text, 300)} (evidence: ${oneLine(l.evidence?.count, 160) || "none given"})`).join("\n")
   : "(None. This is the first week.)";
 
 const user = `Today is ${today}. Window: ${from} to ${today}, ${dates.length} report cards (${graded.length} with a graded gap call).
@@ -148,7 +150,7 @@ const { text, usage } = await askClaude({ model: MODEL, system: SYSTEM, user, ma
 const answer = readJson(text, MARKER);
 if (!answer || !Array.isArray(answer.lessons)) {
   logCost(MODEL, usage);
-  console.error("Claude's answer wasn't the expected JSON, so nothing was written. The answer was:\n" + text.slice(-2000));
+  console.error(badAnswerNote(text));
   process.exit(1);
 }
 
@@ -161,15 +163,17 @@ for (const [i, raw] of answer.lessons.entries()) {
   const textOk = typeof raw?.text === "string" ? raw.text.replace(/\s+/g, " ").trim() : "";
   if (textOk.length < 10 || textOk.length > 300) { console.warn(`${label} dropped: its text is missing or too long.`); continue; }
   // A dollar figure means a price, and lessons never carry prices.
-  if (/\$\s?\d/.test(textOk)) { console.warn(`${label} dropped: it names a price ("${textOk}").`); continue; }
+  if (/\$\s?\d/.test(textOk)) { console.warn(`${label} dropped: it names a price.`); continue; }
+  // A lesson is about how the brief works, so it never needs a web address.
+  if (hasLink(textOk)) { console.warn(`${label} dropped: it holds a web address.`); continue; }
   let status = STATUSES.includes(raw.status) ? raw.status : null;
-  if (!status) { console.warn(`${label} dropped: status "${raw.status}" isn't new, kept or retired.`); continue; }
+  if (!status) { console.warn(`${label} dropped: status "${oneLine(raw.status, 40)}" isn't new, kept or retired.`); continue; }
   if (status === "kept" && !previousActive.length) status = "new"; // nothing to keep yet
-  const count = typeof raw.evidence?.count === "string" ? raw.evidence.count.trim().slice(0, 160) : "";
+  const count = typeof raw.evidence?.count === "string" ? oneLine(raw.evidence.count, 160) : "";
   const all = Array.isArray(raw.evidence?.dates) ? raw.evidence.dates.map(String) : [];
   const good = [...new Set(all.filter((d) => realDates.has(d)))].sort();
   const bad = all.filter((d) => !realDates.has(d));
-  if (bad.length) console.warn(`${label}: dropped evidence dates that aren't report cards: ${bad.join(", ")}`);
+  if (bad.length) console.warn(`${label}: dropped ${bad.length} evidence date(s) that aren't report cards: ${bad.slice(0, 5).map((d) => oneLine(d, 12)).join(", ")}`);
   if (!count || !good.length) { console.warn(`${label} dropped: its evidence needs a count and at least one real card date.`); continue; }
   if (status !== "retired") {
     if (active >= MAX_ACTIVE) { console.warn(`${label} dropped: already ${MAX_ACTIVE} active lessons.`); continue; }

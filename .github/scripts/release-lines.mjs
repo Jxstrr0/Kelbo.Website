@@ -20,7 +20,7 @@
 // =====================================================================
 
 import { readFile, writeFile } from "node:fs/promises";
-import { askClaude, logCost, readJson, setOutput, DRY_RUN } from "./claude.mjs";
+import { askClaude, logCost, readJson, setOutput, oneLine, asJson, badAnswerNote, DRY_RUN } from "./claude.mjs";
 
 const MODEL = "claude-sonnet-5-5";
 const FILE = "release-lines.json";
@@ -71,12 +71,15 @@ for (const p of projects) {
   }
   const tag = release.tag_name || "";
   // sync-releases.mjs only uses tags that are version numbers, so skip the rest.
-  if (!/^\d/.test(tag.replace(/^v/i, ""))) { console.log(`${p.title}: tag "${tag}" isn't a version, skipped.`); continue; }
+  if (!/^\d/.test(tag.replace(/^v/i, ""))) { console.log(`${p.title}: tag "${oneLine(tag, 60)}" isn't a version, skipped.`); continue; }
   const key = `${name}@${tag}`;
   if (saved[key]) { console.log(`${p.title}: ${key} already has a line.`); continue; }
   const notes = String(release.body || "").replace(/<!--[\s\S]*?-->/g, "").trim();
-  fresh.push({ key, game: p.title, title: release.name || tag, notes: notes.length > NOTES_CHARS ? notes.slice(0, NOTES_CHARS) + " …" : notes });
-  console.log(`${p.title}: ${key} is new ("${release.name || tag}").`);
+  // The release title is kept on one line: it is printed in the run log
+  // and saved in release-lines.json (see oneLine in claude.mjs).
+  const title = oneLine(release.name || tag, 200);
+  fresh.push({ key, game: p.title, title, notes: notes.length > NOTES_CHARS ? notes.slice(0, NOTES_CHARS) + " …" : notes });
+  console.log(`${p.title}: ${key} is new ("${title}").`);
 }
 
 if (!fresh.length) {
@@ -101,7 +104,7 @@ Output the line ${MARKER} and then only this JSON, one entry per release key, no
 {"lines": {"<key>": "<line>"}}`;
 
 const user = `The new releases:
-${JSON.stringify(fresh, null, 1)}
+${asJson(fresh, 1)}
 
 Write one line for each key.`;
 
@@ -109,7 +112,7 @@ const { text, usage } = await askClaude({ model: MODEL, system: SYSTEM, user, ma
 const answer = readJson(text, MARKER);
 if (!answer || typeof answer.lines !== "object" || !answer.lines) {
   logCost(MODEL, usage);
-  console.error("Claude's answer wasn't the expected JSON, so nothing was written. The answer was:\n" + text.slice(-2000));
+  console.error(badAnswerNote(text));
   process.exit(1);
 }
 

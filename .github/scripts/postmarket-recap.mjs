@@ -9,7 +9,7 @@
 // Needs ANTHROPIC_API_KEY in the environment.
 
 import { readFile, writeFile, mkdir, readdir } from "node:fs/promises";
-import { costNote } from "./claude.mjs";
+import { costNote, noTags } from "./claude.mjs";
 import { marketHolidays } from "./market-days.mjs";
 
 const MODEL = "claude-opus-5-5"; // the same model as the brief (Sonnet 5.5 until Nov 2026)
@@ -182,7 +182,7 @@ async function callClaude(messages, withTools = true, attempt = 1) {
 
 const messages = [{
   role: "user",
-  content: `Today is ${longDate} (Saskatchewan date). The US market has closed for the day. Grade this morning's brief.\n\n<brief>\n${brief}\n</brief>`,
+  content: `Today is ${longDate} (Saskatchewan date). The US market has closed for the day. Grade this morning's brief.\n\n<brief>\n${noTags(brief, "brief")}\n</brief>`, // noTags: the brief can't close its own block early (see claude.mjs)
 }];
 const allBlocks = [];
 const usage = { input_tokens: 0, output_tokens: 0, cache_read: 0, cache_write: 0, searches: 0, fetches: 0 };
