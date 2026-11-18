@@ -16,7 +16,7 @@
 // =====================================================================
 
 import { readFile, writeFile } from "node:fs/promises";
-import { askClaudeWeb, logWebCost, seenSources, readJson, setOutput, skDate, pullLatest, DRY_RUN } from "./claude.mjs";
+import { askClaudeWeb, logWebCost, seenSources, readJson, setOutput, skDate, pullLatest, oneLine, asJson, DRY_RUN } from "./claude.mjs";
 import { addDays } from "./market-days.mjs";
 
 const MODEL = "claude-opus-5-5"; // the bigger model, like the Forecaster (Sonnet 5.5 until Nov 9, 2026)
@@ -56,7 +56,7 @@ if (!entry) {
 }
 const open = entry.calls.map((c, i) => ({ n: i + 1, call: c.call, wrongIf: c.wrongIf, graded: isGraded(c) }));
 const todo = open.filter((c) => FORCE || !c.graded);
-console.log(`Grading "${entry.title || entry.date}": ${todo.length} of ${open.length} calls.`);
+console.log(`Grading "${oneLine(entry.title || entry.date, 120)}": ${todo.length} of ${open.length} calls.`);
 
 /* ---------- Ask Claude ---------- */
 const SYSTEM = `You grade the calls in a weekly trading-journal forecast after the week is over. The journal belongs to Kelbo, a part-time trader in Saskatoon. Grade honestly: a wrong call marked wrong is useful; a flattering grade is not.
@@ -89,7 +89,7 @@ const { trades, sources, gradeSources, ai, recap, lesson, ...forecast } = entry;
 const USER = `Today is ${today} (Saskatchewan date). The week this forecast covers ended with the ${entry.gradeBy} close. Grade calls ${todo.map((c) => c.n).join(", ")}.
 
 <forecast>
-${JSON.stringify({ ...forecast, calls: open.map(({ graded, ...c }) => c) }, null, 1)}
+${asJson({ ...forecast, calls: open.map(({ graded, ...c }) => c) }, 1)}
 </forecast>`;
 
 const res = await askClaudeWeb({

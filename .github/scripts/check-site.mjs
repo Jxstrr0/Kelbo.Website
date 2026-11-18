@@ -19,7 +19,7 @@
 // =====================================================================
 
 import { readFileSync, existsSync, readdirSync, statSync, appendFileSync } from "node:fs";
-import { join, dirname, relative, extname } from "node:path";
+import { join, dirname, relative, extname, resolve } from "node:path";
 import { execFileSync } from "node:child_process";
 import { inlineScriptHashes, scriptSrc } from "./csp-hashes.mjs";
 
@@ -66,7 +66,9 @@ for (const f of files.filter((f) => extname(f) === ".json" || f.endsWith(".webma
 // ---------------------------------------------------------------------
 for (const f of files.filter((f) => extname(f) === ".js")) {
   try {
-    execFileSync(process.execPath, ["--check", f], { stdio: "pipe" });
+    // resolve() gives the full path ("/home/.../main.js"), so a file whose
+    // name starts with "-" can never be read by Node as one of its options.
+    execFileSync(process.execPath, ["--check", resolve(f)], { stdio: "pipe" });
   } catch (e) {
     const detail = (e.stderr || "").toString().split("\n").slice(0, 5).join(" ").trim();
     error(rel(f), `This JavaScript file has a mistake that would stop it running. ${detail}`);
@@ -395,6 +397,15 @@ for (const f of files.filter((f) => extname(f) === ".html")) {
   }
 }
 
+// Each page has one description tag, and nothing inside it that looks like
+// the start of another tag. (make-game-pages.mjs once wrote a second
+// '<meta name="description"' inside a game page's description.)
+for (const f of files.filter((f) => extname(f) === ".html")) {
+  const html = readFileSync(f, "utf8").replace(/<!--[\s\S]*?-->/g, "");
+  const count = (html.match(/<meta name="description"/g) || []).length;
+  if (count > 1) error(rel(f), `This page has ${count} description tags (<meta name="description" ...>) where there should be one, so its link preview text is broken.`);
+}
+
 // The security contact file must be there and not about to run out.
 if (!exists(".well-known/security.txt")) {
   error(".well-known/security.txt", "The security contact file is missing.");
@@ -410,8 +421,12 @@ if (!exists(".well-known/security.txt")) {
 // files themselves, and as a plain-English summary on the run's page.
 // ---------------------------------------------------------------------
 const inActions = !!process.env.GITHUB_ACTIONS;
-for (const { file, msg } of errors) console.log(inActions ? `::error file=${file}::${msg}` : `ERROR    ${file}: ${msg}`);
-for (const { file, msg } of warnings) console.log(inActions ? `::warning file=${file}::${msg}` : `WARNING  ${file}: ${msg}`);
+// A message can quote text from a file (a title, a link). It is kept on
+// one line, because GitHub treats any log line that starts with "::" as a
+// command to itself.
+const flat = (s) => String(s).replace(/[\r\n]+/g, " ");
+for (const { file, msg } of errors) console.log(inActions ? `::error file=${flat(file)}::${flat(msg)}` : `ERROR    ${file}: ${flat(msg)}`);
+for (const { file, msg } of warnings) console.log(inActions ? `::warning file=${flat(file)}::${flat(msg)}` : `WARNING  ${file}: ${flat(msg)}`);
 
 const line = (x) => `- **${x.file}**: ${x.msg}`;
 const summary = [

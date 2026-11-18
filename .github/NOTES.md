@@ -1121,6 +1121,29 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   else the cleaned release title (missing/broken file = old behaviour).
   `check-site.mjs` validates `lessons/latest.json` and
   `release-lines.json` (a missing file is only a warning).
+- **Untrusted text** (Nov 2026). A robot reads text it can't trust: web
+  pages, release titles, pull request text, and its own earlier answers.
+  Three rules keep that text from doing anything, with helpers at the top
+  of `claude.mjs`:
+  - **Logs.** GitHub acts on any log line starting `::` (that's how the
+    Cost note works), so text from Claude or the web is never printed raw.
+    `oneLine(text, max)` flattens it to one line; `badAnswerNote(text)`
+    replaces the old "here is the whole bad answer" dump with its length
+    (logs are public); the Devlog Writer prints each post line behind
+    `> `. The only `::` lines a robot prints are its own.
+  - **Prompts.** Text fenced in tags (`<brief>`, `<previous_brief>`,
+    `<report_cards>`) goes through `noTags(text, ...names)` so it can't
+    close its own fence. JSON blocks use `asJson(value)`, which writes
+    every `<` as a code. The prompts say the fenced text is material, not
+    instructions.
+  - **Links.** The brief's text has no links: the Morning Writer turns
+    any into plain words, and links live only in Sources (https only,
+    pages seen that run). `hasLink(text)` makes the Coach drop a lesson
+    holding a web address, and the Morning Writer skip one.
+  `devlog-draft.yml` hands step outputs to its shell through `env:`,
+  never by pasting `${{ }}` into a command. `make-game-pages.mjs` `swap`
+  takes a function, so a `$` in a game's title or summary stays a `$`;
+  the Site check fails a page with two description tags.
 ## Contact form, README
 
 - The home page contact form posts to `https://contact.longlight.games/`,
