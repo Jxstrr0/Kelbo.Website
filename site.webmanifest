@@ -1,7 +1,7 @@
 {
   "name": "Longlight Interactive",
   "short_name": "Longlight",
-  "description": "Browser games, tools, and AI projects.",
+  "description": "Deep browser games for small screens.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
