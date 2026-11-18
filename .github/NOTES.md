@@ -421,7 +421,10 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   saved in `localStorage["kelbo.theme"]`; a tiny inline script in every
   page's `<head>` applies it before paint. The home page also has the
   "Continue?" memory card (`kelbo.lastPlayed`, `kelbo.visits`, set when any
-  Play button is tapped), the "Your badges" box (`[data-badges]`, under Sky
+  Play button is tapped; the saved link is only kept and shown when it
+  points at this site or a `<name>.longlight.games` game, and its cover only
+  when it is a file under `assets/`: `isOurLink`, `isOurPicture`), the
+  "Your badges" box (`[data-badges]`, under Sky
   this week; `BADGES` + `badgeChecks` in `main.js`: games played from
   `kelbo.played` (Play it and Play here call `notePlayed`), Completionist
   against `kelbo.gameCount`, sun badges from the real time in `YXE`'s sky,
