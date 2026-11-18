@@ -2,12 +2,12 @@
   "updated": "2026-11-18",
   "items": [
     {
-      "text": "Burn Rate, hints, a library of your motors and personal bests",
-      "link": "https://burnrate.longlight.games/"
-    },
-    {
       "text": "Funded, a Daily Challenge, funded payouts and new day types",
       "link": "https://funded.longlight.games/"
+    },
+    {
+      "text": "Scrapline, a polish pass from play-testing",
+      "link": "https://scrapline.longlight.games/"
     }
   ]
 }
