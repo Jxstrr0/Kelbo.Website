@@ -200,7 +200,7 @@ progress order.
   tapping the card opens the game's info page instead, and only the "Play it"
   button goes straight to the game (the code link and the screenshots still
   work on their own).
-- **code**: the GitHub repo address, or `""`. Shows a "See the code" link.
+- **code**: the GitHub repo address, or `""`. Used by the robots and the studio report; the site no longer links it (Kelbo, 2026-11-18).
 - **image**: a cover picture, like `assets/covers/my-game.jpg`, or `""`
   (a purple tile with the initials). The brief, the journal and Agent Fleet
   use drawn covers in the five site colours, not screenshots.
