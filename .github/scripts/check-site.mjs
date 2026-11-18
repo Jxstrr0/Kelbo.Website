@@ -155,6 +155,18 @@ if (projects !== undefined) {
           if (statSync(join(ROOT, p.clip)).size > 400 * 1024) warn("projects.json", `${name}: the clip "${p.clip}" is over 400 KB, heavy for a phone on mobile data.`);
         }
       }
+      // "guide": the How to play card on a game page (start, tips, mistake).
+      if (p.guide !== undefined) {
+        const g = p.guide;
+        const textList = (v) => Array.isArray(v) && v.every((x) => typeof x === "string" && x.trim());
+        if (!g || typeof g !== "object" || Array.isArray(g)) error("projects.json", `${name}: "guide" should be an object with start, tips and mistake.`);
+        else {
+          if (g.start !== undefined && !textList(g.start)) error("projects.json", `${name}: guide "start" should be a list of steps (text).`);
+          if (g.tips !== undefined && !textList(g.tips)) error("projects.json", `${name}: guide "tips" should be a list of tips (text).`);
+          if (g.mistake !== undefined && (typeof g.mistake !== "string" || !g.mistake.trim())) error("projects.json", `${name}: guide "mistake" should be text.`);
+          for (const k of Object.keys(g)) if (!["start", "tips", "mistake"].includes(k)) warn("projects.json", `${name}: guide has an unknown part "${k}" that the page won't show.`);
+        }
+      }
       if (p.shots !== undefined) {
         if (!Array.isArray(p.shots)) error("projects.json", `${name}: "shots" should be a list.`);
         else p.shots.forEach((s, j) => {
