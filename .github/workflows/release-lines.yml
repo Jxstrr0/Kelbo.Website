@@ -5,7 +5,7 @@
 #      newest GitHub Release. Any release without a line in
 #      release-lines.json goes to Claude (one call for all of them) to be
 #      rewritten as one short line for players. No new release: no call.
-#   2. commits release-lines.json to main,
+#   2. runs the Site check on the result, and only if it passes commits release-lines.json to main,
 #   3. starts the "Deploy site" run, which shows the new line on the cards
 #      (sync-releases.mjs reads release-lines.json).
 # The deploy itself never calls Claude, so it stays key-free.
@@ -54,6 +54,13 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GITHUB_TOKEN: ${{ github.token }}
           DRY_RUN: ${{ inputs.dry_run == true && '1' || '' }}
+
+      # Runs the Site check (with its privacy scan) on the new files
+      # first. If they don't pass, the run stops here and nothing is
+      # saved: everything in the repo is public for good.
+      - name: Check it before saving
+        if: inputs.dry_run != true
+        run: node .github/scripts/check-before-save.mjs
 
       - name: Commit them to main
         id: commit
