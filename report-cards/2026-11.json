@@ -1,4 +1,91 @@
 {
+  "2026-11-18": {
+    "date": "2026-11-18",
+    "time": "2026-11-18T22:46:33.390Z",
+    "summary": "The gap call was right, a small gap up inside the predicted range, but MU faded from the open, broke both near supports and closed down 1.0% at 705.27.",
+    "gap": {
+      "call": "Up about 0.5% to 4.5%, leaning lower half",
+      "result": "MU opened at 718.50, up 0.85% from 712.42, in the lower half of the range.",
+      "grade": "hit"
+    },
+    "mu": {
+      "prev_close": 712.42,
+      "open": 718.5,
+      "high": 722.96,
+      "low": 687.33,
+      "close": 705.27,
+      "open_pct": 0.85,
+      "close_pct": -1
+    },
+    "levels": [
+      {
+        "level": "Lower-edge pivot $716.38 (Monday's low)",
+        "result": "Price fell through it and closed below at 705.27.",
+        "grade": "broke"
+      },
+      {
+        "level": "Opening pivot $719.02 (Monday's close)",
+        "result": "The high of 722.96 poked above it, but MU closed well below.",
+        "grade": "held"
+      },
+      {
+        "level": "Opening pivot $726.98 (Tuesday's high)",
+        "result": "The high of 722.96 stopped about 0.55% short.",
+        "grade": "untested"
+      },
+      {
+        "level": "Opening pivot $733.15 (Nov 9 close)",
+        "result": "Never reached; the high was 722.96.",
+        "grade": "untested"
+      },
+      {
+        "level": "First resistance $750.25 (Friday's low)",
+        "result": "Never reached.",
+        "grade": "untested"
+      },
+      {
+        "level": "Next resistance $764.57 (Thursday's low)",
+        "result": "Never reached.",
+        "grade": "untested"
+      },
+      {
+        "level": "First support $712.42 (Tuesday's close)",
+        "result": "The gap filled and MU closed below it at 705.27.",
+        "grade": "broke"
+      },
+      {
+        "level": "Next support $699.63 (Nov 10 low)",
+        "result": "The low went through it to 687.33, but MU closed back above at 705.27.",
+        "grade": "held"
+      }
+    ],
+    "sources": [
+      {
+        "title": "Check out Micron Technology, Inc.'s stock price (MU) in real time",
+        "url": "https://www.cnbc.com/quotes/MU"
+      },
+      {
+        "title": "Micron Technology, Inc. (MU) Stock Price, News, Quote & History - Yahoo Finance",
+        "url": "https://ca.finance.yahoo.com/quote/MU/"
+      },
+      {
+        "title": "Prediction: This Will Be Micron’s Stock Price in 3 Years",
+        "url": "https://www.fool.com/investing/2026/11/18/prediction-this-will-be-micron-s-stock-price-in-3-years/"
+      },
+      {
+        "title": "Is Micron Undervalued?",
+        "url": "https://www.fool.com/investing/2026/11/18/is-micron-undervalued/"
+      },
+      {
+        "title": "Micron Technology (MU) Stock Price, Chart & News",
+        "url": "https://stockanalysis.com/stocks/mu/"
+      },
+      {
+        "title": "Micron Technology (NASDAQ:MU) Stock Falls 1% - Time to Sell?",
+        "url": "https://www.marketbeat.com/instant-alerts/price-micron-technology-nasdaq-mu-stock-falls-1-time-to-sell-2026-11-18/"
+      }
+    ]
+  },
   "2026-11-17": {
     "date": "2026-11-17",
     "time": "2026-11-17T22:48:55.196Z",
