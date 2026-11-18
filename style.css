@@ -252,6 +252,15 @@ a:hover {
   color: var(--accent-ink);
 }
 
+/* The site a source link goes to, shown after it: "(reuters.com)".
+   Made by siteLabel in main.js for the Sources lists on the brief, the
+   report card and the journal. Quiet, and it wraps if the name is long. */
+.source__site {
+  color: var(--muted);
+  font-size: 0.9em;
+  overflow-wrap: anywhere;
+}
+
 h2,
 :target {
   scroll-margin-top: 5rem;
