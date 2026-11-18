@@ -3924,6 +3924,38 @@ img {
   max-width: 40rem;
 }
 
+/* "How to play" card on a game page (guide in projects.json) */
+.game__guide {
+  max-width: 40rem;
+  padding: 1rem 1.15rem;
+  border: 1px solid var(--rule);
+  border-radius: 0.9rem;
+  background: var(--card);
+}
+
+.game__guide h3 {
+  margin: 1rem 0 0.35rem;
+  font-size: 1rem;
+}
+
+.game__guide h3:first-of-type {
+  margin-top: 0.25rem;
+}
+
+.game__guide ol,
+.game__guide ul {
+  margin: 0;
+  padding-left: 1.3rem;
+}
+
+.game__guide li + li {
+  margin-top: 0.35rem;
+}
+
+.game__guide p {
+  margin: 0;
+}
+
 .game__more-list {
   display: flex;
   flex-wrap: wrap;

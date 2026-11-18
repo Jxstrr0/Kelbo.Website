@@ -618,6 +618,39 @@ function setUpGame(box, projects) {
     box.append(section);
   }
 
+  // A short "How to play" card, if projects.json has a "guide" for this game:
+  // { start: [3 steps for the first ten minutes], tips: [3 tips], mistake: "..." }.
+  // All plain text (el sets textContent), so nothing in it can run as code.
+  const guide = project.guide && typeof project.guide === "object" ? project.guide : null;
+  const lines = (list) => (Array.isArray(list) ? list.map((x) => String(x || "").trim()).filter(Boolean) : []);
+  if (guide) {
+    const start = lines(guide.start);
+    const tips = lines(guide.tips);
+    const mistake = String(guide.mistake || "").trim();
+    if (start.length || tips.length || mistake) {
+      const section = el("section", "game__guide");
+      section.id = "how-to-play";
+      section.append(el("h2", null, "How to play"));
+      if (start.length) {
+        section.append(el("h3", null, "Your first ten minutes"));
+        const list = el("ol");
+        start.forEach((step) => list.append(el("li", null, step)));
+        section.append(list);
+      }
+      if (tips.length) {
+        section.append(el("h3", null, "Tips"));
+        const list = el("ul");
+        tips.forEach((tip) => list.append(el("li", null, tip)));
+        section.append(list);
+      }
+      if (mistake) {
+        section.append(el("h3", null, "Easy to get wrong"));
+        section.append(el("p", null, mistake));
+      }
+      box.append(section);
+    }
+  }
+
   // A short silent clip of the game ("clip" in projects.json, an .mp4 in
   // assets/clips/ with a same-named .jpg still beside it). Nothing but the
   // still downloads until the visitor presses play (preload="none").

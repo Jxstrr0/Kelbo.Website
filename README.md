@@ -236,6 +236,13 @@ progress order.
   Each screenshot also gets an `@2x` copy at double size (about 720
   pixels tall), the same way as covers.
 
+- **guide** (optional): the "How to play" card on the game's own page, under
+  the story. Three parts, all plain text: `start` (a list of three steps for
+  the first ten minutes), `tips` (a list of three tips) and `mistake` (one
+  sentence or two on what new players often get wrong). Use the game's own
+  button names, so a player can follow along. Update it when a game changes
+  how it starts.
+
 - **story** (optional): a longer write-up for the game's own page
   (`game.html?g=<name>`, where the name is the title in lowercase with dashes,
   like `prairie-engine-works`). A blank line starts a new paragraph. The page
