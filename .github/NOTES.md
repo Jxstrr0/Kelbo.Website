@@ -1135,9 +1135,14 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   that make text display backwards (`tidy`), and the message keeps only
   line breaks and tabs; the email puts the sender's name and address
   first, above a `----- Message -----` line, so nothing typed into the
-  message can pose as them; at most about 50 messages a UTC day are sent
-  (`DAILY_CAP`, counted in the `contact-form-sends` KV store, bound as
-  `COUNTER`; with no binding, or if KV can't be reached, it sends anyway).
+  message can pose as them; at most 50 messages a UTC day are sent
+  (`DAILY_CAP`, counted by the `SendCounter` Durable Object at the bottom
+  of the Worker file, bound as `SENDS`; it takes one call at a time, so
+  messages that arrive together are each counted, which the earlier KV
+  counter missed; with no binding, or if it can't be reached, it sends
+  anyway). Changing the Worker's code means uploading it with the same
+  bindings (`EMAIL`, `TO`, `TURNSTILE_SECRET`, `SENDS`); the class needed
+  a one-time "new class" migration, already done.
   Workers Logs are on for the Worker (free tier); each refusal logs a
   short reason only, never what was sent. The logs keep request details,
   visitor IPs included, inside Kelbo's Cloudflare account; Claude never
