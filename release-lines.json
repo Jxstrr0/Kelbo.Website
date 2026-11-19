@@ -128,5 +128,20 @@
     "line": "Backup codes are now safer to paste in and load.",
     "title": "v1.7.0.1 - a backup code can no longer carry script (#33)",
     "at": "2026-11-19T08:00:00.415Z"
+  },
+  "350Chev@v1.76.142.2": {
+    "line": "A damaged save no longer leaves the game stuck on the loading screen.",
+    "title": "v1.76.142.2 - a bad save can no longer stick the loading screen (#320)",
+    "at": "2026-11-19T21:00:57.777Z"
+  },
+  "Scrapline@v0.1.68.4": {
+    "line": "Saves that mention something the game doesn't have now open anyway.",
+    "title": "v0.1.68.4 - a save that names something the game doesn't have opens anyway (#117)",
+    "at": "2026-11-19T21:00:57.777Z"
+  },
+  "BurnRate@v1.7.0.2": {
+    "line": "Backup codes and the offline cache now have size limits.",
+    "title": "v1.7.0.2 - backup codes and the offline cache get size limits (#34)",
+    "at": "2026-11-19T21:00:57.777Z"
   }
 }
