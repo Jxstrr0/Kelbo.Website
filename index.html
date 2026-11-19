@@ -123,12 +123,14 @@
              it is here. "Kelbo" is the one "by Kelbo" link on the site. -->
         <p class="hero__line"><span data-game-count-line>Browser games</span>, made in Saskatoon by <a href="about.html">Kelbo</a>. Nothing to install, no account to make.</p>
         <div class="hero__actions">
-          <!-- PR 2 of the Horizon plan turns this into "Play <spotlight game>" -->
-          <a class="button button--start" href="#games-heading">Play a game</a>
+          <!-- main.js (setUpSpotlight) points this at the spotlight game:
+               "Play Prairie Engine Works" (just "Play" on a phone, or the
+               game's "shortTitle" if projects.json gives it one). -->
+          <a class="button button--start" href="#games-heading" data-spotlight-play>Play a game</a>
           <a class="button button--ghost" href="#games-heading"><span data-game-count-button>Browse all games</span> <span aria-hidden="true">&rarr;</span></a>
         </div>
       </div>
-      <div class="wrap">
+      <div class="wrap hero__stage">
         <div class="horizon" data-horizon aria-hidden="true">
           <div class="horizon__stars">
             <i style="left:8%;top:18%"></i><i style="left:22%;top:46%"></i><i style="left:37%;top:12%"></i>
@@ -150,6 +152,22 @@
           <!-- Shown by main.js while Environment Canada has a weather alert out -->
           <a class="horizon__alert" data-horizon-alert href="https://weather.gc.ca/" target="_blank" rel="noopener" hidden></a>
         </div>
+        <!-- The spotlight game, standing on the horizon line like a building
+             on the prairie. It sits beside the horizon (not inside it), so
+             tapping it opens the game instead of winding the sky. main.js
+             fills it in (setUpSpotlight); without JavaScript it stays hidden. -->
+        <article class="spotlight" data-spotlight hidden>
+          <a class="spotlight__main" data-spotlight-page href="games.html">
+            <span class="spotlight__cover" data-spotlight-cover></span>
+            <span class="spotlight__body">
+              <span class="spotlight__chip">Featured</span>
+              <span class="spotlight__title" data-spotlight-title></span>
+              <span class="spotlight__version" data-spotlight-version></span>
+              <span class="spotlight__latest" data-spotlight-latest></span>
+            </span>
+          </a>
+          <a class="button button--play spotlight__play" data-spotlight-link href="games.html">Play</a>
+        </article>
       </div>
     </section>
 
