@@ -209,10 +209,10 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   `left`/`top` counts as layout shift in Cloudflare's page speed, and the
   opening spin moves them every frame. The moon keeps `left`/`top`
   because its `translate` is the tilt parallax. New things that follow
-  the sun should move with `translate` too. Sky this week shows from the
-  first frame when JavaScript is on (`:root:not(.js)` hides it), like the
-  badges box, so filling it doesn't push the page down; the Now strip
-  still appears when now.json loads (about 0.04 of shift on a phone).
+  the sun should move with `translate` too. The ticker strip under the
+  horizon (`.ticker`) shows from the first frame when JavaScript is on
+  (`:root:not(.js)` hides it) at a fixed `min-height`, so filling its Sky
+  and Badges chips or the Now items doesn't push the page down.
   `placeSun` also calls `placeStars`: the real sky from `STARS` (the
   named bright stars from PyEphem's catalogue, J2000 RA/Dec + magnitude,
   dec > -38° so they can rise here), alt/az from local sidereal time,
@@ -430,8 +430,8 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   Play button is tapped; the saved link is only kept and shown when it
   points at this site or a `<name>.longlight.games` game, and its cover only
   when it is a file under `assets/`: `isOurLink`, `isOurPicture`), the
-  "Your badges" box (`[data-badges]`, under Sky
-  this week; `BADGES` + `badgeChecks` in `main.js`: games played from
+  "Your badges" dialog (`[data-badges]`, opened from the Badges chip in
+  the ticker, which shows `[data-badges-count]`; `BADGES` + `badgeChecks` in `main.js`: games played from
   `kelbo.played` (Play it and Play here call `notePlayed`), Completionist
   against `kelbo.gameCount`, sun badges from the real time in `YXE`'s sky,
   never with `?at=`, days in `kelbo.days`, Explorer/Insider from
@@ -447,9 +447,17 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   shift the page, and stays blank if the call fails.
 ## Sky extras, glass, tilt, the ISS, Sky this week
 
-- The home page's Sky this week box is a `<details>` that folds to one line,
-  the next thing coming up (`[data-sky-week-next]`); it borrows the badges
-  box's fold styles and remembers open or closed in `kelbo.skyWeekOpen`.
+- The home page's ticker strip (`.ticker`, the Horizon plan's PR 3, 2026-11-19)
+  sits at the bottom of the hero, under the horizon: the first two Now
+  building items (`[data-now]`), a Sky chip with the next thing coming up
+  (`[data-sky-week-next]`) and a Badges chip with the count
+  (`[data-badges-count]`). On a phone it scrolls sideways. Each chip has
+  `data-dialog-open="<name>"` and opens the matching `dialog.sheet-dialog`
+  (`data-dialog="<name>"`) with `showModal()` (`setUpDialogs`): a bottom
+  sheet on a phone, a centred card wider up. Esc, the × button or a tap on
+  the dimmed backdrop closes it, and focus goes back to the chip. Where
+  `showModal` is missing the chips hide. The old folding boxes' keys,
+  `kelbo.skyWeekOpen` and `kelbo.badgesOpen`, are no longer read.
 
 - Fun extras (2026-10-30): `setUpLand` adds `.horizon__windmill` (SVG,
   `WINDMILL_TOWER`/`WINDMILL_TAIL`, at 16% across; `.windmill__wheel`,
@@ -576,7 +584,7 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   joins the night readout turns; `issPasses` (30 s steps, alt ≥
   `ISS_PASS_ALT`) feeds Sky this week (peak ≥ `ISS_WEEK_ALT`, top 5).
   `?critter=iss` shows `issPreview`, a pretend 40 s pass.
-- Sky this week (`[data-sky-week]` under the Now strip, home only):
+- Sky this week (`[data-sky-week]`, the Sky dialog, home only):
   `skyWeek(t)` steps the 7 days from local midnight hourly: tonight's
   planets (sunset + 1 h, alt > 6°, > `GLARE_DEG` from the sun), moon
   quarters (`FULL_MOON_NAMES` by month), moon–planet passes under

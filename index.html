@@ -169,47 +169,60 @@
           <a class="button button--play spotlight__play" data-spotlight-link href="games.html">Play</a>
         </article>
       </div>
+
+      <!-- The ticker: one strip along the bottom of the hero, under the
+           ground. Now building (from now.json, hidden if it's empty), the
+           next thing in the sky, and your badges. Sky and Badges open
+           their full lists in the two dialogs below the hero. It needs
+           JavaScript, so it's hidden without it (style.css). On a phone
+           it's one row you can scroll sideways. -->
+      <div class="ticker" data-ticker>
+        <div class="wrap ticker__row">
+          <div class="ticker__now" data-now hidden>
+            <h2 class="now__label ticker__label" id="now-heading">Now building</h2>
+            <ul class="ticker__list" data-now-list aria-labelledby="now-heading"></ul>
+          </div>
+          <button type="button" class="ticker__chip" data-dialog-open="sky-week" aria-haspopup="dialog">
+            <span class="ticker__key">Sky:</span> <span data-sky-week-next></span>
+          </button>
+          <button type="button" class="ticker__chip ticker__chip--badges" data-dialog-open="badges" aria-haspopup="dialog">
+            <span class="ticker__key">Badges</span> <span data-badges-count></span>
+          </button>
+        </div>
+      </div>
     </section>
 
-    <!-- 2. Now building: what's on the bench this week. main.js fills
-         this from now.json, and leaves it hidden if that file is empty. -->
-    <section class="now wrap" aria-labelledby="now-heading" data-now hidden>
-      <h2 id="now-heading" class="now__label">Now building</h2>
-      <ul class="now__list" data-now-list></ul>
-      <p class="now__updated" data-now-updated></p>
-    </section>
-
-    <!-- Sky this week: what's coming up in the sky, worked out by main.js,
-         plus the cloud and northern lights forecasts when they load and
-         the shooting-star wish counter. Hidden without JavaScript. It's
-         folded to the next thing coming up until tapped (it borrows the
-         badges box's fold styles); the choice is remembered. It shows from
-         the first frame when JavaScript is on (style.css), so the page
-         below doesn't jump when main.js fills it in. -->
-    <details class="sky-week badges wrap" data-sky-week>
-      <summary class="badges__summary">
-        <h2 id="sky-week-heading" class="now__label">Sky this week</h2>
-        <p class="badges__count badges__count--line" data-sky-week-next></p>
-      </summary>
-      <ol class="sky-week__list" data-sky-week-list></ol>
-      <p class="sky-week__wishes" data-wishes></p>
-      <p class="sky-week__note" data-sky-week-note></p>
-    </details>
+    <!-- Sky this week: what's coming up in the sky, worked out by main.js
+         (setUpSkyWeek), plus the cloud and northern lights forecasts when
+         they load and the shooting-star wish counter. Opened from "Sky:" in
+         the ticker above. -->
+    <dialog class="sheet-dialog" data-sky-week data-dialog="sky-week" aria-labelledby="sky-week-heading">
+      <div class="sheet-dialog__inner">
+        <div class="sheet-dialog__head">
+          <h2 id="sky-week-heading">Sky this week</h2>
+          <button type="button" class="sheet-dialog__close" data-dialog-close aria-label="Close">&times;</button>
+        </div>
+        <ol class="sky-week__list" data-sky-week-list></ol>
+        <p class="sky-week__wishes" data-wishes></p>
+        <p class="sky-week__note" data-sky-week-note></p>
+      </div>
+    </dialog>
 
     <!-- Your badges: little goals for visitors (play games, visit at
          sunset, catch a shooting star...), saved on this phone only.
-         main.js fills it in (setUpBadges); hidden without JavaScript (the
-         "js" class from the script in the <head>). It's
-         folded to its "2 of 16 earned" line until tapped; the choice is
-         remembered. -->
-    <details class="sky-week badges wrap" data-badges>
-      <summary class="badges__summary">
-        <h2 id="badges-heading" class="now__label">Your badges</h2>
-        <p class="badges__count" data-badges-count></p>
-      </summary>
-      <ul class="badges__list" data-badges-list></ul>
-      <p class="sky-week__note">Saved on this phone only. Nothing is sent anywhere.</p>
-    </details>
+         main.js fills it in (setUpBadges). Opened from "Badges" in the
+         ticker. main.js also reads [data-badges] to know it's on the home
+         page (the elevator's lit window after dark), so keep it here. -->
+    <dialog class="sheet-dialog" data-badges data-dialog="badges" aria-labelledby="badges-heading">
+      <div class="sheet-dialog__inner">
+        <div class="sheet-dialog__head">
+          <h2 id="badges-heading">Your badges</h2>
+          <button type="button" class="sheet-dialog__close" data-dialog-close aria-label="Close">&times;</button>
+        </div>
+        <ul class="badges__list" data-badges-list></ul>
+        <p class="sky-week__note">Saved on this phone only. Nothing is sent anywhere.</p>
+      </div>
+    </dialog>
 
     <!-- 3. Games: one sideways row of small cards, every game in
          projects.json in its order there. Swipe (or use the arrows on a

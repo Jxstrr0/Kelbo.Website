@@ -219,7 +219,8 @@ that part, and update it when how something works changes. The short map:
   with `?at=`, `?weather=`, `?critter=`. Notes: "The live sky" and "Sky
   extras".
 - **Home page:** the spotlight game on the horizon (first `featured` game),
-  Now strip (`now.json`), Sky this week, badges, Continue
+  ticker strip under it (Now building from `now.json`, Sky and Badges chips
+  that open dialogs), Continue
   card, four tiles, contact form (our own `contact-form` Cloudflare Worker,
   `.github/worker/contact-form.js`; Kelbo's email lives only in its
   Cloudflare settings, never in the site or repo).
