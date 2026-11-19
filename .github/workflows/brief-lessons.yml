@@ -10,7 +10,7 @@
 #   3. starts the "Deploy site" run so the After close tab shows them.
 # The next weekday brief reads the lessons (while they're under 14 days old).
 #
-# It uses the ANTHROPIC_API_KEY repository secret. "Run workflow" on the
+# It uses the LL_ROBOT_KEY secret in the robots environment. "Run workflow" on the
 # Actions tab runs it now; tick "dry run" to see the lessons in the log
 # without saving them. To stop it, open it on the Actions tab, tap "..."
 # and choose "Disable workflow".
@@ -59,7 +59,7 @@ jobs:
       - name: Read the report cards and ask for lessons
         run: node .github/scripts/brief-lessons.mjs
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.LL_ROBOT_KEY }}
           DRY_RUN: ${{ inputs.dry_run == true && '1' || '' }}
 
       # Runs the Site check (with its privacy scan) on the new files

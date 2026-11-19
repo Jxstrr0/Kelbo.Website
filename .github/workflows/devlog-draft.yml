@@ -16,7 +16,7 @@
 # edit devlog.json or now.json on that branch if something needs fixing, then merge it
 # (the site updates) or close it (nothing changes).
 #
-# It uses the ANTHROPIC_API_KEY repository secret. "Run workflow" on the
+# It uses the LL_ROBOT_KEY secret in the robots environment. "Run workflow" on the
 # Actions tab runs it now; tick "dry run" to see the drafts in the log
 # without opening a pull request. To stop it, open it on the Actions tab,
 # tap "..." and choose "Disable workflow".
@@ -81,7 +81,7 @@ jobs:
         if: steps.done.outputs.skip != 'true'
         run: node .github/scripts/devlog-draft.mjs
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.LL_ROBOT_KEY }}
           GITHUB_TOKEN: ${{ github.token }}
           DRY_RUN: ${{ inputs.dry_run == true && '1' || '' }}
 

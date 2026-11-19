@@ -10,7 +10,7 @@
 #      (sync-releases.mjs reads release-lines.json).
 # The deploy itself never calls Claude, so it stays key-free.
 #
-# It uses the ANTHROPIC_API_KEY repository secret. "Run workflow" on the
+# It uses the LL_ROBOT_KEY secret in the robots environment. "Run workflow" on the
 # Actions tab runs it now; tick "dry run" to see the lines in the log
 # without saving them. To stop it, open it on the Actions tab, tap "..."
 # and choose "Disable workflow". To fix a line, edit it in
@@ -55,7 +55,7 @@ jobs:
       - name: Check for new releases
         run: node .github/scripts/release-lines.mjs
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.LL_ROBOT_KEY }}
           GITHUB_TOKEN: ${{ github.token }}
           DRY_RUN: ${{ inputs.dry_run == true && '1' || '' }}
 

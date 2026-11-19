@@ -1067,7 +1067,8 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   `name:` is "<Name> (<what it does>)".
 - **The key is locked to `main`.** Each robot job has `environment: robots`.
   The `robots` Environment (Settings → Environments) holds
-  `ANTHROPIC_API_KEY` as an environment secret and its deployment branches
+  the robot key as an environment secret, `LL_ROBOT_KEY` (since
+  2026-11-19; each robot passes it to its script as `ANTHROPIC_API_KEY`), and its deployment branches
   are set to `main` only, so a workflow on another branch (or a changed
   copy of a robot in a pull request) is refused before it can read the key.
   There must be no repository-level secret of the same name, or the lock

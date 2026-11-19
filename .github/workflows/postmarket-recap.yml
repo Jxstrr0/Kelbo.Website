@@ -12,7 +12,7 @@
 #      (A push made by a workflow doesn't start other workflows on its own.)
 # Weekends, US market holidays and days without a brief are skipped.
 #
-# It uses the same ANTHROPIC_API_KEY repository secret as the brief. "Run
+# It uses the same LL_ROBOT_KEY secret (robots environment) as the brief. "Run
 # workflow" on the Actions tab runs it right now; tick the box to grade
 # today again. To stop it, open it on the Actions tab, tap "..." and
 # choose "Disable workflow".
@@ -58,7 +58,7 @@ jobs:
       - name: Grade today's brief
         run: node .github/scripts/postmarket-recap.mjs
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.LL_ROBOT_KEY }}
           # "1" when the box was ticked on a hand-started run, else empty.
           FORCE: ${{ inputs.force == true && '1' || '' }}
 

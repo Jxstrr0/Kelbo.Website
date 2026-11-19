@@ -9,8 +9,8 @@
 #   3. starts the "Deploy site" run so the brief goes live. (A push made by a
 #      workflow doesn't start other workflows on its own, so it has to ask.)
 #
-# It needs one repository secret, ANTHROPIC_API_KEY (Settings → Secrets and
-# variables → Actions). The key is only ever read from there and is never
+# It needs one secret, LL_ROBOT_KEY, kept in the robots environment (Settings →
+# Environments → robots). The key is only ever read from there and is never
 # written into the repo. "Run workflow" on the Actions tab runs it right now;
 # tick the box to rewrite a brief that already exists for today.
 name: Morning Writer (pre-market brief)
@@ -57,7 +57,7 @@ jobs:
       - name: Write today's brief
         run: node .github/scripts/premarket-brief.mjs
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.LL_ROBOT_KEY }}
           # "1" when the box was ticked on a hand-started run, else empty.
           FORCE: ${{ inputs.force == true && '1' || '' }}
 
