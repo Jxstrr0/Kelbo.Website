@@ -28,10 +28,14 @@ Live at https://longlight.games/
   name (or his initials) anywhere on the site, in page text, titles, `og:`
   tags, alt text, comments, or the link preview image.
 - **The site is branded Longlight Interactive** (his studio). Page titles,
-  `og:` tags, the header lockup (LONGLIGHT / INTERACTIVE), the home hero and
-  the footer all say Longlight Interactive. Everything personal about Kelbo
-  lives on `about.html`, linked from "by Kelbo" under the hero name (the one
-  place the site says "by Kelbo"), every footer, and the nav
+  `og:` tags, the header lockup (LONGLIGHT / INTERACTIVE), the home hero's
+  small kicker ("Longlight Interactive · Saskatoon, SK") and the footer all
+  say Longlight Interactive. The home hero's headline is the promise, "Deep
+  games for small screens." (Kelbo, 19 Nov 2026, the Horizon plan in
+  `.github/HOME-HORIZON-PLAN.md`). Everything personal about Kelbo lives on
+  `about.html`, linked from "Kelbo" in the line under that headline ("...
+  made in Saskatoon by Kelbo", the one place the site says "by Kelbo"),
+  every footer, and the nav
   (Games, Trading, All, About; Tools is hidden for now). Studio pages (home, Games, Tools,
   All) speak as Longlight; Trading, the journal and Agent Fleet stay in
   his own first-person voice.

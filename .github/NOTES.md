@@ -673,6 +673,14 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   Update it here first, then recopy.
 ## Pages, sections, logo and header
 
+- The home hero (Horizon plan, `.github/HOME-HORIZON-PLAN.md`, PR 1):
+  `.hero--home` scopes its styles; the `h1` is `.hero__name--promise`
+  ("Deep games for small screens."), the studio name is `.eyebrow__studio`
+  in the kicker, and `fillGameCount` writes the number of games into
+  `[data-game-count-line]` and `[data-game-count-button]`. On phones
+  (`max-width: 39.99rem`) the hero's sky is 140px and its ground 3.25rem
+  so the games come up sooner. `404.html` shares `.hero__name` but not
+  `.hero--home`.
 - Page changes: cross-document view transitions (`@view-transition`)
   with `.site-header` and `.page-head .horizon` named so they stay put;
   all inside the no-preference block.

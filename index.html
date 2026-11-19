@@ -109,18 +109,23 @@
   <main id="main">
     <!-- 1. Hero, with the live horizon at the bottom. main.js moves the
          sun to match the real sun over Saskatoon and flips the theme at
-         sunset. Without JavaScript the sun just sits mid-sky. -->
-    <section class="hero" aria-labelledby="hero-name">
+         sunset. Without JavaScript the sun just sits mid-sky.
+         The headline is the promise; the studio name sits in the small
+         kicker above it (the header and footer lockups say it too). -->
+    <section class="hero hero--home" aria-labelledby="hero-name">
       <div class="wrap hero__top">
         <!-- main.js shows the switches: see your own sky, and (on phones)
              let the sky follow the phone's tilt and compass -->
-        <p class="eyebrow"><span data-sky-place>Saskatoon, SK</span> <button type="button" class="eyebrow__switch" data-sky-switch hidden>See your sky</button> <button type="button" class="eyebrow__switch" data-motion-switch aria-pressed="false" hidden>Tilt sky</button></p>
-        <h1 id="hero-name" class="hero__name">Longlight Interactive</h1>
-        <p class="hero__by">by <a href="about.html">Kelbo</a></p>
-        <p class="hero__line">Deep games for small screens.</p>
+        <p class="eyebrow"><span class="eyebrow__studio">Longlight Interactive</span> <span class="eyebrow__dot" aria-hidden="true">&middot;</span> <span data-sky-place>Saskatoon, SK</span> <button type="button" class="eyebrow__switch" data-sky-switch hidden>See your sky</button> <button type="button" class="eyebrow__switch" data-motion-switch aria-pressed="false" hidden>Tilt sky</button></p>
+        <h1 id="hero-name" class="hero__name hero__name--promise">Deep games for small screens.</h1>
+        <!-- main.js puts the number of games in front ("Six browser games,
+             ...") once projects.json loads; without JavaScript it reads as
+             it is here. "Kelbo" is the one "by Kelbo" link on the site. -->
+        <p class="hero__line"><span data-game-count-line>Browser games</span>, made in Saskatoon by <a href="about.html">Kelbo</a>. Nothing to install, no account to make.</p>
         <div class="hero__actions">
+          <!-- PR 2 of the Horizon plan turns this into "Play <spotlight game>" -->
           <a class="button button--start" href="#games-heading">Play a game</a>
-          <a class="button button--ghost" href="projects.html">See everything</a>
+          <a class="button button--ghost" href="#games-heading"><span data-game-count-button>Browse all games</span> <span aria-hidden="true">&rarr;</span></a>
         </div>
       </div>
       <div class="wrap">

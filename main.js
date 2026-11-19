@@ -5,7 +5,8 @@
    You shouldn't need to edit this file to add or change a project.
    Just edit projects.json. This script:
      1. loads projects.json
-     2. on the home page, shows every game in one sideways row
+     2. on the home page, shows every game in one sideways row, and puts
+        the number of games in the hero's line and button
      3. on the projects page, shows every project with filter buttons
      4. on the Games, Trading, and Tools pages, shows every project in that
         "category"
@@ -7313,6 +7314,21 @@ function setUpSound() {
   });
 }
 
+// The home hero says how many games there are ("Six browser games, made in
+// Saskatoon by Kelbo." and "Browse all 6 games"), counted from projects.json
+// (games that aren't hidden), so it never needs editing. Without JavaScript
+// the hero keeps its plain "Browser games" and "Browse all games".
+const NUMBER_WORDS = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven",
+  "Eight", "Nine", "Ten", "Eleven", "Twelve"];
+function fillGameCount(projects) {
+  const count = projects.filter(isGame).length;
+  if (!count) return;
+  const line = document.querySelector("[data-game-count-line]");
+  if (line) line.textContent = (NUMBER_WORDS[count] || String(count)) + (count === 1 ? " browser game" : " browser games");
+  const button = document.querySelector("[data-game-count-button]");
+  if (button) button.textContent = count === 1 ? "See the game" : "Browse all " + count + " games";
+}
+
 async function init() {
   setUpLens();
   setUpHorizon();
@@ -7379,6 +7395,7 @@ async function init() {
   }
 
   fillCategoryCounts(projects);
+  fillGameCount(projects);
   // For the Completionist badge: how many games there are to play.
   writeJSON(GAME_COUNT_KEY, projects.filter(isGame).length);
   checkBadges();
