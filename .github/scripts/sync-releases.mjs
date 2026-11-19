@@ -55,9 +55,34 @@ function fourPart(v) {
   return parts.join(".");
 }
 
+// A release's words come from another repo, so they are tidied before they
+// go on a card and into the feed. Out come: control characters (XML has no
+// way to write them, so a single one would break feed.xml), the invisible
+// marks that flip or hide text, and halves of a broken emoji. What is left
+// is put on one line and cut to a card's length.
+const MAX_LATEST = 140;
+function tidy(text) {
+  const clean = (typeof text === "string" ? text : "")
+    .replace(/[\u0000-\u001F\u007F-\u009F\u2028\u2029\u202A-\u202E\u2066-\u2069\uFFFE\uFFFF]/g, " ")
+    .replace(/[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+  const letters = Array.from(clean); // whole characters, so an emoji is never cut in half
+  return letters.length > MAX_LATEST ? letters.slice(0, MAX_LATEST - 1).join("").trimEnd() + "…" : clean;
+}
+
+// A real day ("2026-11-19"), not after tomorrow: the feed sorts and dates by it.
+function realDay(text) {
+  if (typeof text !== "string" || !/^\d{4}-\d{2}-\d{2}/.test(text)) return "";
+  const day = text.slice(0, 10);
+  const at = Date.parse(day + "T12:00:00Z");
+  if (Number.isNaN(at) || new Date(at).toISOString().slice(0, 10) !== day || at > Date.now() + 36 * 3600 * 1000) return "";
+  return day;
+}
+
 // Takes the version tag off the front of a release title.
 function cleanTitle(title, tag) {
-  return String(title || "")
+  return (typeof title === "string" ? title : "")
     .replace(/\s+/g, " ") // one line: it is shown on a card and printed in the run log
     .replace(new RegExp(`^\\s*${tag.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s*`, "i"), "")
     .replace(/^\s*v?\d+(\.\d+)*\s*/i, "")
@@ -93,9 +118,15 @@ for (const p of projects) {
     continue;
   }
 
-  const tag = release.tag_name || "";
-  const version = fourPart(tag.replace(/^v/i, ""));
-  if (!/^\d/.test(version)) { report.push(`- ${p.title}: newest release tag "${tag}" isn't a version number, skipped`); continue; }
+  // GitHub answers with an object; anything else has no tag to read.
+  const tag = release && typeof release.tag_name === "string" ? release.tag_name : "";
+  const bare = tag.replace(/^v/i, "");
+  // A version is one to four short numbers with dots between ("1.2",
+  // "1.76.87.2") and nothing else. It is written into pages and the feed,
+  // so a tag with letters or symbols in it is never used. (The tag is
+  // tidied and shortened before it is printed, as it is someone's text.)
+  if (!/^\d{1,6}(\.\d{1,6}){0,3}$/.test(bare)) { report.push(`- ${p.title}: newest release tag ${JSON.stringify(tidy(tag).slice(0, 40))} isn't a version number, skipped`); continue; }
+  const version = fourPart(bare);
 
   if (p.version && compare(p.version, version) > 0) {
     report.push(`- ${p.title}: ⚠️ projects.json says ${p.version} but the newest release is ${tag}. Publish a release for ${p.version} so they match.`);
@@ -105,16 +136,16 @@ for (const p of projects) {
   const own = lines[`${m[2].replace(/\.git$/, "")}@${tag}`]?.line;
   // A release title is often a commit summary that starts lowercase, so the
   // fallback gets a capital first letter to read as a sentence on the card.
-  const fallback = cleanTitle(release.name, tag);
-  const title = typeof own === "string" && own.trim()
-    ? own.trim()
+  const fallback = tidy(cleanTitle(release.name, tag));
+  const title = typeof own === "string" && tidy(own)
+    ? tidy(own)
     : fallback && fallback.charAt(0).toUpperCase() + fallback.slice(1);
   const before = `${p.version} · ${p.latest}`;
   const versionMoved = compare(version, p.version || "0") !== 0;
   p.version = version;
   // The day the release went out, for the feed (make-feed.mjs). Only in
   // the deploy copy, like everything else this script fills in.
-  if (/^\d{4}-\d{2}-\d{2}/.test(release.published_at || "")) p.released = release.published_at.slice(0, 10);
+  if (realDay(release.published_at)) p.released = realDay(release.published_at);
   if (title) p.latest = title;
   // New version but the release has no title: blank "latest" rather than
   // show the old version's description next to the new number.

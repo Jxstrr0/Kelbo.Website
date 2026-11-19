@@ -24,7 +24,11 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   shown as "v1.4.0.0 · Added night mode" under the summary; either may be
   "". Every game uses four numbers, Major.Minor.Patch.Build (Kelbo's rule,
   November 2026; check-site warns on fewer, `fourPart` in sync-releases
-  pads older tags).
+  pads older tags). A version may only hold numbers and dots: the Site
+  check fails on anything else, and `sync-releases.mjs` skips a release
+  whose tag isn't one to four short numbers. A release's title is tidied
+  before use (`tidy`: control and text-flipping characters out, one line,
+  140 characters at most).
   For games whose `code` repo has GitHub Releases, the deploy fills these
   in from the newest release (tag `v1.4.0.0` → `"1.4.0.0"`, release title →
   `latest`), so the live values can be newer than this file. Don't "fix"
@@ -777,7 +781,10 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   out; newest first, at most 40. URLs are absolute (an exception to the
   relative-links rule). Index, Games, Devlog and What's new have a
   `rel="alternate"` link to it in the `<head>`; Devlog and What's new link it
-  in their intros. Test with a `_site` copy.
+  in their intros. Test with a `_site` copy. `make-feed.mjs` drops the
+  characters XML can't hold and skips an item whose date isn't a real day;
+  in the deploy the Site check then reads `feed.xml` the strict way
+  (`feedProblem`) and fails if it isn't well-formed.
 - `press.html` is the press kit: a fact sheet (`.facts`, the game count
   filled by `setUpPress` into `[data-press-count]`), the logo files in
   `assets/press/` (`longlight-logo-dark/light`, SVG with the letters as
@@ -960,7 +967,13 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   sox for old briefs, other for anything new), puts the headline, TLDR,
   "How it did" line and section buttons (`addJumps`, buttons not #links)
   in a `.brief__lead` card and moves MU first. The dress functions only
-  rearrange HTML renderMarkdown already escaped: `dressCalls` turns MU's
+  rearrange HTML renderMarkdown already escaped. A link's address goes
+  through `safeHref` (`<`, `>`, quotes and `|` become % codes), so nothing
+  in an attribute can read as a tag, and `dressCalls` moves page nodes
+  (`linesOf`, `valueOf`) rather than cutting the markup into text and
+  reading it back. The Site check refuses a `briefs/*.md` whose link
+  address holds a `<`, `>` or quote, so the Morning Writer can't save one.
+  `dressCalls` turns MU's
   `**Label:**` lines into boxes ordered by `CALL_ORDER` (gap call first in a
   clay box with a confidence pill, bull/bear side by side, last session's
   call last), resistance/support tinted clay/purple, and the
