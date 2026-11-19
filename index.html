@@ -107,9 +107,10 @@
   </header>
 
   <main id="main">
-    <!-- 1. Hero, with the live horizon at the bottom. main.js moves the
-         sun to match the real sun over Saskatoon and flips the theme at
-         sunset. Without JavaScript the sun just sits mid-sky.
+    <!-- 1. Hero, with the live horizon at the bottom and the ticker along
+         its foot. main.js moves the sun to match the real sun over
+         Saskatoon and flips the theme at sunset. Without JavaScript the
+         sun just sits mid-sky.
          The headline is the promise; the studio name sits in the small
          kicker above it (the header and footer lockups say it too). -->
     <section class="hero hero--home" aria-labelledby="hero-name">
@@ -224,7 +225,7 @@
       </div>
     </dialog>
 
-    <!-- 3. Games: a grid of every game in projects.json, in its order
+    <!-- 2. Games: a grid of every game in projects.json, in its order
          there, with filter chips (All, Released, Polishing, Early builds)
          whose counts come from the data. main.js fills both
          (setUpGameGrid). -->
@@ -253,7 +254,7 @@
       </div>
 
       <ul class="project-list project-list--grid" data-projects="grid">
-        <li class="project-list__note">Loading games&hellip;</li>
+        <li class="project-list__note project-list__note--loading">Loading games&hellip;</li>
       </ul>
       <p class="visually-hidden" data-game-filter-status aria-live="polite"></p>
       <noscript>
@@ -261,7 +262,7 @@
       </noscript>
     </section>
 
-    <!-- 4. Studio row: the trading desk and the newest devlog post, side
+    <!-- 3. Studio row: the trading desk and the newest devlog post, side
          by side on a computer, stacked on a phone. main.js fills in the
          trading project names (setUpStudioRow), the market light
          (setUpMarketLight) and the devlog post. -->

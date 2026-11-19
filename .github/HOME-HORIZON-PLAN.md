@@ -235,4 +235,4 @@ Other pages' layouts (games.html, projects.html and the rest keep their current 
 - [x] PR 3: Ticker strip + Sky and Badges dialogs
 - [x] PR 4: Games grid, status filters, taglines
 - [x] PR 5: Studio row, contact page, footer
-- [ ] PR 6: Tidy, docs, final phone pass
+- [x] PR 6: Tidy, docs, final phone pass

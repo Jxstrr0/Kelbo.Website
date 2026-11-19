@@ -532,8 +532,8 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
     (`.party__dog.lost__dog`) beside "Lost?". It is plain HTML so it shows
     with no script; a change to his markings goes in both files.
 - Glass (2026-10-30): the "Glass" section of `style.css` (just before
-  Motion) turns the header, cards (`.now`, `.sky-week`, `.continue__card`,
-  `.project`, `.news`, `.tile`, `.facts li`, `.post`, `.press-game`, the
+  Motion) turns the header, cards (`.continue__card`, `.project`,
+  `.news`, `.studio-card--devlog`, `.facts li`, `.post`, `.press-game`, the
   contact fields), the filter buttons and the sky tip/badge toast into
   frosted panes (`--glass`, `--glass-line`, `--glass-rim` light/dark tokens;
   `backdrop-filter` blur + saturate; inset top-left rim). `body::before` is
@@ -545,8 +545,8 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   blur inside a blur is unreliable in Chrome. Lens edge: `--pane-edge`
   (inset shadows: rim, clay and lilac fringes offset by `--tilt-x/y`,
   dark band) and `--pane-ring` (a conic gradient drawn by a masked 1px
-  `::after` on the panes that have a free pseudo-element; the tiles use
-  both of theirs). `setPageTilt` copies the sky's `--tilt-x/y` onto
+  `::after` on the panes that have a free pseudo-element).
+  `setPageTilt` copies the sky's `--tilt-x/y` onto
   `<html>` so the edges follow tilt and mouse. `setUpLens` (main.js)
   adds the `#glass-lens` SVG filter (SourceAlpha → blur → offset
   differences → displacement map, then frost and saturate) and
@@ -745,7 +745,7 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   bot is the weekly market scan); Tool = every other tool (the winter
   roads checker goes here). `tools.html` was `ai.html` until November 2026:
   `404.html` sends `ai.html` there. Since November 2026 Tools is hidden: it
-  is out of the menu, off the home tiles and not needed for Explorer, but
+  is out of the menu, off the home page and not needed for Explorer, but
   `tools.html` and the tools still work at their addresses.
   The home page's mode tiles (Games, Trading, All) gave way to the studio
   row in the Horizon plan's PR 5 (2026-11-19): "From the studio",
@@ -819,7 +819,12 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   Prototype / Concept → Early builds; empty groups get no chip, and the
   choice isn't remembered. They reuse `refilter`, and say what's shown in
   `[data-game-filter-status]` (a polite live region). Cards already on the
-  first screen show at once instead of waiting for the scroll fade. `featured` picks the
+  first screen show at once instead of waiting for the scroll fade. While
+  projects.json loads, the "Loading games..." note
+  (`.project-list__note--loading`) holds the grid at `min-height: 51rem`
+  (about three rows on a phone, two on a computer) so the studio row
+  doesn't jump when the cards land (PR 6); without JavaScript the note is
+  hidden and only the `noscript` line shows. `featured` picks the
   home spotlight (below) and records the four covers in the link preview.
   `hidden: true` drops a project everywhere: both `projects.json` loads in
   `main.js` filter it out, `make-game-pages.mjs` makes no page for it, and
