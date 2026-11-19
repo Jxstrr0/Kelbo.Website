@@ -12,6 +12,9 @@ Live at https://longlight.games/
   first (squash-merge is fine). If it's red, read the run's summary, fix the problems on the same
   branch, and wait for green. Run `node .github/scripts/check-site.mjs`
   before pushing to catch them early.
+  That covers pull requests Claude or the robots opened. **Never merge
+  someone else's pull request on a green check alone**: the check can't
+  tell what a stranger's change does. Tell Kelbo and let him decide.
 - After merging, the **Deploy site** run must go green before the live site
   changes. If it fails, the live site keeps the last good version; fix it.
 - **Every change must end up on `main`**, because that's what goes live.
@@ -139,12 +142,15 @@ keep the Co-Authored-By trailer for Claude in each message.
   `.github/scripts/` are plain Node with no packages; keep them that way.
 - **No secrets.** The repo is public. Never commit API keys, tokens, or
   passwords. If a tool needs a key, talk through options with Kelbo first.
-  The one key that exists is the `ANTHROPIC_API_KEY` repository secret,
+  The one key that exists is the `ANTHROPIC_API_KEY` secret,
   used by seven workflows: the Morning Writer (pre-market brief), the
   Grader (after-close report card), the Coach (brief lessons), the Devlog
   Writer, the Release Writer, the Forecaster (weekly journal forecast) and
   the Scorekeeper (weekly journal grades). It is only ever referenced as
   `${{ secrets.ANTHROPIC_API_KEY }}` in those workflows; `deploy.yml` and `site-check.yml` stay key-free.
+  Each of those jobs has `environment: robots`: the key is kept in the
+  `robots` GitHub Environment, which only `main` may use, so a workflow on
+  another branch can't read it. A new robot job needs the same line.
 - Mobile first (works down to 360px wide), light and dark themes with
   every colour in CSS variables (`data-theme` on `<html>`, set by `main.js`
   from the real sun; `prefers-color-scheme` is only the fallback before JS

@@ -1006,6 +1006,14 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   (`journal-grade.yml`, scorekeeper),
   **Scanner** = the "Longlight weekly scan" routine. Each workflow's
   `name:` is "<Name> (<what it does>)".
+- **The key is locked to `main`.** Each robot job has `environment: robots`.
+  The `robots` Environment (Settings → Environments) holds
+  `ANTHROPIC_API_KEY` as an environment secret and its deployment branches
+  are set to `main` only, so a workflow on another branch (or a changed
+  copy of a robot in a pull request) is refused before it can read the key.
+  There must be no repository-level secret of the same name, or the lock
+  does nothing. Each run shows up under the repo's Deployments as "robots";
+  that is only a label. A new robot job needs the same line.
 - The three one-call robots (Coach, Devlog Writer, Release Writer) share `.github/scripts/claude.mjs` (`askClaude`:
   fetch to the Messages API, `output_config.effort`, a cache marker on the
   system block plus top-level `cache_control`, 4 tries on network errors,
