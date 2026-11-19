@@ -113,5 +113,20 @@
     "line": "The pull, bog, salt, boat and hill runs now load in the background.",
     "title": "v1.76.141.0 - the pull, bog, salt, boat and hill runs load in the background",
     "at": "2026-11-18T20:55:51.950Z"
+  },
+  "350Chev@v1.76.142.1": {
+    "line": "Save codes are now safer to paste in and load.",
+    "title": "v1.76.142.1 - a save code can no longer carry script (#319)",
+    "at": "2026-11-19T08:00:00.415Z"
+  },
+  "Scrapline@v0.1.68.2": {
+    "line": "Ultra's start-up add-ons now load with extra safety checks.",
+    "title": "v0.1.68.2 - Ultra's start-up add-ons load with their integrity fingerprints (#115)",
+    "at": "2026-11-19T08:00:00.415Z"
+  },
+  "BurnRate@v1.7.0.1": {
+    "line": "Backup codes are now safer to paste in and load.",
+    "title": "v1.7.0.1 - a backup code can no longer carry script (#33)",
+    "at": "2026-11-19T08:00:00.415Z"
   }
 }
