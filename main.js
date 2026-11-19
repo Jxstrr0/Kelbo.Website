@@ -5,7 +5,7 @@
    You shouldn't need to edit this file to add or change a project.
    Just edit projects.json. This script:
      1. loads projects.json
-     2. on the home page, shows every game in one sideways row, and puts
+     2. on the home page, shows every game in a grid with filter chips, and puts
         the number of games in the hero's line and button, and stands the
         spotlight game on the hero's horizon line (setUpSpotlight)
      3. on the projects page, shows every project with filter buttons
@@ -337,8 +337,10 @@ function fillList(listEl, projects, emptyMessage, animateCard) {
     listEl.append(el("li", "project-list__note", emptyMessage));
     return;
   }
+  // The home page's grid uses the short game card (renderGameCard).
+  const render = listEl.dataset.projects === "grid" ? renderGameCard : renderProject;
   projects.forEach((p, i) => {
-    const card = renderProject(p);
+    const card = render(p);
     card.style.setProperty("--i", i % 4); // stagger each row of cards
     listEl.append(card);
     if (animateCard) animateCard(card);
@@ -936,60 +938,118 @@ function openPlayer(project, opener) {
   frame.focus();
 }
 
-// Home page "Pick a game": every game in one sideways row of small
-// cards, in projects.json order. The cards are the normal ones
-// (renderProject); style.css (.project-list--row) hides the long parts.
-// The row scrolls by swipe, trackpad or arrow keys; on wider screens two
-// arrow buttons under it move it a screenful at a time.
-function setUpGameRow(listEl, projects) {
+// The one short line on a home game card: "tagline" in projects.json
+// (80 characters at most), or else the first sentence of "summary".
+function gameTagline(project) {
+  const tagline = String(project.tagline || "").trim();
+  if (tagline) return tagline;
+  const summary = String(project.summary || "").trim();
+  const first = summary.match(/^.*?[.!?](?=\s|$)/);
+  return first ? first[0] : summary;
+}
+
+// A short game card for the home grid: the normal card (renderProject)
+// with the title as the card's main link (to the game's own page), the
+// one-line tagline under the status, and Play with the version in the
+// bottom row. style.css (.project-list--grid) hides the long parts, and
+// on a phone the tagline and version too.
+function renderGameCard(project) {
+  const card = renderProject(project);
+  const title = project.title || "Untitled";
+
+  // Title → the game's page. Its stretched layer makes the whole card
+  // tappable (.project__main in style.css); "About this game" goes.
+  const heading = card.querySelector(".project__title");
+  const page = el("a", "project__main", title);
+  page.href = gamePage(title);
+  heading.replaceChildren(page);
+  card.querySelectorAll(".project__links .project__main").forEach((a) => a.remove());
+
+  const line = gameTagline(project);
+  if (line) card.querySelector(".project__meta").after(el("p", "project__tagline", line));
+
+  const play = card.querySelector(".project__links .button--play");
+  if (play) {
+    play.textContent = "Play";
+    play.setAttribute("aria-label", "Play " + title);
+  }
+  const version = String(project.version || "").trim().replace(/^v/i, "");
+  const links = card.querySelector(".project__links");
+  if (version && links) links.append(el("span", "project__ver", "v" + version));
+  return card;
+}
+
+// Which filter chip a game belongs to, from its status (STATUSES above):
+// out or live → Released; Polishing → Polishing; In development,
+// Prototype and Concept → Early builds. Anything else only shows in All.
+const GAME_GROUPS = ["Released", "Polishing", "Early builds"];
+function gameGroup(project) {
+  const status = findStatus(project.status);
+  if (status.stage === "out" || status.stage === "live") return "Released";
+  if (status.label === "Polishing") return "Polishing";
+  if (["In development", "Prototype", "Concept"].includes(status.label)) return "Early builds";
+  return "";
+}
+
+// Home page "Pick a game": every game in projects.json order (Kelbo's
+// ranking) as a grid of short cards, two across on a phone, with filter
+// chips over it ("All · 6", "Released · 3" ...). The counts come from the
+// data, a chip with nothing in it is left out, and the choice isn't
+// remembered. Tapping a chip filters with the Projects page's smooth
+// slide (refilter).
+function setUpGameGrid(listEl, projects) {
   const games = projects.filter(isGame);
   fillList(listEl, games, "No games yet.");
-  if (!games.length) return;
+  // Cards already on the first screen show at once: the scroll fade waits
+  // until a card is 8% up the screen, and the first row only peeks in.
+  [...listEl.children].forEach((card) => {
+    if (card.getBoundingClientRect().top < window.innerHeight) {
+      if (revealObserver) revealObserver.unobserve(card);
+      showNow(card);
+    }
+  });
+  const filtersEl = document.querySelector("[data-game-filters]");
+  const statusEl = document.querySelector("[data-game-filter-status]");
+  if (!filtersEl || !games.length) return;
 
-  // The whole row fades in together when it scrolls into view. Left to
-  // themselves the cards off to the side would wait, then rise in one by
-  // one during a swipe, which made the row jiggle.
-  if (revealObserver) {
-    const cards = [...listEl.children];
-    cards.forEach((card) => revealObserver.unobserve(card));
-    const rowObserver = new IntersectionObserver(
-      (entries) => {
-        if (!entries.some((entry) => entry.isIntersecting)) return;
-        cards.forEach(showNow);
-        rowObserver.disconnect();
-      },
-      { rootMargin: "0px 0px -8% 0px" }
-    );
-    rowObserver.observe(listEl);
+  const choices = ["All"].concat(GAME_GROUPS).filter(
+    (choice) => choice === "All" || games.some((g) => gameGroup(g) === choice)
+  );
+  if (choices.length < 3) return; // one group only: All already says it all
+
+  let taps = 0; // a quick second tap cancels the first one's animation
+  let current = "All";
+  function show(choice) {
+    if (choice === current) return;
+    current = choice;
+    const shown = choice === "All" ? games : games.filter((g) => gameGroup(g) === choice);
+    const tap = ++taps;
+    if (!REDUCE_MOTION && "animate" in Element.prototype) {
+      refilter(listEl, shown, "No games here yet.", () => tap === taps);
+    } else {
+      fillList(listEl, shown, "No games here yet.");
+    }
+    filtersEl.querySelectorAll("button").forEach((btn) => {
+      btn.setAttribute("aria-pressed", String(btn.dataset.group === choice));
+    });
+    if (statusEl) {
+      const noun = shown.length === 1 ? "game" : "games";
+      statusEl.textContent =
+        choice === "All" ? `Showing all ${shown.length} ${noun}.` : `Showing ${shown.length} ${noun}: ${choice}.`;
+    }
   }
 
-  // Keyboard users can focus the row and scroll it with the arrow keys.
-  listEl.tabIndex = 0;
-  listEl.setAttribute("aria-label", games.length + " games. Swipe sideways to see them all");
-
-  const nav = document.querySelector("[data-row-nav]");
-  if (!nav) return;
-  const prev = nav.querySelector("[data-row-prev]");
-  const next = nav.querySelector("[data-row-next]");
-  const count = nav.querySelector("[data-row-count]");
-  if (count) count.textContent = games.length + " games";
-  nav.hidden = false;
-
-  const step = (dir) => {
-    listEl.scrollBy({ left: dir * listEl.clientWidth * 0.8, behavior: REDUCE_MOTION ? "auto" : "smooth" });
-  };
-  prev.addEventListener("click", () => step(-1));
-  next.addEventListener("click", () => step(1));
-
-  // Grey out an arrow when the row is already at that end.
-  const update = () => {
-    const max = listEl.scrollWidth - listEl.clientWidth;
-    prev.disabled = listEl.scrollLeft <= 2;
-    next.disabled = listEl.scrollLeft >= max - 2;
-  };
-  listEl.addEventListener("scroll", update, { passive: true });
-  window.addEventListener("resize", update);
-  update();
+  choices.forEach((choice) => {
+    const count = choice === "All" ? games.length : games.filter((g) => gameGroup(g) === choice).length;
+    const btn = el("button");
+    btn.type = "button";
+    btn.dataset.group = choice;
+    btn.setAttribute("aria-pressed", String(choice === "All"));
+    btn.append(choice + " ", el("span", "game-filters__count", "· " + count));
+    btn.addEventListener("click", () => show(choice));
+    filtersEl.append(btn);
+  });
+  filtersEl.hidden = false;
 }
 
 // Section pages (Games, Trading, Tools): every project in one category, in
@@ -7483,7 +7543,7 @@ async function init() {
   writeJSON(GAME_COUNT_KEY, projects.filter(isGame).length);
   checkBadges();
   lists.forEach((listEl) => {
-    if (listEl.dataset.projects === "row") setUpGameRow(listEl, projects);
+    if (listEl.dataset.projects === "grid") setUpGameGrid(listEl, projects);
     else if (listEl.dataset.projects === "category") setUpCategory(listEl, projects);
     else if (listEl.dataset.projects === "news") setUpNews(listEl, projects);
     else if (listEl.dataset.projects === "press") setUpPress(listEl, projects);

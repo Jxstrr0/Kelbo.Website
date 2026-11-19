@@ -117,7 +117,7 @@ comments to find each part:
   line, the headline ("Deep games for small screens."), the line under it
   ("... made in Saskatoon by Kelbo", linked to your About page; the number
   of games is filled in by itself), the two buttons, and the live sun
-- `<!-- 2. Games -->`: the "Pick a game" cards (filled in from `projects.json`)
+- `<!-- 2. Games -->`: the "Pick a game" grid and its filter chips (filled in from `projects.json`)
 - `<!-- 3. Modes -->`: the Games / Trading / All tiles, each with a small drawing behind its words (the `<svg class="tile__art">`; its colours are in `style.css` under Mode tiles)
 - `<!-- 4. Contact -->`: the contact form, and your links in the card
   beside it
@@ -223,6 +223,9 @@ progress order.
   marked `true` are also the covers in the link preview picture.
 - **shortTitle** (optional): a short name for the home page's Play button
   on phones ("Play PEW"). Without it, the phone button just says "Play".
+- **tagline** (optional, games): the one short line on the game's card in
+  the home page's "Pick a game" grid (80 characters at most). Without it,
+  the card uses the first sentence of `summary`.
 - **clip** (optional): a short silent video on the game's own page, under
   "See it move": `"clip": "assets/clips/my-game.mp4"`, with a still picture
   of the same name ending `.jpg` beside it. Ask Claude to record one.
