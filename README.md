@@ -1045,14 +1045,18 @@ you open it.
   Claude (with web search) for the brief, saves it, commits it to `main`,
   and starts the **Deploy site** run so it goes live a few minutes later.
 - **The key:** it uses the Anthropic API, so the repo has one secret,
-  `ANTHROPIC_API_KEY`, under Settings → Secrets and variables → Actions.
-  The workflow only ever reads it from there. Never paste the key into a
-  file. If it ever leaks, make a new key on the Anthropic console and
-  replace the secret.
+  `ANTHROPIC_API_KEY`. It is kept in the **robots** Environment (Settings →
+  Environments → robots), which only the `main` branch may use, so a
+  workflow started from any other branch can't read it. Every robot's job
+  says `environment: robots`. Never paste the key into a file. If it ever
+  leaks, make a new key on the Anthropic console and replace the secret
+  there.
 - **Run it now:** Actions tab → Morning Writer (pre-market brief) → Run workflow. It skips
   the day if today's brief already exists; tick the box to rewrite it.
 - **If it fails:** the run shows a red ❌ with the reason. "Missing
-  ANTHROPIC_API_KEY" means the secret is gone or misnamed. An "API error
+  ANTHROPIC_API_KEY" means the secret is gone or misnamed. A run that
+  stops with "not allowed to deploy to robots" was started from a branch
+  other than `main`, which is the lock doing its job. An "API error
   401" means the key no longer works. A "push" error means Settings →
   Actions → General → Workflow permissions needs "Read and write".
 - **Changing it:** the watchlist, the rules and the layout of the brief are

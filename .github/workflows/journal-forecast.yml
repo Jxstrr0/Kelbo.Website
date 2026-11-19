@@ -49,6 +49,10 @@ jobs:
   forecast:
     name: Write next week's forecast
     runs-on: ubuntu-latest
+    # The job runs in the "robots" Environment (Settings → Environments). The
+    # API key is kept there and only main may use it, so a workflow on any
+    # other branch can't read the key.
+    environment: robots
     timeout-minutes: 350 # a batch can take a while; the script stops waiting at 320
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
