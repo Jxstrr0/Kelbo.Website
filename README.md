@@ -14,7 +14,7 @@ from their releases, then publishes the files as they are (see
 
 | File | What it's for |
 |---|---|
-| `index.html` | Home page: the Longlight Interactive name, game cards, Games / Trading / All tiles, contact |
+| `index.html` | Home page: the promise and the spotlight game on the live sky, the ticker strip, the "Pick a game" grid, and the studio row (Trading desk and the newest devlog post) |
 | `about.html` | The About page: your character sheet. The quest log under Status fills itself in from `projects.json` |
 | `projects.html` | The full projects page with status filters |
 | `whats-new.html` | The newest version and latest change for each project, built from `projects.json` (no dates, since the file has none) |
@@ -118,7 +118,7 @@ comments to find each part:
   ("... made in Saskatoon by Kelbo", linked to your About page; the number
   of games is filled in by itself), the two buttons, and the live sun
 - `<!-- 2. Games -->`: the "Pick a game" grid and its filter chips (filled in from `projects.json`)
-- `<!-- 4. Studio row -->`: "From the studio", two cards: the Trading desk
+- `<!-- 3. Studio row -->`: "From the studio", two cards: the Trading desk
   (the names of the Trading projects and the market light fill in by
   themselves) and the newest devlog post (picked from `devlog.json`)
 
