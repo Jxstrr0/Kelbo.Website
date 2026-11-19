@@ -7389,6 +7389,46 @@ function setUpDialogs() {
   });
 }
 
+// Home page studio row (the Horizon plan's PR 5): the Trading desk card
+// names the Trading projects (the market light is setUpMarketLight's), and
+// the Devlog card shows the newest post: its game's cover, the date, the
+// title and the first sentence, linking to that post on devlog.html. A
+// post about a game that isn't shown (hidden in projects.json) is
+// skipped, as on the devlog page. The HTML's words stay if anything fails.
+async function setUpStudioRow(projects) {
+  const names = document.querySelector("[data-trading-names]");
+  if (names) {
+    const trading = projects.filter((p) => inCategory(p, "Trading")).map((p) => p.title);
+    if (trading.length) names.textContent = trading.join(" · ");
+  }
+
+  const card = document.querySelector("[data-devlog-latest]");
+  if (!card) return;
+  const games = projects.filter(isGame);
+  const shown = new Set(games.map((g) => g.title));
+  const post = (await loadDevlog()).find((p) => !p.game || shown.has(p.game));
+  if (!post) return;
+  card.href = "devlog.html#" + devlogId(post);
+  card.querySelector("[data-devlog-latest-date]").textContent = " · " + devlogDate(post.date);
+  card.querySelector("[data-devlog-latest-title]").textContent = post.title || "Update";
+  const first = String(post.body || "").trim().split(/\n\s*\n/)[0] || "";
+  const sentence = first.match(/^.*?[.!?](?=\s|$)/);
+  card.querySelector("[data-devlog-latest-line]").textContent = sentence ? sentence[0] : first;
+  const game = post.game && games.find((g) => g.title === post.game);
+  const cover = card.querySelector("[data-devlog-latest-cover]");
+  if (game && game.image && cover) {
+    const img = el("img");
+    setPicture(img, game.image);
+    img.alt = ""; // decoration: the post title says what it's about
+    img.width = 640;
+    img.height = 480;
+    img.loading = "lazy";
+    img.decoding = "async";
+    cover.replaceChildren(img);
+    cover.hidden = false;
+  }
+}
+
 // The spotlight: one game standing on the home hero's horizon line, with
 // its cover, version and latest update, and the hero's Play button
 // pointed at it. Which game: the first one in projects.json with
@@ -7539,6 +7579,7 @@ async function init() {
   fillCategoryCounts(projects);
   fillGameCount(projects);
   setUpSpotlight(projects);
+  setUpStudioRow(projects);
   // For the Completionist badge: how many games there are to play.
   writeJSON(GAME_COUNT_KEY, projects.filter(isGame).length);
   checkBadges();

@@ -118,9 +118,12 @@ comments to find each part:
   ("... made in Saskatoon by Kelbo", linked to your About page; the number
   of games is filled in by itself), the two buttons, and the live sun
 - `<!-- 2. Games -->`: the "Pick a game" grid and its filter chips (filled in from `projects.json`)
-- `<!-- 3. Modes -->`: the Games / Trading / All tiles, each with a small drawing behind its words (the `<svg class="tile__art">`; its colours are in `style.css` under Mode tiles)
-- `<!-- 4. Contact -->`: the contact form, and your links in the card
-  beside it
+- `<!-- 4. Studio row -->`: "From the studio", two cards: the Trading desk
+  (the names of the Trading projects and the market light fill in by
+  themselves) and the newest devlog post (picked from `devlog.json`)
+
+The contact form has its own page, `contact.html`, linked as "Say hello" at
+the start of every page's footer.
 
 Everything about you is on its own page, `about.html`: your character
 sheet (the purple header with Class, Home base and Studio, then Backstory,
@@ -362,9 +365,8 @@ Say you want a "Music" section next to Games, Trading, and Tools:
 1. Copy `tools.html` to `music.html`. Change the `<title>`, the description,
    the `<h1>` and intro line, and `data-category="Tool"` to
    `data-category="Music"`.
-2. In `index.html`, copy one of the tiles under `<!-- 3. Modes -->` and
-   change its link, name, line, drawing, and `data-category-count="Music"`.
-   Add `"Music"` to `KNOWN_CATEGORY` in `.github/scripts/check-site.mjs`.
+2. Add `"Music"` to `KNOWN_CATEGORY` in `.github/scripts/check-site.mjs`,
+   and add `music.html` to `sitemap.xml` and to `CORE` in `sw.js`.
 3. Optionally add it to the menu (`<ul class="nav">`) in every page. Keep the
    menu short so it fits on one line on a phone (it holds four items now).
 
@@ -863,7 +865,7 @@ and open http://localhost:8000.
 
 ## The contact form
 
-The form under "Get in touch" on the home page sends messages to
+The form on the contact page (`contact.html`, "Say hello" in every footer) sends messages to
 Longlight's own little Cloudflare Worker at `contact.longlight.games`, which
 emails them to you with Cloudflare Email Routing (free). No outside form
 service. Your email address isn't anywhere on the site or in this repo: it
