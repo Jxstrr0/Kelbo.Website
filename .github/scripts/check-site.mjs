@@ -113,6 +113,8 @@ if (projects !== undefined) {
       if (p.featured !== undefined && typeof p.featured !== "boolean") error("projects.json", `${name}: "featured" should be true or false (no quotes).`);
       // "shortTitle": the home page's phone Play button ("Play PEW"), so keep it short
       if (p.shortTitle !== undefined && (typeof p.shortTitle !== "string" || !p.shortTitle.trim() || p.shortTitle.length > 12)) error("projects.json", `${name}: "shortTitle" should be a short name in quotes (12 letters at most).`);
+      // "tagline": the one short line on the home page's game cards
+      if (p.tagline !== undefined && (typeof p.tagline !== "string" || !p.tagline.trim() || p.tagline.length > 80)) error("projects.json", `${name}: "tagline" should be one short line in quotes (80 characters at most).`);
       if (p.title) {
         if (seen.has(p.title)) error("projects.json", `${name} is listed twice.`);
         seen.add(p.title);

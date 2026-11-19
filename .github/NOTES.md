@@ -15,7 +15,7 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   dropped. The Site check also rejects a `now.json` link that isn't one.
 - `projects.json` is the single source of truth for projects. `main.js`
   renders it. Its order is the display order everywhere (Games, Projects,
-  What's new, home swipe row, "More games"): Kelbo's own ranking, games
+  What's new, the home grid, "More games"): Kelbo's own ranking, games
   first. Shown games (Kelbo, 2026-11-15): Prairie Engine Works, Scrapline,
   Season Ticket, Funded, Lombard, Burn Rate; the hidden games
   follow. Nothing sorts by progress except the
@@ -38,7 +38,7 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   under 90 KB): `renderProject` makes a closed
   `<details class="shots">` "Screenshots (N)" with a scroll-snap strip of
   lazy images, all `12rem` tall so portrait and landscape mix. Hidden on
-  the home swipe row by CSS; the What's new rows don't show it.
+  the home grid by CSS; the What's new rows don't show it.
 - A game can carry a `clip` (`assets/clips/<slug>.mp4`, silent H.264,
   360×720, about 14 seconds, under 400 KB, with a same-named `.jpg` still
   beside it). `setUpGame` shows it under "See it move" as a `<video>` with
@@ -800,15 +800,22 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   pass is done; Scrapline's is a live fight with the UI hidden: Splinter and Türkeil
   locked together in the corner by the SCRAPLINE boards. This site only links to
   them via `link` (the pink Play it button) and `code` (the repo). The home
-  page "Pick a game" is a swipe row (2026-11-09): `setUpGameRow` fills
-  `.project-list--row` (`data-projects="row"`) with every game in
-  projects.json order, as normal `renderProject` cards whose summary,
-  version line, progress bar, code link and screenshots are hidden by CSS.
-  Scroll-snap, bleeds to the screen edges, focusable for arrow keys;
-  `[data-row-nav]` arrows show from 40rem up. The row is `overflow-y:
-  hidden` (on `auto` it slid and bounced up and down inside itself on an
-  iPhone) and its cards reveal together when the row comes into view (one
-  observer on the row, not one per card). `featured` picks the
+  page "Pick a game" is a grid (the Horizon plan's PR 4, 2026-11-19; it was
+  a swipe row from 2026-11-09): `setUpGameGrid` fills
+  `.project-list--grid` (`data-projects="grid"`) with every game in
+  projects.json order. `fillList` builds its cards with `renderGameCard`:
+  a normal `renderProject` card whose title becomes the card's main link
+  (the game page; "About this game" goes), with `gameTagline` (the
+  optional `tagline`, ≤ 80 characters, else the summary's first sentence)
+  under the status and the version (`.project__ver`) beside Play. CSS
+  hides the rest; on a phone (two across) the tagline and version too.
+  `auto-fill, minmax(15.5rem, 1fr)` from 40rem. Filter chips
+  (`[data-game-filters]`, `.filters` buttons with `aria-pressed`) from
+  `gameGroup`: stage out/live → Released, Polishing, and In development /
+  Prototype / Concept → Early builds; empty groups get no chip, and the
+  choice isn't remembered. They reuse `refilter`, and say what's shown in
+  `[data-game-filter-status]` (a polite live region). Cards already on the
+  first screen show at once instead of waiting for the scroll fade. `featured` picks the
   home spotlight (below) and records the four covers in the link preview.
   `hidden: true` drops a project everywhere: both `projects.json` loads in
   `main.js` filter it out, `make-game-pages.mjs` makes no page for it, and

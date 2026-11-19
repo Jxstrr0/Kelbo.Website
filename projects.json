@@ -1,6 +1,7 @@
 [
   {
     "title": "Prairie Engine Works",
+    "tagline": "Build an engine part by part, put it on the dyno, then go racing.",
     "art": "assets/art/prairie-engine-works.jpg",
     "film": "assets/films/prairie-engine-works.mp4",
     "status": "Released",
@@ -48,6 +49,7 @@
   },
   {
     "title": "Scrapline",
+    "tagline": "Build a combat robot under the weight limit and fight it in the arena.",
     "film": "assets/films/scrapline.mp4",
     "status": "Polishing",
     "category": "Game",
@@ -94,6 +96,7 @@
   },
   {
     "title": "Season Ticket",
+    "tagline": "Own a football club and change tactics while the match plays.",
     "status": "Released",
     "category": "Game",
     "summary": "A soccer club management game set in Valmere, a made-up northern country. Own a club in the 16-team Kestrel Football League: run the business from your own 3D office, build the squad and the stadium, and change tactics while you watch the match. Play a whole career, on your phone, even offline.",
@@ -143,6 +146,7 @@
   },
   {
     "title": "Funded",
+    "tagline": "Pass a prop-firm challenge without breaking the daily loss limit.",
     "status": "Polishing",
     "category": "Game",
     "summary": "A prop-firm trading game. The firm gives you $25,000 and five days: hit the target without breaking the daily loss limit or the drawdown floor. Pass to climb to the $50k futures desk, then $100k options, picking edge cards for the career as you go.",
@@ -183,6 +187,7 @@
   },
   {
     "title": "Lombard",
+    "tagline": "Run a canal-side pawn shop: inspect, spot the fakes, haggle.",
     "art": "assets/art/lombard.jpg",
     "status": "Polishing",
     "category": "Game",
@@ -229,6 +234,7 @@
   },
   {
     "title": "Burn Rate",
+    "tagline": "Design a solid rocket motor to spec, fire it, learn why it missed.",
     "status": "Released",
     "category": "Game",
     "summary": "A rocket motor design game. Rent a stand on an old state test range, design a solid motor to a client's spec, predict its curve, then fire it and find out why the real one didn't match.",
@@ -274,6 +280,7 @@
   },
   {
     "title": "Frontier Lab",
+    "tagline": "Found an AI lab and grow it across the world's tech capitals.",
     "hidden": true,
     "status": "Polishing",
     "category": "Game",
@@ -307,6 +314,7 @@
   },
   {
     "title": "Quench",
+    "tagline": "Heat, hammer and quench a blade, then find out what you made.",
     "hidden": true,
     "status": "Polishing",
     "category": "Game",
@@ -319,6 +327,7 @@
   },
   {
     "title": "Hull Down",
+    "tagline": "Design a tank against a weight limit and send it to trial.",
     "hidden": true,
     "status": "Prototype",
     "category": "Game",
@@ -330,6 +339,7 @@
   },
   {
     "title": "Laminar",
+    "tagline": "Prove a shape in the wind tunnel, then see if the tunnel was right.",
     "hidden": true,
     "status": "In development",
     "category": "Game",
@@ -363,6 +373,7 @@
   },
   {
     "title": "The Whip",
+    "tagline": "Climb from rookie MP to Chief Whip. Every MP remembers your promises.",
     "hidden": true,
     "status": "Released",
     "category": "Game",

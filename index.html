@@ -224,12 +224,14 @@
       </div>
     </dialog>
 
-    <!-- 3. Games: one sideways row of small cards, every game in
-         projects.json in its order there. Swipe (or use the arrows on a
-         computer) to see them all. main.js fills this list. -->
+    <!-- 3. Games: a grid of every game in projects.json, in its order
+         there, with filter chips (All, Released, Polishing, Early builds)
+         whose counts come from the data. main.js fills both
+         (setUpGameGrid). -->
     <section class="section wrap" aria-labelledby="games-heading">
-      <div class="section__head">
+      <div class="section__head section__head--games">
         <h2 id="games-heading">Pick a game</h2>
+        <div class="filters game-filters" role="group" aria-label="Filter games" data-game-filters hidden></div>
         <a class="more-link" href="games.html">All games <span aria-hidden="true">&rarr;</span></a>
       </div>
 
@@ -250,15 +252,10 @@
         </div>
       </div>
 
-      <ul class="project-list project-list--row" data-projects="row">
+      <ul class="project-list project-list--grid" data-projects="grid">
         <li class="project-list__note">Loading games&hellip;</li>
       </ul>
-      <!-- Arrow buttons for the row: main.js shows them on wider screens -->
-      <p class="row-nav" data-row-nav hidden>
-        <button class="row-nav__btn" type="button" data-row-prev aria-label="Earlier games">&larr;</button>
-        <span class="row-nav__count" data-row-count></span>
-        <button class="row-nav__btn" type="button" data-row-next aria-label="More games">&rarr;</button>
-      </p>
+      <p class="visually-hidden" data-game-filter-status aria-live="polite"></p>
       <noscript>
         <p>Turn on JavaScript to see the games, or <a href="games.html">open the games page</a>.</p>
       </noscript>

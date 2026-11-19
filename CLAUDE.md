@@ -221,7 +221,8 @@ that part, and update it when how something works changes. The short map:
 - **Home page:** the spotlight game on the horizon (first `featured` game),
   ticker strip under it (Now building from `now.json`, Sky and Badges chips
   that open dialogs), Continue
-  card, four tiles, contact form (our own `contact-form` Cloudflare Worker,
+  card, the "Pick a game" grid (every game, `tagline`, filter chips),
+  four tiles, contact form (our own `contact-form` Cloudflare Worker,
   `.github/worker/contact-form.js`; Kelbo's email lives only in its
   Cloudflare settings, never in the site or repo).
 - **Offline:** `sw.js` precaches `CORE`; it only ever deletes `longlight-*`
