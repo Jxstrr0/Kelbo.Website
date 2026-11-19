@@ -1,5 +1,6 @@
-// Contact form Worker: takes a message from the home page's contact form and
-// emails it to Kelbo with Cloudflare Email Routing. No outside form service.
+// Contact form Worker: takes a message from the site's contact form
+// (contact.html, "Say hello" in every footer) and emails it to Kelbo with
+// Cloudflare Email Routing. No outside form service.
 //
 // This copy is the reference. The live one is the contact-form Worker in
 // Cloudflare (Workers & Pages > contact-form), served at
@@ -66,8 +67,8 @@ export default {
     }
 
     if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: { ...cors, "Access-Control-Allow-Methods": "POST", "Access-Control-Allow-Headers": "Accept" } });
-    // Someone opening the bare address in a browser is sent to the form on the site.
-    if (request.method === "GET" || request.method === "HEAD") return Response.redirect("https://longlight.games/#contact-heading", 302);
+    // Someone opening the bare address in a browser is sent to the contact page.
+    if (request.method === "GET" || request.method === "HEAD") return Response.redirect("https://longlight.games/contact.html", 302);
     // Any other method that isn't a form post gets a plain 404.
     if (request.method !== "POST") return new Response("Not found", { status: 404 });
     if (!allowed) return refuse("wrong origin", "Please send your message from longlight.games.", 403);

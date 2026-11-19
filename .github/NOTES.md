@@ -1244,10 +1244,10 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   emails Kelbo through Cloudflare Email Routing (`send_email` binding
   `EMAIL`, locked to his verified address, plus a `TO` variable). His
   address lives only in those Worker settings; never put it in the site or
-  repo. Opening the address in a browser (GET or HEAD) forwards to the
-  home page's old form anchor (`#contact-heading`, which now just opens
-  the home page; pointing it at `contact.html` means redeploying the live
-  Worker, which waits on Kelbo); any other method but a POST
+  repo. Opening the address in a browser (GET or HEAD) forwards to
+  `https://longlight.games/contact.html` (redeployed 2026-11-19 with
+  Kelbo's yes: code only, through the Worker's content upload, so its
+  settings stayed as they were); any other method but a POST
   (or the CORS OPTIONS check) gets a plain 404.
   It only takes posts whose `Origin` is https://longlight.games (403
   otherwise), drops posts with the `botcheck` honeypot ticked (fake
