@@ -3213,6 +3213,250 @@ img {
   color: var(--accent-ink);
 }
 
+/* ---------- The ticker (home hero) ----------
+   One strip along the bottom of the home hero, under the ground: Now
+   building, "Sky:" and "Badges", the last two opening dialogs (main.js,
+   setUpDialogs). A deeper shade of the ground with a line on top like the
+   horizon's, so it follows the theme and the sunset warm-up. Wraps on a
+   computer; one sideways-scrolling row on a phone. */
+.ticker {
+  position: relative;
+  z-index: 1;
+  border-top: 3px solid var(--horizon);
+  background: color-mix(in srgb, var(--ground), var(--ll-slate) 30%);
+  color: var(--sky-ink);
+  transition: background-color 600ms var(--ease);
+}
+
+/* It needs JavaScript, so it only shows once the <head> script has added
+   the "js" class. It shows from the first frame at its full height, so
+   nothing below moves when main.js fills it in. */
+:root:not(.js) .ticker {
+  display: none;
+}
+
+.ticker__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  min-height: 3.25rem;
+  padding-block: 0.25rem;
+}
+
+@media (min-width: 40rem) {
+  .ticker__row {
+    padding-block: 0.6rem;
+  }
+}
+
+.ticker__now {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.75rem;
+}
+
+.ticker__now[hidden] {
+  display: none;
+}
+
+.ticker .ticker__label {
+  margin: 0;
+  color: var(--sky-ink);
+  white-space: nowrap;
+}
+
+.ticker__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* The Now building links and the Sky and Badges buttons share one look:
+   a pill on the dark band, at least 44px tall for a thumb. */
+.ticker .now__item,
+.ticker__chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0 0.9rem;
+  border: 1.5px solid rgba(250, 249, 245, 0.28);
+  border-radius: 999px;
+  background: rgba(250, 249, 245, 0.06);
+  color: var(--sky-ink);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.ticker .now__item a {
+  color: inherit;
+  text-decoration-color: var(--ll-clay);
+}
+
+.ticker__chip {
+  gap: 0.35rem;
+  cursor: pointer;
+  transition: background-color 200ms;
+}
+
+.ticker__chip:hover {
+  background: rgba(250, 249, 245, 0.14);
+}
+
+.ticker__chip:focus-visible {
+  outline: 3px solid var(--ll-lilac);
+  outline-offset: 2px;
+}
+
+/* "Sky:" and "Badges": the small caps key in front of each chip */
+.ticker__key {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sky-muted);
+}
+
+/* An empty chip keeps its line while main.js fills it in */
+[data-sky-week-next]:empty::before,
+[data-badges-count]:empty::before {
+  content: "\2026"; /* … */
+}
+
+.ticker__chip--badges {
+  margin-left: auto; /* pushed to the right end on a computer */
+  font-variant-numeric: tabular-nums;
+}
+
+/* On a phone: one row that scrolls sideways under a finger (no
+   scrollbar), running edge to edge. */
+@media (max-width: 39.99rem) {
+  .ticker__row {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    padding-inline: var(--gutter);
+    scroll-padding-inline: var(--gutter);
+  }
+
+  .ticker__row::-webkit-scrollbar {
+    display: none;
+  }
+
+  .ticker__now,
+  .ticker__list {
+    flex-wrap: nowrap;
+  }
+
+  .ticker__now,
+  .ticker__chip {
+    flex: none;
+  }
+
+  .ticker__chip--badges {
+    margin-left: 0;
+  }
+}
+
+/* ---------- The home page's dialogs (Sky this week, Your badges) ----------
+   A card over a dimmed page, opened from the ticker. On a phone it rises
+   from the bottom like a sheet. Closes with its × button, Esc, or a tap
+   on the dimmed part (main.js, setUpDialogs). */
+.sheet-dialog {
+  width: min(34rem, calc(100vw - 2rem));
+  max-height: min(80vh, 40rem);
+  padding: 0;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--card);
+  color: var(--ink);
+  box-shadow: 0 24px 60px rgba(20, 20, 19, 0.35);
+}
+
+.sheet-dialog::backdrop {
+  background: rgba(20, 20, 19, 0.55);
+}
+
+.sheet-dialog__inner {
+  padding: 1rem 1.25rem 1.25rem;
+}
+
+.sheet-dialog__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.sheet-dialog__head h2 {
+  margin: 0;
+  font-size: 1.35rem;
+}
+
+.sheet-dialog__close {
+  flex: none;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin-right: -0.5rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.sheet-dialog__close:hover {
+  background: var(--secondary-soft);
+}
+
+.sheet-dialog__close:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 0;
+}
+
+.sheet-dialog .sky-week__list {
+  margin-top: 0.25rem;
+}
+
+.sheet-dialog .badges__list {
+  margin-top: 0.75rem;
+}
+
+@media (max-width: 39.99rem) {
+  .sheet-dialog {
+    width: 100%;
+    max-width: 100%;
+    margin: auto 0 0;
+    border-radius: var(--radius) var(--radius) 0 0;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .sheet-dialog[open] {
+    animation: sheet-in 260ms var(--ease);
+  }
+
+  @keyframes sheet-in {
+    from {
+      opacity: 0;
+      transform: translateY(1.5rem);
+    }
+  }
+}
+
 /* ---------- "Now building" strip ----------
    A row of pills with what's on the bench this week, from now.json.
    main.js shows it once the file loads; it stays hidden otherwise. */

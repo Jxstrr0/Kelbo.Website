@@ -19,7 +19,9 @@
      9. remembers the last game you opened and offers "Continue?"
     10. lights up "Market open" on the Trading tile during NYSE hours
     11. warms the sky toward clay in the 20 minutes before sunset
-    12. fills the "Now building" strip on the home page from now.json
+    12. fills the hero's ticker strip on the home page: Now building (from
+        now.json), the next thing in the sky and the badge count, with Sky
+        and Badges opening their full lists in dialogs (setUpDialogs)
     13. stretches the hero's ray with the season, and shows a badge on the
         longest and shortest days of the year
     14. fills game.html (one game's own page, game.html?g=the-whip) from
@@ -6429,14 +6431,16 @@ function showWishes(node) {
   );
 }
 
-const SKY_WEEK_OPEN_KEY = "kelbo.skyWeekOpen";
-
+// The full list lives in the "Sky this week" dialog; its first line also
+// shows in the hero's ticker strip ("Sky: Tonight: Saturn is up after
+// dark"), which opens the dialog. (The old folding box remembered open or
+// closed in "kelbo.skyWeekOpen"; that's no longer read.)
 function setUpSkyWeek() {
   const box = document.querySelector("[data-sky-week]");
   if (!box) return;
   const list = box.querySelector("[data-sky-week-list]");
   const note = box.querySelector("[data-sky-week-note]");
-  const next = box.querySelector("[data-sky-week-next]");
+  const next = document.querySelector("[data-sky-week-next]");
   const draw = () => {
     list.replaceChildren(...skyWeek(now()).map((e) => {
       const row = el("li", "sky-week__item");
@@ -6459,29 +6463,14 @@ function setUpSkyWeek() {
     if (cloudCast) words += " Cloud forecast from Open-Meteo.";
     if (kpCast) words += " Northern lights forecast from NOAA.";
     if (note) note.textContent = words;
-    // The folded box shows the first thing coming up as its one line
+    // The ticker shows the first thing coming up as its one line
     const first = list.firstElementChild;
     if (next && first) next.textContent = first.children[0].textContent + ": " + first.children[1].firstChild.textContent;
   };
-  // The box folds to that one line; remember whether it was left open.
-  try {
-    box.open = localStorage.getItem(SKY_WEEK_OPEN_KEY) === "1";
-    box.addEventListener("toggle", () => {
-      try {
-        localStorage.setItem(SKY_WEEK_OPEN_KEY, box.open ? "1" : "0");
-      } catch (e) {
-        /* storage blocked: it just won't be remembered */
-      }
-    });
-  } catch (e) {
-    /* storage blocked: stays folded */
-  }
   // After the page has drawn, so it doesn't hold up the opening spin
   setTimeout(() => {
     draw();
     showWishes(box.querySelector("[data-wishes]"));
-    box.hidden = false;
-    reveal(box);
     // Again once the station's orbit and the forecasts are in
     Promise.allSettled([loadIss(), loadClouds(), loadKpCast()]).then(draw);
   }, 0);
@@ -6630,7 +6619,8 @@ async function setUpNow() {
     console.error("Couldn't load now.json:", err);
     return;
   }
-  const items = Array.isArray(data.items) ? data.items.filter((it) => it && it.text) : [];
+  // The hero's ticker has room for the first two
+  const items = Array.isArray(data.items) ? data.items.filter((it) => it && it.text).slice(0, 2) : [];
   if (items.length === 0) return;
 
   const list = box.querySelector("[data-now-list]");
@@ -6823,7 +6813,8 @@ function spot(what) {
   checkBadges();
 }
 const BADGES_KEY = "kelbo.badges";     // { "first-game": time earned, ... }
-const BADGES_OPEN_KEY = "kelbo.badgesOpen"; // whether the badges box was left open
+// (The old folding badges box remembered open or closed in
+// "kelbo.badgesOpen"; that's no longer read. The list is a dialog now.)
 const PLAYED_KEY = "kelbo.played";     // titles of the games opened
 const DAYS_KEY = "kelbo.days";         // the last few days visited, "2026-10-24"
 const PAGES_KEY = "kelbo.pages";       // which section pages were opened
@@ -6951,8 +6942,9 @@ function showBadges() {
   if (!box) return;
   const earned = readJSON(BADGES_KEY) || {};
   const got = BADGES.filter((b) => earned[b.id]).length;
-  box.querySelector("[data-badges-count]").textContent =
-    `${got} of ${BADGES.length} earned` + (got === 0 ? " · open to see how" : "");
+  // The count in the hero's ticker strip: "Badges 2 of 16"
+  const count = document.querySelector("[data-badges-count]");
+  if (count) count.textContent = `${got} of ${BADGES.length}`;
   const list = box.querySelector("[data-badges-list]");
   list.replaceChildren();
   // Earned ones first, then the rest in order.
@@ -6977,12 +6969,6 @@ function setUpBadges() {
   const pages = readJSON(PAGES_KEY) || [];
   if (!pages.includes(page) && (EXPLORER_PAGES.includes(page) || page === "devlog.html")) {
     writeJSON(PAGES_KEY, pages.concat(page));
-  }
-  // The box folds to its count line; remember whether it was left open.
-  const box = document.querySelector("[data-badges]");
-  if (box) {
-    box.open = localStorage.getItem(BADGES_OPEN_KEY) === "1";
-    box.addEventListener("toggle", () => localStorage.setItem(BADGES_OPEN_KEY, box.open ? "1" : "0"));
   }
   checkBadges();
   // Golden hour, sunrise and dark can arrive while the page is open.
@@ -7315,6 +7301,34 @@ function setUpSound() {
   });
 }
 
+// The home page's two dialogs, Sky this week and Your badges, opened from
+// the chips in the hero's ticker strip (data-dialog-open="sky-week" opens
+// the <dialog data-dialog="sky-week">). The close button, Esc and a tap
+// outside the box all close it, and the chip gets the focus back.
+function setUpDialogs() {
+  document.querySelectorAll("[data-dialog-open]").forEach((chip) => {
+    const dialog = document.querySelector(`dialog[data-dialog="${chip.dataset.dialogOpen}"]`);
+    if (!dialog || typeof dialog.showModal !== "function") {
+      chip.hidden = true; // a very old browser: no dialogs, so no chip
+      return;
+    }
+    chip.addEventListener("click", () => {
+      dialog.showModal();
+      chip.setAttribute("aria-expanded", "true");
+    });
+    dialog.addEventListener("close", () => {
+      chip.setAttribute("aria-expanded", "false");
+      chip.focus();
+    });
+    dialog.querySelectorAll("[data-dialog-close]").forEach((b) => b.addEventListener("click", () => dialog.close()));
+    // A tap on the dimmed backdrop lands on the <dialog> itself (the box's
+    // contents are all inside .sheet-dialog__inner), so that closes it.
+    dialog.addEventListener("click", (event) => {
+      if (event.target === dialog) dialog.close();
+    });
+  });
+}
+
 // The spotlight: one game standing on the home hero's horizon line, with
 // its cover, version and latest update, and the hero's Play button
 // pointed at it. Which game: the first one in projects.json with
@@ -7410,6 +7424,7 @@ async function init() {
   setUpBriefAlert();
   setUpContactForm();
   setUpNow();
+  setUpDialogs();
   setUpDevlog();
   setUpBadges();
   setUpCoverTilt();
