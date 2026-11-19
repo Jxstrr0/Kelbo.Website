@@ -108,6 +108,8 @@ if (projects !== undefined) {
       }
       // Games use four numbers, Major.Minor.Patch.Build ("1.6.0.0").
       if (p.category === "Game" && typeof p.version === "string" && p.version.trim() && !/^v?\d+\.\d+\.\d+\.\d+$/i.test(p.version.trim())) warn("projects.json", `${name}: game versions use four numbers, Major.Minor.Patch.Build (like "1.6.0.0"), not "${p.version}".`);
+      // A version is written into pages and the feed, so it may only be numbers and dots.
+      if (typeof p.version === "string" && p.version.trim() && !/^v?\d+(\.\d+)*$/i.test(p.version.trim())) error("projects.json", `${name}: the version may only hold numbers and dots (like "1.6.0.0").`);
       if (typeof p.version === "string" && /^v/i.test(p.version)) warn("projects.json", `${name}: write the version without the "v" ("${p.version.slice(1)}"), the site adds it.`);
       if (p.hidden !== undefined && typeof p.hidden !== "boolean") error("projects.json", `${name}: "hidden" should be true or false (no quotes).`);
       if (p.featured !== undefined && typeof p.featured !== "boolean") error("projects.json", `${name}: "featured" should be true or false (no quotes).`);
@@ -435,6 +437,49 @@ if (!exists(".well-known/security.txt")) {
   const daysLeft = expires ? (Date.parse(expires[1]) - Date.now()) / 86400000 : NaN;
   if (!(daysLeft > 0)) error(".well-known/security.txt", "The Expires date is missing or has passed. Set it to about a year from now.");
   else if (daysLeft < 45) warn(".well-known/security.txt", `The Expires date is ${Math.round(daysLeft)} days away. Set it to about a year from now.`);
+}
+
+// ---------------------------------------------------------------------
+// Links in the briefs. briefs/*.md is written by a robot from what it
+// read on the web, and the brief page turns [words](https://...) into a
+// link. An address has no business holding < > or a quote: that is what
+// an attempt to break out of the link looks like, so it never gets saved.
+// ---------------------------------------------------------------------
+for (const f of files.filter((f) => extname(f) === ".md" && rel(f).split(/[\\/]/)[0] === "briefs")) {
+  for (const m of readFileSync(f, "utf8").matchAll(/\[[^\]]+\]\((https?:\/\/[^\s)]+)\)/g)) {
+    if (/[<>"'`]/.test(m[1])) { error(rel(f), "A link's address holds a <, a > or a quote mark. Web addresses write those as % codes (%3C, %3E, %22, %27); a plain one is not a real link."); break; }
+  }
+}
+
+// ---------------------------------------------------------------------
+// The feed. feed.xml is made by the deploy (make-feed.mjs), so this part
+// only runs on the deploy copy. A feed reader throws the whole feed away
+// if the file isn't well-formed XML, so it is read here the strict way:
+// no characters XML forbids, every "&" a proper code, every tag closed
+// in order.
+// ---------------------------------------------------------------------
+function feedProblem(xml) {
+  if (/[\u0000-\u0008\u000B\u000C\u000E-\u001F\uFFFE\uFFFF]/.test(xml)) return "it holds a control character, which XML does not allow";
+  const body = xml.replace(/^\uFEFF?<\?xml[^?]*\?>\s*/, "");
+  const open = [];
+  let at = 0;
+  const text = (t) => (/</.test(t) ? "a stray \"<\"" : /&(?!(amp|lt|gt|quot|apos|#\d+|#x[0-9a-fA-F]+);)/.test(t) ? "an \"&\" that isn't written as a code" : "");
+  for (const m of body.matchAll(/<(\/?)([A-Za-z_][\w:.-]*)((?:\s+[\w:.-]+="[^"<]*")*)\s*(\/?)>/g)) {
+    const between = text(body.slice(at, m.index));
+    if (between) return `${between} before <${m[1]}${m[2]}>`;
+    at = m.index + m[0].length;
+    for (const a of m[3].matchAll(/="([^"]*)"/g)) if (text(a[1])) return `${text(a[1])} inside <${m[2]}>`;
+    if (m[1]) { if (open.pop() !== m[2]) return `</${m[2]}> closes a tag that isn't open`; }
+    else if (!m[4]) open.push(m[2]);
+  }
+  if (text(body.slice(at)) || body.slice(at).trim()) return "there is text after the last tag";
+  if (open.length) return `<${open.pop()}> is never closed`;
+  if (!/^<rss[\s>]/.test(body)) return "it doesn't start with <rss>";
+  return "";
+}
+if (exists("feed.xml")) {
+  const problem = feedProblem(readFileSync(join(ROOT, "feed.xml"), "utf8"));
+  if (problem) error("feed.xml", `The feed isn't well-formed XML, so feed readers would show nothing: ${problem}.`);
 }
 
 // ---------------------------------------------------------------------

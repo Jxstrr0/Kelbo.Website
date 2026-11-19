@@ -59,6 +59,19 @@ function escapeHtml(text) {
     .replace(/"/g, "&quot;");
 }
 
+// A link's address, made safe to sit inside href="...". It arrives already
+// escaped (so "<" is "&lt;"); those codes and the characters | ' ` become
+// % codes, which a browser reads as the same address.
+function safeHref(url) {
+  return url
+    .replace(/&lt;/g, "%3C")
+    .replace(/&gt;/g, "%3E")
+    .replace(/&quot;/g, "%22")
+    .replace(/'/g, "%27")
+    .replace(/`/g, "%60")
+    .replace(/\|/g, "%7C");
+}
+
 // The bits inside a line: `code`, **bold**, *italics*, [links](https://...).
 // The text is escaped first, so the only tags that come out are these.
 function inline(text) {
@@ -70,8 +83,11 @@ function inline(text) {
   s = s.replace(
     /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,
     // "|" is written as %7C (the same address to a browser) so the
-    // Watchlist's "|" columns can never split a link in two.
-    (_, label, url) => `<a href="${url.replace(/\|/g, "%7C")}" target="_blank" rel="noopener">${label}</a>`
+    // Watchlist's "|" columns can never split a link in two. For the same
+    // reason < > and quotes are written as their % codes: an address must
+    // never hold anything that could be read as a tag when a later step
+    // re-reads the page's markup.
+    (_, label, url) => `<a href="${safeHref(url)}" target="_blank" rel="noopener">${label}</a>`
   );
   return s;
 }
@@ -640,30 +656,50 @@ const CALL_FIELDS = [
 const CALL_ORDER = ["gap", "ladder", "pre", "levels", "drivers", "bull", "bear", "news", "last"];
 const CALL_LABELS = { last: "Last session's call", ladder: "Price ladder" }; // friendlier names
 
+// The lines of one paragraph, each a list of its nodes (renderMarkdown puts
+// a <br> between lines). The nodes themselves are handed on: the page's
+// markup is never cut into pieces of text and read back in, because a
+// piece cut in the wrong place can come back as a tag nobody wrote.
+function linesOf(paragraph) {
+  const lines = [[]];
+  for (const node of [...paragraph.childNodes]) {
+    if (node.nodeName === "BR") lines.push([]);
+    else lines[lines.length - 1].push(node);
+  }
+  return lines;
+}
+// True when a line has something to show (not just spaces).
+const hasWords = (nodes) => nodes.some((n) => n.textContent.trim());
+// A "brief__value" paragraph holding these nodes, without spaces at its start.
+function valueOf(nodes) {
+  const value = el("p", "brief__value");
+  if (nodes[0].nodeType === Node.TEXT_NODE) nodes[0].textContent = nodes[0].textContent.replace(/^\s+/, "");
+  value.append(...nodes);
+  return value;
+}
+
 function dressCalls(part) {
   const fields = [];
   let field = null;
   for (const node of [...part.children]) {
     if (node.tagName === "H3") continue;
     if (node.tagName === "P") {
-      for (const bit of node.innerHTML.split("<br>")) {
-        const m = bit.match(/^<strong>([^<]+?):<\/strong>\s*([\s\S]*)$/);
+      for (const line of linesOf(node)) {
+        while (line.length && line[0].nodeType === Node.TEXT_NODE && !line[0].textContent.trim()) line.shift();
+        // "**Gap call:** ..." starts a new field: a bold label ending in a colon.
+        const head = line[0];
+        const m = head && head.nodeName === "STRONG" && !head.children.length ? head.textContent.match(/^([\s\S]+?):$/) : null;
         if (m) {
           const hit = CALL_FIELDS.find(([test]) => test.test(m[1]));
           const kind = hit ? hit[1] : "other";
           field = el("div", "brief__field brief__field--" + kind);
           field.dataset.field = kind;
           field.append(el("p", "brief__label", CALL_LABELS[kind] || m[1]));
-          if (m[2].trim()) {
-            const value = el("p", "brief__value");
-            value.innerHTML = m[2]; // already-escaped HTML from renderMarkdown
-            field.append(value);
-          }
+          const rest = line.slice(1);
+          if (hasWords(rest)) field.append(valueOf(rest));
           fields.push(field);
-        } else if (field && bit.trim()) {
-          const value = el("p", "brief__value");
-          value.innerHTML = bit;
-          field.append(value);
+        } else if (field && hasWords(line)) {
+          field.append(valueOf(line)); // a line that carries on the field above
         }
       }
       if (field) node.remove();

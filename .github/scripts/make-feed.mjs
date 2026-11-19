@@ -31,22 +31,30 @@ const posts = (JSON.parse(readFileSync(join(ROOT, "devlog.json"), "utf8")).posts
 
 // Same as projectSlug in main.js: "Prairie Engine Works" -> "prairie-engine-works".
 const slug = (title) => String(title || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
-// Text going into XML: & < > " ' must be written as codes.
-const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;");
+// Text going into XML: & < > " ' must be written as codes. Before that,
+// the characters XML has no way to write at all (most control characters,
+// and half of a broken emoji) are dropped: a feed reader throws the whole
+// feed away if it meets one.
+const esc = (s) => String(s)
+  .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\uFFFE\uFFFF]/g, "")
+  .replace(/[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]/g, "")
+  .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;");
 // "2026-11-12" -> "Thu, 12 Nov 2026 12:00:00 GMT" (noon, so no time zone tips it into another day).
 const rssDate = (day) => new Date(day + "T12:00:00Z").toUTCString();
+// "2026-11-12" is a day; "2026-13-45" only looks like one, and would be written as "Invalid Date".
+const realDay = (day) => typeof day === "string" && /^\d{4}-\d{2}-\d{2}$/.test(day) && !Number.isNaN(Date.parse(day + "T12:00:00Z")) && new Date(day + "T12:00:00Z").toISOString().slice(0, 10) === day;
 
 const items = [];
 
 for (const post of posts) {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(post.date || "") || !post.title) continue;
+  if (!realDay(post.date) || !post.title) continue;
   const link = `${SITE}devlog.html#${post.date}-${slug(post.title)}`;
   const body = String(post.body || "").split(/\n\s*\n/).map((para) => `<p>${esc(para.trim())}</p>`).join("");
   items.push({ day: post.date, title: post.title, link, guid: link, category: post.game || "Devlog", body });
 }
 
 for (const p of projects) {
-  if (!p.released || !p.version) continue;
+  if (!realDay(p.released) || !p.version) continue;
   const page = `${SITE}game-${slug(p.title)}.html`;
   const title = `${p.title} ${p.version}` + (p.latest ? `: ${p.latest}` : "");
   const body = `<p>${esc(p.latest || "A new version is out.")}</p>` + (p.link ? `<p><a href="${esc(p.link)}">Play ${esc(p.title)}</a></p>` : "");
