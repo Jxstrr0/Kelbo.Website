@@ -11,13 +11,14 @@
      3. on the projects page, shows every project with filter buttons
      4. on the Games, Trading, and Tools pages, shows every project in that
         "category"
-     5. on the home page tiles, shows how many projects each section has
+     5. fills the home page's studio row: the Trading desk card and the
+        newest devlog post (setUpStudioRow)
      6. fades things in smoothly as you scroll (see "Scroll reveal")
      7. slides cards around smoothly when you filter (see "Smooth filtering")
      8. runs the live horizon: the sun in the hero sits where the real sun
         is over Saskatoon, and the site goes dark at real sunset
      9. remembers the last game you opened and offers "Continue?"
-    10. lights up "Market open" on the Trading tile during NYSE hours
+    10. lights up "Market open" on the Trading desk card during NYSE hours
     11. warms the sky toward clay in the 20 minutes before sunset
     12. fills the hero's ticker strip on the home page: Now building (from
         now.json), the next thing in the sky and the badge count, with Sky
@@ -1208,16 +1209,6 @@ function renderNews(project) {
   if (links.children.length) body.append(links);
   row.append(body);
   return row;
-}
-
-// Home page tiles: "4 projects" under each section name.
-function fillCategoryCounts(projects) {
-  document.querySelectorAll("[data-category-count]").forEach((node) => {
-    // "*" counts everything (the All tile)
-    const which = node.dataset.categoryCount;
-    const n = which === "*" ? projects.length : projects.filter((p) => inCategory(p, which)).length;
-    node.textContent = n === 0 ? "Coming soon" : n === 1 ? "1 project" : n + " projects";
-  });
 }
 
 // Projects page: all projects plus filter buttons.
@@ -6707,7 +6698,7 @@ async function setUpNow() {
   reveal(box);
 }
 
-/* ---------- Market light on the Trading tile ----------
+/* ---------- Market light on the Trading desk card ----------
    NYSE hours: 9:30 to 4:00 New York time, Monday to Friday. (Holidays
    aren't checked, so a few days a year it'll say "open" when it isn't.) */
 function setUpMarketLight() {
@@ -7545,11 +7536,7 @@ async function init() {
     n.textContent = new Date().getFullYear();
   });
 
-  // Fade in the mode tiles and the sections below the hero.
-  document.querySelectorAll(".tiles > li").forEach((tile, i) => {
-    tile.style.setProperty("--i", i);
-    reveal(tile);
-  });
+  // Fade in the sections below the hero.
   document.querySelectorAll("[data-reveal]").forEach((node) => reveal(node));
 
   const lists = document.querySelectorAll("[data-projects]");
@@ -7576,7 +7563,6 @@ async function init() {
     return;
   }
 
-  fillCategoryCounts(projects);
   fillGameCount(projects);
   setUpSpotlight(projects);
   setUpStudioRow(projects);
