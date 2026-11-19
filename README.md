@@ -113,9 +113,10 @@ safe: that game's number just stops at its last release.
 All the words on the home page are in `index.html`. Look for these
 comments to find each part:
 
-- `<!-- 1. Hero -->`: the studio name, the small "Saskatoon, SK" line above
-  it, "by Kelbo" under it (linked to your About page), the description, the
-  two buttons, and the live sun
+- `<!-- 1. Hero -->`: the small "Longlight Interactive · Saskatoon, SK"
+  line, the headline ("Deep games for small screens."), the line under it
+  ("... made in Saskatoon by Kelbo", linked to your About page; the number
+  of games is filled in by itself), the two buttons, and the live sun
 - `<!-- 2. Games -->`: the "Pick a game" cards (filled in from `projects.json`)
 - `<!-- 3. Modes -->`: the Games / Trading / All tiles, each with a small drawing behind its words (the `<svg class="tile__art">`; its colours are in `style.css` under Mode tiles)
 - `<!-- 4. Contact -->`: the contact form, and your links in the card
