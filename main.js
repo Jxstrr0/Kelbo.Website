@@ -6,8 +6,8 @@
    Just edit projects.json. This script:
      1. loads projects.json
      2. on the home page, shows every game in a grid with filter chips, and puts
-        the number of games in the hero's line and button, and stands the
-        spotlight game on the hero's horizon line (setUpSpotlight)
+        the number of games in the hero's line and button, and fills the
+        Featured game card under the hero's sky (setUpSpotlight)
      3. on the projects page, shows every project with filter buttons
      4. on the Games, Trading, and Tools pages, shows every project in that
         "category"
@@ -7420,18 +7420,25 @@ async function setUpStudioRow(projects) {
   }
 }
 
-// The spotlight: one game standing on the home hero's horizon line, with
-// its cover, version and latest update, and the hero's Play button
-// pointed at it. Which game: the first one in projects.json with
-// "featured": true (or the first game, if none is featured). To change it,
-// move a featured game higher in projects.json, or flip "featured".
+// The spotlight: one Featured game card under the home hero's sky, with
+// its cover, version, latest update and a Play button, and the hero's
+// Play button pointed at it. Which game: the first one in projects.json
+// with "featured": true (or the first game, if none is featured). To
+// change it, move a featured game higher in projects.json, or flip
+// "featured".
 // On a phone the hero's button just says "Play" (or the game's
 // "shortTitle", if projects.json gives it one).
 function setUpSpotlight(projects) {
   const card = document.querySelector("[data-spotlight]");
+  const band = document.querySelector("[data-spotlight-band]");
   const games = projects.filter((p) => isGame(p) && p.link);
   const game = games.find((p) => p.featured === true) || games[0];
-  if (!card || !game) return;
+  if (!card) return;
+  // No game to show: take the empty card away instead of leaving a gap.
+  if (!game) {
+    if (band) band.hidden = true;
+    return;
+  }
   const title = game.title || "Untitled";
 
   // The cover (image, else the art), with its clip playing while it's on
@@ -7444,7 +7451,7 @@ function setUpSpotlight(projects) {
     img.alt = ""; // decoration: the title is right below
     img.width = 640;
     img.height = 480;
-    img.fetchPriority = "high"; // on the first screen, so no lazy loading
+    img.fetchPriority = "high"; // near the top of the page, so no lazy loading
     cover.append(img);
     if (game.image && (game.cardClip || game.clip)) watchClip(cover, game.cardClip || game.clip);
   } else {
@@ -7479,11 +7486,6 @@ function setUpSpotlight(projects) {
       el("span", "hero__play-short", short ? "Play " + short : "Play")
     );
   }
-
-  // A short rise from below the line on the first load (not with reduce
-  // motion, and never again on scroll).
-  if (!REDUCE_MOTION) card.classList.add("spotlight--rise");
-  card.hidden = false;
 }
 
 // The home hero says how many games there are ("Six browser games, made in
@@ -7555,6 +7557,9 @@ async function init() {
   } catch (err) {
     // Most likely a typo in projects.json (a missing comma or quote).
     console.error("Couldn't load projects.json:", err);
+    // The home page's Featured card has nothing to show: take it away.
+    const band = document.querySelector("[data-spotlight-band]");
+    if (band) band.hidden = true;
     lists.forEach((listEl) => {
       listEl.replaceChildren(
         el("li", "project-list__note", "Projects couldn't load right now. Please try again later.")

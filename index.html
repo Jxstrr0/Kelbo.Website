@@ -153,22 +153,6 @@
           <!-- Shown by main.js while Environment Canada has a weather alert out -->
           <a class="horizon__alert" data-horizon-alert href="https://weather.gc.ca/" target="_blank" rel="noopener" hidden></a>
         </div>
-        <!-- The spotlight game, standing on the horizon line like a building
-             on the prairie. It sits beside the horizon (not inside it), so
-             tapping it opens the game instead of winding the sky. main.js
-             fills it in (setUpSpotlight); without JavaScript it stays hidden. -->
-        <article class="spotlight" data-spotlight hidden>
-          <a class="spotlight__main" data-spotlight-page href="games.html">
-            <span class="spotlight__cover" data-spotlight-cover></span>
-            <span class="spotlight__body">
-              <span class="spotlight__chip">Featured</span>
-              <span class="spotlight__title" data-spotlight-title></span>
-              <span class="spotlight__version" data-spotlight-version></span>
-              <span class="spotlight__latest" data-spotlight-latest></span>
-            </span>
-          </a>
-          <a class="button button--play spotlight__play" data-spotlight-link href="games.html">Play</a>
-        </article>
       </div>
 
       <!-- The ticker: one strip along the bottom of the hero, under the
@@ -224,6 +208,24 @@
         <p class="sky-week__note">Saved on this phone only. Nothing is sent anywhere.</p>
       </div>
     </dialog>
+
+    <!-- The spotlight game: one Featured card under the sky, so the sun,
+         the farm and the sky's extras are never covered. main.js fills it
+         in (setUpSpotlight); without JavaScript it stays hidden. -->
+    <div class="wrap spotlight-band" data-spotlight-band>
+      <article class="spotlight" data-spotlight aria-label="Featured game">
+        <a class="spotlight__main" data-spotlight-page href="games.html">
+          <span class="spotlight__cover" data-spotlight-cover></span>
+          <span class="spotlight__body">
+            <span class="spotlight__chip">Featured</span>
+            <span class="spotlight__title" data-spotlight-title></span>
+            <span class="spotlight__version" data-spotlight-version></span>
+            <span class="spotlight__latest" data-spotlight-latest></span>
+          </span>
+        </a>
+        <a class="button button--play spotlight__play" data-spotlight-link href="games.html">Play</a>
+      </article>
+    </div>
 
     <!-- 2. Games: a grid of every game in projects.json, in its order
          there, with filter chips (All, Released, Polishing, Early builds)

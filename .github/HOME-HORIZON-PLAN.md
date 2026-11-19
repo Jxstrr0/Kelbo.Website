@@ -203,6 +203,7 @@ Two cards side by side on desktop, stacked on phones:
 4. **Sun vs spotlight card (PR 2):** the sun may pass behind the card. No fading or moving.
 5. **Home grid (PR 4):** every game, with the filter chips.
 6. **Taglines (PR 4):** use the appendix drafts as written.
+7. **Spotlight card, later (19 Nov 2026):** it moved off the horizon into its own Featured card under the sky, so the sun and the sky's extras are never covered. This replaces decision 4.
 
 ## 9. Out of scope
 
