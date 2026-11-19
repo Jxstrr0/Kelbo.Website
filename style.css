@@ -4047,6 +4047,22 @@ img {
   display: none;
 }
 
+/* While the games load, keep an invisible stand-in for the chips, the
+   size of the real row (about 306 px wide, one 2.75rem button high).
+   On a phone the chips wrap onto a row of their own under the heading;
+   without this, that row appears only once projects.json arrives and
+   pushes the whole grid down. On a wider screen the stand-in sits beside
+   the heading, as the chips do, so nothing changes there. If the chips
+   never come (an error, or only one kind of game), the space goes when
+   the "Loading games..." note does. */
+.js .section:has(.project-list__note--loading) .game-filters[hidden] {
+  display: flex;
+  visibility: hidden;
+  width: 19rem;
+  max-width: 100%;
+  min-height: 2.75rem;
+}
+
 .filters.game-filters button {
   min-height: 2.75rem;
   padding: 0.4rem 0.9rem;
