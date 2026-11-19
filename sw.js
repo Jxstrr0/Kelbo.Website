@@ -31,6 +31,7 @@ const CORE = [
   "devlog.html",
   "press.html",
   "gallery.html",
+  "contact.html",
   "journal.html",
   "agent-fleet.html",
   "briefs.html",

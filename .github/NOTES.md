@@ -747,13 +747,17 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   `404.html` sends `ai.html` there. Since November 2026 Tools is hidden: it
   is out of the menu, off the home tiles and not needed for Explorer, but
   `tools.html` and the tools still work at their addresses.
-  The home page has three tiles (Games, Trading, All;
-  `data-category-count="*"` counts everything, 0 reads "Coming soon"),
-  each with an inline `svg.tile__art` drawing (viewBox 120×100, bottom
-  right at 0.4 opacity over the corner sun; `.tile__art-a` clay /
-  `-b` and `-line` `--secondary`, so it follows the theme): a controller,
-  candles, four suns. 1 column on phones, 3 from 40rem (the Tools tile's
-  styles are still in `style.css` for when it comes back); the market light sits on its own line.
+  The home page's mode tiles (Games, Trading, All) gave way to the studio
+  row in the Horizon plan's PR 5 (2026-11-19): "From the studio",
+  `.studio-row` with two `.studio-card`s, side by side from 40rem.
+  `setUpStudioRow` fills the Trading desk card (slate in both themes) with
+  the Trading projects' titles joined by " · " (`[data-trading-names]`);
+  its `[data-market]` is the market light (`setUpMarketLight`, NYSE hours).
+  The Devlog card (`[data-devlog-latest]`) shows the newest post from
+  `loadDevlog` whose `game` is empty or a shown game (so posts about hidden
+  games stay off, as on devlog.html): its game's cover, the date, the
+  title and the body's first sentence, linking to `devlog.html#<devlogId>`.
+  The HTML's own words stay if devlog.json can't load.
 - `devlog.html` is the devlog: `setUpDevlog` renders `devlog.json`
   (`{"posts": [...]}`, newest first; `date` YYYY-MM-DD, `title`, `body`
   split on blank lines, optional `game` = a projects.json title) as dated
@@ -1227,14 +1231,18 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   the Site check fails a page with two description tags.
 ## Contact form, README
 
-- The home page contact form posts to `https://contact.longlight.games/`,
+- The contact form lives on `contact.html` (moved off the home page in the
+  Horizon plan's PR 5, 2026-11-19, unchanged; "Say hello" opens every
+  footer's links). It posts to `https://contact.longlight.games/`,
   the `contact-form` Cloudflare Worker (reference copy:
   `.github/worker/contact-form.js`, kept the same as the live one). It
   emails Kelbo through Cloudflare Email Routing (`send_email` binding
   `EMAIL`, locked to his verified address, plus a `TO` variable). His
   address lives only in those Worker settings; never put it in the site or
   repo. Opening the address in a browser (GET or HEAD) forwards to the
-  form on the home page (`#contact-heading`); any other method but a POST
+  home page's old form anchor (`#contact-heading`, which now just opens
+  the home page; pointing it at `contact.html` means redeploying the live
+  Worker, which waits on Kelbo); any other method but a POST
   (or the CORS OPTIONS check) gets a plain 404.
   It only takes posts whose `Origin` is https://longlight.games (403
   otherwise), drops posts with the `botcheck` honeypot ticked (fake
@@ -1310,8 +1318,8 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   deploy passes `include-hidden-files: true` so the dot-folder is
   published.
 - **Contact form spam guard** (Nov 2026): Cloudflare Turnstile, the free
-  "I'm human" check, sits above Send on the home page. Its site key in
-  `index.html` is public by design; the secret is the contact-form
+  "I'm human" check, sits above Send on the contact page. Its site key in
+  `contact.html` is public by design; the secret is the contact-form
   Worker's `TURNSTILE_SECRET` setting in Cloudflare, never in the repo.
   The Worker refuses a message without a fresh pass, and a Cloudflare
   rate-limit rule on `contact.longlight.games` slows floods. `main.js`

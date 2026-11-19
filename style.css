@@ -5287,6 +5287,165 @@ a.quest__top:focus-visible .quest__name {
   background: var(--accent);
 }
 
+/* ---------- Home page: the studio row ----------
+   Two cards under "Pick a game" (main.js setUpStudioRow): the Trading
+   desk on slate in both themes, and the newest devlog post on a white
+   card with its game's cover. Side by side from 40rem, stacked on a
+   phone. The market light keeps the old tile's dot. */
+.studio-row {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+
+@media (min-width: 40rem) {
+  .studio-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.studio-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-height: 9rem;
+  padding: 1.15rem 1.25rem 1.2rem;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--card);
+  color: var(--ink);
+  text-decoration: none;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: transform 260ms var(--ease), box-shadow 260ms var(--ease), border-color 260ms;
+}
+
+.studio-card:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+@media (hover: hover) {
+  .studio-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lift);
+    border-color: var(--secondary);
+  }
+}
+
+.studio-card__kicker {
+  color: var(--secondary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.studio-card__title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.studio-card__line {
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+/* Trading desk: slate in both themes, with a clay line along the top */
+.studio-card--trading {
+  border-color: color-mix(in srgb, var(--ll-ivory) 14%, var(--ll-slate)); /* shows on a dark page too */
+  border-top: 3px solid var(--ll-clay);
+  background: var(--ll-slate);
+  color: var(--ll-ivory);
+}
+
+.studio-card--trading .studio-card__kicker {
+  color: var(--ll-lilac);
+}
+
+.studio-card--trading .studio-card__line {
+  color: color-mix(in srgb, var(--ll-ivory) 78%, transparent);
+}
+
+.studio-card__live {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: auto;
+  padding-top: 0.4rem;
+  color: color-mix(in srgb, var(--ll-ivory) 70%, transparent);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.studio-card__live:empty {
+  display: none;
+}
+
+.studio-card__live::before {
+  content: "";
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--ll-ivory) 35%, transparent);
+}
+
+.studio-card__live.is-open {
+  color: var(--ll-ivory);
+}
+
+.studio-card__live.is-open::before {
+  background: var(--ll-clay);
+}
+
+/* Devlog: the game's cover beside the words (above them on a phone) */
+.studio-card--devlog {
+  flex-direction: row;
+  align-items: stretch;
+  gap: 1rem;
+}
+
+.studio-card__cover {
+  flex: 0 0 8.5rem;
+  aspect-ratio: 4 / 3;
+  align-self: flex-start;
+  border-radius: calc(var(--radius) / 2);
+  overflow: hidden;
+  background: var(--secondary-soft);
+}
+
+.studio-card__cover[hidden] {
+  display: none;
+}
+
+.studio-card__cover img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.studio-card__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+@media (max-width: 29.99rem) {
+  .studio-card__cover {
+    flex-basis: 6rem;
+  }
+}
+
+/* The contact page: the form on its own (it was on the home page) */
+.contact-page .contact-form {
+  margin-top: 0;
+}
+
 /* ---------- Filters (projects page, journal) ---------- */
 .filters {
   display: flex;

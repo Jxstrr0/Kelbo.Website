@@ -109,8 +109,8 @@ alt text, file names, screenshots, logs):
 - Keys, tokens, passwords, recovery codes, Cloudflare account or zone IDs,
   DNS records, device names, Wi-Fi names. (The two exceptions, both public by
   design: the Web Analytics token at the foot of each page, which only
-  sends visit counts, and the Turnstile site key in the home page's
-  contact form; its secret lives only in Cloudflare.)
+  sends visit counts, and the Turnstile site key in the contact page's
+  form; its secret lives only in Cloudflare.)
 
 **Robots and logs.** The scripts may print counts, grades, costs and text
 that is already going on the site, nothing else: never a prompt that holds
@@ -222,14 +222,16 @@ that part, and update it when how something works changes. The short map:
   ticker strip under it (Now building from `now.json`, Sky and Badges chips
   that open dialogs), Continue
   card, the "Pick a game" grid (every game, `tagline`, filter chips),
-  four tiles, contact form (our own `contact-form` Cloudflare Worker,
+  then the studio row (Trading desk card with the market light, the
+  newest devlog post). The contact form is on `contact.html` ("Say hello"
+  in every footer; our own `contact-form` Cloudflare Worker,
   `.github/worker/contact-form.js`; Kelbo's email lives only in its
   Cloudflare settings, never in the site or repo).
 - **Offline:** `sw.js` precaches `CORE`; it only ever deletes `longlight-*`
   caches. Add new top-level pages to `CORE` and `sitemap.xml`.
 - **Pages:** `games.html`, `trading.html`, `tools.html` (was `ai.html`),
   `projects.html` ("All"), `devlog.html` (`devlog.json`), `press.html`,
-  `whats-new.html`, `about.html`; tools in `tools/<name>/`. Notes: "Pages,
+  `whats-new.html`, `about.html`, `contact.html`; tools in `tools/<name>/`. Notes: "Pages,
   sections, logo and header". The header only just fits at 360px: test
   before adding to it. The logo letters are paths: never swap them for text.
 - **Trading:** the journal (`journal.*`, `journal.json`, `options.json`),

@@ -234,5 +234,5 @@ Other pages' layouts (games.html, projects.html and the rest keep their current 
 - [x] PR 2: Spotlight card standing on the horizon
 - [x] PR 3: Ticker strip + Sky and Badges dialogs
 - [x] PR 4: Games grid, status filters, taglines
-- [ ] PR 5: Studio row, contact page, footer
+- [x] PR 5: Studio row, contact page, footer
 - [ ] PR 6: Tidy, docs, final phone pass
