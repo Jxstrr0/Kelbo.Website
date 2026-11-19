@@ -12,8 +12,8 @@
 //   - retries when the API is busy (429), has a hiccup (5xx) or can't be
 //     reached at all (a network blip): up to 4 tries, waiting longer each time,
 //   - the token and estimated-cost lines in the run log.
-// The key comes from the ANTHROPIC_API_KEY repository secret, which the
-// workflow passes in. It is never written in this repo.
+// The key comes from the LL_ROBOT_KEY secret in the robots environment,
+// which the workflow passes in as ANTHROPIC_API_KEY. It is never written in this repo.
 // =====================================================================
 
 import { appendFileSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
@@ -37,7 +37,7 @@ export const skDate = (when = new Date()) =>
 export async function askClaude({ model, system, user, maxTokens = 16000, effort = "high", batch }) {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
-    throw new Error("Missing ANTHROPIC_API_KEY. Add it under repo Settings > Secrets and variables > Actions.");
+    throw new Error("Missing ANTHROPIC_API_KEY. The workflow passes it in from the LL_ROBOT_KEY secret in the robots environment (Settings > Environments > robots).");
   }
   const body = JSON.stringify({
     model,
@@ -193,7 +193,7 @@ const SEARCH_PRICE = 0.01; // US$ per web search
 async function send(body) {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
-    throw new Error("Missing ANTHROPIC_API_KEY. Add it under repo Settings > Secrets and variables > Actions.");
+    throw new Error("Missing ANTHROPIC_API_KEY. The workflow passes it in from the LL_ROBOT_KEY secret in the robots environment (Settings > Environments > robots).");
   }
   for (let attempt = 1; ; attempt++) {
     let res;
@@ -378,7 +378,7 @@ async function batchApi(url, body) {
 // for it, and returns the reply exactly like send() would.
 async function sendBatch(body, b, state) {
   if (!process.env.ANTHROPIC_API_KEY) {
-    throw new Error("Missing ANTHROPIC_API_KEY. Add it under repo Settings > Secrets and variables > Actions.");
+    throw new Error("Missing ANTHROPIC_API_KEY. The workflow passes it in from the LL_ROBOT_KEY secret in the robots environment (Settings > Environments > robots).");
   }
   const API = "https://api.anthropic.com/v1/messages/batches";
   for (;;) {

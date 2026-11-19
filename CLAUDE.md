@@ -51,7 +51,7 @@ repo), and running the site locally.
 wait for a yes in this conversation. A yes covers that one action, not
 later ones.
 
-- Running a robot that uses `ANTHROPIC_API_KEY` by hand ("Run workflow",
+- Running a robot that uses the robot key (`LL_ROBOT_KEY`) by hand ("Run workflow",
   re-running a failed run), except a dry run. Check recent Cost notes
   for a rough price instead of guessing.
 - Making a robot cost more: a new robot, a new or more frequent schedule,
@@ -146,12 +146,13 @@ keep the Co-Authored-By trailer for Claude in each message.
   `.github/scripts/` are plain Node with no packages; keep them that way.
 - **No secrets.** The repo is public. Never commit API keys, tokens, or
   passwords. If a tool needs a key, talk through options with Kelbo first.
-  The one key that exists is the `ANTHROPIC_API_KEY` secret,
+  The one key that exists is the `LL_ROBOT_KEY` secret (an Anthropic API key),
   used by seven workflows: the Morning Writer (pre-market brief), the
   Grader (after-close report card), the Coach (brief lessons), the Devlog
   Writer, the Release Writer, the Forecaster (weekly journal forecast) and
   the Scorekeeper (weekly journal grades). It is only ever referenced as
-  `${{ secrets.ANTHROPIC_API_KEY }}` in those workflows; `deploy.yml` and `site-check.yml` stay key-free.
+  `${{ secrets.LL_ROBOT_KEY }}` in those workflows (passed to the scripts as
+  `ANTHROPIC_API_KEY`); `deploy.yml` and `site-check.yml` stay key-free.
   Each of those jobs has `environment: robots`: the key is kept in the
   `robots` GitHub Environment, which only `main` may use, so a workflow on
   another branch can't read it. A new robot job needs the same line.

@@ -11,7 +11,7 @@
 #   2. runs the Site check on the result, and only if it passes commits journal.json to main,
 #   3. starts the "Deploy site" run so the record updates.
 #
-# It uses the ANTHROPIC_API_KEY repository secret. "Run workflow" on the
+# It uses the LL_ROBOT_KEY secret in the robots environment. "Run workflow" on the
 # Actions tab runs it now; tick "dry run" to see the grades in the log
 # without saving them. To stop it, open it on the Actions tab, tap "..."
 # and choose "Disable workflow".
@@ -64,7 +64,7 @@ jobs:
         id: robot
         run: node .github/scripts/journal-grade.mjs
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.LL_ROBOT_KEY }}
           DRY_RUN: ${{ inputs.dry_run == true && '1' || '' }}
           FORCE: ${{ inputs.force == true && '1' || '' }}
 

@@ -34,7 +34,7 @@ const MARKER = "===BRIEF===";
 
 const apiKey = process.env.ANTHROPIC_API_KEY;
 if (!apiKey) {
-  console.error("Missing ANTHROPIC_API_KEY. Add it under repo Settings > Secrets and variables > Actions.");
+  console.error("Missing ANTHROPIC_API_KEY. The workflow passes it in from the LL_ROBOT_KEY secret in the robots environment (Settings > Environments > robots).");
   process.exit(1);
 }
 

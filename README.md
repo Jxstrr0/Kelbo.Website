@@ -938,7 +938,7 @@ percentages are safer than dollar amounts or account sizes.
 ### The weekly robots: Forecaster and Scorekeeper
 
 Two robots now write and grade the weekly forecast for you, using the
-same `ANTHROPIC_API_KEY` secret as the brief:
+same robot key (`LL_ROBOT_KEY`) as the brief:
 
 - **Forecaster** (Sunday night, 7:45 pm, with back-up tries at 9:15 pm
   and 4:35 am Monday):
@@ -1056,7 +1056,7 @@ you open it.
   Claude (with web search) for the brief, saves it, commits it to `main`,
   and starts the **Deploy site** run so it goes live a few minutes later.
 - **The key:** it uses the Anthropic API, so the repo has one secret,
-  `ANTHROPIC_API_KEY`. It is kept in the **robots** Environment (Settings →
+  `LL_ROBOT_KEY`. It is kept in the **robots** Environment (Settings →
   Environments → robots), which only the `main` branch may use, so a
   workflow started from any other branch can't read it. Every robot's job
   says `environment: robots`. Never paste the key into a file. If it ever
@@ -1065,7 +1065,8 @@ you open it.
 - **Run it now:** Actions tab → Morning Writer (pre-market brief) → Run workflow. It skips
   the day if today's brief already exists; tick the box to rewrite it.
 - **If it fails:** the run shows a red ❌ with the reason. "Missing
-  ANTHROPIC_API_KEY" means the secret is gone or misnamed. A run that
+  ANTHROPIC_API_KEY" means the `LL_ROBOT_KEY` secret is gone, misnamed or
+  not in the robots environment. A run that
   stops with "not allowed to deploy to robots" was started from a branch
   other than `main`, which is the lock doing its job. An "API error
   401" means the key no longer works. A "push" error means Settings →
@@ -1178,7 +1179,7 @@ you can see how good the calls really are over time.
   run stops before asking Claude, so it costs nothing.
 - **Cost:** it uses Opus 5.5 at high effort (`MODEL` at the
   top of the script; Sonnet 5.5 until Nov 6, 2026), up to 18 web searches (`MAX_SEARCHES`) and 15 page
-  reads (`MAX_FETCHES`). It uses the same `ANTHROPIC_API_KEY` secret as the
+  reads (`MAX_FETCHES`). It uses the same `LL_ROBOT_KEY` secret as the
   brief. The last line of each run's log is "Estimated cost: US$0.xx".
 - **Run it now:** Actions tab → Grader (after-close report card) → Run workflow
   (on a phone, switch to the desktop site if the button doesn't show).
@@ -1239,7 +1240,7 @@ Anthropic console under Usage and Cost.
 
 ## The Coach, the Devlog Writer and the Release Writer (Claude, one call each)
 
-Three more robots use the same `ANTHROPIC_API_KEY` secret. Each asks
+Three more robots use the same `LL_ROBOT_KEY` secret. Each asks
 Claude one question with no web search, and only when there's something
 to ask about, so most runs cost nothing. Every run's log ends with
 "Estimated cost: US$0.xx".
