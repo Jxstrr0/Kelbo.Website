@@ -590,8 +590,8 @@ img {
   margin-inline: 0.15rem;
 }
 
-/* On a computer the words sit in a left column; the spotlight game
-   card will fill the right one (Horizon plan, PR 2). */
+/* On a computer the words keep to a readable column on the left, which
+   leaves the sky clear on the right. */
 @media (min-width: 64rem) {
   .hero--home .hero__top > * {
     max-width: 38rem;
@@ -627,8 +627,8 @@ img {
   }
 
   /* A lower sky and a thinner ground than on a computer (--home-ground,
-     under "The spotlight game"). The sun keeps its size so it's still
-     easy to tap. */
+     just above "The spotlight game"). The sun keeps its size so it's
+     still easy to tap. */
   .hero--home .horizon {
     --sky-height: 140px;
     margin-top: 0.5rem;
@@ -712,13 +712,8 @@ img {
   font-size: 0.85rem;
 }
 
-/* ----- The spotlight game, standing on the home hero's horizon -----
-   One game card (main.js, setUpSpotlight) whose bottom edge sits on the
-   horizon line, like a building on the prairie. It's beside the horizon,
-   not inside it, so its taps open the game instead of winding the sky.
-   It's in front of the sun, moon, stars and clouds (the sun can pass
-   behind it, like the sun setting behind a building) and behind the
-   header. The same slate card in both themes, since it sits on the sky. */
+/* The home hero's ground is a little taller than other page heads'.
+   On a phone it's thinner, so the games come up sooner. */
 .hero--home .hero__stage {
   --home-ground: 4.5rem; /* the ground's height under the line */
 }
@@ -733,8 +728,7 @@ img {
   }
 }
 
-/* The hero's words let taps through their empty space, so the card can
-   be tapped where it reaches up beside them on a computer. */
+/* The hero's words let taps through their empty space to the sky. */
 .hero--home .hero__top {
   pointer-events: none;
 }
@@ -743,30 +737,53 @@ img {
   pointer-events: auto;
 }
 
-.spotlight {
-  --spot-ink: #FAF9F5;
-  --spot-body: #C9C5BC;
-  position: absolute;
-  z-index: 3; /* above the sky's layers, below the sky-fact labels */
-  right: var(--gutter);
-  bottom: var(--home-ground);
-  width: min(12.25rem, 36vw);
-  display: flex;
-  flex-direction: column;
-  border-radius: 14px 14px 0 0; /* square at the bottom: it stands on the line */
-  background: var(--ll-slate);
-  color: var(--spot-ink);
-  box-shadow: 0 -6px 24px rgba(20, 20, 19, 0.25);
-  overflow: hidden;
+/* ----- The spotlight game, under the home hero's sky -----
+   One Featured card (main.js, setUpSpotlight) between the ticker and
+   "Pick a game", so it never covers the sun or the sky's extras. The
+   cover sits on the left, the words and a Play button on the right.
+   A slate card in the light theme, the usual dark card after sunset.
+   Without JavaScript the whole band is hidden. While projects.json loads
+   the empty card holds its height (min-height), so the games below don't
+   jump down when it fills in; main.js hides it if there's no game. */
+.spotlight-band {
+  padding-top: clamp(1.5rem, 5vw, 2.5rem);
 }
 
-.spotlight[hidden] {
+:root:not(.js) .spotlight-band,
+.spotlight-band[hidden] {
   display: none;
 }
 
+.spotlight {
+  --spot-bg: var(--ll-slate);
+  --spot-ink: #FAF9F5;
+  --spot-body: #C9C5BC;
+  --spot-cover: 8.5rem; /* the cover's width */
+  --spot-pad: 0.85rem;
+  position: relative;
+  min-height: 12rem; /* about a filled card's height on a phone */
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--spot-bg);
+  color: var(--spot-ink);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+:root[data-theme="dark"] .spotlight {
+  --spot-bg: var(--card);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) .spotlight {
+    --spot-bg: var(--card);
+  }
+}
+
 .spotlight__main {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: var(--spot-cover) 1fr;
+  min-height: inherit;
   color: inherit;
   text-decoration: none;
 }
@@ -777,10 +794,10 @@ img {
   outline-offset: -3px;
 }
 
+/* The cover fills the left column, as tall as the card */
 .spotlight__cover {
   position: relative;
   display: block;
-  height: 5.25rem; /* about 84px on a phone: a cropped strip of the cover */
   overflow: hidden;
   background: var(--ll-purple);
 }
@@ -800,20 +817,23 @@ img {
   opacity: 1;
 }
 
+/* The words. The bottom padding leaves room for the Play button, which
+   sits over this corner (it's its own link, not inside the card's). */
 .spotlight__body {
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
-  padding: 0.45rem 0.65rem 0.55rem;
+  align-items: flex-start;
+  gap: 0.25rem;
+  min-width: 0;
+  padding: var(--spot-pad) var(--spot-pad) calc(var(--spot-pad) + 3.25rem);
 }
 
 .spotlight__chip {
-  align-self: flex-start;
-  padding: 0.1rem 0.45rem;
+  padding: 0.1rem 0.5rem;
   border-radius: 999px;
   background: #E8967A; /* light clay */
   color: var(--ll-slate);
-  font-size: 0.6rem;
+  font-size: 0.65rem;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -822,7 +842,7 @@ img {
 .spotlight__title {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 0.9rem;
+  font-size: 1.15rem;
   line-height: 1.15;
   letter-spacing: -0.01em;
 }
@@ -839,73 +859,55 @@ img {
   display: none;
 }
 
+/* The latest update, cut to two lines on a phone (three on a computer) */
 .spotlight__latest {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
   color: var(--spot-body);
-  font-size: 0.9rem;
-  line-height: 1.45;
+  font-size: 0.85rem;
+  line-height: 1.4;
 }
 
-/* On a phone the card is small: the cover, the chip and the title (the
-   hero's own Play button plays it). The chip sits on the cover. */
-@media (max-width: 63.99rem) {
-  .spotlight__chip {
-    position: absolute;
-    top: 0.4rem;
-    left: 0.45rem;
-  }
-
-  .spotlight__latest,
-  .spotlight__version,
-  .spotlight .spotlight__play {
-    display: none;
-  }
+.spotlight__play {
+  position: absolute;
+  left: calc(var(--spot-cover) + var(--spot-pad));
+  bottom: var(--spot-pad);
+  min-height: 2.75rem;
 }
 
-/* On a computer it fills the hero's right column: a 4:3 cover, then the
-   version, the latest update and a Play button. */
+/* On a computer: a bigger 4:3 cover and bigger words */
 @media (min-width: 64rem) {
   .spotlight {
-    width: clamp(18rem, calc(100% - 44rem), 27rem);
-    border-radius: 20px 20px 0 0;
-  }
-
-  .spotlight__cover {
-    height: auto;
-    aspect-ratio: 4 / 3;
+    --spot-cover: 22rem;
+    --spot-pad: 1.5rem;
+    min-height: 16.5rem; /* the 4:3 cover's height */
   }
 
   .spotlight__body {
-    gap: 0.35rem;
-    padding: 1rem 1.25rem 0.5rem;
+    gap: 0.4rem;
+    max-width: 44rem;
   }
 
   .spotlight__chip {
-    font-size: 0.68rem;
+    font-size: 0.7rem;
   }
 
   .spotlight__title {
-    font-size: 1.4rem;
+    font-size: 1.75rem;
   }
 
-  .spotlight__play {
-    align-self: flex-start;
-    margin: 0.5rem 1.25rem 1.1rem;
+  .spotlight__version {
+    font-size: 0.85rem;
   }
-}
 
-/* A short rise from below the line on the first load. With reduce motion
-   there's no rise (main.js doesn't add the class). */
-@keyframes spotlight-rise {
-  /* Moving up by its own height while the bottom is clipped by the same
-     amount keeps it from ever showing below the line. */
-  from {
-    transform: translateY(100%);
-    clip-path: inset(0 0 100% 0);
+  .spotlight__latest {
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    font-size: 1rem;
   }
-}
-
-.spotlight--rise {
-  animation: spotlight-rise 380ms var(--ease) both;
 }
 
 /* The hero's Play button names the spotlight game; a phone gets "Play" */

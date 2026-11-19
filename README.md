@@ -14,7 +14,7 @@ from their releases, then publishes the files as they are (see
 
 | File | What it's for |
 |---|---|
-| `index.html` | Home page: the promise and the spotlight game on the live sky, the ticker strip, the "Pick a game" grid, and the studio row (Trading desk and the newest devlog post) |
+| `index.html` | Home page: the promise on the live sky, the ticker strip, the Featured game card, the "Pick a game" grid, and the studio row (Trading desk and the newest devlog post) |
 | `about.html` | The About page: your character sheet. The quest log under Status fills itself in from `projects.json` |
 | `projects.html` | The full projects page with status filters |
 | `whats-new.html` | The newest version and latest change for each project, built from `projects.json` (no dates, since the file has none) |
@@ -220,8 +220,8 @@ progress order.
   line to bring it back. The Whip is hidden for now,
   and so are Quench, Hull Down and Laminar (new, still being built).
 - **featured**: the first game marked `true` (top to bottom in this file)
-  is the spotlight game: its card stands on the home page's horizon and the
-  big "Play" button opens it. To change the spotlight, move another
+  is the spotlight game: its Featured card sits under the home page's sky
+  and the big "Play" button opens it. To change the spotlight, move another
   featured game higher, or set this game's `featured` to `false`. The four
   marked `true` are also the covers in the link preview picture.
 - **shortTitle** (optional): a short name for the home page's Play button

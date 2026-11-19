@@ -693,20 +693,21 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   (`max-width: 39.99rem`) the hero's sky is 140px and its ground 3.25rem
   so the games come up sooner. `404.html` shares `.hero__name` but not
   `.hero--home`.
-- The spotlight (Horizon plan PR 2): `setUpSpotlight` fills
-  `[data-spotlight]`, the first game with `featured: true` (else the first
-  game), and points the hero's `[data-spotlight-play]` at its `link`
+- The spotlight (Horizon plan PR 2; moved under the sky on 19 Nov 2026,
+  Kelbo, so it never covers the sun or the sky's extras): `setUpSpotlight`
+  fills `[data-spotlight]`, the first game with `featured: true` (else the
+  first game), and points the hero's `[data-spotlight-play]` at its `link`
   ("Play <title>", or "Play"/"Play <shortTitle>" under 40rem). The card is
-  a sibling of `.horizon` inside `.hero__stage`, so its taps never reach
-  the sky's drag and tap handlers; `bottom: var(--home-ground)` stands it
-  on the line (`--home-ground` also sets the horizon's `--ground-height`).
-  `z-index: 3`, after the horizon in the page, puts it over the sun and
-  under `.horizon__tip`. `.hero--home .hero__top` has `pointer-events:
-  none` (its children `auto`) so the card's top is tappable beside the
-  words on a computer. Small card under 64rem (cover strip, chip, title;
-  `width: min(12.25rem, 36vw)` keeps it right of the grain elevator), full
-  card from 64rem. `.spotlight--rise` is the one-time rise (not with
-  reduce motion), clipped so it never shows below the line.
+  in `.spotlight-band` between the hero and "Pick a game": cover on the
+  left (`--spot-cover`, 8.5rem; 22rem and 4:3 from 64rem), then the chip,
+  title, version, the latest line (two lines, three from 64rem) and a Play
+  button laid over the body's bottom padding. Slate in the light theme,
+  `--card` in the dark. Hidden without JS (`:root:not(.js)`); while
+  projects.json loads the empty card holds its height (`min-height` 12rem,
+  16.5rem from 64rem) so the games don't jump, and `[data-spotlight-band]`
+  is hidden if there's no game or projects.json fails.
+  `.hero--home .hero__top` keeps `pointer-events: none` (its children
+  `auto`) so taps in its empty space reach the sky.
 - Page changes: cross-document view transitions (`@view-transition`)
   with `.site-header` and `.page-head .horizon` named so they stay put;
   all inside the no-preference block.

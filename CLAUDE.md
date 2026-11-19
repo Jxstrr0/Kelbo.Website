@@ -219,10 +219,11 @@ that part, and update it when how something works changes. The short map:
   critters, taps). Sky code reads `YXE`, never hard-coded Saskatoon. Preview
   with `?at=`, `?weather=`, `?critter=`. Notes: "The live sky" and "Sky
   extras".
-- **Home page:** the spotlight game on the horizon (first `featured` game),
-  ticker strip under it (Now building from `now.json`, Sky and Badges chips
-  that open dialogs), Continue
-  card, the "Pick a game" grid (every game, `tagline`, filter chips),
+- **Home page:** the live sky, the ticker strip under it (Now building
+  from `now.json`, Sky and Badges chips that open dialogs), the Featured
+  card for the spotlight game (first `featured` game; under the sky so it
+  never covers the sun, Kelbo, 19 Nov 2026), Continue card, the "Pick a
+  game" grid (every game, `tagline`, filter chips),
   then the studio row (Trading desk card with the market light, the
   newest devlog post). The contact form is on `contact.html` ("Say hello"
   in every footer; our own `contact-form` Cloudflare Worker,
