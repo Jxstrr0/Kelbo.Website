@@ -218,7 +218,8 @@ that part, and update it when how something works changes. The short map:
   critters, taps). Sky code reads `YXE`, never hard-coded Saskatoon. Preview
   with `?at=`, `?weather=`, `?critter=`. Notes: "The live sky" and "Sky
   extras".
-- **Home page:** Now strip (`now.json`), Sky this week, badges, Continue
+- **Home page:** the spotlight game on the horizon (first `featured` game),
+  Now strip (`now.json`), Sky this week, badges, Continue
   card, four tiles, contact form (our own `contact-form` Cloudflare Worker,
   `.github/worker/contact-form.js`; Kelbo's email lives only in its
   Cloudflare settings, never in the site or repo).

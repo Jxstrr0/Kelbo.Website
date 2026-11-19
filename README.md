@@ -216,9 +216,13 @@ progress order.
   page, its game page, the robots) but keeps its entry here. Delete the
   line to bring it back. The Whip is hidden for now,
   and so are Quench, Hull Down and Laminar (new, still being built).
-- **featured**: no longer changes the home page, which now shows every game
-  in one swipe row under "Pick a game", in the order they have in this
-  file. The four marked `true` are the covers in the link preview picture.
+- **featured**: the first game marked `true` (top to bottom in this file)
+  is the spotlight game: its card stands on the home page's horizon and the
+  big "Play" button opens it. To change the spotlight, move another
+  featured game higher, or set this game's `featured` to `false`. The four
+  marked `true` are also the covers in the link preview picture.
+- **shortTitle** (optional): a short name for the home page's Play button
+  on phones ("Play PEW"). Without it, the phone button just says "Play".
 - **clip** (optional): a short silent video on the game's own page, under
   "See it move": `"clip": "assets/clips/my-game.mp4"`, with a still picture
   of the same name ending `.jpg` beside it. Ask Claude to record one.

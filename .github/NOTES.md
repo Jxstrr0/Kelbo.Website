@@ -681,6 +681,20 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   (`max-width: 39.99rem`) the hero's sky is 140px and its ground 3.25rem
   so the games come up sooner. `404.html` shares `.hero__name` but not
   `.hero--home`.
+- The spotlight (Horizon plan PR 2): `setUpSpotlight` fills
+  `[data-spotlight]`, the first game with `featured: true` (else the first
+  game), and points the hero's `[data-spotlight-play]` at its `link`
+  ("Play <title>", or "Play"/"Play <shortTitle>" under 40rem). The card is
+  a sibling of `.horizon` inside `.hero__stage`, so its taps never reach
+  the sky's drag and tap handlers; `bottom: var(--home-ground)` stands it
+  on the line (`--home-ground` also sets the horizon's `--ground-height`).
+  `z-index: 3`, after the horizon in the page, puts it over the sun and
+  under `.horizon__tip`. `.hero--home .hero__top` has `pointer-events:
+  none` (its children `auto`) so the card's top is tappable beside the
+  words on a computer. Small card under 64rem (cover strip, chip, title;
+  `width: min(12.25rem, 36vw)` keeps it right of the grain elevator), full
+  card from 64rem. `.spotlight--rise` is the one-time rise (not with
+  reduce motion), clipped so it never shows below the line.
 - Page changes: cross-document view transitions (`@view-transition`)
   with `.site-header` and `.page-head .horizon` named so they stay put;
   all inside the no-preference block.
@@ -786,8 +800,8 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   `[data-row-nav]` arrows show from 40rem up. The row is `overflow-y:
   hidden` (on `auto` it slid and bounced up and down inside itself on an
   iPhone) and its cards reveal together when the row comes into view (one
-  observer on the row, not one per card). `featured` no longer
-  affects the page; it only records the four covers in the link preview.
+  observer on the row, not one per card). `featured` picks the
+  home spotlight (below) and records the four covers in the link preview.
   `hidden: true` drops a project everywhere: both `projects.json` loads in
   `main.js` filter it out, `make-game-pages.mjs` makes no page for it, and
   `devlog-draft.mjs` / `release-lines.mjs` skip it. The Whip is

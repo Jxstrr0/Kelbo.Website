@@ -6,7 +6,8 @@
    Just edit projects.json. This script:
      1. loads projects.json
      2. on the home page, shows every game in one sideways row, and puts
-        the number of games in the hero's line and button
+        the number of games in the hero's line and button, and stands the
+        spotlight game on the hero's horizon line (setUpSpotlight)
      3. on the projects page, shows every project with filter buttons
      4. on the Games, Trading, and Tools pages, shows every project in that
         "category"
@@ -7314,6 +7315,72 @@ function setUpSound() {
   });
 }
 
+// The spotlight: one game standing on the home hero's horizon line, with
+// its cover, version and latest update, and the hero's Play button
+// pointed at it. Which game: the first one in projects.json with
+// "featured": true (or the first game, if none is featured). To change it,
+// move a featured game higher in projects.json, or flip "featured".
+// On a phone the hero's button just says "Play" (or the game's
+// "shortTitle", if projects.json gives it one).
+function setUpSpotlight(projects) {
+  const card = document.querySelector("[data-spotlight]");
+  const games = projects.filter((p) => isGame(p) && p.link);
+  const game = games.find((p) => p.featured === true) || games[0];
+  if (!card || !game) return;
+  const title = game.title || "Untitled";
+
+  // The cover (image, else the art), with its clip playing while it's on
+  // screen, like the game cards (see "Moving covers").
+  const cover = card.querySelector("[data-spotlight-cover]");
+  const picture = game.image || game.art;
+  if (picture) {
+    const img = el("img");
+    setPicture(img, picture);
+    img.alt = ""; // decoration: the title is right below
+    img.width = 640;
+    img.height = 480;
+    img.fetchPriority = "high"; // on the first screen, so no lazy loading
+    cover.append(img);
+    if (game.image && (game.cardClip || game.clip)) watchClip(cover, game.cardClip || game.clip);
+  } else {
+    cover.append(el("span", "project__initials", initials(title)));
+  }
+
+  card.querySelector("[data-spotlight-title]").textContent = title;
+  const version = String(game.version || "").trim().replace(/^v/i, "");
+  card.querySelector("[data-spotlight-version]").textContent = version ? "v" + version : "";
+  // "Lately: <latest>" from the game's newest release, else the first
+  // sentence of its summary.
+  const latest = String(game.latest || "").trim();
+  const summary = String(game.summary || "").trim();
+  const firstSentence = (summary.match(/^.*?[.!?](?=\s|$)/) || [summary])[0];
+  card.querySelector("[data-spotlight-latest]").textContent = latest ? "Lately: " + latest : firstSentence;
+
+  const page = card.querySelector("[data-spotlight-page]");
+  page.href = gamePage(title);
+  page.setAttribute("aria-label", "Featured game: " + title + ". About this game");
+  const play = card.querySelector("[data-spotlight-link]");
+  play.href = game.link;
+  play.setAttribute("aria-label", "Play it: " + title);
+
+  // The hero's own Play button
+  const heroPlay = document.querySelector("[data-spotlight-play]");
+  if (heroPlay) {
+    heroPlay.href = game.link;
+    heroPlay.setAttribute("aria-label", "Play " + title);
+    const short = String(game.shortTitle || "").trim();
+    heroPlay.replaceChildren(
+      el("span", "hero__play-long", "Play " + title),
+      el("span", "hero__play-short", short ? "Play " + short : "Play")
+    );
+  }
+
+  // A short rise from below the line on the first load (not with reduce
+  // motion, and never again on scroll).
+  if (!REDUCE_MOTION) card.classList.add("spotlight--rise");
+  card.hidden = false;
+}
+
 // The home hero says how many games there are ("Six browser games, made in
 // Saskatoon by Kelbo." and "Browse all 6 games"), counted from projects.json
 // (games that aren't hidden), so it never needs editing. Without JavaScript
@@ -7396,6 +7463,7 @@ async function init() {
 
   fillCategoryCounts(projects);
   fillGameCount(projects);
+  setUpSpotlight(projects);
   // For the Completionist badge: how many games there are to play.
   writeJSON(GAME_COUNT_KEY, projects.filter(isGame).length);
   checkBadges();
