@@ -118,10 +118,12 @@ private context, never an environment variable. Workflow logs on a public
 repo can be read by anyone.
 
 **Before every merge**, read the diff for the list above. The Site check
-has a privacy scan (emails, phone numbers, long account-like numbers,
-dollar amounts and share counts in the trading data, key-shaped strings),
-but it can't recognise a name or a story, so your own read is the real
-check.
+has a privacy scan over every text file, `.github` included (emails, also
+in disguise, phone numbers, long account-like numbers, key shapes and
+32-character ids, `.env` files, photos that carry a location, money and
+share counts in the trading data, and Kelbo's own money or contract count
+in the first person anywhere), but it can't recognise a name, a broker or
+a story, so your own read is the real check.
 
 **If something private lands anyway**, don't just delete it in a new
 commit: history keeps it. Tell Kelbo at once and say what it was. Removing

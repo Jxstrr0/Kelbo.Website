@@ -80,7 +80,13 @@ red if any file holds an email address, a phone number, a long number that
 could be an account or card number, or anything shaped like an API key, and
 if `journal.json` or `options.json` holds a dollar amount of money ("made
 $450", "account balance $12,000"), a number of contracts or shares, or an
-account size. Stock price levels ("MU over $230") are fine. It can't
+account size. Stock price levels ("MU over $230") are fine. Since
+November 2026 it reads every text file in the repo (the notes and robots in
+`.github` too), and also stops a disguised email address, a `.env` file, a
+photo that carries where it was taken, a Cloudflare-style id, and your own
+money or contract count written in the first person on any page. It also
+checks more kinds of link and picture address, and that the workflows and
+the pages' security tags keep to the studio's rules. It can't
 recognise a name or a story, so still read before you merge. The full list
 of what must never go on the site is the "Privacy" section of `CLAUDE.md`.
 
