@@ -1364,5 +1364,34 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   contracts or shares, and "account size/balance"; a bare price level
   ("$230") is allowed. False alarm: reword, or widen the rule there. The
   human rules it backs up are the "Privacy" section of `CLAUDE.md`.
+- **Wider since 20 November 2026** (a stress test planted 129 made-up
+  mistakes in a scratch copy; the check caught 44, now 101, with no false
+  alarm on 80 past versions of the site). The privacy scan now reads every
+  text file in the repo, `.github` and files with no ending included
+  (`listAll`, `isText`). It also errors on: an address in disguise
+  (the @ or the dots spelled out in brackets, or the @ written as a code), a phone number with any dash or a
+  slash, `tel:` and `+1...`, a card number in fours, more key shapes
+  (GitHub's other tokens, Stripe, Google, GitLab, a signed token, a private
+  key block), a 32-character id that isn't the Web Analytics token
+  (`BEACON`), Kelbo's own money or contract count in the first person in
+  any page or data file (`MINE`), a `.env` file, and a JPEG that carries
+  where it was taken. `form@longlight.games`, the contact Worker's sender,
+  is the one real address allowed (`EMAIL_OK`).
+  Links: single-quoted and unquoted `src`/`href`, `poster`, every `srcset`
+  picture, `url()` in stylesheets, the manifest's icons and every sitemap
+  entry must exist; a link that starts with "/" or `javascript:` is an
+  error, plain `http://` a warning; a new page missing from `sw.js` `CORE`
+  is a warning. Page basics (section 7b): a title, one `og:image` across
+  the site and its file, a `longlight.games` canonical, alt text (warning),
+  no `onclick="..."` in a page, and no outside script, frame or form the
+  security tag doesn't list. `robots.txt` may not shut out the whole site,
+  and no script may call `localStorage.clear()`. Workflows: no
+  `permissions: write-all`, no `pull_request_target`, the robot key never
+  in `deploy.yml` or `site-check.yml`, and every job that uses it has
+  `environment: robots`. Security tag: no `'unsafe-eval'`, scripts only
+  from `SCRIPT_HOSTS`, no `*` or bare scheme, and every page's tag the same
+  as the home page's (`game.html` adds its one frame line).
+  What it still can't see: a name, a street address in words, a broker's
+  name, a story. Reading the diff stays the real check.
 - `README.md` is Kelbo's plain-English editing guide. Keep it up to date
   when how things work changes.
