@@ -305,6 +305,10 @@ if (releaseLines === undefined) {
 const SKIP = /^(https?:|\/\/|mailto:|tel:|data:|javascript:|#|\{|\$)/;
 // Made by the deploy (make-feed.mjs), so never in the repo itself.
 const DEPLOY_MADE = new Set(["feed.xml"]);
+// game-<slug>.html: the deploy's copies of game.html (make-game-pages.mjs). They only exist in the
+// built copy the Site check's second pass reads. Each has its game's cover as its link preview
+// picture, game.html's security tag, and no place in the offline list.
+const isGameCopy = (page) => /^game-[a-z0-9-]+\.html$/.test(page);
 for (const f of files.filter((f) => extname(f) === ".html")) {
   // Scripts written into the page are left out: `x.href = y` there is code, not a link.
   const html = readFileSync(f, "utf8").replace(/<!--[\s\S]*?-->/g, "").replace(/<script\b[^>]*>[\s\S]*?<\/script>/g, (tag) => tag.slice(0, tag.indexOf(">") + 1) + "</script>");
@@ -378,7 +382,7 @@ if (exists("sitemap.xml")) {
   if (exists("sw.js")) {
     const sw = readFileSync(join(ROOT, "sw.js"), "utf8");
     const core = (sw.match(/const CORE\s*=\s*\[([\s\S]*?)\]/) || ["", ""])[1];
-    for (const page of pages) if (page !== "404.html" && !core.includes(`"${page}"`)) warn("sw.js", `${page} isn't in the offline list (CORE), so it won't open without a connection.`);
+    for (const page of pages) if (page !== "404.html" && !isGameCopy(page) && !core.includes(`"${page}"`)) warn("sw.js", `${page} isn't in the offline list (CORE), so it won't open without a connection.`);
   }
 }
 if (exists("robots.txt") && /^\s*Disallow:\s*\/\s*$/im.test(readFileSync(join(ROOT, "robots.txt"), "utf8"))) error("robots.txt", `"Disallow: /" tells every search engine to stay out of the whole site.`);
@@ -425,7 +429,7 @@ for (const f of files.filter((f) => extname(f) === ".html")) {
   const top = dirname(f) === ROOT;
   if (top && !/<title>\s*[^<\s][^<]*<\/title>/.test(html)) error(rel(f), "This page has no <title>, so browser tabs and search results show nothing for it.");
   const og = ogVersion(html);
-  if (top && homeOg && og && og !== homeOg) error(rel(f), `The link preview picture here is "${og}", but index.html uses "${homeOg}". Every page uses the same one (bump ?v= on all of them together).`);
+  if (top && homeOg && og && og !== homeOg && !isGameCopy(rel(f))) error(rel(f), `The link preview picture here is "${og}", but index.html uses "${homeOg}". Every page uses the same one (bump ?v= on all of them together).`);
   if (og) { const file = og.replace(/^https:\/\/longlight\.games\//, "").split(/[?#]/)[0]; if (!/^https?:/.test(file) && !exists(file)) error(rel(f), `The link preview picture "${file}" doesn't exist.`); }
   const canon = html.match(/<link rel="canonical" href="([^"]*)"/);
   if (canon && !canon[1].startsWith("https://longlight.games/")) error(rel(f), `The canonical address is "${canon[1]}". It should start with https://longlight.games/.`);
@@ -572,12 +576,12 @@ for (const f of files.filter((f) => extname(f) === ".html")) {
     error(rel(f), `The security tag's script-src lists "${src}". Scripts may only come from the site itself, ${SCRIPT_HOSTS.join(" and ")}. To add a host on purpose, add it to SCRIPT_HOSTS in check-site.mjs too.`);
   }
   // Every other part of the tag: no "*" (anywhere), and the same on every page as on index.html
-  // (game.html may also frame the games' own addresses for "Play here").
+  // (game.html and the deploy's copies of it may also frame the games' own addresses for "Play here").
   const whole = (html.match(/<meta http-equiv="Content-Security-Policy" content="([^"]*)"/) || ["", ""])[1];
   const parts = (t) => t.split(";").map((x) => x.trim()).filter((x) => x && !x.startsWith("script-src "));
   for (const part of parts(whole)) if (/(^|\s)(\*|https?:|http:\/\/\S+)(\s|$)/.test(part)) error(rel(f), `The security tag's "${part.split(" ")[0]}" allows any site (or plain http). Name the exact https:// hosts instead.`);
   if (HOME_TAG && dirname(f) === ROOT) {
-    const mine = parts(whole).map((x) => (rel(f) === "game.html" ? x.replace(" https://*.longlight.games", "") : x)).join("; ");
+    const mine = parts(whole).map((x) => (rel(f) === "game.html" || isGameCopy(rel(f)) ? x.replace(" https://*.longlight.games", "") : x)).join("; ");
     if (mine !== parts(HOME_TAG).join("; ")) error(rel(f), "This page's security tag differs from index.html's (beyond the script fingerprints). Every page carries the same tag; copy it from index.html.");
   }
   for (const hash of inlineScriptHashes(html)) {
