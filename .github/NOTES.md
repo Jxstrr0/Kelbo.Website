@@ -894,6 +894,19 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   just fits at 360px, where only the compact mark shows. Test before adding
   to it. The parked tracker doesn't load
   `main.js` (its names clash), so it has no ☀/☾ button or live sun.
+- When the header is cramped (20 November 2026): logo, menu and button need
+  about 356px side by side. Narrower than that, or with bigger text or the
+  page zoomed, the menu used to run off the right and the page slid
+  sideways. Now `.site-header` is a size container, and under 22.2rem the
+  menu takes a second row beneath the logo and the button; the menu's links
+  may also wrap inside their space (for phones whose big-text setting the
+  rem measure can't see), and the logo and button no longer shrink. The
+  inner row's smallest gap is 0.25rem so the menu still fits one row at
+  360px while the stand-in font shows (it is a few pixels wider). From
+  360px up at normal text size the header is pixel for pixel what it was.
+  Test a header change at 320, 360 and 390 wide, with text doubled and the
+  page zoomed to 200%, and with the web font blocked. The footer's lockup
+  link counts its padding inside its width, so it fits a 320px phone.
 ## Trading: journal, options, scan, brief, report card
 
 - The AI Trading Journal is `journal.html` + `journal.js` + `journal.css`,

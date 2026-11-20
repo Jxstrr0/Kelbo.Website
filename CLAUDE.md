@@ -237,7 +237,8 @@ that part, and update it when how something works changes. The short map:
   `projects.html` ("All"), `devlog.html` (`devlog.json`), `press.html`,
   `whats-new.html`, `about.html`, `contact.html`; tools in `tools/<name>/`. Notes: "Pages,
   sections, logo and header". The header only just fits at 360px: test
-  before adding to it. The logo letters are paths: never swap them for text.
+  before adding to it (narrower, or with bigger text, the menu drops to a
+  second row). The logo letters are paths: never swap them for text.
 - **Trading:** the journal (`journal.*`, `journal.json`, `options.json`),
   the weekly scan (`scan.json`), the pre-market brief (`briefs.*`,
   `briefs/`) and the report card (`report-cards/`). Never invent trades or

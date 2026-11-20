@@ -321,7 +321,11 @@ img {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.5rem;
+  /* The smallest gap allowed. The spare room is shared out between the three
+     anyway (space-between), so this only matters on a 360px phone in the
+     moment before the web font arrives: the stand-in font is a few pixels
+     wider, and with a smaller minimum the menu still fits on one row. */
+  gap: 0.25rem;
   min-height: 3.5rem;
 }
 
@@ -378,14 +382,58 @@ img {
   text-decoration: none;
   color: inherit;
 }
-.site-footer .lockup .logo--full { width: min(19rem, 80vw); }
+.site-footer .lockup .logo--full { width: min(19rem, 80vw); max-width: 100%; }
+/* The padding counts inside the link's width, so on a 320px phone the logo
+   shrinks a little instead of pushing the page 4px wider than the screen. */
+.site-footer .lockup { box-sizing: border-box; max-width: 100%; }
 
 .nav {
   display: flex;
+  flex-wrap: wrap; /* see "When the header is cramped" below */
+  justify-content: center;
   gap: 0.25rem;
   margin: 0;
   padding: 0;
   list-style: none;
+}
+
+/* ---------- When the header is cramped ----------
+   Logo, menu and theme button need about 356px side by side, so they only
+   just fit a 360px phone. Narrower than that, or with the text made bigger
+   or the page zoomed, the menu used to run off the right edge and the whole
+   page slid sideways. Two things stop that now:
+   1. The menu may wrap onto more lines inside its own space, and the logo
+      and the theme button keep their size (the button used to get squashed
+      to half its width on a 320px phone).
+   2. Where the header is narrower than the three need (measured in rem, so
+      bigger text and zoom count too), the menu takes a row of its own under
+      the logo and the button. Browsers without container queries skip this
+      and still get number 1.
+   At normal text size from 360px up, nothing here changes anything. */
+.site-header__inner > nav {
+  min-width: 0; /* lets the menu be narrower than one line of links */
+}
+
+.wordmark,
+.theme-toggle {
+  flex-shrink: 0;
+}
+
+.site-header {
+  container: site-header / inline-size;
+}
+
+@container site-header (max-width: 22.2rem) {
+  .site-header__inner {
+    flex-wrap: wrap;
+    row-gap: 0;
+  }
+
+  .site-header__inner > nav {
+    order: 3; /* after the theme button, so it drops to the second row */
+    flex: 1 0 100%;
+    padding-bottom: 0.4rem;
+  }
 }
 
 .nav a {
