@@ -143,5 +143,10 @@
     "line": "Backup codes and the offline cache now have size limits.",
     "title": "v1.7.0.2 - backup codes and the offline cache get size limits (#34)",
     "at": "2026-11-19T21:00:57.777Z"
+  },
+  "Funded@v0.10.0.1": {
+    "line": "The Daily now asks you to check your date if your phone's date looks wrong.",
+    "title": "v0.10.0.1 - The Daily asks you to check your date when the phone's date is wrong",
+    "at": "2026-11-20T20:46:50.417Z"
   }
 }
