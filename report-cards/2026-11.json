@@ -1,4 +1,91 @@
 {
+  "2026-11-20": {
+    "date": "2026-11-20",
+    "time": "2026-11-20T22:47:13.238Z",
+    "summary": "The −3% to −7.5% gap call hit at the shallow end (open −3.7%), but MU fell about 14% to 594.73 and broke all six supports the brief listed.",
+    "gap": {
+      "call": "Down about 3% to 7.5%, centred near −5%",
+      "result": "MU opened at 664.80, about 3.7% below the 690.44 prior close (open from one source only).",
+      "grade": "hit"
+    },
+    "mu": {
+      "prev_close": 690.44,
+      "open": 664.8,
+      "high": 669,
+      "low": 585.25,
+      "close": 594.73,
+      "open_pct": -3.71,
+      "close_pct": -13.86
+    },
+    "levels": [
+      {
+        "level": "Opening pivot $666.88 (Tuesday's low)",
+        "result": "The day's high of about 669 poked just above it, then MU closed far below.",
+        "grade": "held"
+      },
+      {
+        "level": "Opening pivot $656.39 (Nov 5 close)",
+        "result": "MU opened above it, then lost it and closed at 594.73.",
+        "grade": "broke"
+      },
+      {
+        "level": "Opening pivot $650.00 (Nov 5 low)",
+        "result": "Gave way during the session and MU closed about 55 dollars below it.",
+        "grade": "broke"
+      },
+      {
+        "level": "Lower-edge pivot $640.20 (May 5 close)",
+        "result": "Broken on the way down to a low of 585.25.",
+        "grade": "broke"
+      },
+      {
+        "level": "First resistance $676.00 (Nov 6 low)",
+        "result": "The high of about 669 stayed more than 1% below it.",
+        "grade": "untested"
+      },
+      {
+        "level": "Next resistance $690.44 (Thursday's close, gap fill)",
+        "result": "The gap never came close to filling.",
+        "grade": "untested"
+      },
+      {
+        "level": "First support $635.42 (May 7 low)",
+        "result": "Broken; MU closed at 594.73.",
+        "grade": "broke"
+      },
+      {
+        "level": "Next support $627.58 (May 6 low)",
+        "result": "Broken; the low hit 585.25.",
+        "grade": "broke"
+      }
+    ],
+    "sources": [
+      {
+        "title": "Micron Technology, Inc. (MU) Stock Price, Quote, News & Analysis",
+        "url": "https://seekingalpha.com/symbol/MU"
+      },
+      {
+        "title": "Tech retreat takes Micron down 14% (MU:NASDAQ)",
+        "url": "https://seekingalpha.com/news/4675351-tech-retreat-takes-micron-down-14?feed_item_type=news"
+      },
+      {
+        "title": "Micron Stock Price Forecast. Should You Buy MU?",
+        "url": "https://stockinvest.us/stock/MU"
+      },
+      {
+        "title": "Micron Technology (NASDAQ:MU) Shares Down 14% - What's Next?",
+        "url": "https://www.marketbeat.com/instant-alerts/price-micron-technology-nasdaq-mu-shares-down-14-whats-next-2026-11-20/"
+      },
+      {
+        "title": "MU Stock Price (XNAS) & Analyst Rating",
+        "url": "https://www.morningstar.com/stocks/xnas/mu/quote"
+      },
+      {
+        "title": "Stock Market Today Live, November 20, 2026: US Stocks Close Sharply Lower",
+        "url": "https://stocktitan.net/articles/stock-market-today-live-november-20-2026"
+      }
+    ]
+  },
   "2026-11-19": {
     "date": "2026-11-19",
     "time": "2026-11-19T21:57:19.974Z",
