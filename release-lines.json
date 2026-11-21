@@ -148,5 +148,10 @@
     "line": "The Daily now asks you to check your date if your phone's date looks wrong.",
     "title": "v0.10.0.1 - The Daily asks you to check your date when the phone's date is wrong",
     "at": "2026-11-20T20:46:50.417Z"
+  },
+  "Scrapline@v0.1.68.5": {
+    "line": "Saves now keep only the information the game actually uses.",
+    "title": "v0.1.68.5 - a save keeps only the fields the game has (#118)",
+    "at": "2026-11-21T07:45:44.058Z"
   }
 }
