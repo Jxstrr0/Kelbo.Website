@@ -313,19 +313,6 @@
     ]
   },
   {
-    "title": "Quench",
-    "tagline": "Heat, hammer and quench a blade, then find out what you made.",
-    "hidden": true,
-    "status": "Polishing",
-    "category": "Game",
-    "summary": "A bladesmithing game. Heat the steel, read its colour, hammer it to shape, then harden it in the quench and find out at the trial what you really made.",
-    "link": "https://quench.longlight.games/",
-    "code": "https://github.com/Jxstrr0/Quench",
-    "image": "assets/covers/quench.jpg",
-    "cardClip": "assets/clips/quench-card.mp4",
-    "featured": false
-  },
-  {
     "title": "Hull Down",
     "tagline": "Design a tank against a weight limit and send it to trial.",
     "hidden": true,
