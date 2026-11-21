@@ -359,6 +359,20 @@
     ]
   },
   {
+    "title": "Outwash",
+    "tagline": "Shape the car's aero, then see if it can race in dirty air.",
+    "hidden": true,
+    "status": "In development",
+    "category": "Game",
+    "summary": "A Laminar game. Run the aerodynamics department of a grand prix team: shape new parts, prove them in CFD and the wind tunnel, send them to the factory, and find out on Sunday whether a car that's fast on its own can race in a crowd. Twelve rounds a season, from 2026 to 2050.",
+    "version": "0.9.0.0",
+    "latest": "Teams, drivers and qualifying",
+    "link": "https://outwash.longlight.games/",
+    "code": "https://github.com/Jxstrr0/Outwash",
+    "image": "assets/covers/outwash.jpg",
+    "featured": false
+  },
+  {
     "title": "The Whip",
     "tagline": "Climb from rookie MP to Chief Whip. Every MP remembers your promises.",
     "hidden": true,

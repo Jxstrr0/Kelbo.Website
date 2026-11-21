@@ -225,6 +225,7 @@ Other pages' layouts (games.html, projects.html and the rest keep their current 
 | Frontier Lab | Found an AI lab and grow it across the world's tech capitals. |
 | Hull Down | Design a tank against a weight limit and send it to trial. |
 | Laminar | Prove a shape in the wind tunnel, then see if the tunnel was right. |
+| Outwash | Shape the car's aero, then see if it can race in dirty air. |
 
 ---
 

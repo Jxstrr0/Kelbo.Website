@@ -861,6 +861,13 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   four new screenshots in its Isobar look (Jobs, Shape, the tunnel with
   smoke, the tunnel in dark mode with tufts and the rake) and stays hidden
   (Kelbo). The cover and clips are still the first recordings.
+  Outwash (the grand prix aerodynamics game, "a Laminar game",
+  outwash.longlight.games, repo `Jxstrr0/Outwash`) was added hidden
+  (Kelbo, 2026-11-21). Its cover is the whole Dolgo Ring from above with
+  the car on the main straight, captured from the live game with
+  Playwright; no clip or screenshots yet. Its `publish-release.yml`
+  publishes a release when `VERSION` changes, like Laminar's. Its plan
+  lists it publicly at PR 7, the first playable.
   Each game keeps its own look (fonts, colours, art). The Longlight logo,
   the five colours and Space Grotesk belong to studio pieces only (logo or
   splash, credit line, studio block, links back here); every game repo's
