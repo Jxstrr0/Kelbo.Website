@@ -223,7 +223,6 @@ Other pages' layouts (games.html, projects.html and the rest keep their current 
 | Funded | Pass a prop-firm challenge without breaking the daily loss limit. |
 | Lombard | Run a canal-side pawn shop: inspect, spot the fakes, haggle. |
 | Frontier Lab | Found an AI lab and grow it across the world's tech capitals. |
-| Quench | Heat, hammer and quench a blade, then find out what you made. |
 | Hull Down | Design a tank against a weight limit and send it to trial. |
 | Laminar | Prove a shape in the wind tunnel, then see if the tunnel was right. |
 

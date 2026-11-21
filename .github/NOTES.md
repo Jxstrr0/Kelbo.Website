@@ -839,10 +839,6 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   `devlog-draft.mjs` / `release-lines.mjs` skip it. The Whip is
   hidden (Kelbo, 2026-11-11); its repo and live game stay up. Escapement
   was removed from the site entirely on 2026-11-16 (Kelbo deleted its repo).
-  Quench was added hidden the same day (Kelbo: leave it hidden until it's
-  more built); its cover and card clip are a hot bar on the anvil under the
-  hammer, recorded from the game by its own `npm run cover`
-  (`scripts/cover.mjs` there; the files are kept in its `art/cover/`).
   Hull Down (the tank design game, hulldown.longlight.games) was added
   hidden too (Kelbo, 2026-11-11); its cover is the side view on the
   blueprint screen. It has no release workflow yet, so it carries no

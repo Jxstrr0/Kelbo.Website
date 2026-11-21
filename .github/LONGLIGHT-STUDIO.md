@@ -1,19 +1,19 @@
 # Longlight Interactive: studio catalogue
 
-> **Snapshot: 7 November 2026**, tables refreshed 16 November (Quench, Hull Down, Funded, Burn Rate and Laminar added; Escapement retired). One reference file for every Longlight game.
+> **Snapshot: 7 November 2026**, tables refreshed 16 November (Hull Down, Funded, Burn Rate and Laminar added; Escapement retired). One reference file for every Longlight game.
 > The same file is dropped into each game repo. Versions and details drift;
 > when something matters, check the live repo. A game's own `CLAUDE.md` always
 > wins over this file inside that game's repo.
 >
-> **Public edition.** It covers the eleven games in the studio site's
+> **Public edition.** It covers the ten games in the studio site's
 > `projects.json` and leaves out Kelbo's private and parked repos. Ask Kelbo
 > about those.
 >
 > **Six games are listed on the site** (16 November 2026): Prairie Engine
-> Works, Scrapline, Season Ticket, Funded, Lombard and Burn Rate. Five more
+> Works, Scrapline, Season Ticket, Funded, Lombard and Burn Rate. Four more
 > carry `"hidden": true` in `projects.json`: Frontier Lab (hidden on
 > 15 November, when Burn Rate took its place), The Whip (11 November), and
-> the newest games Quench, Hull Down and Laminar, hidden until Kelbo says to
+> the newest games Hull Down and Laminar, hidden until Kelbo says to
 > show them. A hidden game has no card, no game page and no devlog or
 > release lines; its repo and live game stay up, and everything in this file
 > still applies to it.
@@ -74,7 +74,6 @@ on its own subdomain of **longlight.games** (November 2026; the old
 | Burn Rate | [Jxstrr0/BurnRate](https://github.com/Jxstrr0/BurnRate) | https://burnrate.longlight.games/ | Listed |
 | Frontier Lab | [Jxstrr0/FrontierLab](https://github.com/Jxstrr0/FrontierLab) | https://frontierlab.longlight.games/ | Hidden |
 | The Whip | [Jxstrr0/The-Whip](https://github.com/Jxstrr0/The-Whip) | https://thewhip.longlight.games/ | Hidden |
-| Quench | [Jxstrr0/Quench](https://github.com/Jxstrr0/Quench) | https://quench.longlight.games/ | Hidden |
 | Hull Down | [Jxstrr0/hull-down](https://github.com/Jxstrr0/hull-down) | https://hulldown.longlight.games/ | Hidden |
 | Laminar | [Jxstrr0/Laminar](https://github.com/Jxstrr0/Laminar) | https://laminar.longlight.games/ | Hidden |
 | Studio site | [Jxstrr0/Kelbo.Website](https://github.com/Jxstrr0/Kelbo.Website) | https://longlight.games/ | — |
@@ -177,7 +176,6 @@ cost nothing, keep old copies apart, and let a game move again safely.
 | Season Ticket | `seasonticket.*` | build-time service worker | `ST1:` |
 | Frontier Lab | `frontierlab.*` + IndexedDB `frontierlab` | content-hash name | `FL<schema>:` |
 | The Whip | `whip:*`; sessionStorage `whip:backup-reminded` | none (no service worker) | no prefix: plain base64 JSON (see profile) |
-| Quench | `quench.*` | `quench-` | `QNC1:` |
 | Hull Down | `hulldown.*` + IndexedDB `hulldown` | `hulldown-` | `HD1:` |
 | Funded | `funded.*` (`funded.run.v1`, `funded.meta.v1`, `funded.audio.v1`) | none (no service worker) | none |
 | Burn Rate | `brn-settings`, `brn-save`, `brn-slot1..3` | `brn-` | `BRN1:` |
@@ -206,7 +204,6 @@ site (`"hidden": true`); they are still live at their own addresses.
 | Lombard | Polishing | 1.4.6.1 | First-person pawn shop sim: inspect, appraise, haggle; a crime layer | Mostograd, a 2010s Russian river city | Portrait first | TypeScript, Vite, three 0.187 (npm) |
 | Burn Rate | Released | 1.6.1.1 | Solid rocket motor design: design, predict, static fire, incident report | Aqsor Range (Site 41), a steppe salt flat, 2030s | Portrait first | Classic JS + `build.js` (PEW stack), three vendored in `lib/` |
 | Frontier Lab | Polishing, **hidden** | 0.1.64.2 | AI-lab tycoon (fork of Vault Street) | Real cities on procedural maps | Portrait | TypeScript, Preact, 2D canvas/SVG |
-| Quench | Polishing, **hidden** | 1.0.1.3 | Bladesmithing: heat, hammer, grind, quench, temper, trial | Aldersay, the Skerrow Isles (present day) | Portrait first | TypeScript, Vite, three 0.187 (npm) |
 | Hull Down | Prototype, **hidden** | 1.8.5.2 | Tank design bureau: design to a weight limit, trial, after-action report | Tarnovia, 1980s to today | Portrait first | TypeScript, Vite; 2D office, three (npm) for trials |
 | Laminar | In development, **hidden** | 0.9.15.0 | Aero consultancy: shape in 3D, scale model, wind tunnel, real event | Tarnovia, Stavren (2010–2040; rubles) | Portrait first | TypeScript, Vite, three 0.187 (npm) |
 | The Whip | Released, **hidden** | 1.0.0.0 | Political career: votes, deals, whip | Dominion of Caledor (Westminster) | Portrait first | ES modules, no build, three 0.160 (CDN) |
@@ -542,17 +539,6 @@ are as of this snapshot.
   - Swap the hand-drawn sun and off-palette brand colours for the press-kit files.
   - Vendor three.js and add a service worker (needs Kelbo's OK, since the CDN is a hard rule there).
 
-### Quench
-
-- **Status:** the site's label is "Polishing"; 1.0.0.0 on 11 November 2026 (`VERSION` file). Every stage of its plan is built (`docs/QUENCH-PLAN.md` section 13, PR 0 to PR 13); `docs/STATUS.md` says where it stands and holds the tuning questions still open. Not yet played by a person, so tuning carries on as 1.0.x. Hidden on the studio site until Kelbo says otherwise.
-- **What is in it:** Free forge, a Career through the Guild ratings with knives and swords as one thread, a Collection of kept blades with share cards, san-mai and pattern-welded billets from Journeyman, a daily commission (one bar a day, a UTC day, the same for everyone, no server), offline play and install, a crash card that keeps the save safe, and `npm run sim` bot smiths for balance.
-- **Pitch:** a bladesmithing game. Heat a bar, read its colour, hammer it to shape, grind it, harden it in the quench, temper it, then find out at the trial what you really made.
-- **Setting and tone:** Aldersay, a harbour town on the invented Skerrow Isles, present day. Money is the Skerrow crown (`kr`). No fantasy, no combat, no gore: blades are tools, sport cutting pieces and collector pieces. Steel grades are real generic standards (1084, 5160, W2).
-- **Look:** chalk and slate, Zilla Slab and Atkinson Hyperlegible, a heat-colour ramp. Reading heat always has a non-colour path.
-- **Stack:** TypeScript (strict), Vite, three.js 0.187 from npm, plain DOM UI, Vitest. Pages from Actions, `base: './'`. Much of the setup is adapted from Lombard.
-- **Rules worth knowing:** the sim (`src/sim/`, `src/data/`) is pure and deterministic: seeded RNG, fixed step, its own `det.ts` maths, every number in a table. Names live in `docs/NAMES.md`.
-- **Saves:** localStorage `quench.*`, caches `quench-`, save code `QNC1:`.
-
 ### Hull Down (repo `hull-down`)
 
 - **Status:** the site's label is "Prototype", hidden on the studio site. Plan of record `docs/HULL-DOWN-PLAN.md` (staged PRs in section 14); progress in `docs/STATUS.md`.
@@ -611,7 +597,6 @@ noted, so a repeated name reads as a mistake.
 | The prairie, Saskatoon | Prairie Engine Works, the studio site's sky |
 | Valmere (Valmeran dollar), Kestrel Football League | Season Ticket |
 | Dominion of Caledor, capital Ostrava | The Whip |
-| Aldersay, a harbour town on the Skerrow Isles; Skerrow crown (`kr`) | Quench |
 | Tarnovia (rubles), the town of Stavren; Mostograd borrowed from Lombard | Laminar (its own take on Tarnovia, separate from Hull Down's) |
 | Tarnovia, a state tank design bureau, 1980s to today | Hull Down |
 | Aqsor Range (Site 41), a decommissioned test range on a steppe salt flat, 2030s | Burn Rate |
@@ -664,7 +649,7 @@ date or institution.
 
 | Family | Games |
 | --- | --- |
-| Craft career: build or make something part by part, test it, compete or sell, in a workshop that grows | Prairie Engine Works (engines), Scrapline (combat robots), Quench (blades) |
+| Craft career: build or make something part by part, test it, compete or sell, in a workshop that grows | Prairie Engine Works (engines), Scrapline (combat robots) |
 | Engineering to a brief: design against a spec, test, read the report | Burn Rate (rocket motors), Hull Down (tanks), Laminar (aerodynamics) |
 | Roguelike runs | Funded (prop-firm trading) |
 | Tycoon and management | Season Ticket (football club), Frontier Lab (AI lab), Lombard (pawn shop) |
@@ -693,7 +678,6 @@ date or institution.
 | Navy, gold and teal, system fonts, semi-realistic 3D | Season Ticket |
 | "Banknote Deco": engraved isometric map, Bodoni Moda / Public Sans | Frontier Lab |
 | "The Order Paper": cream paper, ink, stamps, Newsreader | The Whip |
-| Chalk and slate with a heat-colour ramp, Zilla Slab / Atkinson Hyperlegible | Quench |
 | Drawing-office paper and ink (blueprint as the dark option), Archivo Narrow / Archivo / Spline Sans Mono | Hull Down |
 | Rendered trading desk with green, red, ivory and lilac monitors, Space Grotesk | Funded |
 | "Faded state-range": concrete, state green, stencil red, Saira / Martian Mono | Burn Rate |
