@@ -1,0 +1,75 @@
+{
+  "updated": "2026-11-22T17:47:19.998Z",
+  "window": {
+    "from": "2026-10-26",
+    "to": "2026-11-22"
+  },
+  "cards": 15,
+  "lessons": [
+    {
+      "text": "For MU, when the latest pre-market print is within about 1% of the prior close, call the open flat with a range that reaches about 2% on both sides of the prior close, instead of leaning one way on the last few hours of drift.",
+      "evidence": {
+        "count": "3 of 3 MU opens with a near-flat latest print moved about 2% (+1.91%, -2.15%, -1.97%), and 2 of those 3 were misses that opened past the side the brief leaned; ",
+        "dates": [
+          "2026-11-09",
+          "2026-11-10",
+          "2026-11-13"
+        ]
+      },
+      "status": "kept"
+    },
+    {
+      "text": "For MU, when your newest pre-market print is from before 8:00 ET, keep labelling it stale and widening the range by about one percentage point on each side of that print, and do not shift the centre up or down based on how earlier opens slipped from their prints.",
+      "evidence": {
+        "count": "5 of 5 MU gap calls hit since 2026-11-16 with the widened range, but 4 of 5 opens landed 1.0 to 1.6 points from the pre-8:00 print, and the slip went toward fla",
+        "dates": [
+          "2026-11-16",
+          "2026-11-17",
+          "2026-11-18",
+          "2026-11-19",
+          "2026-11-20"
+        ]
+      },
+      "status": "kept"
+    },
+    {
+      "text": "For MU, label any level that sits inside or at the edge of the called gap range as an opening pivot, stop listing pre-market or overnight prints as levels, and make the first support and first resistance the nearest prior-session levels outside the called range.",
+      "evidence": {
+        "count": "0 of 37 MU levels since 2026-11-16 were pre-market or overnight prints, and 0 of 21 first or next supports and resistances were already passed at the open; the ",
+        "dates": [
+          "2026-11-16",
+          "2026-11-17",
+          "2026-11-18",
+          "2026-11-19",
+          "2026-11-20"
+        ]
+      },
+      "status": "retired"
+    },
+    {
+      "text": "For MU, merge supports or resistances that sit within about 1.5% of each other into one zone, and list a next level only when it is clearly further away, so the ladder does not show several layers that are really one area.",
+      "evidence": {
+        "count": "8 of 9 MU levels below the open on these two days were spaced only 0.7% to 1.8% apart, and they broke in a single move",
+        "dates": [
+          "2026-11-19",
+          "2026-11-20"
+        ]
+      },
+      "status": "new"
+    },
+    {
+      "text": "For MU, on a day you call a gap up, list the prior close as the gap-fill mark instead of as support, and make first support the next prior-session level below it.",
+      "evidence": {
+        "count": "on gap-up days, 3 of 5 MU supports set at the prior close broke and 0 held (the other 2 were untested)",
+        "dates": [
+          "2026-11-02",
+          "2026-11-03",
+          "2026-11-06",
+          "2026-11-18",
+          "2026-11-19"
+        ]
+      },
+      "status": "new"
+    }
+  ]
+}

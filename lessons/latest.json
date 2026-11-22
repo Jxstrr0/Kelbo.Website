@@ -1,108 +1,75 @@
 {
-  "updated": "2026-11-15T17:48:11.326Z",
+  "updated": "2026-11-22T17:47:19.998Z",
   "window": {
-    "from": "2026-10-19",
-    "to": "2026-11-15"
+    "from": "2026-10-26",
+    "to": "2026-11-22"
   },
-  "cards": 10,
+  "cards": 15,
   "lessons": [
     {
       "text": "For MU, when the latest pre-market print is within about 1% of the prior close, call the open flat with a range that reaches about 2% on both sides of the prior close, instead of leaning one way on the last few hours of drift.",
       "evidence": {
-        "count": "3 of 3 MU opens on days with a near-flat latest print moved about 2% (+1.9%, -2.2%, -2.0%); 2 of those 3 were misses that opened past the side the brief leaned ",
+        "count": "3 of 3 MU opens with a near-flat latest print moved about 2% (+1.91%, -2.15%, -1.97%), and 2 of those 3 were misses that opened past the side the brief leaned; ",
         "dates": [
           "2026-11-09",
           "2026-11-10",
           "2026-11-13"
         ]
       },
+      "status": "kept"
+    },
+    {
+      "text": "For MU, when your newest pre-market print is from before 8:00 ET, keep labelling it stale and widening the range by about one percentage point on each side of that print, and do not shift the centre up or down based on how earlier opens slipped from their prints.",
+      "evidence": {
+        "count": "5 of 5 MU gap calls hit since 2026-11-16 with the widened range, but 4 of 5 opens landed 1.0 to 1.6 points from the pre-8:00 print, and the slip went toward fla",
+        "dates": [
+          "2026-11-16",
+          "2026-11-17",
+          "2026-11-18",
+          "2026-11-19",
+          "2026-11-20"
+        ]
+      },
+      "status": "kept"
+    },
+    {
+      "text": "For MU, label any level that sits inside or at the edge of the called gap range as an opening pivot, stop listing pre-market or overnight prints as levels, and make the first support and first resistance the nearest prior-session levels outside the called range.",
+      "evidence": {
+        "count": "0 of 37 MU levels since 2026-11-16 were pre-market or overnight prints, and 0 of 21 first or next supports and resistances were already passed at the open; the ",
+        "dates": [
+          "2026-11-16",
+          "2026-11-17",
+          "2026-11-18",
+          "2026-11-19",
+          "2026-11-20"
+        ]
+      },
+      "status": "retired"
+    },
+    {
+      "text": "For MU, merge supports or resistances that sit within about 1.5% of each other into one zone, and list a next level only when it is clearly further away, so the ladder does not show several layers that are really one area.",
+      "evidence": {
+        "count": "8 of 9 MU levels below the open on these two days were spaced only 0.7% to 1.8% apart, and they broke in a single move",
+        "dates": [
+          "2026-11-19",
+          "2026-11-20"
+        ]
+      },
       "status": "new"
     },
     {
-      "text": "For MU, take the pre-market print you build the gap range on from 8:30 ET or later, after any 8:30 data release, and if the newest print you have is from before 8:00 ET, widen the range by about one percentage point on each side and say the print is stale.",
+      "text": "For MU, on a day you call a gap up, list the prior close as the gap-fill mark instead of as support, and make first support the next prior-session level below it.",
       "evidence": {
-        "count": "3 of 5 MU opens since 2026-11-09 landed 1.4 or more percentage points from the brief's latest print (all taken 7:01-7:28 ET), against 0 of 3 for the 8:30-9:00 E",
+        "count": "on gap-up days, 3 of 5 MU supports set at the prior close broke and 0 held (the other 2 were untested)",
         "dates": [
-          "2026-11-04",
-          "2026-11-05",
+          "2026-11-02",
+          "2026-11-03",
           "2026-11-06",
-          "2026-11-09",
-          "2026-11-12",
-          "2026-11-13"
+          "2026-11-18",
+          "2026-11-19"
         ]
       },
       "status": "new"
-    },
-    {
-      "text": "For MU, label any level that sits inside or at the edge of the called gap range as an opening pivot instead of support or resistance, stop listing pre-market or overnight prints as levels, and make the first support and first resistance the nearest prior-session levels outside the called range.",
-      "evidence": {
-        "count": "4 of 7 MU levels graded broke since 2026-11-09 were already passed at the open, each sitting inside or at the edge of the called range; 3 of 5 MU levels taken f",
-        "dates": [
-          "2026-11-04",
-          "2026-11-05",
-          "2026-11-06",
-          "2026-11-09",
-          "2026-11-11",
-          "2026-11-13"
-        ]
-      },
-      "status": "new"
-    },
-    {
-      "text": "For both MU and the SOX, build the gap range so the latest pre-market print sits inside it, with room beyond that print in the direction pre-market has been moving, instead of letting the range end at or short of that print.",
-      "evidence": {
-        "count": "Fixed: 0 of 5 MU opens since 2026-11-09 went past the far edge in the direction pre-market was moving (3 opened inside, 2 opened past the opposite edge); the SO",
-        "dates": [
-          "2026-11-09",
-          "2026-11-10",
-          "2026-11-11",
-          "2026-11-12",
-          "2026-11-13"
-        ]
-      },
-      "status": "retired"
-    },
-    {
-      "text": "List at most two MU levels on each side, the ones nearest the called open, and drop deeper items such as the 200-day average, round-number bear-case references and third or fourth resistances.",
-      "evidence": {
-        "count": "Fixed: 5 of 5 briefs since 2026-11-09 list exactly two MU levels per side; untested levels fell to 7 of 20, from 24 of 38 on 2026-11-02 to 2026-11-06",
-        "dates": [
-          "2026-11-09",
-          "2026-11-10",
-          "2026-11-11",
-          "2026-11-12",
-          "2026-11-13"
-        ]
-      },
-      "status": "retired"
-    },
-    {
-      "text": "During a run of down days, present every MU support as a level to watch rather than a floor, and drop labels like 'line in the sand' or 'support the price is sitting on'.",
-      "evidence": {
-        "count": "Fixed: all 10 MU supports since 2026-11-09 are labelled as levels to watch, with no floor language; 4 of 10 held, 2 broke and 4 were untested",
-        "dates": [
-          "2026-11-09",
-          "2026-11-10",
-          "2026-11-11",
-          "2026-11-12",
-          "2026-11-13"
-        ]
-      },
-      "status": "retired"
-    },
-    {
-      "text": "For the SOX, include at least one level on each side close to the called open, and re-label any level the called gap would jump past instead of listing it on its old side.",
-      "evidence": {
-        "count": "Gone from grading: 0 of 5 cards from 2026-11-09 to 2026-11-13 grade the SOX, since the brief no longer has a SOX section",
-        "dates": [
-          "2026-11-09",
-          "2026-11-10",
-          "2026-11-11",
-          "2026-11-12",
-          "2026-11-13"
-        ]
-      },
-      "status": "retired"
     }
   ]
 }
