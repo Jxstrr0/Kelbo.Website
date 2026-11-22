@@ -1,6 +1,30 @@
 {
   "posts": [
     {
+      "date": "2026-11-22",
+      "title": "Prairie Engine Works gets you to the garage sooner",
+      "game": "Prairie Engine Works",
+      "body": "This week was about the first load. The game now opens with just what it needs, and the rest downloads quietly once the garage is up: the glossary and lessons, the trophy room, photo mode, and the races themselves for every event. The first download is down from 1,041 KB to 857 KB, and the physics hasn't changed at all.\n\nIf you're quick, a screen may show Loading… or Loading the track… for a moment, then fill in by itself. If the download fails, there's a Try again button. Trophies you win in the meantime are never lost.\n\nSave codes are safer too. Text in a save code can only ever show as words, and a damaged save can no longer leave the game stuck on its loading screen. Your own builds come through untouched. And letting go of PUSH as an oval race ends no longer causes an error."
+    },
+    {
+      "date": "2026-11-22",
+      "title": "Funded: day types, achievements and offline play",
+      "game": "Funded",
+      "body": "About one day in four is now a special day: a Gap open, a Fed day, a Trend day or a Trading halt. You'll see which on the card at the open. After the close, the chart marks every fill and labels what each trade made or lost. There are 11 achievements to earn, and new edges, including Insurance, Bell Clerk, Iron Stomach, Bigger Book and Deep Pockets, each with its own desk prop.\n\nFunded now plays offline from your home screen, and the title comes up faster on a slow connection. A new Career stats card keeps count of your careers, passes, firings, best day and more. Tier 3 is rebalanced: a +$7,500 target, a $3,500 premium budget, news that follows through further, and a Theta Shield that makes options 15% cheaper.\n\nPlaying with a keyboard or a screen reader got a polish. And if your phone's date is wrong, the Daily now asks you to check it."
+    },
+    {
+      "date": "2026-11-22",
+      "title": "Burn Rate: hints, your own motors and personal bests",
+      "game": "Burn Rate",
+      "body": "Stuck on a job? The job sheet now has a Hint button. It names the biggest problem with the motor on your bench and the one move that helps most. It gives the direction, never a number. A hint is free after two misses on a job and always free in the Sandbox. Otherwise it costs 5% of the pay, at least 50 cr. After two misses, the report also shows a note from your partner, which you can turn off in Settings.\n\nYou can now save up to 12 motors by name on the data sheet and load them in any mode or career on your phone. Your backup code carries them too. Personal bests track your best grade and fewest firings for each job, across every career.\n\nThree jobs also got a balance pass. And backup codes are safer: a code from a stranger can no longer run anything on your phone or freeze the game."
+    },
+    {
+      "date": "2026-11-22",
+      "title": "Lombard: a second tab can't undo your progress",
+      "game": "Lombard",
+      "body": "Until now, if you had Lombard open in two tabs, the one left in the background could later save its older copy of your shop over the progress you'd made in the other, without any warning. That's fixed.\n\nNow, if another tab has saved since, the older tab won't save over it. Instead it covers the shop with a notice, This shop moved on in another tab, and one button: Load the newer save. The shop clock stops behind it. The check also runs when you come back to a tab, so you won't play on from an old copy.\n\nWith one tab open, nothing changes."
+    },
+    {
       "date": "2026-11-18",
       "title": "Behind the build: The Whip",
       "game": "The Whip",

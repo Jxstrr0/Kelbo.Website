@@ -1,13 +1,17 @@
 {
-  "updated": "2026-11-18",
+  "updated": "2026-11-22",
   "items": [
     {
-      "text": "Funded, a Daily Challenge, funded payouts and new day types",
+      "text": "Prairie Engine Works, a faster first load on phones",
+      "link": "https://pew.longlight.games/"
+    },
+    {
+      "text": "Funded, a Daily Challenge, achievements and new day types",
       "link": "https://funded.longlight.games/"
     },
     {
-      "text": "Scrapline, a polish pass from play-testing",
-      "link": "https://scrapline.longlight.games/"
+      "text": "Burn Rate, hints, saved motors and personal bests",
+      "link": "https://burnrate.longlight.games/"
     }
   ]
 }
