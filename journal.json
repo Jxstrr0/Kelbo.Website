@@ -69,32 +69,38 @@
       {
         "call": "MU holds $650 on every close this week",
         "wrongIf": "MU closes under $650 on any day from Nov 16 to Nov 20.",
-        "grade": null
+        "grade": "miss",
+        "result": "MU closed at 719.02, 712.42, 705.27 and 690.44 from Monday to Thursday, then fell 13.89% to 594.51 on Friday, under the $650 floor."
       },
       {
         "call": "The S&P holds its 200-day near 7,340 on the weekly close",
         "wrongIf": "The S&P 500 closes under 7,340 on Friday, Nov 20.",
-        "grade": null
+        "grade": "miss",
+        "result": "The S&P 500 closed Friday at 6,910.39, about 430 points under 7,340, after first closing below it on Wednesday at 7,323.63."
       },
       {
         "call": "The S&P stays under 7,800 on every close while rates sit over 5%",
         "wrongIf": "The S&P 500 closes at or above 7,800 on any day from Nov 16 to Nov 20.",
-        "grade": null
+        "grade": "hit",
+        "result": "The highest S&P close of the week was 7,416.59 on Monday, far below 7,800."
       },
       {
         "call": "Large caps beat small caps again: SPY beats IWM",
         "wrongIf": "IWM finishes the week (Nov 20 close vs Nov 13 close) ahead of SPY.",
-        "grade": null
+        "grade": "miss",
+        "result": "SPY fell from 754.37 to 689.81 (about -8.6%) while IWM fell from 277.54 to 256.61 (about -7.5%), so IWM beat SPY."
       },
       {
         "call": "The 10-year yield is still at 5% or higher at the end of the week",
         "wrongIf": "The 10-year Treasury yield closes under 5.00% on Friday, Nov 20.",
-        "grade": null
+        "grade": "miss",
+        "result": "The 10-year yield ended Friday at 4.92% per Treasury data (Investing.com 4.912%, Trading Economics 4.94%), under 5.00%."
       },
       {
         "call": "Brent stays under $105 even with the Bahrain attack",
         "wrongIf": "Front-month Brent settles at or above $105 on any day from Nov 16 to Nov 20.",
-        "grade": null
+        "grade": "hit",
+        "result": "Front-month Brent settled between 91.95 and 93.14 from Monday to Thursday and at 92.57 on Friday, never near $105."
       }
     ],
     "scenarios": [
@@ -230,7 +236,56 @@
         "url": "https://www.cnbc.com/2026/11/13/nvidia-nvda-stock-jensen-huang-transition.html"
       }
     ],
-    "by": "forecaster"
+    "by": "forecaster",
+    "recap": "The AI selloff came back hard. The S&P 500 closed 7,416.59 Monday, 7,340.53 Tuesday, 7,323.63 Wednesday, 7,175.83 Thursday and 6,910.39 Friday. That is a weekly drop of about 8.6% from 7,561.67, and the index ended in a correction. The Nasdaq closed at 22,617.73, the Dow fell to 48,147.33, the Russell 2000 lost 7.48% and the VIX closed at 35.89.\n\nNvidia beat on Tuesday with about $115.8 billion in revenue and upbeat guidance, but the stock fell 2.6% Wednesday. Anthropic priced at $83 and closed its first day Thursday at $97.17, but that did not lift the market. MU fell every day and dropped 13.89% to 594.51 on Friday. Stocks fell so hard that buyers ran to bonds and the 10-year fell to 4.92%. Brent drifted lower and settled at $92.57.\n\nScore: 2 hits, 0 partials, 4 misses.",
+    "ai": "The two hits were the safest calls on the sheet. The S&P cap at 7,800 and the Brent cap at $105 both had big cushions and taught little. The calls that carried real risk all failed. The MU floor looked wide at 16.5% under Friday's close. But MU had fallen 17.46% in one day on Nov 5, and Nvidia's report was priced for a 9.6% move, so a gap down past $650 was well within normal swings.\n\nThe main reasoning gap was treating rates and stocks as separate bets. The bear case assumed stocks fall while yields stay high. Instead the crash pushed money into bonds and the 10-year fell under 5%. Small caps also beat large caps because the selling hit megacap tech and chips hardest. Calls 1, 2, 4 and 5 were really one bet that there would be no AI crash, and the 28% bear case was too low for a week with Nvidia's report and the Anthropic IPO.",
+    "lesson": "Before finalizing, check which calls fail together in the same scenario, and treat them as one bet. Also remember that in a sharp stock selloff, yields usually fall, so a stocks-down call and a rates-stay-high call often work against each other.",
+    "gradeSources": [
+      {
+        "title": "Micron Technology (MU) Stock Price History 1984-2026",
+        "url": "https://stockanalysis.com/stocks/mu/history/"
+      },
+      {
+        "title": "SPY Historical Stock Price Data",
+        "url": "https://stockanalysis.com/etf/spy/history/"
+      },
+      {
+        "title": "IWM Historical Stock Price Data",
+        "url": "https://stockanalysis.com/etf/iwm/history/"
+      },
+      {
+        "title": "S&P 500 (SP500)",
+        "url": "https://fred.stlouisfed.org/series/SP500"
+      },
+      {
+        "title": "S&P 500 (^GSPC) Historical Data - Yahoo Finance",
+        "url": "https://finance.yahoo.com/quote/%5EGSPC/history/"
+      },
+      {
+        "title": "S&P closes 6,910.39 Friday, Anthropic closes $88.91",
+        "url": "https://noctaaa.substack.com/p/daily-brief-saturday-21-november-2026"
+      },
+      {
+        "title": "Weekly Roundup 21 November 2026: S&P 500 Crash, Nifty Rises",
+        "url": "https://www.marketcalls.in/futures-and-options/weekly-market-roundup-21-november-2026.html"
+      },
+      {
+        "title": "US Stock Market Today Nov 21, 2026 — S&P 500, Dow & Nasdaq Close",
+        "url": "https://vittarthi.com/markets/us"
+      },
+      {
+        "title": "This week, the Russell 2000 small cap stock index fell 7.48%, marking its largest single-week decline since the week of …",
+        "url": "https://longbridge.com/en/news/306325896"
+      },
+      {
+        "title": "Treasury Yields Snapshot: November 20, 2026",
+        "url": "https://www.etftrends.com/fixed-income-content-hub/treasury-yields-snapshot-november-20-2026/"
+      }
+    ],
+    "graded": {
+      "by": "scorekeeper",
+      "at": "2026-11-22T17:35:20.304Z"
+    }
   },
   {
     "date": "2026-11-09",
