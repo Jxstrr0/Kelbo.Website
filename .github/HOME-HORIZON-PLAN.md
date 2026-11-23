@@ -197,7 +197,7 @@ Two cards side by side on desktop, stacked on phones:
 
 ## 8. Decisions (Kelbo, 19 Nov 2026)
 
-1. **Hero name (PR 1):** the headline is "Deep games for small screens."; "Longlight Interactive · Saskatoon, SK" goes in the small kicker above it; "by Kelbo" moves into the line under the headline. Update CLAUDE.md to match.
+1. **Hero name (PR 1):** the headline is "Deep games for small screens."; "Longlight Interactive · Saskatoon, SK" goes in the small kicker above it; "by Kelbo" moves into the line under the headline. Update CLAUDE.md to match. (Kelbo changed the headline to "Long games for short breaks." on 23 Nov 2026.)
 2. **Contact (PR 5):** new `contact.html`, linked as "Say hello" in every footer.
 3. **Menu (PR 5):** keep Games · Trading · All · About, no Play button.
 4. **Sun vs spotlight card (PR 2):** the sun may pass behind the card. No fading or moving.

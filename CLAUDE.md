@@ -30,8 +30,9 @@ Live at https://longlight.games/
 - **The site is branded Longlight Interactive** (his studio). Page titles,
   `og:` tags, the header lockup (LONGLIGHT / INTERACTIVE), the home hero's
   small kicker ("Longlight Interactive · Saskatoon, SK") and the footer all
-  say Longlight Interactive. The home hero's headline is the promise, "Deep
-  games for small screens." (Kelbo, 19 Nov 2026, the Horizon plan in
+  say Longlight Interactive. The home hero's headline is the promise, "Long
+  games for short breaks." (Kelbo, 23 Nov 2026; it replaced "Deep games
+  for small screens." from the Horizon plan in
   `.github/HOME-HORIZON-PLAN.md`). Everything personal about Kelbo lives on
   `about.html`, linked from "Kelbo" in the line under that headline ("...
   made in Saskatoon by Kelbo", the one place the site says "by Kelbo"),
