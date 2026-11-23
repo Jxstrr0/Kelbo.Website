@@ -1,4 +1,73 @@
 {
+  "2026-11-23": {
+    "date": "2026-11-23",
+    "time": "2026-11-23T22:46:19.288Z",
+    "summary": "The brief got the direction right but badly undercalled the size: MU opened up about 16% and closed up 19% after Nvidia reinstated Jensen Huang, gapping over both resistance levels.",
+    "gap": {
+      "call": "Up about 3.5% to 8.5%",
+      "result": "MU opened at 690.72, up about 16.2% from 594.51, nearly 8 points above the top of the range.",
+      "grade": "partial"
+    },
+    "mu": {
+      "prev_close": 594.51,
+      "open": 690.72,
+      "high": 720.69,
+      "low": 666.66,
+      "close": 707.7,
+      "open_pct": 16.18,
+      "close_pct": 19.04
+    },
+    "levels": [
+      {
+        "level": "Opening pivot zone $627.58–$640.20",
+        "result": "MU opened well above the zone and never came back to it; the day's low was 666.66.",
+        "grade": "untested"
+      },
+      {
+        "level": "Lower pivot zone $605.47–$610.60",
+        "result": "The regular session never got anywhere near this zone.",
+        "grade": "untested"
+      },
+      {
+        "level": "First resistance $650.00 (Nov 5 low)",
+        "result": "MU gapped over it at the open, never came back and closed far above at 707.70.",
+        "grade": "untested"
+      },
+      {
+        "level": "Next resistance $669.00 (Friday's high)",
+        "result": "MU opened above it, dipped just below to 666.66, then closed well above at 707.70.",
+        "grade": "broke"
+      },
+      {
+        "level": "Gap-fill mark $594.51 (Friday's close)",
+        "result": "The gap never came close to filling; the low was 666.66.",
+        "grade": "untested"
+      },
+      {
+        "level": "First support $585.25 (Friday's low)",
+        "result": "The regular session never came near it.",
+        "grade": "untested"
+      }
+    ],
+    "sources": [
+      {
+        "title": "Micron Technology, Inc. (MU) Stock Price, News, Quote & History - Yahoo Finance",
+        "url": "https://finance.yahoo.com/quote/MU/"
+      },
+      {
+        "title": "Micron Technology (MU) Stock Price History 1984-2026",
+        "url": "https://stockanalysis.com/stocks/mu/history/"
+      },
+      {
+        "title": "Stock Market Today, Nov. 23: Micron Surges 19% as Nvidia CEO Change Calms AI Spending Fears",
+        "url": "https://www.fool.com/coverage/stock-market-today/2026/11/23/stock-market-today-nov-23-micron-surges-19-as-nvidia-ceo-change-calms-ai-spending-fears/"
+      },
+      {
+        "title": "MU Stock Quote Price and Forecast",
+        "url": "https://edition.cnn.com/markets/stocks/MU"
+      }
+    ]
+  },
   "2026-11-20": {
     "date": "2026-11-20",
     "time": "2026-11-20T22:47:13.238Z",
