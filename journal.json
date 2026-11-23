@@ -1,5 +1,248 @@
 [
   {
+    "date": "2026-11-23",
+    "title": "Forecast for the week of Nov 23",
+    "bias": "Bullish",
+    "gradeBy": "2026-11-27",
+    "summary": "I think last week's crash leaves room for a short holiday-week bounce, but I don't think it's the bottom. I expect the S&P to finish the week above 6,910 but stay under its 52-week average near 7,241, and tech should beat staples. MU should close the week over $540, and the 10-year should stay under 5%. Dell Tuesday after the close and PCE Wednesday morning are the big risks.",
+    "view": "Writing this Sunday evening. Last week was a crash. The S&P fell 8.61% to 6,910.39, its worst week since April 2025 and its seventh straight losing day. It is now in a correction, 11.62% under its Oct 6 record close of 7,818.93. The Nasdaq fell 10.02% to 22,617.73, the Dow 8.02% to 48,147.33 and the Russell 2000 7.48% to 2,581.79. All eleven sector ETFs fell. Staples (XLP -2.05%), utilities (XLU -3.07%) and real estate (XLRE -4.30%) held up best. Tech (XLK -12.49%), communication services (XLC -7.97%) and materials (XLB -7.45%) were worst. SMH fell 17.81%. Nvidia fell 22.92% to $125.53, after a Reuters report Friday that SEC staff are looking at its accounting. MU fell 23.62% to $594.51, including 13.89% on Friday. That was its lowest close since early May. The VIX closed at 35.89 after touching 40.03. The 10-year fell to 4.91% from 5.15%, and Brent settled at $92.57.\n\nThis week hinges on whether the bounce in futures holds. At about 6:15 p.m. Sask, S&P futures were up 2.05% at 7,077.50 and Nasdaq 100 futures were up 2.74%. Over the weekend, Bessent said the administration still needs answers from Nvidia, and his deadline for those answers runs out around Nov 25. Dell reports Tuesday after the close with about a 15.7% move priced. It is the first big AI hardware report since Nvidia's. Wednesday at 7:30 a.m. Sask brings core PCE (0.3% expected) and Q3 GDP (3.5%). It is the last big inflation report before the Dec 9 Fed meeting, where a December hike is still priced at about 92%. Thursday is closed, and Friday closes at noon Sask on thin volume.\n\nLast week my four risky calls were really one bet that there would be no AI crash. I also forgot that yields fall when stocks crash. So this week I split the calls. Three win if the bounce comes: the S&P finishes up, XLK beats XLP, and MU closes the week over $540, which is 9.2% under Friday's close and judged only on Friday's close. Two win if the bounce stalls or fails: the S&P stays under 7,241 and the 10-year stays under 5%. The Brent call doesn't depend on the AI trade.\n\nMy lean is a bounce, but not a bottom. The S&P is about 6% under its 200-day near 7,349. The VIX is near 36, and its curve is inverted, so options for the next nine days cost more than for the next three months. Credit barely moved, and HYG fell only 0.79%. I expect sellers to come back at the 52-week average near 7,241. The risk is more Nvidia news or a weak Dell guide. That could push the S&P under 6,900, toward 6,800 and then the 104-week average near 6,682.",
+    "note": "Friday Nov 20 closes and weekly moves come from The Glass Desk, Current Logic's sector recap and Stock Dads. MU prices are from StockAnalysis, and oil settles are from EnergyNow. Consensus is from FXEmpire's week ahead (Nov 22), implied moves are from Benzinga Pro, and futures were read Sunday about 6:15 p.m. Sask from Reuters via Yahoo Finance. Written by the Forecaster robot on Nov 22 from that day's web searches.",
+    "sectors": [
+      {
+        "sector": "Staples",
+        "etf": "XLP",
+        "direction": "Leading",
+        "trend": "up",
+        "why": "Best sector last week at -2.05%, and up 0.67% on Friday while tech fell 7.27%"
+      },
+      {
+        "sector": "Utilities",
+        "etf": "XLU",
+        "direction": "Holding up",
+        "trend": "down",
+        "why": "-3.07% last week, second best, but its gain for the year is gone"
+      },
+      {
+        "sector": "Real Estate",
+        "etf": "XLRE",
+        "direction": "Holding up",
+        "trend": "up",
+        "why": "-4.30% last week as the 10-year fell about 24 basis points"
+      },
+      {
+        "sector": "Energy",
+        "etf": "XLE",
+        "direction": "Rolling over",
+        "trend": "down",
+        "why": "-6.85% last week, and oil fell for a third straight week"
+      },
+      {
+        "sector": "Communication Services",
+        "etf": "XLC",
+        "direction": "Lagging",
+        "trend": "down",
+        "why": "-7.97% last week and the worst sector this year at -15.03%"
+      },
+      {
+        "sector": "Materials",
+        "etf": "XLB",
+        "direction": "Lagging",
+        "trend": "down",
+        "why": "-7.45% last week as gold fell about 9% and silver 16%"
+      },
+      {
+        "sector": "Tech",
+        "etf": "XLK",
+        "direction": "Weakest, oversold",
+        "trend": "down",
+        "why": "-12.49% last week, worst of eleven, and up only 3.50% this year"
+      },
+      {
+        "sector": "Semis / Memory",
+        "etf": "SMH, MU",
+        "direction": "Crash",
+        "trend": "down",
+        "why": "SMH -17.81% and MU -23.62% after the Nvidia SEC report"
+      }
+    ],
+    "calls": [
+      {
+        "call": "The S&P bounces and finishes the short week higher",
+        "wrongIf": "The S&P 500 closes on Friday, Nov 27 at or below its Nov 20 close of 6,910.39.",
+        "grade": null
+      },
+      {
+        "call": "The bounce stalls under the 52-week average: the S&P stays under 7,241 on every close",
+        "wrongIf": "The S&P 500 closes at or above 7,241 on any day from Nov 23 to Nov 27.",
+        "grade": null
+      },
+      {
+        "call": "Tech beats staples on the bounce: XLK beats XLP",
+        "wrongIf": "XLP finishes the week (Nov 27 close vs Nov 20 close) at or ahead of XLK.",
+        "grade": null
+      },
+      {
+        "call": "MU closes the week over $540",
+        "wrongIf": "MU closes under $540 on Friday, Nov 27.",
+        "grade": null
+      },
+      {
+        "call": "The 10-year stays under 5% even if stocks bounce",
+        "wrongIf": "The 10-year Treasury yield closes at or above 5.00% on Friday, Nov 27.",
+        "grade": null
+      },
+      {
+        "call": "Brent stays under $98 on every settle",
+        "wrongIf": "Front-month Brent settles at or above $98 on any day from Nov 23 to Nov 27.",
+        "grade": null
+      }
+    ],
+    "scenarios": [
+      {
+        "odds": 45,
+        "name": "Base: relief bounce stalls under the 52-week average",
+        "text": "Dell and PCE come in near forecasts, the S&P holds 6,900 and stalls between 7,080 and 7,241. Tech beats staples, MU works back toward $650 to $690, and the 10-year stays under 5%."
+      },
+      {
+        "odds": 25,
+        "name": "Bull: holiday short squeeze",
+        "text": "A strong Dell guide and a soft PCE set off short covering in thin holiday trading, and the VIX falls under 28. The S&P closes over 7,241 and heads for the 200-day near 7,349, while MU gets back over $690."
+      },
+      {
+        "odds": 30,
+        "name": "Bear: more Nvidia news or a weak Dell guide",
+        "text": "New SEC probe details, pressure from Bessent or a weak Dell guide brings the sellers back after Monday's gap. The S&P closes under 6,900 and heads for 6,800 and then 6,682, with MU breaking Friday's low of $585.25."
+      }
+    ],
+    "levels": [
+      {
+        "symbol": "SPX",
+        "resistance": "7,080.72, 7,175.83 (Thursday's close), 7,241.35 (52-week average), 7,349 (200-day)",
+        "support": "6,900, 6,800, 6,681.88 (104-week average)",
+        "tell": "A close over 7,241 means the bounce has legs and the 200-day near 7,349 is next. A close under 6,900 means Friday wasn't the flush"
+      },
+      {
+        "symbol": "MU",
+        "resistance": "$650-656 (Nov 5 low and close), $669 (Friday's high), $690.44 (Nov 19 close), $766 (200-day)",
+        "support": "$585.25 (Friday's low)",
+        "tell": "A close over $690 takes back Friday's whole drop. A close under $585.25 is a new low for this selloff, with no tested level below it"
+      },
+      {
+        "symbol": "SMH",
+        "resistance": "409.29",
+        "support": "397.60, 374.20",
+        "tell": "A close under 397.60 opens 374.20 and would hit MU too"
+      },
+      {
+        "symbol": "Nasdaq",
+        "resistance": "23,376.67, 24,206.50, 24,728.68 (52-week average)",
+        "support": "22,407.39 (104-week average), 21,253.39",
+        "tell": "A close under the 104-week average means the AI unwind is going deeper"
+      },
+      {
+        "symbol": "VIX",
+        "resistance": "40.03 (Friday's high)",
+        "support": "28",
+        "tell": "A close under 28 says the fear peaked Friday. A close over 40 says the crash isn't done"
+      },
+      {
+        "symbol": "10Y",
+        "resistance": "5.00%, 5.15% (Nov 13 close)",
+        "support": "4.91% (Friday's close)",
+        "tell": "Back over 5% means a hot PCE beat the flight to safety. Lower yields with falling stocks means fear is still in charge"
+      }
+    ],
+    "schedule": [
+      {
+        "when": "Mon",
+        "what": "Flash PMIs 8:45 a.m. Sask (manufacturing 54.5 vs 54.9, services 55.6 vs 56.1). $69B 2-year auction. Williams 3:00 p.m. Sask"
+      },
+      {
+        "when": "Mon after close",
+        "what": "HPE (about 12.4% priced), Zoom (about 13.9%), Agilent, Symbotic"
+      },
+      {
+        "when": "Tue",
+        "what": "Analog Devices (about 7.9% priced), Best Buy (9.3%), Dick's (12.2%), Dollar Tree (10.1%) and Medtronic before the open. Case-Shiller 8:00 a.m. Sask (2.7%), consumer confidence 9:00 a.m. (92.1 vs 91.7), Richmond Fed (-3). $70B 5-year auction"
+      },
+      {
+        "when": "Tue after close",
+        "what": "Dell (about 15.7% priced, EPS $6.55 on $49.48B expected), HP (9.8%), Workday (10.3%), Autodesk (10.5%), Nutanix (13.7%)"
+      },
+      {
+        "when": "Wed",
+        "what": "Deere before the open (about 6.8% priced). 7:30 a.m. Sask: core PCE (0.3% vs 0.3%), Q3 GDP second estimate (3.5% vs 3.4%), jobless claims (201K vs 203K), durable goods (0.5% vs 1.9%), personal income and spending (0.4% each). New home sales 9:00 a.m. (649K vs 676K). $44B 7-year auction. Beige Book 1"
+      },
+      {
+        "when": "Thu",
+        "what": "Thanksgiving. US markets closed"
+      },
+      {
+        "when": "Fri",
+        "what": "Stocks close at noon Sask, and eligible options trade until 12:15 p.m. Bonds close at 1:00 p.m. Sask. Goods trade balance 7:30 a.m. (-134.4B). Black Friday"
+      }
+    ],
+    "plan": [
+      "Don't chase Monday's gap. If the S&P opens near 7,050, I wait for the first hour or a close over 7,080 before adding.",
+      "MU: small, defined-risk calls only while it closes over $585.25. A close under that and I stand aside.",
+      "Small or flat into Dell Tuesday after the close and PCE Wednesday at 7:30 a.m. The priced move is a typical size, not a cap.",
+      "With the VIX near 36, rich premium means gap risk. Spreads only, no naked short puts.",
+      "Thursday is closed and Friday ends at noon Sask. Close or roll near-the-money options expiring Nov 27 by Wednesday's close."
+    ],
+    "trades": [],
+    "sources": [
+      {
+        "title": "Weekly Market Review: Nov 20, 2026 - The Glass Desk",
+        "url": "https://theglassdesk.substack.com/p/weekly-market-review-nov-20-2026"
+      },
+      {
+        "title": "Stock Market Weekly Recap: Sector Winners, Losers Nov 16-20",
+        "url": "https://currentlogic.substack.com/p/dispersion-brief-week-in-review-nov-26d"
+      },
+      {
+        "title": "S&P 500 Correction Hits as the Chip Trade Breaks",
+        "url": "https://stockmarketmoods.substack.com/p/sp-500-correction-chip-trade-breaks"
+      },
+      {
+        "title": "The Week Ahead: PCE in Focus After AI Sell-Off in Holiday-Shortened Week",
+        "url": "https://www.fxempire.com/forecasts/article/the-week-ahead-pce-in-focus-after-ai-sell-off-in-holiday-shortened-week-1646337"
+      },
+      {
+        "title": "Micron Technology (MU) Stock Price History 1984-2026",
+        "url": "https://stockanalysis.com/stocks/mu/history/"
+      },
+      {
+        "title": "Micron Stock Just Hit Its Lowest Price Since May. I'd Buy More Now.",
+        "url": "https://www.fool.com/investing/2026/11/21/micron-stock-just-hit-its-lowest-price-since-may-i-d-buy-more-now/"
+      },
+      {
+        "title": "Micron Stock Price Forecast — MU ($719.02) $798 Upside Target on Nvidia Print and 4.4x Forward P/E",
+        "url": "https://www.tradingnews.com/news/micron-mu-sinks-to-719-below-200-day-4-4x-forward-pe-sets-up-798-usd-target-after-nvidia"
+      },
+      {
+        "title": "Oil Prices Rebound Friday on Middle East Tensions but Fall for Third Straight Week - WTI Closes at $83.98, Brent at $92.57 - Energy News, To",
+        "url": "https://energynow.com/2026/11/oil-prices-rebound-friday-on-middle-east-tensions-but-fall-for-third-straight-week-wti-closes-at-83-98-brent-at-92-57/"
+      },
+      {
+        "title": "Earnings Volatility Watch: Dell And 9 Other Stocks Are Priced For Swings Of 9% Or More — TradingView News",
+        "url": "https://www.tradingview.com/news/benzinga:b3c3d20c8094b:0-earnings-volatility-watch-dell-and-9-other-stocks-are-priced-for-swings-of-9-or-more/"
+      },
+      {
+        "title": "US futures bounce while Asia markets brace for AI wipeout",
+        "url": "https://finance.yahoo.com/markets/stocks/articles/us-futures-bounce-while-asia-234419517.html"
+      },
+      {
+        "title": "Dow futures jump nearly 700 points and Nasdaq soars 3% as stocks rebound from correction with Wall Street still upbeat on 2027",
+        "url": "https://fortune.com/2026/11/22/stock-market-today-dow-futures-sp500-nasdaq-correction-ai-bust/"
+      },
+      {
+        "title": "Bessent says Trump administration needs answers from Nvidia By Investing.com",
+        "url": "https://www.investing.com/news/company-news/bessent-says-trump-administration-needs-answers-from-nvidia-5044096"
+      }
+    ],
+    "by": "forecaster"
+  },
+  {
     "date": "2026-11-16",
     "title": "Forecast for the week of Nov 16",
     "bias": "Neutral",
