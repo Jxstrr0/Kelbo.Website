@@ -120,7 +120,7 @@ All the words on the home page are in `index.html`. Look for these
 comments to find each part:
 
 - `<!-- 1. Hero -->`: the small "Longlight Interactive · Saskatoon, SK"
-  line, the headline ("Deep games for small screens."), the line under it
+  line, the headline ("Long games for short breaks."), the line under it
   ("... made in Saskatoon by Kelbo", linked to your About page; the number
   of games is filled in by itself), the two buttons, and the live sun
 - `<!-- 2. Games -->`: the "Pick a game" grid and its filter chips (filled in from `projects.json`)

@@ -687,7 +687,8 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
 
 - The home hero (Horizon plan, `.github/HOME-HORIZON-PLAN.md`, PR 1):
   `.hero--home` scopes its styles; the `h1` is `.hero__name--promise`
-  ("Deep games for small screens."), the studio name is `.eyebrow__studio`
+  ("Long games for short breaks."; it was "Deep games for small
+  screens." until 23 Nov 2026), the studio name is `.eyebrow__studio`
   in the kicker, and `fillGameCount` writes the number of games into
   `[data-game-count-line]` and `[data-game-count-button]`. On phones
   (`max-width: 39.99rem`) the hero's sky is 140px and its ground 3.25rem
