@@ -1,4 +1,86 @@
 {
+  "2026-11-24": {
+    "date": "2026-11-24",
+    "time": "2026-11-24T22:46:47.294Z",
+    "summary": "The gap call was a hit (open −5.41% vs a −4% to −9% call), but MU fell 11% intraday on a BNP Paribas downgrade, broke the $650 support area and closed at the bottom of the May zone.",
+    "gap": {
+      "call": "Down about 4% to 9%, centre near −6.3%",
+      "result": "MU opened at 669.39, down 5.41% from 707.70.",
+      "grade": "hit"
+    },
+    "mu": {
+      "prev_close": 707.7,
+      "open": 669.39,
+      "high": 672.07,
+      "low": 622.22,
+      "close": 629.79,
+      "open_pct": -5.41,
+      "close_pct": -11.01
+    },
+    "levels": [
+      {
+        "level": "Opening pivot zone $665.46–$669.00 (Friday's open, Monday's low, Friday's high)",
+        "result": "The high of 672.07 poked just above the zone, then MU closed far below it at 629.79.",
+        "grade": "held"
+      },
+      {
+        "level": "Next resistance $690.72 (Monday's open)",
+        "result": "The day's high of 672.07 never got within 0.5% of it.",
+        "grade": "untested"
+      },
+      {
+        "level": "Gap-fill mark $707.70 (Monday's close)",
+        "result": "MU never got near Monday's close.",
+        "grade": "untested"
+      },
+      {
+        "level": "First support $650.00–$658.77 (Nov 5 low to this morning's low print)",
+        "result": "MU sliced through it and closed at 629.79, well below.",
+        "grade": "broke"
+      },
+      {
+        "level": "Next support $627.58 (bottom of the May zone up to $640.20)",
+        "result": "The low of 622.22 poked below 627.58, but MU closed just above it at 629.79.",
+        "grade": "held"
+      },
+      {
+        "level": "Support $605.47–$610.60",
+        "result": "The day's low of 622.22 stayed more than 0.5% above the zone.",
+        "grade": "untested"
+      },
+      {
+        "level": "Support $594.51 (Friday's close, gap fill)",
+        "result": "MU never got near Friday's close.",
+        "grade": "untested"
+      }
+    ],
+    "sources": [
+      {
+        "title": "Micron Technology, Inc. (MU) Stock Price, News, Quote & History - Yahoo Finance",
+        "url": "https://finance.yahoo.com/quote/MU/"
+      },
+      {
+        "title": "Micron Shares Tumble, Erasing Most of Yesterday's Rally",
+        "url": "https://www.asktraders.com/analysis/micron-shares-tumble-erasing-most-of-yesterdays-rally/"
+      },
+      {
+        "title": "Micron Technology (NASDAQ:MU) Shares Gap Down After Analyst Downgrade",
+        "url": "https://www.marketbeat.com/instant-alerts/price-micron-technology-nasdaq-mu-shares-gap-down-after-analyst-downgrade-2026-11-24/"
+      },
+      {
+        "title": "Stock Market Today Live, November 24, 2026: Chip Stocks Slide After Monday's Big Rally",
+        "url": "https://stocktitan.net/articles/stock-market-today-live-november-24-2026"
+      },
+      {
+        "title": "MU Historical Prices - Micron Technology",
+        "url": "https://chartexchange.com/symbol/nasdaq-mu/historical/"
+      },
+      {
+        "title": "BNP Paribas Downgrades Micron Technology (MU), Shares Drop Nearly 12%",
+        "url": "https://www.gurufocus.com/news/9218335/bnp-paribas-downgrades-micron-technology-mu-shares-drop-nearly-12"
+      }
+    ]
+  },
   "2026-11-23": {
     "date": "2026-11-23",
     "time": "2026-11-23T22:46:19.288Z",
