@@ -1,14 +1,14 @@
 {
   "latest": {
-    "date": "2026-11-23",
-    "time": "2026-11-23T12:35:02.097Z",
-    "headline": "MU set to gap up about 6% after Friday's 14% rout",
-    "tldr": "MU closed Friday at $594.51 (−13.89%), its lowest close since early May, last printed $630.45 (+6.05%) at 6:50 ET, and I expect an open about 3.5% to 8.5% higher (roughly $615–$645), centred near +6%, with $650.00 as the first test overhead."
+    "date": "2026-11-24",
+    "time": "2026-11-24T12:35:08.971Z",
+    "headline": "MU set to gap down about 6% after Monday's 19% surge",
+    "tldr": "MU closed Monday at $707.70 (+19.04%) on the Nvidia relief rally, last printed $664.48 (−6.11%) at 6:54 ET, and I expect an open about 4% to 9% lower (roughly $644–$679), centred near −6.3%, with $650.00 as the first support underneath."
   },
   "months": [
     {
       "month": "2026-11",
-      "count": 17
+      "count": 18
     }
   ]
 }
