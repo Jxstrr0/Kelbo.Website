@@ -1,0 +1,16 @@
+{
+  "_note": "Longlight Passport: the Passport-only details for each game. The name, address, status and hidden flag come from projects.json (matched by title), so a game hidden there never shows on the Passport. stampKey is the localStorage key the game writes its stamp to; bridgeUrl is its passport-stamp.html (null until the game adds one); accent is the game's own colour, used only for its stamp's ink. Spec: .github/PASSPORT.md",
+  "games": [
+    { "id": "pew",          "title": "Prairie Engine Works", "stampKey": "pew2-passport",         "bridgeUrl": null, "accent": "#C2621F" },
+    { "id": "scrapline",    "title": "Scrapline",            "stampKey": "scr-passport",          "bridgeUrl": null, "accent": "#B5532F" },
+    { "id": "seasonticket", "title": "Season Ticket",        "stampKey": "seasonticket.passport", "bridgeUrl": null, "accent": "#1F4E8C" },
+    { "id": "funded",       "title": "Funded",               "stampKey": "funded.passport",       "bridgeUrl": null, "accent": "#6D4BC4" },
+    { "id": "lombard",      "title": "Lombard",              "stampKey": "lombard.passport",      "bridgeUrl": null, "accent": "#8E3B5E" },
+    { "id": "burnrate",     "title": "Burn Rate",            "stampKey": "brn-passport",          "bridgeUrl": null, "accent": "#C8341E" },
+    { "id": "frontierlab",  "title": "Frontier Lab",         "stampKey": "frontierlab.passport",  "bridgeUrl": null, "accent": "#A8842C" },
+    { "id": "hulldown",     "title": "Hull Down",            "stampKey": "hulldown.passport",     "bridgeUrl": null, "accent": "#1F3558" },
+    { "id": "laminar",      "title": "Laminar",              "stampKey": "laminar.passport",      "bridgeUrl": null, "accent": "#2456E8" },
+    { "id": "outwash",      "title": "Outwash",              "stampKey": "outwash.passport",      "bridgeUrl": null, "accent": "#C2410C" },
+    { "id": "thewhip",      "title": "The Whip",             "stampKey": "whip:passport",         "bridgeUrl": null, "accent": "#7A4E2D" }
+  ]
+}
