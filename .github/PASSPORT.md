@@ -14,7 +14,8 @@ it changes whenever the Passport does. It lives in `.github/`, next to
 `NOTES.md`, because this repo keeps its notes there and has no `docs/`
 folder.
 
-Status: **PR 0 done; Kelbo's answers are in section 7.** Next: PR 1.
+Status: **PR 1 done** (the page, with an empty stamp for every game).
+Kelbo's answers are in section 7. Next: PR 2, stamp links.
 
 ---
 

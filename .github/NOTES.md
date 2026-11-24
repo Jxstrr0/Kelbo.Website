@@ -911,6 +911,14 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   Test a header change at 320, 360 and 390 wide, with text doubled and the
   page zoomed to 200%, and with the web font blocked. The footer's lockup
   link counts its padding inside its width, so it fits a 320px phone.
+- The Longlight Passport (`passport.html`, PR 1 of `.github/PASSPORT.md`,
+  24 Nov 2026): a cover and one page per game, swiped on a phone
+  (`.pp-book`, scroll-snap) and a grid from 760px. `passport/passport.js`
+  builds the game pages from `projects.json` (games, not hidden, in its
+  order) joined by title to `passport/registry.json` (id, stamp key, bridge
+  address, ink colour). Every string goes in with `textContent`. No nav link
+  yet; stamps arrive in PR 2. `passport.js` loads before the beacon so it
+  can strip a `#stamp=` code first.
 ## Trading: journal, options, scan, brief, report card
 
 - The AI Trading Journal is `journal.html` + `journal.js` + `journal.css`,

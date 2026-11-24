@@ -1,0 +1,237 @@
+/* ==========================================================================
+   Longlight Passport (passport.html)
+   --------------------------------------------------------------------------
+   The booklet: a purple cover, then one page per game. On a phone the pages
+   sit in a row you swipe through (each snaps into place); from 760px wide
+   they become a grid. Every colour comes from style.css's tokens, so both
+   themes work, except each game's stamp ink (--stamp), which is that game's
+   own colour from passport/registry.json, set by passport/passport.js.
+   Spec: .github/PASSPORT.md
+   ========================================================================== */
+
+.passport {
+  padding-top: 0.5rem;
+}
+
+.pp-count {
+  margin: 0 0 0.75rem;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+/* ---- The booklet ------------------------------------------------------- */
+
+.pp-book {
+  list-style: none;
+  margin: 0;
+  padding: 0.25rem 0 1rem;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: min(86%, 22rem);
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+  /* Let the first and last page snap to the middle of the screen. */
+  scroll-padding-inline: var(--gutter);
+}
+
+.pp-page {
+  scroll-snap-align: center;
+  min-height: 22rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1.25rem;
+  border-radius: var(--radius);
+  background: var(--card);
+  border: 1px solid var(--rule);
+  box-shadow: var(--shadow);
+}
+
+.pp-page--note {
+  justify-content: center;
+  align-items: center;
+  color: var(--muted);
+}
+
+@media (min-width: 760px) {
+  .pp-book {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    grid-auto-columns: auto;
+    overflow: visible;
+    scroll-snap-type: none;
+  }
+  .pp-cover {
+    grid-column: 1 / -1;
+    min-height: 0;
+  }
+  .pp-cover__hint {
+    display: none;
+  }
+}
+
+/* ---- The cover --------------------------------------------------------- */
+/* Purple in both themes, like the sky: the light-letter logo from the
+   press kit sits on it. */
+
+.pp-cover {
+  justify-content: center;
+  align-items: flex-start;
+  background: var(--ll-purple);
+  border-color: transparent;
+  color: var(--ll-ivory);
+}
+
+:root[data-theme="dark"] .pp-cover {
+  background: #2A1A47;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) .pp-cover {
+    background: #2A1A47;
+  }
+}
+
+.pp-cover__logo {
+  width: min(15rem, 80%);
+  height: auto;
+}
+
+.pp-cover__title {
+  margin: 0.5rem 0 0;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.pp-cover__line {
+  margin: 0;
+  max-width: 30ch;
+  color: #E6D8F7;
+}
+
+.pp-cover__hint {
+  margin: auto 0 0;
+  font-size: 0.9rem;
+  color: #E6D8F7;
+}
+
+/* ---- A game's page ----------------------------------------------------- */
+
+.pp-game__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.pp-game__name {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.pp-game__status {
+  font-size: 0.8rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.pp-game__line {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+/* The stamp. An empty one is a dashed ring in the game's ink, faded; a
+   real one (PR 2) is a solid, slightly tilted ring with the stats inside. */
+.pp-stamp {
+  --stamp: var(--ll-purple);
+  --stamp-shown: var(--stamp);
+  margin: auto;
+  width: 12rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 1.25rem;
+  color: var(--ink);
+}
+
+.pp-stamp--empty {
+  border: 3px dashed color-mix(in srgb, var(--stamp-shown) 60%, transparent);
+  color: var(--muted);
+}
+
+.pp-stamp__name {
+  display: block;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.pp-stamp__note {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.85rem;
+}
+
+/* In the dark theme each game's ink is lifted towards ivory so the ring
+   still stands out on a dark card. */
+:root[data-theme="dark"] .pp-stamp {
+  --stamp-shown: color-mix(in srgb, var(--stamp) 60%, var(--ll-ivory));
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) .pp-stamp {
+    --stamp-shown: color-mix(in srgb, var(--stamp) 60%, var(--ll-ivory));
+  }
+}
+/* "Play →": a full-width button, at least 44px tall for a thumb. */
+.pp-play {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  background: var(--secondary-soft);
+  color: var(--secondary);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.pp-play:hover {
+  text-decoration: underline;
+}
+
+.pp-play:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+/* ---- How this works ---------------------------------------------------- */
+
+.pp-how h2 {
+  margin-top: 0;
+}
+
+.pp-how__list {
+  margin: 0;
+  padding-left: 1.2rem;
+  display: grid;
+  gap: 0.6rem;
+  max-width: 44rem;
+}
+
+/* ---- Motion ------------------------------------------------------------ */
+
+@media (prefers-reduced-motion: no-preference) {
+  .pp-book {
+    scroll-behavior: smooth;
+  }
+}
