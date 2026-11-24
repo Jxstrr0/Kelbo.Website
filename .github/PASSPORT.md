@@ -14,7 +14,7 @@ it changes whenever the Passport does. It lives in `.github/`, next to
 `NOTES.md`, because this repo keeps its notes there and has no `docs/`
 folder.
 
-Status: **PR 0, waiting for Kelbo's answers** (section 7).
+Status: **PR 0 done; Kelbo's answers are in section 7.** Next: PR 1.
 
 ---
 
@@ -87,7 +87,7 @@ The plan's layout, adjusted to fit how this repo is built:
 
 | File | What it is |
 | --- | --- |
-| `passport.html` | The page, at `https://longlight.games/passport` (pending Kelbo's OK on the address). |
+| `passport.html` | The page, at `https://longlight.games/passport`. |
 | `passport/passport.js`, `passport/passport.css` | The page's code and styles. |
 | `passport/registry.json` | Passport-only details per game: `id`, `stampKey`, `bridgeUrl` (or `null`), `accent`. The name, address, status and `hidden` come from `projects.json` (one source of truth), so a hidden game never shows here either. |
 | `passport/badges.json` | Badge rules, checked on the phone (section 5). |
@@ -217,14 +217,14 @@ handoff paragraph per game for its own session.
 
 ---
 
-## 7. Questions for Kelbo
+## 7. Kelbo's decisions (24 November 2026)
 
-1. **Address and name.** `https://longlight.games/passport` (a flat
-   `passport.html`, like every other page), named "Longlight Passport"?
-2. **First games.** Which 2 to 4 get stamps first? Suggested: Prairie Engine
-   Works, Scrapline, Season Ticket, Lombard (all on the site now; The Whip is
-   hidden).
-3. **Badges.** Suggested starter set:
+1. **Address and name:** `https://longlight.games/passport`, a flat
+   `passport.html` like every other page, named **Longlight Passport**.
+2. **First games:** all six games on the site get stamps first: Prairie
+   Engine Works, Scrapline, Season Ticket, Funded, Lombard and Burn Rate.
+   Hidden games follow when they go on the site.
+3. **Starter badges:** all eight, as named:
    - **First Light:** your first stamp.
    - **Three on the Horizon:** stamps from 3 games.
    - **Long Light:** stamps from 5 games.
@@ -233,6 +233,6 @@ handoff paragraph per game for its own session.
    - **Thousand Horses:** a 1,000 hp engine in Prairie Engine Works.
    - **Title Fight:** won the Scrapline Open.
    - **Regular:** came back and updated stamps 5 times.
-4. **Home page chip.** Show "Your Passport: 3 stamps" on the home page once
-   there's at least one stamp?
-5. **Service worker.** Already fixed (section 1), so nothing to decide.
+4. **Home page chip:** yes. "Your Passport: N stamps" in the ticker strip,
+   shown only once a visitor has at least one stamp (launch PR).
+5. **Service worker:** already fixed (section 1), nothing to decide.
