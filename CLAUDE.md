@@ -202,7 +202,8 @@ that part, and update it when how something works changes. The short map:
   newest GitHub Release, so don't "fix" newer live values by hand.
   `"hidden": true` takes a project off the site everywhere; The Whip
   is hidden (Kelbo, 2026-11-11), and so are
-  Hull Down, Laminar and Outwash, the newest games, until they're more built.
+  Hull Down, Laminar, Outwash and Mainline (added 2026-11-25), the newest
+  games, until they're more built.
   Funded went on the site on 2026-11-12. On 2026-11-15 Burn Rate took
   Frontier Lab's place and Frontier Lab was hidden (Kelbo), so the site
   still lists six games. Their repos and live games stay up.

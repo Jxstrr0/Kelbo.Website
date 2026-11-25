@@ -869,6 +869,14 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   Playwright; no clip or screenshots yet. Its `publish-release.yml`
   publishes a release when `VERSION` changes, like Laminar's. Its plan
   lists it publicly at PR 7, the first playable.
+  Mainline (the train-builder career, 2010 to 2040,
+  mainline.longlight.games, repo `Jxstrr0/Mainline`) was added hidden
+  (Kelbo, 2026-11-25). Its cover is the high-speed nose car in the blue
+  works livery in the works hall, captured from the live game's
+  `?debug=art&look=nose: high-speed&livery=blue` view with Playwright
+  (canvas only, cropped 4:3); no clip or screenshots yet. Its
+  `publish-release.yml` publishes a release when `VERSION` changes, like
+  Outwash's. It isn't on the Now building line while it's hidden.
   Each game keeps its own look (fonts, colours, art). The Longlight logo,
   the five colours and Space Grotesk belong to studio pieces only (logo or
   splash, credit line, studio block, links back here); every game repo's

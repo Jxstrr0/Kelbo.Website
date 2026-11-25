@@ -1,19 +1,19 @@
 # Longlight Interactive: studio catalogue
 
-> **Snapshot: 7 November 2026**, tables refreshed 16 November (Hull Down, Funded, Burn Rate and Laminar added; Escapement retired); Outwash added 21 November. One reference file for every Longlight game.
+> **Snapshot: 7 November 2026**, tables refreshed 16 November (Hull Down, Funded, Burn Rate and Laminar added; Escapement retired); Outwash added 21 November; Mainline added 25 November. One reference file for every Longlight game.
 > The same file is dropped into each game repo. Versions and details drift;
 > when something matters, check the live repo. A game's own `CLAUDE.md` always
 > wins over this file inside that game's repo.
 >
-> **Public edition.** It covers the eleven games in the studio site's
+> **Public edition.** It covers the twelve games in the studio site's
 > `projects.json` and leaves out Kelbo's private and parked repos. Ask Kelbo
 > about those.
 >
 > **Six games are listed on the site** (16 November 2026): Prairie Engine
-> Works, Scrapline, Season Ticket, Funded, Lombard and Burn Rate. Five more
+> Works, Scrapline, Season Ticket, Funded, Lombard and Burn Rate. Six more
 > carry `"hidden": true` in `projects.json`: Frontier Lab (hidden on
 > 15 November, when Burn Rate took its place), The Whip (11 November), and
-> the newest games Hull Down, Laminar and Outwash, hidden until Kelbo says
+> the newest games Hull Down, Laminar, Outwash and Mainline, hidden until Kelbo says
 > to show them. A hidden game has no card, no game page and no devlog or
 > release lines; its repo and live game stay up, and everything in this file
 > still applies to it.
@@ -77,6 +77,7 @@ on its own subdomain of **longlight.games** (November 2026; the old
 | Hull Down | [Jxstrr0/hull-down](https://github.com/Jxstrr0/hull-down) | https://hulldown.longlight.games/ | Hidden |
 | Laminar | [Jxstrr0/Laminar](https://github.com/Jxstrr0/Laminar) | https://laminar.longlight.games/ | Hidden |
 | Outwash | [Jxstrr0/Outwash](https://github.com/Jxstrr0/Outwash) | https://outwash.longlight.games/ | Hidden |
+| Mainline | [Jxstrr0/Mainline](https://github.com/Jxstrr0/Mainline) | https://mainline.longlight.games/ | Hidden |
 | Studio site | [Jxstrr0/Kelbo.Website](https://github.com/Jxstrr0/Kelbo.Website) | https://longlight.games/ | — |
 
 Kelbo's private and parked repos are not covered here (section 11).
@@ -182,6 +183,7 @@ cost nothing, keep old copies apart, and let a game move again safely.
 | Burn Rate | `brn-settings`, `brn-save`, `brn-slot1..3` | `brn-` | `BRN1:` |
 | Laminar | `laminar.*` + IndexedDB `laminar` (slots) | none yet (use `laminar-` when one is added) | `LAM1:` (designs `LAMD1:`) |
 | Outwash | `outwash.*` + IndexedDB `outwash` | `outwash-` | `OUT1:` (designs `OUTD1:`) |
+| Mainline | `mainline.*` + IndexedDB `mainline` | `mainline-` | `ML1:` (backup file `mainline-backup-YYYY-MM-DD.txt`) |
 
 > **Fixed on 7 November 2026:** the studio site's `sw.js` used to delete every
 > cache that wasn't its own when it updated, which wiped the games' offline
@@ -209,6 +211,7 @@ site (`"hidden": true`); they are still live at their own addresses.
 | Hull Down | Prototype, **hidden** | 1.8.5.2 | Tank design bureau: design to a weight limit, trial, after-action report | Tarnovia, 1980s to today | Portrait first | TypeScript, Vite; 2D office, three (npm) for trials |
 | Laminar | In development, **hidden** | 0.9.15.0 | Aero consultancy: shape in 3D, scale model, wind tunnel, real event | Tarnovia, Stavren (2010–2040; rubles) | Portrait first | TypeScript, Vite, three 0.187 (npm) |
 | Outwash | In development, **hidden** | 0.9.0.0 | A Laminar game: head of aero at a grand prix team; CFD, tunnel, dirty air, twelve rounds a season | Laminar's Tarnovia and a fictional world series (2026–2050; rubles) | Portrait first | TypeScript, Vite, three 0.187 (npm) |
+| Mainline | In development, **hidden** | 0.13.2.0 | Train builder: win tenders, design a train part by part, prove it on the test ring, live with its record in service | Ardesia, a fresh Atlantic republic (2010–2040; coroas, Cr) | Portrait first | TypeScript, Vite, three 0.187 (npm) |
 | The Whip | Released, **hidden** | 1.0.0.0 | Political career: votes, deals, whip | Dominion of Caledor (Westminster) | Portrait first | ES modules, no build, three 0.160 (CDN) |
 
 Studio site trading projects (not games): Pre-market brief, AI Trading Journal,
@@ -593,6 +596,16 @@ are as of this snapshot.
 - **Rules worth knowing:** the sim (`src/sim/`, `src/data/`) is pure and deterministic, with its own `det.ts` maths and named RNG streams; truth, instruments, track, race (the player only sees readings with error bars); every number on the car has one address (`rear-wing.chord`). Names live in `docs/NAMES.md`.
 - **Saves:** keys `outwash.*`, IndexedDB `outwash`, caches `outwash-`, save code `OUT1:`, design codes `OUTD1:` (saves arrive with plan PR 7).
 
+### Mainline
+
+- **Status:** the site's label is "In development", hidden on the studio site (added 25 November 2026). 0.13.2.0 on 25 November (`VERSION` file): the whole of `docs/MAINLINE-PLAN.md` (PRs 0 to 11) is built and live, plus the Your jobs tracker, the workshop's job checklist and works liveries.
+- **Pitch:** a train-builder career, 2010 to 2040. Start as a small rebuild-and-repower works (a diesel shunter repowered to hybrid is the first job), win railway tenders against rival builders who bid too, design each train part by part, prove it at the test centre, then live with its record in service. Cargo and passenger (commuter, intercity, high-speed; no metro), every modern power type: diesel-electric, electric, hybrid, battery, hydrogen (from about 2026) and bi-mode. Design and watch only, no driving. Hunting is the signature failure, shown as a trace.
+- **Setting and tone:** Ardesia, a fresh Atlantic republic with a Portuguese flavour, money in coroas (Cr); the capital Alcarra, the Penhalta Pass, the Trigais plateau, the yearly Alcarra Rail Fair. One country, no exports. Fictional railways, builders and suppliers; real rail terms used as they are.
+- **Look:** "Daylight test ring": light first (pale grey and white panels, dark ink), railway signal colours for status, a train's yellow warning nose (`#F2C200`) as the one accent; dark mode follows the phone. Atkinson Hyperlegible Next and Atkinson Hyperlegible Mono (no other Longlight game uses them).
+- **Stack:** TypeScript (strict), Vite, three.js 0.187 from npm, plain DOM UI, Vitest. Pages from Actions, `base: './'`. Release per `VERSION`, titled from the `PR <n>: summary — v<version>` merge. Train parts modelled in Blender by script.
+- **Rules worth knowing:** the sim (`src/sim/`, `src/data/`) is pure and deterministic (its own `det.ts` maths, named RNG streams, SI units inside); time moves by the month with overlapping programmes; every failure has a cause the player can read and a "where to fix it" jump. Names live in `docs/NAMES.md`.
+- **Saves:** keys `mainline.*`, IndexedDB `mainline`, caches `mainline-`, save code `ML1:`, backup file `mainline-backup-YYYY-MM-DD.txt`.
+
 ---
 
 ## 8. Names already taken
@@ -616,6 +629,7 @@ noted, so a repeated name reads as a mistake.
 | Aqsor Range (Site 41), a decommissioned test range on a steppe salt flat, 2030s | Burn Rate |
 | A prop-trading firm's floor; fictional tickers | Funded |
 | Real world cities on procedural maps | Frontier Lab |
+| Ardesia (the coroa, Cr), capital Alcarra; an Atlantic republic, 2010–2040 | Mainline |
 
 **Names used in more than one game** (already clashing; avoid adding more):
 
@@ -667,7 +681,7 @@ date or institution.
 
 | Family | Games |
 | --- | --- |
-| Craft career: build or make something part by part, test it, compete or sell, in a workshop that grows | Prairie Engine Works (engines), Scrapline (combat robots) |
+| Craft career: build or make something part by part, test it, compete or sell, in a workshop that grows | Prairie Engine Works (engines), Scrapline (combat robots), Mainline (trains, on a monthly clock) |
 | Engineering to a brief: design against a spec, test, read the report | Burn Rate (rocket motors), Hull Down (tanks), Laminar (aerodynamics), Outwash (a grand prix car's aero) |
 | Roguelike runs | Funded (prop-firm trading) |
 | Tycoon and management | Season Ticket (football club), Frontier Lab (AI lab), Lombard (pawn shop) |
@@ -701,13 +715,14 @@ date or institution.
 | "Faded state-range": concrete, state green, stencil red, Saira / Martian Mono | Burn Rate |
 | "Cobalt lab": bright wind-tunnel lab, Instrument Sans / Spline Sans Mono | Laminar |
 | "Pit wall": warm grey and off-white, one livery accent, Saira / Red Hat Mono | Outwash |
+| "Daylight test ring": light first, signal colours, a yellow warning-nose accent, Atkinson Hyperlegible Next / Mono | Mainline |
 
 **Open space** (observations, not decisions; Kelbo picks):
 
 - Bright, daytime or light-first looks; hand-drawn or painterly 2D; pixel art.
 - Genres with no Longlight game yet: puzzle, platformer or action, exploration,
   narrative adventure, city or colony builder, farming, logistics and
-  transport (trains run across the studio site's sky), fishing or nature,
+  transport (Mainline builds trains but doesn't run a network), fishing or nature,
   cooking, sports other than football (hockey and curling fit the prairie),
   weather and storm chasing, astronomy (the studio site already simulates the
   real sky).
