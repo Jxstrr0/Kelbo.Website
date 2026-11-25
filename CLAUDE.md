@@ -235,7 +235,10 @@ that part, and update it when how something works changes. The short map:
   caches. Add new top-level pages to `CORE` and `sitemap.xml`.
 - **Pages:** `games.html`, `trading.html`, `tools.html` (was `ai.html`),
   `projects.html` ("All"), `devlog.html` (`devlog.json`), `press.html`,
-  `whats-new.html`, `about.html`, `contact.html`; tools in `tools/<name>/`. Notes: "Pages,
+  `whats-new.html`, `about.html`, `contact.html`, `passport.html` (the
+  Longlight Passport: stamps from the games, badges, a share card; spec
+  `.github/PASSPORT.md`, linked from every footer and the home ticker's
+  Passport chip); tools in `tools/<name>/`. Notes: "Pages,
   sections, logo and header". The header only just fits at 360px: test
   before adding to it (narrower, or with bigger text, the menu drops to a
   second row). The logo letters are paths: never swap them for text.

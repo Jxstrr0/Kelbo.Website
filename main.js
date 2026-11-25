@@ -21,8 +21,9 @@
     10. lights up "Market open" on the Trading desk card during NYSE hours
     11. warms the sky toward clay in the 20 minutes before sunset
     12. fills the hero's ticker strip on the home page: Now building (from
-        now.json), the next thing in the sky and the badge count, with Sky
-        and Badges opening their full lists in dialogs (setUpDialogs)
+        now.json), the next thing in the sky, the badge count and, once
+        you have a stamp, your Passport count, with Sky and Badges opening
+        their full lists in dialogs (setUpDialogs)
     13. stretches the hero's ray with the season, and shows a badge on the
         longest and shortest days of the year
     14. fills game.html (one game's own page, game.html?g=the-whip) from
@@ -7010,6 +7011,36 @@ function showBadges() {
   box.hidden = false;
 }
 
+// The "Passport" chip in the home page's ticker: how many games on the site
+// this phone has a Passport stamp from (kelbo.passport.stamps, kept by
+// passport/passport.js). Hidden until there's at least one, and nothing is
+// fetched for a visitor with no stamps. Only the count is shown.
+const PASSPORT_KEY = "kelbo.passport.stamps";
+
+async function setUpPassportChip(projects) {
+  const chip = document.querySelector("[data-passport-chip]");
+  if (!chip) return;
+  const stored = readJSON(PASSPORT_KEY);
+  const games = stored && typeof stored.games === "object" && stored.games ? stored.games : {};
+  if (Object.keys(games).length === 0) return;
+  try {
+    // The registry matches each Passport id to its game's title in projects.json,
+    // so a stamp from a hidden game isn't counted.
+    const response = await fetch("passport/registry.json", { cache: "no-cache" });
+    if (!response.ok) return;
+    const registry = await response.json();
+    const onSite = new Set(projects.filter(isGame).map((p) => p.title));
+    const stamped = (Array.isArray(registry.games) ? registry.games : []).filter(
+      (g) => g && onSite.has(g.title) && Object.prototype.hasOwnProperty.call(games, g.id)
+    ).length;
+    if (stamped === 0) return;
+    chip.querySelector("[data-passport-count]").textContent = stamped + (stamped === 1 ? " stamp" : " stamps");
+    chip.hidden = false;
+  } catch (err) {
+    // No chip is better than a broken one.
+  }
+}
+
 // Once per page: note today and this page, then check.
 function setUpBadges() {
   const days = readJSON(DAYS_KEY) || [];
@@ -7571,6 +7602,7 @@ async function init() {
   fillGameCount(projects);
   setUpSpotlight(projects);
   setUpStudioRow(projects);
+  setUpPassportChip(projects);
   // For the Completionist badge: how many games there are to play.
   writeJSON(GAME_COUNT_KEY, projects.filter(isGame).length);
   checkBadges();

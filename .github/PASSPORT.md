@@ -14,11 +14,14 @@ it changes whenever the Passport does. It lives in `.github/`, next to
 `NOTES.md`, because this repo keeps its notes there and has no `docs/`
 folder.
 
-Status: **PR 5 done** (the kit for games, and a handoff paragraph per
-game in `passport/kit/HANDOFF.md`). No game has a bridge page yet, so
-every `bridgeUrl` is still `null` and no frame opens. The iPhone check is
-done with the first game that adds its bridge (section 7, item 6).
-Kelbo's answers are in section 7. Next: PR 6, polish and launch.
+Status: **PR 6 done: launched** (25 November 2026). The page, stamp
+links, the bridge, badges, the kit and the share card are all live, with
+a Passport link in every footer and a Passport chip on the home page once
+a phone has a stamp. No game has sent a stamp yet: each one adds the kit
+in its own session (`passport/kit/HANDOFF.md`). No game has a bridge page
+yet, so every `bridgeUrl` is still `null` and no frame opens. The iPhone
+check is done with the first game that adds its bridge (section 7, item 6).
+Kelbo's answers are in section 7.
 
 ---
 
@@ -312,6 +315,30 @@ How the kit is built (PR 5):
   before a new key in Scrapline and Burn Rate, Lombard's IndexedDB, Burn
   Rate's content rule, Funded's page policy), stat ideas, and the last
   step: ask the studio site's session to turn the bridge on.
+
+How the launch pieces are built (PR 6):
+
+- **Share card.** `passport/js/sharecard.js` (`window.LLPassportShare`).
+  `card()` works out the words: "PASSPORT", "N of M games stamped",
+  "N of M studio badges", the names of the stamped games on the site (up
+  to 8, the last one "+ N more" past that) and longlight.games/passport.
+  Nothing from inside a stamp goes on it (a test checks). `draw()` paints
+  it on a 1200 x 630 canvas: purple, the press kit's light-letter logo PNG
+  untouched, Space Grotesk, lilac pills, a horizon line. `share()` uses the
+  share sheet when the phone can share files and downloads the PNG
+  otherwise. passport.js makes the picture ahead whenever the words
+  change, so the share sheet opens straight from the tap (Safari refuses
+  `navigator.share` once the tap is too old). The button and its note
+  ("Nothing from inside the games goes on it") show once there's a stamp.
+- **Nav link.** Not in the header: a fifth item drops the menu to a second
+  row at 360 and 390 px (measured). Instead every page's footer list has
+  "Passport", between Gallery and Press kit.
+- **Home chip.** "Passport N stamps" in the hero's ticker strip, a link to
+  passport.html (`setUpPassportChip` in `main.js`). It reads
+  `kelbo.passport.stamps` and, only when that has a stamp, fetches
+  `passport/registry.json` to count stamps from games on the site (so a
+  hidden game's stamp isn't counted). Hidden with no stamps. It writes
+  nothing.
 
 ---
 

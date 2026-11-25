@@ -433,3 +433,51 @@ test("the kit only ever writes the key it's given, and never calls out", () => {
     assert.match(raw, /const PASSPORT_URL = "https:\/\/longlight\.games\/passport";|var PASSPORT_URL = "https:\/\/longlight\.games\/passport";/, `${f} links to the Passport`);
   }
 });
+
+// ---- The share card (PR 6) ---------------------------------------------------
+
+const Share = require(join(ROOT, "passport/js/sharecard.js"));
+
+test("the share card counts only games on the site, in their order", () => {
+  const games = [{ id: "pew", name: "Prairie Engine Works" }, { id: "scrapline", name: "Scrapline" }, { id: "funded", name: "Funded" }];
+  const words = Share.card({
+    games,
+    stamps: { funded: {}, pew: {}, hulldown: {} }, // hulldown is hidden: not on the card
+    badges: [{ earned: true }, { earned: false }, { earned: true }],
+  });
+  assert.deepEqual(words.names, ["Prairie Engine Works", "Funded"]);
+  assert.equal(words.games, "2 of 3 games stamped");
+  assert.equal(words.badges, "2 of 3 studio badges");
+  assert.equal(words.address, "longlight.games/passport");
+  assert.equal(words.stamped, 2);
+  assert.equal(Share.card({ games: [games[0]], stamps: { pew: {} } }).games, "1 of 1 game stamped");
+  assert.equal(Share.card({ games, stamps: {} }).badges, "");
+});
+
+test("the share card carries names and counts only, never what's in a stamp", () => {
+  const stamp = { v: 1, game: "pew", ver: "1.0", updated: "2026-11-25", headline: "Secret headline", stats: [{ id: "best_hp", label: "Best engine", value: 98765, unit: "hp" }] };
+  const words = Share.card({ games: [{ id: "pew", name: "Prairie Engine Works" }], stamps: { pew: stamp }, badges: [] });
+  const text = JSON.stringify(words);
+  assert.doesNotMatch(text, /Secret headline|98765|Best engine|2026-11-25/);
+});
+
+test("a long list of games folds into '+ N more'", () => {
+  const games = Array.from({ length: 11 }, (_, i) => ({ id: "g" + i, name: "Game " + i }));
+  const stamps = Object.fromEntries(games.map((g) => [g.id, {}]));
+  const words = Share.card({ games, stamps, badges: [] });
+  assert.equal(words.names.length, 8);
+  assert.equal(words.names[7], "+ 4 more");
+  assert.equal(words.games, "11 of 11 games stamped");
+});
+
+test("the share card and the home chip never write storage or call out but for the registry", () => {
+  const raw = readFileSync(join(ROOT, "passport/js/sharecard.js"), "utf8");
+  const code = raw.replace(/\/\*[\s\S]*?\*\//g, "").replace(/(^|[^:])\/\/.*$/gm, "$1");
+  assert.doesNotMatch(code, /innerHTML|outerHTML|insertAdjacentHTML|document\.write|eval\(|new Function/);
+  assert.doesNotMatch(code, /fetch\(|XMLHttpRequest|sendBeacon|WebSocket|localStorage|sessionStorage|indexedDB|document\.cookie/);
+  const main = readFileSync(join(ROOT, "main.js"), "utf8");
+  const chip = main.slice(main.indexOf("async function setUpPassportChip"), main.indexOf("// Once per page: note today"));
+  assert.ok(chip.length > 200, "found setUpPassportChip");
+  assert.doesNotMatch(chip, /innerHTML|writeJSON|localStorage\.setItem|removeItem/);
+  assert.deepEqual([...chip.matchAll(/fetch\("([^"]+)"/g)].map((m) => m[1]), ["passport/registry.json"]);
+});

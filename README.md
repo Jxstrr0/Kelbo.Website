@@ -307,6 +307,33 @@ you're working on this week (only the first two show). It comes from `now.json`:
   week's game work, in the same pull request as its devlog drafts (see
   below). You can still edit it by hand any time.
 
+## The Longlight Passport
+
+`passport.html` is one page with a stamp for every game on the site. The
+games send the stamps (a few headline numbers each); this site only shows
+them and works out the studio badges. Everything stays in the visitor's
+own browser: no account, nothing uploaded.
+
+- **Which games show:** every game in `projects.json` that also has a line
+  in `passport/registry.json` (matched by title). Hide a game in
+  `projects.json` and it leaves the Passport too.
+- **Badges:** `passport/badges.json`. Each badge has an `id`, a `name`, a
+  one-line `line` and a `rule`. Edit the words freely; the rules are
+  explained in `.github/PASSPORT.md` section 5.
+- **Share my Passport:** shows under the booklet once there's a stamp. It
+  makes a picture with the names of the stamped games and the counts, then
+  opens the phone's share sheet.
+- **The home page chip:** "Passport 3 stamps" in the strip under the sky.
+  It only shows on a phone that has a stamp.
+- **Adding it to a game:** that game's own Claude session copies the kit
+  from `passport/kit/`. `passport/kit/HANDOFF.md` has a paragraph for each
+  game to paste into its session. Once a game has its bridge page, ask
+  this site's session to "turn on the Passport bridge for <Game>".
+
+To try it without a game, open
+https://longlight.games/passport/dev/fake-stamp.html (a pretend game that
+builds a test stamp link; it isn't linked from the site).
+
 ## Add or swap images
 
 1. In the GitHub app or website, open the `assets` folder and choose
