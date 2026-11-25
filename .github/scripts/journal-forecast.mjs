@@ -18,7 +18,7 @@ import { readFile, writeFile } from "node:fs/promises";
 import { askClaudeWeb, logWebCost, seenSources, readJson, setOutput, skDate, pullLatest, asJson, DRY_RUN } from "./claude.mjs";
 import { isMarketDay, addDays } from "./market-days.mjs";
 
-const MODEL = "claude-opus-5-5"; // the bigger model, like the brief
+const MODEL = "claude-fable-5-2"; // the top model, like the brief (Opus 5.5 until Nov 24, 2026)
 const EFFORT = "high";
 const MAX_SEARCHES = 25; // web searches it may run ($10 per 1,000)
 const MAX_FETCHES = 12; // whole pages it may open and read
