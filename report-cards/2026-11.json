@@ -1,4 +1,71 @@
 {
+  "2026-11-25": {
+    "date": "2026-11-25",
+    "time": "2026-11-25T22:47:28.955Z",
+    "summary": "The gap call hit at the low end of its range, and both supports were pierced intraday before MU closed back above them at 601.25, just under first resistance.",
+    "gap": {
+      "call": "Down about 4% to 9%, centred near -6.4%",
+      "result": "MU opened at 574.92, down about 8.7% from 629.79.",
+      "grade": "hit"
+    },
+    "mu": {
+      "prev_close": 629.79,
+      "open": 574.92,
+      "high": 604.94,
+      "low": 548.13,
+      "close": 601.25,
+      "open_pct": -8.71,
+      "close_pct": -4.53
+    },
+    "levels": [
+      {
+        "level": "First resistance $605.47–$611.56 (May 5 low and Tuesday's overnight print)",
+        "result": "The 604.94 high stopped 0.53 short of the zone and MU closed below it at 601.25.",
+        "grade": "held"
+      },
+      {
+        "level": "Gap-fill zone $622.22–$629.79 (Tuesday's low and close)",
+        "result": "The 604.94 high stayed about 2.8% below the zone.",
+        "grade": "untested"
+      },
+      {
+        "level": "First support $576.45–$585.25 (Friday's low and the May 4 close)",
+        "result": "MU opened below the zone at 574.92 and fell to 548.13, then closed back above it at 601.25.",
+        "grade": "held"
+      },
+      {
+        "level": "Next support $557.76–$560.60 (May 4 low and open)",
+        "result": "The 548.13 low went about 1.7% through the zone before MU closed well above it at 601.25.",
+        "grade": "held"
+      }
+    ],
+    "sources": [
+      {
+        "title": "Micron Technology, Inc. (MU) Stock Price, News, Quote & History - Yahoo Finance",
+        "url": "https://finance.yahoo.com/quote/MU/"
+      },
+      {
+        "title": "Micron Shares Fall 4.5% After Report Flags Demand Cuts From Chinese Cloud Buyers : Finance : JKN",
+        "url": "https://news.jkn.co.kr/editions/english/post/1123324"
+      },
+      {
+        "title": "Stock Market Today Live, November 25, 2026: Stocks Win Back Most of Their Morning Losses After a Chip Sell-Off",
+        "url": "https://www.stocktitan.net/articles/stock-market-today-live-november-25-2026"
+      },
+      {
+        "title": "Chip stocks recover most of a 8.0% early slide; Nasdaq ends down 0.6%",
+        "url": "https://www.techi.com/chip-stocks-recover-early-slide-nasdaq-close-november-25/"
+      },
+      {
+        "title": "Micron Technology (MU) Stock Price, Chart & News",
+        "url": "https://stockanalysis.com/stocks/mu/"
+      },
+      {
+        "title": "Micron Technology Share Price Today - Invest in NASDAQ: MU Now",
+        "url": "https://dhan.co/us-stocks/MU-micron-technology-inc-share-price/"
+      }
+    ]
+  },
   "2026-11-24": {
     "date": "2026-11-24",
     "time": "2026-11-24T22:46:47.294Z",
