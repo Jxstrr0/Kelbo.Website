@@ -14,11 +14,11 @@ it changes whenever the Passport does. It lives in `.github/`, next to
 `NOTES.md`, because this repo keeps its notes there and has no `docs/`
 folder.
 
-Status: **PR 4 done** (badges). The bridge is ready and tested in
-Chromium; no game has a bridge page yet, so every `bridgeUrl` is still
-`null` and no frame opens. The iPhone check is done with the first game
-that adds its bridge (section 7, item 6). Kelbo's answers are in section 7.
-Next: PR 5, the kit for games.
+Status: **PR 5 done** (the kit for games, and a handoff paragraph per
+game in `passport/kit/HANDOFF.md`). No game has a bridge page yet, so
+every `bridgeUrl` is still `null` and no frame opens. The iPhone check is
+done with the first game that adds its bridge (section 7, item 6).
+Kelbo's answers are in section 7. Next: PR 6, polish and launch.
 
 ---
 
@@ -98,7 +98,7 @@ The plan's layout, adjusted to fit how this repo is built:
 | `passport/js/codec.js` | Turns a stamp into an `LLP1.` code and back. |
 | `passport/js/validate.js` | The strict stamp check (section 4). |
 | `passport/js/bridge.js` | Listens to the hidden game frames. |
-| `passport/kit/` | Files a game copies in: `passport-stamp.js` (classic JS), `passportStamp.ts` (TypeScript), `passport-stamp.html` (the bridge page), `README.md`. |
+| `passport/kit/` | Files a game copies in: `passport-stamp.js` (classic JS), `passportStamp.ts` (TypeScript), `passport-stamp.html` (the bridge page), `README.md` (how to add them), and `HANDOFF.md` (a paragraph to paste into each game's session). |
 | `passport/dev/fake-stamp.html` | A pretend game page for testing both ways in. |
 | `.github/scripts/passport.test.mjs` | `node:test` tests for the codec, the stamp check and the badges. |
 
@@ -289,6 +289,29 @@ How it's built (PR 4):
 
 Game repos aren't touched from the studio site's session. PR 5 ends with a
 handoff paragraph per game for its own session.
+
+How the kit is built (PR 5):
+
+- `passport-stamp.js` (classic, sets `window.LonglightPassport`) and
+  `passportStamp.ts` (an ES module) do the same four things: `make` checks
+  a stamp against section 4's rules and returns `null` with a console
+  warning if it's wrong, `save` keeps it under the game's key, `link` builds
+  the `#stamp=` link, and `open` opens the Passport in a new tab straight
+  from a tap (the tab opens at once, so browsers allow it, and the game
+  page goes there instead if new tabs are blocked). The code is the same
+  `LLP1.` code as `passport/js/codec.js`.
+- Neither file calls out, touches any key but the one it's handed, or
+  writes markup. The tests check that, that their limits match the
+  Passport's, and that a stamp made by either (the TypeScript one through
+  Node's own type stripping) arrives in the Passport unchanged.
+- Tested in Chromium with a pretend game page: make, save, tap, and the
+  Passport showed "Stamp added" and then the badges, with the new tab cut
+  off from the game (`opener` is null).
+- `HANDOFF.md` has a paragraph per game. Each one names the files, the
+  stamp key, where the button goes, that game's own rules (asking Kelbo
+  before a new key in Scrapline and Burn Rate, Lombard's IndexedDB, Burn
+  Rate's content rule, Funded's page policy), stat ideas, and the last
+  step: ask the studio site's session to turn the bridge on.
 
 ---
 

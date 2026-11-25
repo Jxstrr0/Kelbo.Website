@@ -5,7 +5,8 @@
 // Covers the stamp code (passport/js/codec.js), the stamp check
 // (passport/js/validate.js), the bridge's address and message checks
 // (passport/js/bridge.js) and its page (passport/kit/passport-stamp.html),
-// the badges (passport/js/badges.js and passport/badges.json),
+// the badges (passport/js/badges.js and passport/badges.json), the kit
+// games copy in (passport/kit/),
 // the registry, and a guard that the Passport's code never puts text on
 // the page as markup.
 import { test } from "node:test";
@@ -367,4 +368,68 @@ test("a badge with a broken or unknown rule is left out, not fatal", () => {
   assert.deepEqual(list.map((b) => b.id), ["ok"]);
   assert.deepEqual(Badges.rules(null), []);
   assert.deepEqual(Badges.rules({ badges: "no" }), []);
+});
+
+// ---- the kit games copy in (passport/kit/) -----------------------------------------
+
+const Kit = require(join(ROOT, "passport/kit/passport-stamp.js"));
+async function loadTsKit() {
+  const { stripTypeScriptTypes } = await import("node:module");
+  const js = stripTypeScriptTypes(readFileSync(join(ROOT, "passport/kit/passportStamp.ts"), "utf8"));
+  return import("data:text/javascript;charset=utf-8," + encodeURIComponent(js));
+}
+const quiet = (fn) => { const w = console.warn; console.warn = () => {}; try { return fn(); } finally { console.warn = w; } };
+
+test("the kit's limits are the Passport's limits", async () => {
+  assert.deepEqual(Kit.LIMITS, Check.LIMITS);
+  assert.deepEqual((await loadTsKit()).PASSPORT_LIMITS, Check.LIMITS);
+});
+
+test("a stamp made by the kit (JS and TypeScript) passes the Passport's check, and its link decodes", async () => {
+  const Ts = await loadTsKit();
+  const input = { ...example(), updated: undefined };
+  for (const [name, make, link] of [["js", Kit.make, Kit.link], ["ts", Ts.makeStamp, Ts.stampLink]]) {
+    const stamp = make(input);
+    assert.ok(stamp, `${name} made a stamp`);
+    assert.match(stamp.updated, /^\d{4}-\d{2}-\d{2}$/, `${name} dated it today`);
+    const url = await link(stamp);
+    assert.ok(url.startsWith("https://longlight.games/passport#stamp=LLP1."), `${name} link`);
+    const raw = await Codec.decode(url.split("#stamp=")[1]);
+    const result = Check.check(raw, IDS, { today: "9999-12-31" });
+    assert.ok(result.ok, `${name}: ${result.message}`);
+    assert.deepEqual(result.stamp, stamp, `${name} stamp arrives unchanged`);
+  }
+});
+
+test("the kit catches a bad stamp in the game, with null and a warning", async () => {
+  const Ts = await loadTsKit();
+  const bad = [
+    { ...example(), game: "Bad Game" },
+    { ...example(), ver: "v1" },
+    { ...example(), headline: "x".repeat(61) },
+    { ...example(), stats: [] },
+    { ...example(), stats: Array.from({ length: 7 }, (_, i) => ({ id: "s" + i, label: "S", value: i })) },
+    { ...example(), stats: [{ id: "a", label: "A", value: 1 }, { id: "a", label: "B", value: 2 }] },
+    { ...example(), stats: [{ id: "a", label: "A", value: Infinity }] },
+    { ...example(), stats: [{ id: "a", label: "A", value: { nested: true } }] },
+    { ...example(), stats: [{ id: "a", label: "A‮", value: 1 }] },
+    { ...example(), stats: [{ id: "a", label: "A", value: 1, unit: "horsepower" }] },
+    { ...example(), flags: ["Not An Id"] },
+    { ...example(), updated: "25/11/2026" },
+  ];
+  for (const input of bad) {
+    assert.equal(quiet(() => Kit.make(input)), null, JSON.stringify(input).slice(0, 80));
+    assert.equal(quiet(() => Ts.makeStamp(input)), null, "ts: " + JSON.stringify(input).slice(0, 80));
+  }
+});
+
+test("the kit only ever writes the key it's given, and never calls out", () => {
+  for (const f of ["passport/kit/passport-stamp.js", "passport/kit/passportStamp.ts"]) {
+    const raw = readFileSync(join(ROOT, f), "utf8");
+    const code = raw.replace(/\/\*[\s\S]*?\*\//g, "").replace(/(^|[^:])\/\/.*$/gm, "$1");
+    assert.doesNotMatch(code, /innerHTML|outerHTML|insertAdjacentHTML|document\.write|eval\(|new Function/, f);
+    assert.doesNotMatch(code, /fetch\(|XMLHttpRequest|sendBeacon|WebSocket|indexedDB|document\.cookie|localStorage\.(clear|removeItem)|sessionStorage/, f);
+    assert.deepEqual([...code.matchAll(/localStorage\.\w+\(([^,)]*)/g)].map((m) => m[1].trim()), ["key"], `${f} only writes the key it's handed`);
+    assert.match(raw, /const PASSPORT_URL = "https:\/\/longlight\.games\/passport";|var PASSPORT_URL = "https:\/\/longlight\.games\/passport";/, `${f} links to the Passport`);
+  }
 });
