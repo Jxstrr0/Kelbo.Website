@@ -916,6 +916,8 @@ lives only in the Worker's settings in Cloudflare.
   Worker's `TO` variable and its `EMAIL` binding to it.
 - A hidden checkbox catches spam bots, and the Worker only takes messages
   sent from longlight.games pages.
+- Characters nobody can see (hidden text) are taken out of the name and the
+  message before the email is made, so what you read is all there is.
 
 ## The trading journal
 
