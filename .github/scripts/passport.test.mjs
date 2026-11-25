@@ -5,6 +5,7 @@
 // Covers the stamp code (passport/js/codec.js), the stamp check
 // (passport/js/validate.js), the bridge's address and message checks
 // (passport/js/bridge.js) and its page (passport/kit/passport-stamp.html),
+// the badges (passport/js/badges.js and passport/badges.json),
 // the registry, and a guard that the Passport's code never puts text on
 // the page as markup.
 import { test } from "node:test";
@@ -20,6 +21,8 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const Codec = require(join(ROOT, "passport/js/codec.js"));
 const Check = require(join(ROOT, "passport/js/validate.js"));
 const Bridge = require(join(ROOT, "passport/js/bridge.js"));
+const Badges = require(join(ROOT, "passport/js/badges.js"));
+const badgeFile = JSON.parse(readFileSync(join(ROOT, "passport/badges.json"), "utf8"));
 const registry = JSON.parse(readFileSync(join(ROOT, "passport/registry.json"), "utf8"));
 const IDS = registry.games.map((g) => g.id);
 const TODAY = "2026-11-25";
@@ -276,4 +279,92 @@ test("the bridge page is small, posts only to longlight.games, and its script is
 test("every game's stamp key starts with that game's storage prefix", () => {
   const prefix = { pew: "pew2-", scrapline: "scr-", seasonticket: "seasonticket.", funded: "funded.", lombard: "lombard.", burnrate: "brn-", frontierlab: "frontierlab.", hulldown: "hulldown.", laminar: "laminar.", outwash: "outwash.", thewhip: "whip:" };
   for (const g of registry.games) assert.ok(prefix[g.id] && g.stampKey.startsWith(prefix[g.id]), `${g.id}: ${g.stampKey}`);
+});
+
+// ---- badges ------------------------------------------------------------------------
+
+const SITE = ["pew", "scrapline", "seasonticket", "funded", "lombard", "burnrate"];
+const stampOf = (game, extra = {}) => ({ v: 1, game, ver: "1.0.0.0", updated: "2026-11-25", stats: [{ id: "x", label: "X", value: 1 }], ...extra });
+const stampsFor = (ids, extra = {}) => Object.fromEntries(ids.map((id) => [id, stampOf(id, extra[id])]));
+const earnedIds = (ctx) => Badges.evaluate(Badges.rules(badgeFile), { gameIds: SITE, updates: 0, ...ctx }).filter((b) => b.earned).map((b) => b.id);
+
+test("badges.json has Kelbo's eight starter badges, all valid", () => {
+  const list = Badges.rules(badgeFile);
+  assert.equal(list.length, 8, "every badge in the file passes the rule check");
+  assert.deepEqual(list.map((b) => b.name), ["First Light", "Three on the Horizon", "Long Light", "Full Sky", "Closing Time", "Thousand Horses", "Title Fight", "Regular"]);
+  for (const b of list) {
+    if (b.rule.game) assert.ok(IDS.includes(b.rule.game), `${b.id} names a game the registry knows`);
+  }
+});
+
+test("no stamps, no badges", () => {
+  assert.deepEqual(earnedIds({ stamps: {} }), []);
+});
+
+test("game-count badges: 1, 3, 5 and every game on the site", () => {
+  assert.deepEqual(earnedIds({ stamps: stampsFor(["pew"]) }), ["first_light"]);
+  assert.deepEqual(earnedIds({ stamps: stampsFor(SITE.slice(0, 3)) }), ["first_light", "three_on_the_horizon"]);
+  assert.deepEqual(earnedIds({ stamps: stampsFor(SITE.slice(0, 5)) }), ["first_light", "three_on_the_horizon", "long_light"]);
+  assert.deepEqual(earnedIds({ stamps: stampsFor(SITE) }), ["first_light", "three_on_the_horizon", "long_light", "full_sky"]);
+});
+
+test("a hidden game's stamp counts for nothing", () => {
+  const stamps = stampsFor(["pew", "frontierlab", "hulldown"]);
+  assert.deepEqual(earnedIds({ stamps }), ["first_light"]);
+  const r = Badges.evaluate(Badges.rules(badgeFile), { stamps, gameIds: SITE }).find((b) => b.id === "three_on_the_horizon");
+  assert.equal(r.have, 1);
+  assert.equal(r.need, 3);
+});
+
+test("Full Sky follows the games on the site, and needs at least one", () => {
+  const rules = [{ id: "full", name: "Full", rule: { type: "gamesStamped", all: true } }];
+  const clean = Badges.rules({ badges: rules });
+  assert.equal(Badges.evaluate(clean, { stamps: {}, gameIds: [] })[0].earned, false);
+  assert.equal(Badges.evaluate(clean, { stamps: stampsFor(["pew", "funded"]), gameIds: ["pew", "funded"] })[0].earned, true);
+  assert.equal(Badges.evaluate(clean, { stamps: stampsFor(["pew", "funded"]), gameIds: ["pew", "funded", "lombard"] })[0].earned, false);
+});
+
+test("Thousand Horses needs pew's best_hp at 1,000 or more, as a number", () => {
+  const hp = (value) => stampsFor(["pew"], { pew: { stats: [{ id: "best_hp", label: "Best engine", value, unit: "hp" }] } });
+  assert.ok(!earnedIds({ stamps: hp(999) }).includes("thousand_horses"));
+  assert.ok(earnedIds({ stamps: hp(1000) }).includes("thousand_horses"));
+  assert.ok(!earnedIds({ stamps: hp("1000") }).includes("thousand_horses"), "a text value doesn't count");
+  const other = stampsFor(["scrapline"], { scrapline: { stats: [{ id: "best_hp", label: "Best", value: 5000 }] } });
+  assert.ok(!earnedIds({ stamps: other }).includes("thousand_horses"), "only pew's number counts");
+});
+
+test("Closing Time needs career_complete in two games", () => {
+  const flags = { pew: { flags: ["career_complete"] }, funded: { flags: ["career_complete"] } };
+  assert.ok(!earnedIds({ stamps: stampsFor(["pew", "funded"], { pew: flags.pew }) }).includes("closing_time"));
+  assert.ok(earnedIds({ stamps: stampsFor(["pew", "funded"], flags) }).includes("closing_time"));
+});
+
+test("Title Fight needs open_won in Scrapline's own stamp", () => {
+  assert.ok(earnedIds({ stamps: stampsFor(["scrapline"], { scrapline: { flags: ["open_won"] } }) }).includes("title_fight"));
+  assert.ok(!earnedIds({ stamps: stampsFor(["pew"], { pew: { flags: ["open_won"] } }) }).includes("title_fight"));
+});
+
+test("Regular needs five updates", () => {
+  assert.ok(!earnedIds({ stamps: stampsFor(["pew"]), updates: 4 }).includes("regular"));
+  assert.ok(earnedIds({ stamps: stampsFor(["pew"]), updates: 5 }).includes("regular"));
+  assert.ok(!earnedIds({ stamps: stampsFor(["pew"]), updates: "lots" }).includes("regular"));
+});
+
+test("a badge with a broken or unknown rule is left out, not fatal", () => {
+  const list = Badges.rules({
+    badges: [
+      { id: "ok", name: "OK", rule: { type: "updates", min: 2 } },
+      { id: "ok", name: "Twice", rule: { type: "updates", min: 2 } },
+      { id: "Bad id", name: "X", rule: { type: "updates", min: 2 } },
+      { id: "noname", rule: { type: "updates", min: 2 } },
+      { id: "unknown", name: "X", rule: { type: "secret" } },
+      { id: "zero", name: "X", rule: { type: "gamesStamped", min: 0 } },
+      { id: "nan", name: "X", rule: { type: "stat", game: "pew", stat: "best_hp", gte: "lots" } },
+      { id: "flagless", name: "X", rule: { type: "flag", flag: "career_complete" } },
+      null,
+    ],
+  });
+  assert.deepEqual(list.map((b) => b.id), ["ok"]);
+  assert.deepEqual(Badges.rules(null), []);
+  assert.deepEqual(Badges.rules({ badges: "no" }), []);
 });

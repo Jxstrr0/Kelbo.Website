@@ -941,6 +941,16 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   `passport/kit/passport-stamp.html` (its stamp key in a meta tag, so its
   script fingerprint never changes). `check-site.mjs` lets `passport.html`
   add exactly the bridge origins to `frame-src`, and requires each one.
+- Passport badges (PR 4, 25 Nov 2026): the rules are data in
+  `passport/badges.json` (types `gamesStamped` with `min` or `all`, `stat`
+  with `game`/`stat`/`gte`, `flag` with `game` or `minGames`, `updates`
+  with `min`). `passport/js/badges.js` tidies the file (`rules`; a broken
+  badge is dropped) and works out each badge (`evaluate`, with `have`/`need`
+  for the progress line). Only games on the site count. `passport.js` draws
+  the shelf (`[data-pp-badges]`, `renderBadges`) and toasts each badge once
+  (`announceBadges`, ids kept in `kelbo.passport.seen`); toasts queue, so a
+  badge's follows the stamp's.
+
 ## Trading: journal, options, scan, brief, report card
 
 - The AI Trading Journal is `journal.html` + `journal.js` + `journal.css`,

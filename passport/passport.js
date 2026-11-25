@@ -23,10 +23,16 @@
    checked here like a linked one, and must name the game whose frame sent
    it. Missing or slow bridges are skipped quietly.
 
+   Badges (PR 4): passport/badges.json lists the studio badges and
+   js/badges.js works out which are earned from the stamps of the games on
+   the site. The shelf under the booklet shows them all, earned or not, and
+   a toast names each badge the first time it's earned.
+
    Storage, in this browser only:
      kelbo.passport.stamps = { "games": { "<game id>": stamp, ... },
                                "updates": how many times a newer stamp
                                           replaced an older one }
+     kelbo.passport.seen   = [ ids of the badges whose toast has shown ]
    Stamps read back from storage are checked again, since anyone can edit
    it. "Remove all stamps" clears kelbo.passport.* and nothing else.
 
@@ -40,6 +46,7 @@
 
   var STORE_KEY = "kelbo.passport.stamps";
   var STORE_PREFIX = "kelbo.passport.";
+  var SEEN_KEY = "kelbo.passport.seen";
 
   // ---- 1. Take a stamp out of the address bar, before anything else -------
   // The part after # never reaches a server, but other scripts on the page
@@ -65,12 +72,16 @@
   var Codec = window.LLPassportCodec;
   var Check = window.LLPassportValidate;
   var Bridge = window.LLPassportBridge;
+  var Badges = window.LLPassportBadges;
+  var shelf = document.querySelector("[data-pp-badges]");
+  var badgeCountLine = document.querySelector("[data-pp-badge-count]");
 
   var games = []; // the games on the site, in Kelbo's order
   var registryIds = []; // every game the Passport knows, hidden ones too
   var namesById = {}; // id → name, hidden games too (for the toast)
   var bridges = []; // [{ id, url, origin }] for games with a bridge page
   var store = { games: {}, updates: 0 };
+  var badgeList = []; // the badges from passport/badges.json, tidied
 
   // A small element maker: tag, class, and text (as plain text, never markup).
   function el(tag, className, text) {
@@ -250,26 +261,109 @@
       countLine.textContent = stamped + " of " + games.length + (games.length === 1 ? " game" : " games") + " stamped";
     }
     if (clearButton) clearButton.hidden = Object.keys(store.games).length === 0;
+    renderBadges();
+  }
+
+  // ---- 3b. Badges -------------------------------------------------------------------
+
+  function badgeResults() {
+    if (!Badges || !badgeList.length) return [];
+    return Badges.evaluate(badgeList, {
+      stamps: store.games,
+      gameIds: games.map(function (g) { return g.id; }),
+      updates: store.updates,
+    });
+  }
+
+  // "2 of 3 games", "Best so far: 840 of 1,000", or "Not yet".
+  function badgeProgress(result) {
+    var rule = result.rule;
+    var n = function (x) { return Number(x).toLocaleString("en-CA"); };
+    if (rule.type === "gamesStamped" || (rule.type === "flag" && !rule.game)) {
+      return n(result.have) + " of " + n(result.need) + (result.need === 1 ? " game" : " games");
+    }
+    if (rule.type === "updates") {
+      return n(result.have) + " of " + n(result.need) + " updates";
+    }
+    if (rule.type === "stat" && result.have !== null) {
+      return "Best so far: " + n(result.have) + " of " + n(result.need);
+    }
+    return "Not yet";
+  }
+
+  function badgeTile(result) {
+    var tile = el("li", "pp-badge" + (result.earned ? " is-earned" : ""));
+    tile.appendChild(el("span", "pp-badge__medal")).setAttribute("aria-hidden", "true");
+    var words = el("div", "pp-badge__words");
+    words.appendChild(el("h3", "pp-badge__name", result.name));
+    if (result.line) words.appendChild(el("p", "pp-badge__line", result.line));
+    words.appendChild(el("p", "pp-badge__state", result.earned ? "Earned" : badgeProgress(result)));
+    tile.appendChild(words);
+    return tile;
+  }
+
+  // Draw the badge shelf: every badge, earned ones lit.
+  function renderBadges() {
+    if (!shelf) return;
+    var results = badgeResults();
+    shelf.replaceChildren();
+    results.forEach(function (r) { shelf.appendChild(badgeTile(r)); });
+    var earned = results.filter(function (r) { return r.earned; }).length;
+    if (badgeCountLine) badgeCountLine.textContent = results.length ? earned + " of " + results.length + " badges earned" : "";
+  }
+
+  function loadSeen() {
+    try {
+      var list = JSON.parse(localStorage.getItem(SEEN_KEY) || "[]");
+      return Array.isArray(list) ? list.filter(function (x) { return typeof x === "string"; }) : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  // A toast for each badge earned since the last one was shown (several at
+  // once share one toast). Each badge is only ever announced once.
+  function announceBadges() {
+    var seen = loadSeen();
+    var fresh = badgeResults().filter(function (r) { return r.earned && seen.indexOf(r.id) < 0; });
+    if (!fresh.length) return;
+    try {
+      localStorage.setItem(SEEN_KEY, JSON.stringify(seen.concat(fresh.map(function (r) { return r.id; }))));
+    } catch (e) {}
+    if (fresh.length === 1) toast("Badge earned: " + fresh[0].name, fresh[0].line);
+    else toast("Badges earned", fresh.map(function (r) { return r.name; }).join(", "));
   }
 
   // ---- 4. The toast ---------------------------------------------------------------
 
-  var toastTimer = 0;
+  // Toasts wait their turn: a stamp's toast, then any badge it earned.
+  var toastQueue = [];
+  var toastBusy = false;
   function toast(title, line, isProblem) {
+    toastQueue.push({ title: title, line: line, problem: !!isProblem });
+    if (!toastBusy) nextToast();
+  }
+
+  function nextToast() {
+    var next = toastQueue.shift();
+    if (!next) { toastBusy = false; return; }
+    toastBusy = true;
     var box = document.querySelector(".pp-toast");
     if (!box) {
       box = el("div", "pp-toast");
       box.setAttribute("role", "status");
       document.body.appendChild(box);
     }
-    box.classList.toggle("pp-toast--problem", !!isProblem);
-    box.replaceChildren(el("strong", null, title));
-    if (line) box.appendChild(el("span", null, line));
+    box.classList.toggle("pp-toast--problem", next.problem);
+    box.replaceChildren(el("strong", null, next.title));
+    if (next.line) box.appendChild(el("span", null, next.line));
     box.classList.remove("is-shown");
     void box.offsetWidth; // restart the slide-in
     box.classList.add("is-shown");
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(function () { box.classList.remove("is-shown"); }, 5000);
+    setTimeout(function () {
+      box.classList.remove("is-shown");
+      setTimeout(nextToast, 350);
+    }, toastQueue.length ? 3500 : 5000);
   }
 
   // Slide the booklet to a game's page, so the new stamp is in view.
@@ -319,7 +413,8 @@
       })
       .catch(function (err) {
         toast("Stamp not added", err && err.name === "CodecError" ? err.message : "That stamp link couldn't be read.", true);
-      });
+      })
+      .then(announceBadges);
   }
 
   // ---- 6. The bridge ---------------------------------------------------------------
@@ -348,6 +443,7 @@
         ? (names.length === 1 ? "Stamp added" : "Stamps added")
         : (names.length === 1 ? "Stamp updated" : "Stamps updated");
       toast(title, names.join(", ") + (names.length === 1 ? ", from the game." : ", from the games."));
+      announceBadges();
     });
   }
 
@@ -368,9 +464,13 @@
 
   // ---- 7. Start ------------------------------------------------------------------
 
-  Promise.all([getJson("projects.json"), getJson("passport/registry.json")])
+  // The badges are extra: if their file doesn't load, the stamps still do.
+  var badgeFile = getJson("passport/badges.json").catch(function () { return null; });
+
+  Promise.all([getJson("projects.json"), getJson("passport/registry.json"), badgeFile])
     .then(function (both) {
       var registry = both[1];
+      if (Badges) badgeList = Badges.rules(both[2]);
       (registry && registry.games || []).forEach(function (entry) {
         if (entry && typeof entry.id === "string" && entry.id) {
           registryIds.push(entry.id);
@@ -383,7 +483,8 @@
       if (Check) store = loadStore();
       if (loading) loading.remove();
       render();
-      if (pendingCode) takeStamp(pendingCode);
+      if (pendingCode) takeStamp(pendingCode); // announces its badges once checked
+      else announceBadges();
       pendingCode = null;
       askBridges();
     })
