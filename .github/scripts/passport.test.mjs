@@ -147,6 +147,11 @@ const refusals = {
   "no version": () => ({ ...example(), ver: undefined }),
   "a date that isn't real": () => ({ ...example(), updated: "2026-02-30" }),
   "a date in another shape": () => ({ ...example(), updated: "24/11/2026" }),
+  "a date that is a number": () => ({ ...example(), updated: 20261124 }),
+  // What JSON.parse makes of {"toString":1}: turning it into text throws.
+  "a date that throws when read": () => ({ ...example(), updated: { toString: 1 } }),
+  "a version that throws when read": () => ({ ...example(), ver: { toString: 1 } }),
+  "a stamp that throws when read": () => ({ ...example(), toJSON: 1, stats: [{ id: "a", label: "L", value: 1, toJSON: () => { throw new Error("no"); } }] }),
   "a date years ahead": () => ({ ...example(), updated: "2031-01-01" }),
   "a headline over 60": () => ({ ...example(), headline: "x".repeat(61) }),
   "a headline that isn't text": () => ({ ...example(), headline: 42 }),

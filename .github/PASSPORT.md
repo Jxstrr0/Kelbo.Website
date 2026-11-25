@@ -111,7 +111,8 @@ by game, as `{ "games": { "<id>": stamp }, "updates": <n> }`, where
 `updates` counts the times a newer stamp replaced an older one, for the
 Regular badge) and `kelbo.passport.seen` (which badges have shown their
 "new" toast). Stamps read back from storage go through the stamp check
-again. "Remove all stamps" clears `kelbo.passport.*` and nothing else.
+again, one by one, so a stamp that can't be read is left out and the rest
+still show. "Remove all stamps" clears `kelbo.passport.*` and nothing else.
 
 ---
 
@@ -129,9 +130,18 @@ The game's "Add to Longlight Passport" button opens:
 - The part after `#` never reaches a server, GitHub's included.
 - The Passport removes the `#...` from the address bar
   (`history.replaceState`) the moment its script runs, before the visit
-  counter can see the address, then checks the code, stores the stamp and
-  shows "Stamp added: <Game>" (or "updated", "already stamped", "older
-  stamp", or why it was refused).
+  counter can see the address, then checks the code. A game's first stamp
+  is stored and a toast says "Stamp added: <Game>" (or why it was refused).
+- **A link never replaces a stamp by itself** (security test, 25 Nov 2026:
+  a stranger's link dated tomorrow replaced a real stamp, and the real one
+  was then "older"). When the game already has a stamp and the link holds a
+  different one, the page asks "Replace your <Game> stamp?", shows both
+  (date, version, headline), says whether the link's is newer or older, and
+  waits for **Keep mine** (where the focus starts; Esc does the same) or
+  **Replace**. Replace works for an older stamp too, which is how a real
+  stamp takes back its place. The same stamp again says "Already stamped".
+  A link that arrives while the question is open is skipped, and a toast
+  says so after. `updates` only counts a Replace that was truly newer.
 - A stamp is dated no later than tomorrow on the phone's clock (time zones),
   so a wrong date in a game can't block every later update. `ver` is
   numbers and dots, compared number by number.
@@ -166,8 +176,10 @@ How it's built (PR 3):
   address, in that shape, and under 4 KB. Each stamp shows as it arrives.
 - **passport.js** checks each stamp like a linked one and refuses it unless
   it names the game whose frame sent it, so one game can't stamp for
-  another. A newer stamp replaces the old one (and counts toward
-  `updates`); a toast says which stamps were added or updated.
+  another. A newer stamp replaces the old one without asking, since it
+  came from the game's own address (and counts toward `updates`); so does
+  the game's stamp when the stored one is dated after today, which a real
+  stamp never is. A toast says which stamps were added or updated.
 - **Turning a game's bridge on** takes two edits in this repo: its
   `bridgeUrl` in `passport/registry.json`, and its exact address in
   `passport.html`'s `frame-src`. The Site check fails if the address is
@@ -209,8 +221,11 @@ Rules:
   characters. `flags` is optional, at most 8 short ids.
 - Unknown fields are ignored. An unknown `v` gets a friendly note: "This
   stamp is from a newer version of the Passport."
-- A newer `updated` (or the same date with a newer `ver`) replaces the stored
-  stamp. An older one is ignored.
+- A newer `updated` (or the same date with a newer `ver`) makes a stamp the
+  newer one. From the bridge, a newer stamp replaces the stored one. From a
+  link, the page asks first (section 3A).
+- A number of a quadrillion or more is shown short ("1.00 × 10^20"), and
+  long labels and values wrap, so a made-up stamp can't stretch its page.
 - Every string is drawn with `textContent`, **never** `innerHTML`.
 
 Each game keeps its stamp in **localStorage under its own prefix** (the

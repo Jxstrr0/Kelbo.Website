@@ -930,9 +930,17 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
 - Passport stamp links (PR 2, 25 Nov 2026): `passport/js/codec.js` packs and
   unpacks `LLP1.` codes (deflate-raw through `CompressionStream`, base64url,
   FNV-1a checksum; unpacking stops past 2 KB), and `passport/js/validate.js`
-  is the strict stamp check (`check`) and the replace rule (`isNewer`: a
-  newer date, or the same date with a newer version). Both are classic
-  scripts that also load in Node. A kept stamp lives in
+  is the strict stamp check (`check`, which answers with a refusal whatever
+  it is handed and never throws) and `isNewer` (a newer date, or the same
+  date with a newer version). Both are classic scripts that also load in
+  Node. A link never replaces a stamp by itself (25 Nov 2026, after the
+  security test): `takeStamp` adds a game's first stamp, says "Already
+  stamped" for the same one, and for anything else shows both stamps in a
+  `<dialog>` (`askReplace`, `.pp-ask`; `window.confirm` where there is no
+  `<dialog>`) and waits for Keep mine or Replace. Links are taken one at a
+  time, and one that arrives while the question is open is skipped. The
+  store is read again before every write, so a second tab's stamps aren't
+  lost. A kept stamp lives in
   `kelbo.passport.stamps` as `{ games: { id: stamp }, updates }` and is
   checked again when read back. The game page shows an inked ring (headline,
   date) with the stats under it; a toast (`.pp-toast`) says what happened;
@@ -945,7 +953,8 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   `bridgeUrl` and takes only `{ type: "llp-stamp", v: 1, stamp }` from that
   frame at that game's exact origin, 3 s each (`collect`, `originOf`,
   `readMessage`). `passport.js` (`askBridges`) checks each stamp, refuses one
-  that names another game, and keeps the newer. The page a game hosts is
+  that names another game, and keeps the newer without asking (also when
+  the stored stamp is dated after today). The page a game hosts is
   `passport/kit/passport-stamp.html` (its stamp key in a meta tag, so its
   script fingerprint never changes). `check-site.mjs` lets `passport.html`
   add exactly the bridge origins to `frame-src`, and requires each one.
