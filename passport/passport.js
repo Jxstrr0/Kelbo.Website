@@ -14,14 +14,17 @@
    How a stamp arrives (PR 2): a game's "Add to Longlight Passport" button
    opens passport.html#stamp=LLP1.... The code is taken out of the address
    bar straight away, before anything else on the page can see it, then
-   unpacked (js/codec.js), checked (js/validate.js), and kept if it's newer
-   than the stamp already here. A toast says what happened.
+   unpacked (js/codec.js) and checked (js/validate.js). A game's first stamp
+   is kept and a toast says so. A link for a game that already has a stamp
+   never replaces it by itself: the page shows both and asks, "Keep mine" or
+   "Replace", because a stamp link can come from anyone.
 
    The bridge (PR 3): for each game whose registry entry has a bridgeUrl,
    js/bridge.js opens that game's bridge page in a hidden frame and collects
    the stamp it posts back (3 seconds each, address checked). Each stamp is
    checked here like a linked one, and must name the game whose frame sent
-   it. Missing or slow bridges are skipped quietly.
+   it. A newer one is kept without asking, since it came from the game's
+   own address. Missing or slow bridges are skipped quietly.
 
    Badges (PR 4): passport/badges.json lists the studio badges and
    js/badges.js works out which are earned from the stamps of the games on
@@ -136,8 +139,11 @@
     var stored = raw.games && typeof raw.games === "object" ? raw.games : {};
     registryIds.forEach(function (id) {
       if (!Object.prototype.hasOwnProperty.call(stored, id)) return;
-      var result = Check.check(stored[id], registryIds, { today: "9999-12-31" });
-      if (result.ok && result.stamp.game === id) out.games[id] = result.stamp;
+      // One stamp that can't be read is left out; it never stops the others.
+      try {
+        var result = Check.check(stored[id], registryIds, { today: "9999-12-31" });
+        if (result.ok && result.stamp.game === id) out.games[id] = result.stamp;
+      } catch (e) {}
     });
     var n = Number(raw.updates);
     out.updates = isFinite(n) && n > 0 ? Math.floor(n) : 0;
@@ -197,8 +203,20 @@
     return Number(p[2]) + " " + MONTHS[Number(p[1]) - 1] + " " + p[0];
   }
 
+  // Today on this phone, as "YYYY-MM-DD" (the way stamps are dated).
+  function todayText() {
+    var now = new Date();
+    return now.getFullYear() + "-" + ("0" + (now.getMonth() + 1)).slice(-2) + "-" + ("0" + now.getDate()).slice(-2);
+  }
+
+  // A number of a quadrillion or more is written short ("1.00 × 10^20"), so
+  // a made-up stamp with a 300-digit number can't stretch its page.
+  function niceNumber(n) {
+    return Math.abs(n) >= 1e15 ? n.toExponential(2).replace("e+", " × 10^") : n.toLocaleString("en-CA");
+  }
+
   function niceValue(stat) {
-    var value = typeof stat.value === "number" ? stat.value.toLocaleString("en-CA") : stat.value;
+    var value = typeof stat.value === "number" ? niceNumber(stat.value) : stat.value;
     return stat.unit ? value + " " + stat.unit : value;
   }
 
@@ -329,7 +347,7 @@
   // "2 of 3 games", "Best so far: 840 of 1,000", or "Not yet".
   function badgeProgress(result) {
     var rule = result.rule;
-    var n = function (x) { return Number(x).toLocaleString("en-CA"); };
+    var n = function (x) { return niceNumber(Number(x)); };
     if (rule.type === "gamesStamped" || (rule.type === "flag" && !rule.game)) {
       return n(result.have) + " of " + n(result.need) + (result.need === 1 ? " game" : " games");
     }
@@ -427,12 +445,138 @@
 
   // ---- 5. Taking in a stamp -----------------------------------------------------
 
-  function takeStamp(code) {
-    if (!Codec || !Check) {
-      toast("Stamp not added", "The Passport didn't load properly. Reload the page and try the link again.", true);
+  // Two clean stamps are the same when every field matches (check() always
+  // writes them in the same order).
+  function sameStamp(a, b) {
+    return JSON.stringify(a) === JSON.stringify(b);
+  }
+
+  // Put a stamp in the store and save it. `old` is the stamp it replaces, if
+  // any. If the browser won't save, the page keeps showing what is stored.
+  function keepStamp(stamp, old, name, onSite) {
+    var beforeUpdates = store.updates;
+    store.games[stamp.game] = stamp;
+    var newer = !!old && Check.isNewer(stamp, old);
+    if (newer) store.updates += 1; // going back to an older stamp isn't an update
+    if (!saveStore()) {
+      if (old) store.games[stamp.game] = old;
+      else delete store.games[stamp.game];
+      store.updates = beforeUpdates;
+      toast("Stamp not saved", "This browser wouldn't save it (private mode, or storage is full).", true);
       return;
     }
-    Codec.decode(code)
+    render();
+    toast((!old ? "Stamp added: " : newer ? "Stamp updated: " : "Stamp replaced: ") + name,
+      onSite ? "" : "It will show here once " + name + " is on the site.");
+    if (onSite) showGame(stamp.game);
+  }
+
+  // "24 Nov 2026 · version 1.2.3.0"
+  function stampLine(stamp) {
+    return niceDate(stamp.updated) + " · version " + stamp.ver;
+  }
+
+  // The question before a link replaces a stamp: both stamps side by side,
+  // "Keep mine" (where the focus starts, and what Esc does) or "Replace".
+  // Answers true for Replace. A stamp link can come from anyone, so nothing
+  // already in the Passport is replaced without that tap.
+  var asking = false; // a question is on screen
+  var skipped = 0; // stamp links that arrived while it was
+  function askReplace(name, old, stamp) {
+    var title = "Replace your " + name + " stamp?";
+    var note = Check.isNewer(stamp, old)
+      ? "The stamp in this link is newer than yours."
+      : Check.isNewer(old, stamp)
+        ? "The stamp in this link is older than yours."
+        : "Both have the same date and version, but they aren't the same stamp.";
+    if (old.updated > todayText()) note += " Yours is dated after today.";
+    note += " Only replace it if the link came from your own game.";
+    var rows = [["Yours", old], ["This link", stamp]];
+
+    return new Promise(function (resolve) {
+      var box = el("dialog", "pp-ask");
+      if (typeof box.showModal !== "function") {
+        // A browser without <dialog>: the plain question box.
+        resolve(window.confirm(title + "\n\n" + rows.map(function (r) {
+          return r[0] + ": " + stampLine(r[1]) + (r[1].headline ? ", " + r[1].headline : "");
+        }).join("\n") + "\n\n" + note + "\n\nOK replaces it. Cancel keeps yours."));
+        return;
+      }
+      var heading = el("h2", "pp-ask__title", title);
+      heading.id = "pp-ask-title";
+      box.setAttribute("aria-labelledby", heading.id);
+      box.appendChild(heading);
+      var list = el("dl", "pp-ask__list");
+      rows.forEach(function (r) {
+        var row = el("div", "pp-ask__row");
+        row.appendChild(el("dt", null, r[0]));
+        var words = el("dd");
+        words.appendChild(el("span", "pp-ask__when", stampLine(r[1])));
+        if (r[1].headline) words.appendChild(el("span", "pp-ask__headline", r[1].headline));
+        row.appendChild(words);
+        list.appendChild(row);
+      });
+      box.appendChild(list);
+      box.appendChild(el("p", "pp-ask__note", note));
+      var buttons = el("div", "pp-ask__buttons");
+      var keep = el("button", "pp-ask__button pp-ask__button--keep", "Keep mine");
+      var swap = el("button", "pp-ask__button", "Replace");
+      keep.type = "button";
+      swap.type = "button";
+      buttons.appendChild(keep);
+      buttons.appendChild(swap);
+      box.appendChild(buttons);
+
+      var answered = false;
+      function answer(replace) {
+        if (answered) return;
+        answered = true;
+        asking = false;
+        try { box.close(); } catch (e) {}
+        box.remove();
+        resolve(replace);
+      }
+      keep.addEventListener("click", function () { answer(false); });
+      swap.addEventListener("click", function () { answer(true); });
+      box.addEventListener("cancel", function (event) { event.preventDefault(); answer(false); }); // Esc, Back
+      box.addEventListener("close", function () { answer(false); });
+      document.body.appendChild(box);
+      asking = true;
+      try {
+        box.showModal();
+        keep.focus();
+      } catch (e) {
+        answer(false);
+      }
+    });
+  }
+
+  // One stamp link at a time. A link that arrives while a question is on
+  // screen is skipped (and said so after), so a page that fires off a pile
+  // of links can't bury the player in questions.
+  var intake = Promise.resolve();
+  function takeStamp(code) {
+    if (asking) {
+      skipped += 1;
+      return;
+    }
+    intake = intake.then(function () { return takeOne(code); }).then(function () {
+      if (skipped) {
+        toast("Stamp link skipped", (skipped === 1 ? "Another stamp link" : skipped + " more stamp links") +
+          " arrived while that question was open. Open " + (skipped === 1 ? "it" : "them") + " again if you want " +
+          (skipped === 1 ? "it." : "them."), true);
+        skipped = 0;
+      }
+      announceBadges();
+    });
+  }
+
+  function takeOne(code) {
+    if (!Codec || !Check) {
+      toast("Stamp not added", "The Passport didn't load properly. Reload the page and try the link again.", true);
+      return Promise.resolve();
+    }
+    return Codec.decode(code)
       .then(function (raw) {
         var result = Check.check(raw, registryIds);
         if (!result.ok) {
@@ -442,30 +586,30 @@
         var stamp = result.stamp;
         var name = namesById[stamp.game] || "this game";
         var onSite = games.some(function (g) { return g.id === stamp.game; });
+        // Read the stamps again first: another tab may have added some since this page drew.
+        store = loadStore();
         var old = store.games[stamp.game];
-        if (!Check.isNewer(stamp, old)) {
-          var same = old && old.updated === stamp.updated && Check.compareVersions(old.ver, stamp.ver) === 0;
-          toast(same ? "Already stamped" : "Older stamp", same
-            ? "You already have this " + name + " stamp."
-            : "Your " + name + " stamp is newer than this one, so it was kept.");
-          if (onSite) showGame(stamp.game);
+        if (!old) {
+          keepStamp(stamp, null, name, onSite);
           return;
         }
-        store.games[stamp.game] = stamp;
-        if (old) store.updates += 1;
-        if (!saveStore()) {
-          toast("Stamp not saved", "This browser wouldn't save it (private mode, or storage is full).", true);
-          return;
-        }
-        render();
-        toast((old ? "Stamp updated: " : "Stamp added: ") + name,
-          onSite ? "" : "It will show here once " + name + " is on the site.");
         if (onSite) showGame(stamp.game);
+        if (sameStamp(stamp, old)) {
+          toast("Already stamped", "You already have this " + name + " stamp.");
+          return;
+        }
+        return askReplace(name, old, stamp).then(function (replace) {
+          if (!replace) {
+            toast("Stamp kept", "Your " + name + " stamp is as it was.");
+            return;
+          }
+          store = loadStore();
+          keepStamp(stamp, store.games[stamp.game] || null, name, onSite);
+        });
       })
       .catch(function (err) {
         toast("Stamp not added", err && err.name === "CodecError" ? err.message : "That stamp link couldn't be read.", true);
-      })
-      .then(announceBadges);
+      });
   }
 
   // ---- 6. The bridge ---------------------------------------------------------------
@@ -480,10 +624,20 @@
       var result = Check.check(raw, registryIds);
       if (!result.ok || result.stamp.game !== id) return; // one game can't stamp for another
       var old = store.games[id];
-      if (!Check.isNewer(result.stamp, old)) return;
+      // The game's own stamp wins over a stored one that isn't newer, and over
+      // one dated after today (a real stamp never is), so a made-up stamp from
+      // a link can't lock the real one out.
+      var fromAhead = !!old && old.updated > todayText() && !sameStamp(result.stamp, old);
+      if (!Check.isNewer(result.stamp, old) && !fromAhead) return;
+      var beforeUpdates = store.updates;
       store.games[id] = result.stamp;
-      if (old) store.updates += 1;
-      if (!saveStore()) return;
+      if (old && !fromAhead) store.updates += 1;
+      if (!saveStore()) {
+        if (old) store.games[id] = old;
+        else delete store.games[id];
+        store.updates = beforeUpdates;
+        return;
+      }
       (old ? updated : added).push(namesById[id] || id);
       render();
     }
@@ -536,7 +690,7 @@
       if (Check) store = loadStore();
       if (loading) loading.remove();
       render();
-      if (pendingCode) takeStamp(pendingCode); // announces its badges once checked
+      if (pendingCode) takeStamp(pendingCode); // announces its badges once it's dealt with
       else announceBadges();
       pendingCode = null;
       askBridges();

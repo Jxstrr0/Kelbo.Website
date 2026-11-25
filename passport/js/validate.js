@@ -19,8 +19,9 @@
      - at most 2 KB of JSON altogether. Unknown fields are dropped.
      - no control characters or right-to-left tricks in any text.
 
-   isNewer() is the replace rule: a newer date wins, or the same date with
-   a newer version. Anything else leaves the stored stamp alone.
+   isNewer() says which of two stamps is the later one: a newer date, or
+   the same date with a newer version. passport.js uses it to word its
+   question before a link replaces a stamp, and to count updates.
 
    Works as a plain <script> (window.LLPassportValidate) and in Node.
    Spec: .github/PASSPORT.md
@@ -81,7 +82,17 @@
   //   gameIds: the ids from passport/registry.json.
   //   options.today: "YYYY-MM-DD" (defaults to the phone's date), so a
   //   stamp dated years ahead can't block every later update.
+  // Whatever shape `raw` has, the answer is a refusal, never an error:
+  // storage can be edited into anything, and one bad stamp mustn't stop the page.
   function check(raw, gameIds, options) {
+    try {
+      return checkStamp(raw, gameIds, options);
+    } catch (e) {
+      return refuse("damaged", DAMAGED);
+    }
+  }
+
+  function checkStamp(raw, gameIds, options) {
     if (!raw || typeof raw !== "object" || Array.isArray(raw)) return refuse("damaged", DAMAGED);
 
     var json;
@@ -103,6 +114,7 @@
     var ver = typeof raw.ver === "string" ? raw.ver.trim() : "";
     if (!VERSION.test(ver)) return refuse("damaged", DAMAGED);
 
+    if (typeof raw.updated !== "string") return refuse("damaged", DAMAGED);
     var day = dayNumber(raw.updated);
     if (isNaN(day)) return refuse("damaged", DAMAGED);
     var todayText = options && options.today;
@@ -115,7 +127,7 @@
       return refuse("future", "That stamp is dated in the future. Check the date on your phone, then try again.");
     }
 
-    var stamp = { v: 1, game: raw.game, ver: ver, updated: String(raw.updated) };
+    var stamp = { v: 1, game: raw.game, ver: ver, updated: raw.updated };
 
     if (raw.headline != null && raw.headline !== "") {
       var headline = cleanText(raw.headline, LIMITS.headline);
