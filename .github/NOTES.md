@@ -950,6 +950,14 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   the shelf (`[data-pp-badges]`, `renderBadges`) and toasts each badge once
   (`announceBadges`, ids kept in `kelbo.passport.seen`); toasts queue, so a
   badge's follows the stamp's.
+- Passport kit (PR 5, 25 Nov 2026): `passport/kit/passport-stamp.js`
+  (classic, `window.LonglightPassport`: `make`, `save`, `link`, `open`,
+  `supported`) and `passport/kit/passportStamp.ts` (`makeStamp`,
+  `saveStamp`, `stampLink`, `openPassport`, `passportSupported`) are copied
+  into games, never loaded by this site. `passport/kit/README.md` says how;
+  `passport/kit/HANDOFF.md` has a paragraph to paste into each game's
+  session. Tests load the TypeScript copy with Node's
+  `stripTypeScriptTypes`.
 
 ## Trading: journal, options, scan, brief, report card
 
