@@ -66,6 +66,7 @@
   <script src="passport/js/validate.js" defer></script>
   <script src="passport/js/bridge.js" defer></script>
   <script src="passport/js/badges.js" defer></script>
+  <script src="passport/js/sharecard.js" defer></script>
   <script src="passport/passport.js" defer></script>
 </head>
 <body>
@@ -156,6 +157,12 @@
         </li>
         <li class="pp-page pp-page--note is-loading" data-pp-loading>Loading the games&hellip;</li>
       </ol>
+      <!-- Share my Passport: shown by passport.js once there's a stamp.
+           js/sharecard.js draws the picture on this phone. -->
+      <div class="pp-share" data-pp-share-box hidden>
+        <button class="button button--send pp-share__button" type="button" data-pp-share>Share my Passport</button>
+        <p class="pp-share__note">Makes a picture with the names of the games you've stamped and your counts. Nothing from inside the games goes on it.</p>
+      </div>
       <noscript>
         <p>Turn on JavaScript to see your Passport.</p>
       </noscript>
@@ -211,7 +218,7 @@
         </svg>
       </a>
       <p>&copy; <span data-year>2026</span> Kelbo / Longlight Interactive. Built by hand and hosted on GitHub Pages.
-        <a href="contact.html">Say hello</a> &middot; <a href="about.html">About Kelbo</a> &middot; <a href="whats-new.html">What's new</a> &middot; <a href="devlog.html">Devlog</a> &middot; <a href="gallery.html">Gallery</a> &middot; <a href="press.html">Press kit</a></p>
+        <a href="contact.html">Say hello</a> &middot; <a href="about.html">About Kelbo</a> &middot; <a href="whats-new.html">What's new</a> &middot; <a href="devlog.html">Devlog</a> &middot; <a href="gallery.html">Gallery</a> &middot; <a href="passport.html">Passport</a> &middot; <a href="press.html">Press kit</a></p>
     </div>
   </footer>
   <!-- Cloudflare Web Analytics: counts visits, no cookies (Kelbo said yes,

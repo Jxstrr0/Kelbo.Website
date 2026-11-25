@@ -958,6 +958,16 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   `passport/kit/HANDOFF.md` has a paragraph to paste into each game's
   session. Tests load the TypeScript copy with Node's
   `stripTypeScriptTypes`.
+- Passport launch (PR 6, 25 Nov 2026): "Share my Passport" under the
+  booklet (`passport/js/sharecard.js`, `window.LLPassportShare`: `card`
+  gives the words, game names and counts only; `draw` paints 1200 x 630 on
+  a canvas with `assets/press/longlight-logo-dark.png`; `make` gives a PNG
+  `File`; `share` uses the share sheet or downloads). passport.js makes the
+  picture ahead in `prepareCard()` so iPhones allow the share sheet. Every
+  footer links "Passport". The home ticker has a Passport chip
+  (`[data-passport-chip]`, `setUpPassportChip(projects)` in `main.js`),
+  hidden until `kelbo.passport.stamps` holds a stamp from a game on the
+  site; it fetches `passport/registry.json` only then.
 
 ## Trading: journal, options, scan, brief, report card
 

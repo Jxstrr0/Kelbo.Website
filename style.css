@@ -3356,6 +3356,16 @@ img {
   transition: background-color 200ms;
 }
 
+/* The Passport chip is a link, not a button: no underline, and it stays
+   away until main.js has a stamp count for it. */
+a.ticker__chip {
+  text-decoration: none;
+}
+
+.ticker__chip[hidden] {
+  display: none;
+}
+
 .ticker__chip:hover {
   background: rgba(250, 249, 245, 0.14);
 }

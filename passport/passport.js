@@ -28,6 +28,12 @@
    the site. The shelf under the booklet shows them all, earned or not, and
    a toast names each badge the first time it's earned.
 
+   The share card (PR 6): "Share my Passport" makes a picture of the
+   Passport (js/sharecard.js: game names and counts only) and opens the
+   share sheet, or downloads it. The picture is made ahead, whenever the
+   stamps change, so the share sheet opens straight from the tap (iPhones
+   refuse it if the tap was too long ago).
+
    Storage, in this browser only:
      kelbo.passport.stamps = { "games": { "<game id>": stamp, ... },
                                "updates": how many times a newer stamp
@@ -75,6 +81,11 @@
   var Badges = window.LLPassportBadges;
   var shelf = document.querySelector("[data-pp-badges]");
   var badgeCountLine = document.querySelector("[data-pp-badge-count]");
+  var Share = window.LLPassportShare;
+  var shareBox = document.querySelector("[data-pp-share-box]");
+  var shareButton = document.querySelector("[data-pp-share]");
+  var cardFile = null; // the share picture, made ahead
+  var cardKey = ""; // the words it was made from
 
   var games = []; // the games on the site, in Kelbo's order
   var registryIds = []; // every game the Passport knows, hidden ones too
@@ -262,6 +273,46 @@
     }
     if (clearButton) clearButton.hidden = Object.keys(store.games).length === 0;
     renderBadges();
+    prepareCard();
+  }
+
+  // ---- 3c. The share card -------------------------------------------------------------
+
+  function cardWords() {
+    return Share.card({
+      games: games.map(function (g) { return { id: g.id, name: g.name }; }),
+      stamps: store.games,
+      badges: badgeResults(),
+    });
+  }
+
+  // Shown once there's a stamp from a game on the site; the picture is made
+  // again only when its words change.
+  function prepareCard() {
+    if (!Share || !shareBox) return;
+    var words = cardWords();
+    shareBox.hidden = words.stamped === 0;
+    if (words.stamped === 0) return;
+    var key = JSON.stringify(words);
+    if (key === cardKey) return;
+    cardKey = key;
+    cardFile = null;
+    Share.make(words).then(function (file) {
+      if (cardKey === key) cardFile = file;
+    }, function () { /* made again on the tap */ });
+  }
+
+  function shareCard() {
+    if (!Share) return;
+    var ready = cardFile ? Promise.resolve(cardFile) : Share.make(cardWords());
+    ready
+      .then(Share.share)
+      .then(function (result) {
+        if (result === "downloaded") toast("Picture saved", "Your Passport card is in your downloads.");
+      })
+      .catch(function () {
+        toast("Couldn't make the picture", "Try again in a moment.", true);
+      });
   }
 
   // ---- 3b. Badges -------------------------------------------------------------------
@@ -452,6 +503,8 @@
     var code = takeFromAddress();
     if (code && registryIds.length) takeStamp(code);
   });
+
+  if (shareButton) shareButton.addEventListener("click", shareCard);
 
   if (clearButton) {
     clearButton.addEventListener("click", function () {
