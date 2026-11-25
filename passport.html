@@ -65,6 +65,7 @@
   <script src="passport/js/codec.js" defer></script>
   <script src="passport/js/validate.js" defer></script>
   <script src="passport/js/bridge.js" defer></script>
+  <script src="passport/js/badges.js" defer></script>
   <script src="passport/passport.js" defer></script>
 </head>
 <body>
@@ -160,12 +161,21 @@
       </noscript>
     </section>
 
+    <!-- Studio badges: passport/badges.json, worked out on this phone by
+         passport/js/badges.js and drawn here by passport.js. -->
+    <section class="section wrap pp-badges" aria-labelledby="pp-badges-heading">
+      <h2 id="pp-badges-heading">Studio badges</h2>
+      <p class="pp-badges__count" data-pp-badge-count aria-live="polite"></p>
+      <ul class="pp-badges__list" data-pp-badges></ul>
+    </section>
+
     <section class="section wrap pp-how" aria-labelledby="pp-how-heading">
       <h2 id="pp-how-heading">How this works</h2>
       <ul class="pp-how__list">
         <li><strong>Stamps come from the games.</strong> When a game has a Passport button, it sends its stamp here: a few headline numbers, like your best engine or your longest career.</li>
         <li><strong>Everything stays on your phone.</strong> Your stamps are kept in this browser only. Nothing is uploaded, and there's no account.</li>
         <li><strong>Clearing your browser data removes them.</strong> So does switching phones or browsers. Just add each stamp again from the game.</li>
+        <li><strong>Badges span the games.</strong> Studio badges come from your stamps together, like stamps from three games, or a finished career in two.</li>
         <li><strong>It runs on trust.</strong> There are no leaderboards and no cheat checks. A stamp says what the game said, nothing more.</li>
       </ul>
       <!-- Shown by passport.js once there's at least one stamp. Clears this

@@ -1,0 +1,13 @@
+{
+  "_comment": "Studio badges for the Longlight Passport (spec: .github/PASSPORT.md, section 5). Names and lines are Kelbo's (24 Nov 2026). Rule types: gamesStamped (min, or all), stat (game, stat, gte), flag (flag, and either game or minGames), updates (min). Only games on the site count. passport/js/badges.js reads this.",
+  "badges": [
+    { "id": "first_light",          "name": "First Light",          "line": "Your first stamp.",                          "rule": { "type": "gamesStamped", "min": 1 } },
+    { "id": "three_on_the_horizon", "name": "Three on the Horizon", "line": "Stamps from 3 games.",                       "rule": { "type": "gamesStamped", "min": 3 } },
+    { "id": "long_light",           "name": "Long Light",           "line": "Stamps from 5 games.",                       "rule": { "type": "gamesStamped", "min": 5 } },
+    { "id": "full_sky",             "name": "Full Sky",             "line": "A stamp from every game on the site.",       "rule": { "type": "gamesStamped", "all": true } },
+    { "id": "closing_time",         "name": "Closing Time",         "line": "Finished a career in 2 games.",              "rule": { "type": "flag", "flag": "career_complete", "minGames": 2 } },
+    { "id": "thousand_horses",      "name": "Thousand Horses",      "line": "A 1,000 hp engine in Prairie Engine Works.", "rule": { "type": "stat", "game": "pew", "stat": "best_hp", "gte": 1000 } },
+    { "id": "title_fight",          "name": "Title Fight",          "line": "Won the Scrapline Open.",                    "rule": { "type": "flag", "game": "scrapline", "flag": "open_won" } },
+    { "id": "regular",              "name": "Regular",              "line": "Came back and updated stamps 5 times.",      "rule": { "type": "updates", "min": 5 } }
+  ]
+}

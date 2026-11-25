@@ -14,10 +14,11 @@ it changes whenever the Passport does. It lives in `.github/`, next to
 `NOTES.md`, because this repo keeps its notes there and has no `docs/`
 folder.
 
-Status: **PR 3 done** (the bridge, ready and tested in Chromium; no game
-has a bridge page yet, so every `bridgeUrl` is still `null` and no frame
-opens). The iPhone check is done with the first game that adds its
-bridge (section 7, item 6). Kelbo's answers are in section 7. Next: PR 4, badges.
+Status: **PR 4 done** (badges). The bridge is ready and tested in
+Chromium; no game has a bridge page yet, so every `bridgeUrl` is still
+`null` and no frame opens. The iPhone check is done with the first game
+that adds its bridge (section 7, item 6). Kelbo's answers are in section 7.
+Next: PR 5, the kit for games.
 
 ---
 
@@ -239,7 +240,38 @@ Badge rules are data in `passport/badges.json`, checked on the phone:
 - `{ "type": "stat", "game": "pew", "stat": "best_hp", "gte": 1000 }`
 - `{ "type": "flag", "flag": "career_complete", "minGames": 2 }`
 
-The starter set is 6 to 8 badges, with names Kelbo approves (section 7).
+Two more kinds: `{ "type": "gamesStamped", "all": true }` (every game on
+the site) and `{ "type": "updates", "min": 5 }` (stamps updated 5 times).
+A `flag` rule names one `game` or a `minGames` count.
+
+The starter set is Kelbo's eight (section 7, item 3). Two of them need a
+game to send a set id, which the kit's handoff paragraphs (PR 5) ask for:
+
+| Badge | Rule | What a game sends |
+| --- | --- | --- |
+| First Light | `gamesStamped` min 1 | any stamp |
+| Three on the Horizon | `gamesStamped` min 3 | |
+| Long Light | `gamesStamped` min 5 | |
+| Full Sky | `gamesStamped` all | |
+| Closing Time | `flag` `career_complete`, minGames 2 | the flag `career_complete` once a career is finished |
+| Thousand Horses | `stat` pew `best_hp` gte 1000 | PEW: a number stat `best_hp`, in hp |
+| Title Fight | `flag` scrapline `open_won` | Scrapline: the flag `open_won` |
+| Regular | `updates` min 5 | (counted by the Passport) |
+
+How it's built (PR 4):
+
+- `passport/js/badges.js`: `rules(json)` tidies `badges.json` (a badge with
+  an unknown or broken rule, no name, or an id used twice is left out, so a
+  typo never breaks the page) and `evaluate(badges, { stamps, gameIds,
+  updates })` says which are earned, with `have` and `need` for the
+  progress line ("2 of 3 games", "Best so far: 840 of 1,000").
+- **Only games on the site count**, so a hidden game's stamp is kept but
+  earns nothing, and Full Sky means every game a visitor can see. When a
+  hidden game goes on the site, its stamp starts counting.
+- **The shelf** sits under the booklet: all eight, earned ones lit (a clay
+  half sun in a purple ring, drawn in CSS), the rest faint with their
+  progress. A toast names each badge the first time it's earned, after the
+  stamp's own toast; `kelbo.passport.seen` remembers which have been shown.
 
 ---
 
