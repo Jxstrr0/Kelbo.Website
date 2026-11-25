@@ -808,7 +808,7 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   `projects.json` order, with no dates (the file has none). Linked from
   every footer ("What's new") and listed in `sitemap.xml`.
 - Games each live in their own repo with their own GitHub Pages site
-  (350Chev, SeasonTicket, The-Whip, FrontierLab,
+  (350Chev, SeasonTicket, FrontierLab,
   Lombard, Scrapline). Lombard keeps its drawn cover until its real art
   pass is done; Scrapline's is a live fight with the UI hidden: Splinter and Türkeil
   locked together in the corner by the SCRAPLINE boards. This site only links to
@@ -837,9 +837,10 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   home spotlight (below) and records the four covers in the link preview.
   `hidden: true` drops a project everywhere: both `projects.json` loads in
   `main.js` filter it out, `make-game-pages.mjs` makes no page for it, and
-  `devlog-draft.mjs` / `release-lines.mjs` skip it. The Whip is
-  hidden (Kelbo, 2026-11-11); its repo and live game stay up. Escapement
-  was removed from the site entirely on 2026-11-16 (Kelbo deleted its repo).
+  `devlog-draft.mjs` / `release-lines.mjs` skip it. Escapement
+  was removed from the site entirely on 2026-11-16 (Kelbo deleted its repo),
+  and so was The Whip on 2026-11-25 (entry, cover, clips, screenshots,
+  devlog posts and Passport line all gone).
   Hull Down (the tank design game, hulldown.longlight.games) was added
   hidden too (Kelbo, 2026-11-11); its cover is the side view on the
   blueprint screen. It has no release workflow yet, so it carries no

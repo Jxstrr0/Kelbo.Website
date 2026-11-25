@@ -30,7 +30,6 @@ adds its address to `passport.html`'s `frame-src`.
 | Hull Down (hidden) | `Jxstrr0/hull-down` | `hulldown` | `hulldown.passport` | `passportStamp.ts` |
 | Laminar (hidden) | `Jxstrr0/Laminar` | `laminar` | `laminar.passport` | `passportStamp.ts` |
 | Outwash (hidden) | `Jxstrr0/Outwash` | `outwash` | `outwash.passport` | `passportStamp.ts` |
-| The Whip (hidden) | `Jxstrr0/The-Whip` | `thewhip` | `whip:passport` | `passport-stamp.js` |
 
 Two of Kelbo's badges need a game to send something exact:
 **Thousand Horses** reads PEW's number stat `best_hp` (in hp), and **Title
@@ -201,9 +200,6 @@ The same steps, with each repo's own rules:
   in `public/`; the button's words in `src/data`.
 - **Outwash:** `passportStamp.ts`; key `outwash.passport`; the bridge page
   in `public/`; the button's words in `src/data/strings.ts`.
-- **The Whip:** `passport-stamp.js`. Only `src/save.js` touches
-  localStorage, so the stamp is saved from there, under `whip:passport`.
-  The bridge page goes in the repo root.
 
 A hidden game's stamp is kept by the Passport but not shown, and earns no
 badge, until the game goes on the site (`"hidden": false` in

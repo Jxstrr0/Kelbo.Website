@@ -36,7 +36,7 @@ workflow), at `https://longlight.games`. `www.longlight.games` and the old
 
 **Every game now has its own address under `longlight.games`**, also served
 by GitHub Pages. The old `jxstrr0.github.io/<Repo>/` addresses forward to the
-new ones (checked for 350Chev, Lombard and The-Whip). So every game is
+new ones (checked for 350Chev and Lombard). So every game is
 **same-site** with the Passport, and every game can use both ways in (the
 stamp link and the bridge, section 3).
 
@@ -53,7 +53,6 @@ stamp link and the bridge, section 3).
 | Laminar | `https://laminar.longlight.games` | Hidden | Yes | Link + bridge |
 | Outwash | `https://outwash.longlight.games` | Hidden | Yes | Link + bridge |
 | Mainline | `https://mainline.longlight.games` | Hidden | Yes | Link + bridge |
-| The Whip | `https://thewhip.longlight.games` | Hidden | Yes | Link + bridge |
 
 What else the audit found:
 
@@ -245,7 +244,6 @@ there):
 | Laminar | `laminar.passport` |
 | Outwash | `outwash.passport` |
 | Mainline | `mainline.passport` |
-| The Whip | `whip:passport` |
 
 A new key is a new localStorage key in that game. Scrapline and Burn Rate's
 rules say to ask Kelbo before adding one, so their sessions ask first.

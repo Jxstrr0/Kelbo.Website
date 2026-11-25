@@ -26,7 +26,7 @@
         their full lists in dialogs (setUpDialogs)
     13. stretches the hero's ray with the season, and shows a badge on the
         longest and shortest days of the year
-    14. fills game.html (one game's own page, game.html?g=the-whip) from
+    14. fills game.html (one game's own page, game.html?g=burn-rate) from
         projects.json
     15. plays a game's recorded clip on its cover while the card is on
         screen, and grows a tapped cover into the game page's cover
@@ -516,7 +516,7 @@ function sortByProgress(projects) {
     .map((x) => x.p);
 }
 
-// A game's own page (game.html?g=the-whip): the cover, the story, every
+// A game's own page (game.html?g=burn-rate): the cover, the story, every
 // screenshot open in a strip, the buttons, and links to the other games.
 // Everything comes from projects.json. Optional "story" in a project is a
 // longer write-up; a blank line (\n\n) starts a new paragraph.

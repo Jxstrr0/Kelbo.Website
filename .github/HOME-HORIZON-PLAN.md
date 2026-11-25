@@ -218,7 +218,6 @@ Other pages' layouts (games.html, projects.html and the rest keep their current 
 | Prairie Engine Works | Build an engine part by part, put it on the dyno, then go racing. |
 | Season Ticket | Own a football club and change tactics while the match plays. |
 | Burn Rate | Design a solid rocket motor to spec, fire it, learn why it missed. |
-| The Whip | Climb from rookie MP to Chief Whip. Every MP remembers your promises. |
 | Scrapline | Build a combat robot under the weight limit and fight it in the arena. |
 | Funded | Pass a prop-firm challenge without breaking the daily loss limit. |
 | Lombard | Run a canal-side pawn shop: inspect, spot the fakes, haggle. |
