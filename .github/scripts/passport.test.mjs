@@ -283,7 +283,7 @@ test("the bridge page is small, posts only to longlight.games, and its script is
 });
 
 test("every game's stamp key starts with that game's storage prefix", () => {
-  const prefix = { pew: "pew2-", scrapline: "scr-", seasonticket: "seasonticket.", funded: "funded.", lombard: "lombard.", burnrate: "brn-", frontierlab: "frontierlab.", hulldown: "hulldown.", laminar: "laminar.", outwash: "outwash.", mainline: "mainline.", thewhip: "whip:" };
+  const prefix = { pew: "pew2-", scrapline: "scr-", seasonticket: "seasonticket.", funded: "funded.", lombard: "lombard.", burnrate: "brn-", frontierlab: "frontierlab.", hulldown: "hulldown.", laminar: "laminar.", outwash: "outwash.", mainline: "mainline." };
   for (const g of registry.games) assert.ok(prefix[g.id] && g.stampKey.startsWith(prefix[g.id]), `${g.id}: ${g.stampKey}`);
 });
 

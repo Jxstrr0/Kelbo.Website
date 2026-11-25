@@ -200,13 +200,15 @@ that part, and update it when how something works changes. The short map:
   games first). Adding a project never needs an HTML edit. Games use
   four-number versions; the deploy fills `version`/`latest` from each game's
   newest GitHub Release, so don't "fix" newer live values by hand.
-  `"hidden": true` takes a project off the site everywhere; The Whip
-  is hidden (Kelbo, 2026-11-11), and so are
+  `"hidden": true` takes a project off the site everywhere; Frontier Lab
+  is hidden (see below), and so are
   Hull Down, Laminar, Outwash and Mainline (added 2026-11-25), the newest
   games, until they're more built.
   Funded went on the site on 2026-11-12. On 2026-11-15 Burn Rate took
   Frontier Lab's place and Frontier Lab was hidden (Kelbo), so the site
-  still lists six games. Their repos and live games stay up.
+  still lists six games. Their repos and live games stay up. The Whip was
+  deleted (Kelbo, 2026-11-25) and taken off the site entirely, like
+  Escapement before it.
   Screenshots are `shots` in `assets/shots/` (with `@2x` twins). Status
   names live in `STATUSES` (`main.js`), kept in step with `KNOWN_STATUS` in
   `check-site.mjs`. Notes: "Projects, cards and game pages".

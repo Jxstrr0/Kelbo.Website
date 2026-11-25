@@ -26,7 +26,7 @@ from their releases, then publishes the files as they are (see
 | `trading.html` | The Trading section: every project with `"category": "Trading"` |
 | `tools.html` | The Tools section (menu: Tools): every project with `"category": "Tool"`. Hidden for now: it's not in the menu or on the home page, but the page still works. It used to be `ai.html`; old links to that address land here |
 | `projects.json` | **The list of projects.** Edit this to add or change one |
-| `game.html` | **One game's own page** (`game.html?g=the-whip`). It fills itself from `projects.json`, so a new game needs no new file |
+| `game.html` | **One game's own page** (`game.html?g=burn-rate`). It fills itself from `projects.json`, so a new game needs no new file |
 | `now.json` | **The "Now building" strip** on the home page. Edit this to say what you're working on |
 | `style.css` | Colours, fonts, and layout for every page |
 | `main.js` | Reads `projects.json` and puts the projects on the page, and runs the live sun, the ☀/☾ button, and the "Continue?" card |
@@ -223,7 +223,7 @@ progress order.
   missing the site uses the small one and the Site check gives a warning.
 - **hidden**: `true` takes a project off the site (cards, lists, the All
   page, its game page, the robots) but keeps its entry here. Delete the
-  line to bring it back. The Whip is hidden for now,
+  line to bring it back. Frontier Lab is hidden for now,
   and so are Hull Down, Laminar, Outwash and Mainline (new, still being built).
 - **featured**: the first game marked `true` (top to bottom in this file)
   is the spotlight game: its Featured card sits under the home page's sky
