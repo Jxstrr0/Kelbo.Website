@@ -47,6 +47,8 @@ const CORE = [
   "briefs/index.json",
   "passport/passport.css",
   "passport/passport.js",
+  "passport/js/codec.js",
+  "passport/js/validate.js",
   "passport/registry.json",
   "assets/press/longlight-logo-dark.svg",
   "projects.json",

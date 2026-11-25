@@ -1,0 +1,19 @@
+/* Plain styles for the Passport test page (fake-stamp.html). */
+body { margin: 0; padding: 1rem; font: 16px/1.5 system-ui, sans-serif; background: #FAF9F5; color: #141413; }
+main { max-width: 34rem; margin: auto; }
+form { display: grid; gap: 0.75rem; }
+label { display: grid; gap: 0.2rem; }
+fieldset { display: grid; gap: 0.5rem; border: 1px solid #E2DED5; border-radius: 8px; }
+input, select, button { min-height: 44px; font: inherit; padding: 0.3rem 0.5rem; }
+label:has(input[type="checkbox"]) { display: flex; align-items: center; gap: 0.5rem; }
+input[type="checkbox"] { min-height: auto; width: 1.25rem; height: 1.25rem; }
+button { border: 0; border-radius: 999px; background: #D97757; color: #141413; font-weight: 700; }
+.out { overflow-wrap: anywhere; font-family: ui-monospace, monospace; font-size: 0.85rem; }
+a { color: #7B3FC4; font-weight: 700; }
+:focus-visible { outline: 3px solid #7B3FC4; outline-offset: 2px; }
+@media (prefers-color-scheme: dark) {
+  body { background: #141413; color: #FAF9F5; }
+  fieldset { border-color: #3A3833; }
+  a { color: #B48CE8; }
+  :focus-visible { outline-color: #B48CE8; }
+}
