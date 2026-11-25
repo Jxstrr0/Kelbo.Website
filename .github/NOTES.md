@@ -878,6 +878,11 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   (canvas only, cropped 4:3); no clip or screenshots yet. Its
   `publish-release.yml` publishes a release when `VERSION` changes, like
   Outwash's. It isn't on the Now building line while it's hidden.
+  Bump Stop (the rally-raid truck builder, bumpstop.longlight.games, repo
+  `Jxstrr0/BumpStop`) was added hidden (Kelbo, 2026-11-25) at its PR 0,
+  with no cover, clip or screenshots yet. Its `publish-release.yml`
+  publishes a release when `VERSION` changes, like Mainline's. Its plan
+  lists it publicly at PR 8, the first playable, if Kelbo wants.
   Each game keeps its own look (fonts, colours, art). The Longlight logo,
   the five colours and Space Grotesk belong to studio pieces only (logo or
   splash, credit line, studio block, links back here); every game repo's

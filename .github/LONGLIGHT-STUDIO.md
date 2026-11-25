@@ -1,11 +1,11 @@
 # Longlight Interactive: studio catalogue
 
-> **Snapshot: 7 November 2026**, tables refreshed 16 November (Hull Down, Funded, Burn Rate and Laminar added; Escapement retired); Outwash added 21 November; Mainline added 25 November; The Whip retired 25 November. One reference file for every Longlight game.
+> **Snapshot: 7 November 2026**, tables refreshed 16 November (Hull Down, Funded, Burn Rate and Laminar added; Escapement retired); Outwash added 21 November; Mainline added 25 November; The Whip retired 25 November; Bump Stop added 25 November. One reference file for every Longlight game.
 > The same file is dropped into each game repo. Versions and details drift;
 > when something matters, check the live repo. A game's own `CLAUDE.md` always
 > wins over this file inside that game's repo.
 >
-> **Public edition.** It covers the eleven games in the studio site's
+> **Public edition.** It covers the twelve games in the studio site's
 > `projects.json` and leaves out Kelbo's private and parked repos. Ask Kelbo
 > about those.
 >
@@ -13,7 +13,7 @@
 > Works, Scrapline, Season Ticket, Funded, Lombard and Burn Rate. Five more
 > carry `"hidden": true` in `projects.json`: Frontier Lab (hidden on
 > 15 November, when Burn Rate took its place) and
-> the newest games Hull Down, Laminar, Outwash and Mainline, hidden until Kelbo says
+> the newest games Hull Down, Laminar, Outwash, Mainline and Bump Stop, hidden until Kelbo says
 > to show them. A hidden game has no card, no game page and no devlog or
 > release lines; its repo and live game stay up, and everything in this file
 > still applies to it.
@@ -80,6 +80,7 @@ on its own subdomain of **longlight.games** (November 2026; the old
 | Laminar | [Jxstrr0/Laminar](https://github.com/Jxstrr0/Laminar) | https://laminar.longlight.games/ | Hidden |
 | Outwash | [Jxstrr0/Outwash](https://github.com/Jxstrr0/Outwash) | https://outwash.longlight.games/ | Hidden |
 | Mainline | [Jxstrr0/Mainline](https://github.com/Jxstrr0/Mainline) | https://mainline.longlight.games/ | Hidden |
+| Bump Stop | [Jxstrr0/BumpStop](https://github.com/Jxstrr0/BumpStop) | https://bumpstop.longlight.games/ | Hidden |
 | Studio site | [Jxstrr0/Kelbo.Website](https://github.com/Jxstrr0/Kelbo.Website) | https://longlight.games/ | — |
 
 Kelbo's private and parked repos are not covered here (section 11).
@@ -184,6 +185,7 @@ cost nothing, keep old copies apart, and let a game move again safely.
 | Laminar | `laminar.*` + IndexedDB `laminar` (slots) | none yet (use `laminar-` when one is added) | `LAM1:` (designs `LAMD1:`) |
 | Outwash | `outwash.*` + IndexedDB `outwash` | `outwash-` | `OUT1:` (designs `OUTD1:`) |
 | Mainline | `mainline.*` + IndexedDB `mainline` | `mainline-` | `ML1:` (backup file `mainline-backup-YYYY-MM-DD.txt`) |
+| Bump Stop | `bumpstop.*` + IndexedDB `bumpstop` (from plan PR 8) | `bumpstop-` | `BMP1:` (truck builds `BMPT1:`; backup file `bump-stop-backup-YYYY-MM-DD.txt`) |
 
 > **Fixed on 7 November 2026:** the studio site's `sw.js` used to delete every
 > cache that wasn't its own when it updated, which wiped the games' offline
@@ -212,6 +214,7 @@ site (`"hidden": true`); they are still live at their own addresses.
 | Laminar | In development, **hidden** | 0.9.15.0 | Aero consultancy: shape in 3D, scale model, wind tunnel, real event | Tarnovia, Stavren (2010–2040; rubles) | Portrait first | TypeScript, Vite, three 0.187 (npm) |
 | Outwash | In development, **hidden** | 0.9.0.0 | A Laminar game: head of aero at a grand prix team; CFD, tunnel, dirty air, twelve rounds a season | Laminar's Tarnovia and a fictional world series (2026–2050; rubles) | Portrait first | TypeScript, Vite, three 0.187 (npm) |
 | Mainline | In development, **hidden** | 0.13.2.0 | Train builder: win tenders, design a train part by part, prove it on the test ring, live with its record in service | Ardesia, a fresh Atlantic republic (2010–2040; coroas, Cr) | Portrait first | TypeScript, Vite, three 0.187 (npm) |
+| Bump Stop | In development, **hidden** | 0.1.0.0 | Rally-raid truck builder: build, break it on the test track, read the trace, tune, then multi-day raids with damage that carries over | A made-up English-flavoured northern country of forest, lakes and tundra (1985–2025; names proposed) | Portrait first | TypeScript, Vite, three 0.187 (npm) |
 
 Studio site trading projects (not games): Pre-market brief, AI Trading Journal,
 Agent Fleet.
@@ -555,6 +558,16 @@ are as of this snapshot.
 - **Rules worth knowing:** the sim (`src/sim/`, `src/data/`) is pure and deterministic (its own `det.ts` maths, named RNG streams, SI units inside); time moves by the month with overlapping programmes; every failure has a cause the player can read and a "where to fix it" jump. Names live in `docs/NAMES.md`.
 - **Saves:** keys `mainline.*`, IndexedDB `mainline`, caches `mainline-`, save code `ML1:`, backup file `mainline-backup-YYYY-MM-DD.txt`.
 
+### Bump Stop (repo `BumpStop`)
+
+- **Status:** the site's label is "In development", hidden on the studio site (added 25 November 2026). 0.1.0.0 on 25 November (`VERSION` file): PR 0 of `docs/BUMP-STOP-PLAN.md` (repo, docs, proposed names, a look preview). The plan lists it on the studio site at PR 8, the first playable, if Kelbo wants. `docs/STATUS.md` says where it stands.
+- **Pitch:** a rally-raid truck builder. Build the truck from about 12 part slots under the class weight and a budget, run it on the shop's rigs (shaker rig, washboard ladder, torture loop) until something lets go, read the trace, tune it, then enter multi-day raids where you call the pace and patch the truck at the bivouac each night. Three classes from day one: light 4x4, heavy truck, side-by-side. Damper heat and fade are the signature failure, shown as a trace. Design and watch only, no steering; nobody gets hurt.
+- **Setting and tone:** a made-up northern country of boreal forest, lakes, eskers, muskeg and tundra, summer and winter raids, 1985 to 2025, with English-flavoured names (Kelbo's pick). Proposed names, waiting on Kelbo: Birchland, money in antlers, the Frostbite 300, the Esker Run, the Long Night Raid, the Muskeg 800 and the Birchland Traverse ("the Long One"). Dusty, cold, hands-on and a bit funny. Fictional teams and parts makers; real suspension terms.
+- **Look:** "Roadbook": a rally roadbook's paper strips and tulip diagrams, birch-white paper, graphite ink, one fluorescent magenta highlighter (`#FF4FB2`); light first with a night-stage dark mode. Traces are cool blue, amber and red, always with a word. Big Shoulders and Overpass Mono.
+- **Stack:** TypeScript (strict), Vite, three.js 0.187 from npm, plain DOM UI, Vitest. Pages from Actions, `base: './'`. Release per `VERSION`, titled from the `PR <n>: summary — v<version>` merge. A standalone repo set up from Mainline's files, each marked `// Adapted from Mainline <path> (<date>)`.
+- **Rules worth knowing:** the sim (`src/sim/`, `src/data/`) is pure and deterministic (its own `det.ts` maths, named RNG streams, SI units, a 500 Hz ride model of the body and four wheels); fade comes from damper heat, never a dice roll; long stages run sample sections in full and scale heat and wear between them. Names live in `docs/NAMES.md`.
+- **Saves:** keys `bumpstop.*`, IndexedDB `bumpstop`, caches `bumpstop-`, save code `BMP1:`, truck build codes `BMPT1:`, backup file `bump-stop-backup-YYYY-MM-DD.txt` (saves arrive with plan PR 8).
+
 ---
 
 ## 8. Names already taken
@@ -578,6 +591,7 @@ noted, so a repeated name reads as a mistake.
 | A prop-trading firm's floor; fictional tickers | Funded |
 | Real world cities on procedural maps | Frontier Lab |
 | Ardesia (the coroa, Cr), capital Alcarra; an Atlantic republic, 2010–2040 | Mainline |
+| Birchland (the antler), capital Larchport; an English-flavoured northern country, 1985–2025 (proposed, waiting on Kelbo) | Bump Stop |
 
 **Names used in more than one game** (already clashing; avoid adding more):
 
@@ -627,7 +641,7 @@ date or institution.
 | Family | Games |
 | --- | --- |
 | Craft career: build or make something part by part, test it, compete or sell, in a workshop that grows | Prairie Engine Works (engines), Scrapline (combat robots), Mainline (trains, on a monthly clock) |
-| Engineering to a brief: design against a spec, test, read the report | Burn Rate (rocket motors), Hull Down (tanks), Laminar (aerodynamics), Outwash (a grand prix car's aero) |
+| Engineering to a brief: design against a spec, test, read the report | Burn Rate (rocket motors), Hull Down (tanks), Laminar (aerodynamics), Outwash (a grand prix car's aero), Bump Stop (rally-raid suspension, tested to failure, then raced) |
 | Roguelike runs | Funded (prop-firm trading) |
 | Tycoon and management | Season Ticket (football club), Frontier Lab (AI lab), Lombard (pawn shop) |
 
@@ -636,7 +650,7 @@ date or institution.
 - Almost every game is a **career on a weekly clock** ("act, then Close week").
 - Almost every game is **dark-themed** (slate, navy, felt, console green). Only
   the light themes of PEW and Scrapline, and the light-first Hull Down,
-  Burn Rate and Mainline, break that.
+  Burn Rate, Mainline and Bump Stop, break that.
 - Most are **single-player management**; only Scrapline's
   fights are real-time action.
 - Three games share a near-identical classic-JS stack (PEW, Scrapline and
@@ -659,6 +673,7 @@ date or institution.
 | "Cobalt lab": bright wind-tunnel lab, Instrument Sans / Spline Sans Mono | Laminar |
 | "Pit wall": warm grey and off-white, one livery accent, Saira / Red Hat Mono | Outwash |
 | "Daylight test ring": light first, signal colours, a yellow warning-nose accent, Atkinson Hyperlegible Next / Mono | Mainline |
+| "Roadbook": birch-white paper, graphite ink, a fluorescent magenta highlighter, Big Shoulders / Overpass Mono | Bump Stop |
 
 **Open space** (observations, not decisions; Kelbo picks):
 
@@ -672,7 +687,7 @@ date or institution.
 - Shapes that break the weekly career: short daily runs with a shared seed
   (Funded's Daily Challenge has the pattern), pass-and-play or local multiplayer, a game you
   finish in an evening.
-- Settings not yet used: the sea, the far north, a
+- Settings not yet used: the sea, a
   historical era, fantasy, a city at street level, somewhere warm.
 
 ---

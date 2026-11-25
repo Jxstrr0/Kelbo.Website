@@ -387,6 +387,20 @@
     "featured": false
   },
   {
+    "title": "Bump Stop",
+    "tagline": "Build a rally truck, find the speed where it breaks, then go racing.",
+    "hidden": true,
+    "status": "In development",
+    "category": "Game",
+    "summary": "A rally-raid truck builder. Build the truck part by part, run it on the test track until the suspension gives up, read why it broke, tune it, then send it into a multi-day raid where damage stacks from stage to stage. Light 4x4s, heavy trucks and side-by-sides across a made-up northern country, summer and winter.",
+    "version": "0.1.0.0",
+    "latest": "The Bump Stop repo, the plan and the roadbook look",
+    "link": "https://bumpstop.longlight.games/",
+    "code": "https://github.com/Jxstrr0/BumpStop",
+    "image": "",
+    "featured": false
+  },
+  {
     "title": "Pre-market brief",
     "status": "Live",
     "category": "Trading",
