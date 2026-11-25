@@ -1,0 +1,5 @@
+# Key and env files never go in the repo (it is public).
+.env
+.env.*
+!.env.example
+.dev.vars
