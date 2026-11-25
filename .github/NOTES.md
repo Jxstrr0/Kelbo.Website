@@ -1361,14 +1361,23 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   family emoji need are kept), the email must be one plain address
   (letters and digits in any alphabet plus `. _ % + -`; no commas,
   semicolons, brackets or quotes), and the message keeps only
-  line breaks and tabs; the email puts the sender's name and address
+  line breaks and tabs. Since 25 Nov 2026 both the name and the message
+  also lose every character nobody can see (the `UNSEEN` list at the top
+  of the Worker file: zero-width spaces, soft hyphens, blank "filler"
+  letters and, above all, Unicode "tag" characters, which can spell a
+  hidden sentence a person never sees but a program reading the inbox
+  would), and a run of variation selectors is cut to its first
+  (`SELECTOR_RUN`; one is what an emoji or a Japanese name variant
+  needs, a run is hidden data). The cost: the flags of England, Scotland
+  and Wales arrive as a plain black flag. The email puts the sender's name and address
   first, above a `----- Message -----` line, so nothing typed into the
   message can pose as them; at most 50 messages a UTC day are sent
   (`DAILY_CAP`, counted by the `SendCounter` Durable Object at the bottom
   of the Worker file, bound as `SENDS`; it takes one call at a time, so
   messages that arrive together are each counted, which the earlier KV
   counter missed; with no binding, or if it can't be reached, it sends
-  anyway). Changing the Worker's code means uploading it with the same
+  anyway; a send that fails hands its place back, `giveBack`, so a mail
+  hiccup can't use up the day, 25 Nov 2026). Changing the Worker's code means uploading it with the same
   bindings (`EMAIL`, `TO`, `TURNSTILE_SECRET`, `SENDS`); the class needed
   a one-time "new class" migration, already done.
   Workers Logs are on for the Worker (free tier); each refusal logs a

@@ -21,7 +21,8 @@
 // The daily cap needs one extra setting: the SendCounter class at the bottom
 // of this file, bound to this Worker as SENDS (a Durable Object: a tiny
 // worker with its own storage; free). Without it the form still works, just
-// with no daily cap.
+// with no daily cap. A message only uses one of the day's places if it is
+// really emailed: when a send fails, its place is handed back.
 //
 // Logs: Workers Logs are on for this Worker (Cloudflare > contact-form >
 // Logs). Each refusal logs a short reason, never the name, email or message.
@@ -39,6 +40,25 @@ const MAX_BODY_BYTES = 64 * 1024;
 // rate-limit rule stop ordinary bots; this limits the damage if someone gets
 // past both, so the inbox can't be flooded.
 const DAILY_CAP = 50;
+
+// Characters nobody can see, which have no business in a name or a message:
+// soft hyphens, zero-width spaces, direction marks, blank "filler" letters,
+// and above all the Unicode "tag" characters (the last range), which can
+// spell out a whole hidden sentence that a person never sees but a program
+// reading the inbox would. The two joiners real writing needs are NOT in
+// this list: \u200c and \u200d (Persian and Indian scripts, family emoji).
+// One cost: the flags of England, Scotland and Wales are built from tag
+// characters, so those three arrive as a plain black flag.
+// (String.raw keeps the \u codes as written, ready for the RegExp below.)
+const UNSEEN = String.raw`\u00ad\u034f\u061c\u115f\u1160\u180e\u200b\u200e\u200f\u202a-\u202e\u2060-\u206f\u3164\ufeff\uffa0\ufff9-\ufffb\u{1d173}-\u{1d17a}\u{e0000}-\u{e007f}`;
+// For the name: the list above plus every control character and line break.
+const UNSEEN_IN_NAME = new RegExp(String.raw`[\u0000-\u001f\u007f-\u009f\u2028\u2029${UNSEEN}]+`, "gu");
+// For the message: the same, but ordinary line breaks (\n) and tabs stay.
+const UNSEEN_IN_MESSAGE = new RegExp(String.raw`[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f-\u009f${UNSEEN}]`, "gu");
+// "Variation selectors" pick the shape of the character before them (a
+// colour emoji, a variant of a Japanese name character), so one is fine. A
+// run of them is a known way to hide data, so only the first of a run stays.
+const SELECTOR_RUN = /([\ufe00-\ufe0f\u{e0100}-\u{e01ef}])[\ufe00-\ufe0f\u{e0100}-\u{e01ef}]+/gu;
 
 export default {
   async fetch(request, env) {
@@ -89,7 +109,8 @@ export default {
     const field = (k) => String(form.get(k) || "").trim();
     const name = tidy(field("name")), email = field("email");
     // The message keeps its line breaks and tabs; other invisible characters go.
-    const message = field("message").replace(/\r\n?/g, "\n").replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f-\u009f\u202a-\u202e\u2066-\u2069]/g, "");
+    // (Every kind of line break becomes a plain \n first.)
+    const message = field("message").replace(/\r\n?|[\u2028\u2029]/g, "\n").replace(UNSEEN_IN_MESSAGE, "").replace(SELECTOR_RUN, "$1").trim();
 
     // A bot filled in the hidden box: say "sent" so it moves on, send nothing.
     if (form.get("botcheck")) return reply(true, "Sent. Thanks for reaching out!", 200);
@@ -110,7 +131,10 @@ export default {
     const emailOk = /^[\p{L}\p{N}._%+-]+@[\p{L}\p{N}-]+(?:\.[\p{L}\p{N}-]+)+$/u.test(email) && tidy(email) === email;
     if (email && !emailOk) return reply(false, "That email address doesn't look right.", 400);
 
-    if (!(await underDailyCap(env))) {
+    // The day is read once, so a place handed back below goes to the same
+    // day's count even if midnight (UTC) passes while the email is sending.
+    const day = new Date().toISOString().slice(0, 10);
+    if (!(await underDailyCap(env, day))) {
       return refuse("daily cap", "The form has had a lot of messages today. Please try again tomorrow.", 429);
     }
 
@@ -126,6 +150,9 @@ export default {
       });
     } catch (err) {
       console.error("Send failed:", err && err.message);
+      // Nothing was emailed, so this message shouldn't use up one of the
+      // day's places: a mail hiccup must not close the form until midnight.
+      await giveSlotBack(env, day);
       return reply(false, "That didn't send. Please try again in a minute.", 502);
     }
     return reply(true, "Sent. Thanks for reaching out!", 200);
@@ -136,10 +163,11 @@ export default {
 // out characters nobody can see but that can cause mischief (line breaks and
 // other control characters, the marks that make text display backwards, and
 // zero-width characters that can hide inside a name to disguise it).
-// The two joiners real writing needs are kept: \u200c and \u200d
-// (Persian and Indian scripts, and family emoji).
+// The full list is UNSEEN, near the top of this file; the two joiners real
+// writing needs are kept: \u200c and \u200d (Persian and Indian scripts,
+// and family emoji).
 function tidy(s) {
-  return s.replace(/[\u0000-\u001f\u007f-\u009f\u00ad\u061c\u180e\u200b\u200e\u200f\u2028\u2029\u202a-\u202e\u2060-\u2069\ufeff]+/g, " ").trim();
+  return s.replace(UNSEEN_IN_NAME, " ").replace(SELECTOR_RUN, "$1").trim();
 }
 
 // Reads the upload piece by piece and gives up (returns null) as soon as it
@@ -167,15 +195,27 @@ async function readUpTo(request, max) {
 // exact even when messages arrive at the same moment. If SENDS isn't set up
 // or can't be reached, the message is let through: Turnstile is still the
 // main guard, and a storage hiccup shouldn't break the form.
-async function underDailyCap(env) {
+async function underDailyCap(env, day) {
   if (!env.SENDS) return true;
-  const day = new Date().toISOString().slice(0, 10);
   try {
     const counter = env.SENDS.get(env.SENDS.idFromName("contact-form"));
     return await counter.take(day, DAILY_CAP);
   } catch (err) {
     console.error("Daily cap check failed:", err && err.message);
     return true;
+  }
+}
+
+// Hands back the place a message took when its email then failed to send. If
+// the counter can't be reached the place just stays used: the cap can end up
+// a little stricter that day, never looser.
+async function giveSlotBack(env, day) {
+  if (!env.SENDS) return;
+  try {
+    const counter = env.SENDS.get(env.SENDS.idFromName("contact-form"));
+    await counter.giveBack(day);
+  } catch (err) {
+    console.error("Daily cap hand-back failed:", err && err.message);
   }
 }
 
@@ -193,6 +233,15 @@ export class SendCounter extends DurableObject {
     today.count += 1;
     await this.ctx.storage.put("today", today);
     return true;
+  }
+
+  // Hands one place back (the email it was taken for never went out). Only
+  // for the day it was taken on, and the count never goes below zero.
+  async giveBack(day) {
+    const today = await this.ctx.storage.get("today");
+    if (!today || today.day !== day || today.count < 1) return;
+    today.count -= 1;
+    await this.ctx.storage.put("today", today);
   }
 }
 
