@@ -144,7 +144,9 @@ ${briefs.join("\n\n")}
 Write this week's lessons.`;
 
 // Sent as a batch (half price): nobody needs the lessons until Monday's brief.
-const { text, usage } = await askClaude({ model: MODEL, system: SYSTEM, user, maxTokens: 16000, batch: { name: "coach", key: today } });
+// maxTokens 32000 (was 16000, Kelbo, 25 Nov 2026): on Fable 5.2 at effort high the Coach
+// once spent all 16,000 thinking and wrote nothing. You only pay for what it uses.
+const { text, usage } = await askClaude({ model: MODEL, system: SYSTEM, user, maxTokens: 32000, batch: { name: "coach", key: today } });
 
 /* ---------- Check the answer ---------- */
 const answer = readJson(text, MARKER);

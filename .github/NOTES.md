@@ -1214,7 +1214,7 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
 - Coach (brief lessons): `brief-lessons.yml` (Sundays 17:45 UTC = 11:45 am,
   beside the Devlog Writer and Scorekeeper, plus a 23:25 UTC pickup run that stops at once if today's lessons exist and
   no batch is saved) runs `brief-lessons.mjs` (`claude-fable-5-2`, effort
-  high, one batched call): the last
+  high, one batched call, `maxTokens` 32000 since 25 Nov 2026): the last
   `WINDOW_DAYS` (28) of report cards from the month files, the briefs they
   graded minus Sources, `report-cards/index.json` totals and the previous
   `lessons/latest.json`. Under `MIN_CARDS` (5) cards with a graded gap
