@@ -16,8 +16,8 @@ folder.
 
 Status: **PR 3 done** (the bridge, ready and tested in Chromium; no game
 has a bridge page yet, so every `bridgeUrl` is still `null` and no frame
-opens). The iPhone check waits for a bridge on a real game address
-(section 3B). Kelbo's answers are in section 7. Next: PR 4, badges.
+opens). The iPhone check is done with the first game that adds its
+bridge (section 7, item 6). Kelbo's answers are in section 7. Next: PR 4, badges.
 
 ---
 
@@ -171,7 +171,8 @@ How it's built (PR 3):
 - **Tested** in Chromium with every address pretended (two games with
   bridges, one game trying to stamp for another, one bridge that never
   answers, a newer stamp, a visit with nothing new). **Still to check:**
-  an iPhone in Safari, once one real game address serves the bridge page.
+  an iPhone in Safari, with the first game that adds its bridge (section
+  7, item 6), before any other game turns its bridge on.
 
 ---
 
@@ -278,3 +279,6 @@ handoff paragraph per game for its own session.
 4. **Home page chip:** yes. "Your Passport: N stamps" in the ticker strip,
    shown only once a visitor has at least one stamp (launch PR).
 5. **Service worker:** already fixed (section 1), nothing to decide.
+6. **The bridge's iPhone check** (25 November 2026): done with the first
+   real game, when it adds its bridge page in PR 5. Kelbo tests that game
+   on his iPhone in Safari before any other game turns its bridge on.
