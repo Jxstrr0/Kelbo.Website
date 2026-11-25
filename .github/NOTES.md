@@ -917,8 +917,21 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   builds the game pages from `projects.json` (games, not hidden, in its
   order) joined by title to `passport/registry.json` (id, stamp key, bridge
   address, ink colour). Every string goes in with `textContent`. No nav link
-  yet; stamps arrive in PR 2. `passport.js` loads before the beacon so it
-  can strip a `#stamp=` code first.
+  yet. `passport.js` loads before the beacon and takes a `#stamp=` code out
+  of the address bar (`history.replaceState`) the moment it runs.
+- Passport stamp links (PR 2, 25 Nov 2026): `passport/js/codec.js` packs and
+  unpacks `LLP1.` codes (deflate-raw through `CompressionStream`, base64url,
+  FNV-1a checksum; unpacking stops past 2 KB), and `passport/js/validate.js`
+  is the strict stamp check (`check`) and the replace rule (`isNewer`: a
+  newer date, or the same date with a newer version). Both are classic
+  scripts that also load in Node. A kept stamp lives in
+  `kelbo.passport.stamps` as `{ games: { id: stamp }, updates }` and is
+  checked again when read back. The game page shows an inked ring (headline,
+  date) with the stats under it; a toast (`.pp-toast`) says what happened;
+  "Remove all stamps" (`[data-pp-clear]`) clears `kelbo.passport.*` only.
+  `passport/dev/fake-stamp.html` (noindex, not linked) builds test links.
+  Tests: `node --test .github/scripts/passport.test.mjs`, run by the Site
+  check.
 ## Trading: journal, options, scan, brief, report card
 
 - The AI Trading Journal is `journal.html` + `journal.js` + `journal.css`,

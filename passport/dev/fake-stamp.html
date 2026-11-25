@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en-CA">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- A test page only: it loads its own scripts and nothing else. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <meta name="robots" content="noindex">
+  <title>Fake stamp (Passport test page)</title>
+  <link rel="stylesheet" href="fake-stamp.css">
+  <script src="../js/codec.js" defer></script>
+  <script src="fake-stamp.js" defer></script>
+</head>
+<body>
+  <!-- Longlight Passport test page (spec: .github/PASSPORT.md, PR 2).
+       It plays the part of a game: fill in a stamp, make the link a game's
+       "Add to Longlight Passport" button would open, and open it. Nothing
+       here is sent anywhere; the link is built on this phone. Not linked
+       from the site and not in the sitemap. -->
+  <main>
+    <h1>Fake stamp</h1>
+    <p>A pretend game for testing the Longlight Passport. Fill in a stamp, then open the link.</p>
+    <form data-fake-form>
+      <label>Game
+        <select name="game" data-fake-games></select>
+      </label>
+      <label>Version <input name="ver" value="1.0.0.0" autocomplete="off"></label>
+      <label>Date <input name="updated" type="date" required></label>
+      <label>Headline <input name="headline" value="Testing the Passport" maxlength="60" autocomplete="off"></label>
+      <fieldset>
+        <legend>Stat 1</legend>
+        <label>Label <input name="label1" value="Best run" maxlength="32" autocomplete="off"></label>
+        <label>Value <input name="value1" value="1140" maxlength="24" autocomplete="off"></label>
+        <label>Unit <input name="unit1" value="hp" maxlength="8" autocomplete="off"></label>
+      </fieldset>
+      <fieldset>
+        <legend>Stat 2</legend>
+        <label>Label <input name="label2" value="Wins" maxlength="32" autocomplete="off"></label>
+        <label>Value <input name="value2" value="3" maxlength="24" autocomplete="off"></label>
+        <label>Unit <input name="unit2" value="" maxlength="8" autocomplete="off"></label>
+      </fieldset>
+      <label><input type="checkbox" name="career" value="1"> Career finished (flag)</label>
+      <button type="submit">Make the stamp link</button>
+    </form>
+    <p class="out" data-fake-out aria-live="polite"></p>
+    <p><a data-fake-open hidden>Open it in the Passport →</a></p>
+    <p><a href="../../passport.html">Back to the Passport</a></p>
+  </main>
+</body>
+</html>

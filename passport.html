@@ -62,6 +62,8 @@
   <!-- The Passport's own code. It must stay before the analytics beacon at
        the foot of the page (deferred scripts run in page order), so a stamp
        in the address is read and removed before anything else sees it. -->
+  <script src="passport/js/codec.js" defer></script>
+  <script src="passport/js/validate.js" defer></script>
   <script src="passport/passport.js" defer></script>
 </head>
 <body>
@@ -165,6 +167,9 @@
         <li><strong>Clearing your browser data removes them.</strong> So does switching phones or browsers. Just add each stamp again from the game.</li>
         <li><strong>It runs on trust.</strong> There are no leaderboards and no cheat checks. A stamp says what the game said, nothing more.</li>
       </ul>
+      <!-- Shown by passport.js once there's at least one stamp. Clears this
+           browser's kelbo.passport.* keys and nothing else. -->
+      <button class="pp-clear" type="button" data-pp-clear hidden>Remove all stamps</button>
     </section>
   </main>
 

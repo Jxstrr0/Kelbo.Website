@@ -14,8 +14,9 @@ it changes whenever the Passport does. It lives in `.github/`, next to
 `NOTES.md`, because this repo keeps its notes there and has no `docs/`
 folder.
 
-Status: **PR 1 done** (the page, with an empty stamp for every game).
-Kelbo's answers are in section 7. Next: PR 2, stamp links.
+Status: **PR 2 done** (stamp links: a game's link adds or updates its
+stamp, and the page shows it). Kelbo's answers are in section 7. Next:
+PR 3, the bridge.
 
 ---
 
@@ -100,8 +101,11 @@ The plan's layout, adjusted to fit how this repo is built:
 | `.github/scripts/passport.test.mjs` | `node:test` tests for the codec, the stamp check and the badges. |
 
 **The Passport's own storage:** `kelbo.passport.stamps` (every stamp, keyed
-by game) and `kelbo.passport.seen` (which badges have shown their "new"
-toast). "Remove all stamps" clears `kelbo.passport.*` and nothing else.
+by game, as `{ "games": { "<id>": stamp }, "updates": <n> }`, where
+`updates` counts the times a newer stamp replaced an older one, for the
+Regular badge) and `kelbo.passport.seen` (which badges have shown their
+"new" toast). Stamps read back from storage go through the stamp check
+again. "Remove all stamps" clears `kelbo.passport.*` and nothing else.
 
 ---
 
@@ -117,8 +121,16 @@ The game's "Add to Longlight Passport" button opens:
   checksum (FNV-1a in base 36), the same shape as Lombard's `LMB1.` codes.
   Compression uses the browser's `CompressionStream("deflate-raw")`.
 - The part after `#` never reaches a server, GitHub's included.
-- The Passport checks the code, stores the stamp, removes the `#...` from the
-  address bar (`history.replaceState`) and shows "Stamp added: <Game>".
+- The Passport removes the `#...` from the address bar
+  (`history.replaceState`) the moment its script runs, before the visit
+  counter can see the address, then checks the code, stores the stamp and
+  shows "Stamp added: <Game>" (or "updated", "already stamped", "older
+  stamp", or why it was refused).
+- A stamp is dated no later than tomorrow on the phone's clock (time zones),
+  so a wrong date in a game can't block every later update. `ver` is
+  numbers and dots, compared number by number.
+- Unpacking stops past 2 KB, so a small code can't unpack into something
+  huge.
 
 ### B. The bridge (updates itself)
 

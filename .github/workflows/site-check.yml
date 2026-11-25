@@ -24,6 +24,10 @@ jobs:
           node-version: 22
       - name: Check the site
         run: node .github/scripts/check-site.mjs
+      # The Longlight Passport's tests: stamp codes, the stamp check, the
+      # replace rule (plain node:test, no packages; .github/PASSPORT.md).
+      - name: Test the Passport
+        run: node --test .github/scripts/passport.test.mjs
       # The deploy makes a page for each game (make-game-pages.mjs). Try it
       # on a throwaway copy, so a change that breaks it shows up here too.
       - name: Check the game pages the deploy will make

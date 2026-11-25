@@ -181,6 +181,59 @@
   font-size: 0.85rem;
 }
 
+/* A real stamp: a solid double ring in the game's ink, tilted a little as
+   if pressed by hand. The headline and date sit inside; the stats go under
+   it (.pp-stats). */
+.pp-stamp--inked {
+  border: 4px solid var(--stamp-shown);
+  box-shadow: inset 0 0 0 3px var(--card), inset 0 0 0 5px var(--stamp-shown);
+  color: var(--ink); /* the ring carries the game's ink; text stays readable */
+  transform: rotate(-6deg);
+}
+
+.pp-stamp__headline {
+  display: block;
+  margin-top: 0.4rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.pp-stamp__date {
+  display: block;
+  margin-top: 0.4rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* The stats under a stamp: label on the left, value on the right. */
+.pp-stats {
+  margin: 0;
+  display: grid;
+  gap: 0.3rem;
+}
+
+.pp-stats__row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.pp-stats dt {
+  color: var(--muted);
+}
+
+.pp-stats dd {
+  margin: 0;
+  font-weight: 700;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
 /* In the dark theme each game's ink is lifted towards ivory so the ring
    still stands out on a dark card. */
 :root[data-theme="dark"] .pp-stamp {
@@ -228,10 +281,80 @@
   max-width: 44rem;
 }
 
+/* "Remove all stamps": quiet, under How this works, only once there are
+   stamps. At least 44px tall for a thumb. */
+.pp-clear {
+  margin-top: 1.25rem;
+  min-height: 2.75rem;
+  padding: 0.5rem 1.1rem;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  cursor: pointer;
+}
+
+.pp-clear:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+/* ---- Toast ("Stamp added: Scrapline") -----------------------------------
+   The same look as the site's badge toast: slate card, clay edge. */
+.pp-toast {
+  position: fixed;
+  left: 50%;
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  z-index: 110;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  max-width: min(22rem, calc(100vw - 2rem));
+  padding: 0.7rem 1.1rem;
+  border: 2px solid var(--ll-clay);
+  border-radius: 14px;
+  background: var(--ll-slate);
+  color: var(--ll-ivory);
+  box-shadow: var(--shadow);
+  font-size: 0.9rem;
+  text-align: center;
+  transform: translate(-50%, 0);
+  visibility: hidden;
+  opacity: 0;
+}
+
+.pp-toast.is-shown {
+  visibility: visible;
+  opacity: 1;
+}
+
+.pp-toast strong {
+  color: var(--ll-clay);
+}
+
+/* Something went wrong: a lilac edge instead of clay. */
+.pp-toast--problem {
+  border-color: var(--ll-lilac);
+}
+
+.pp-toast--problem strong {
+  color: var(--ll-lilac);
+}
+
 /* ---- Motion ------------------------------------------------------------ */
 
 @media (prefers-reduced-motion: no-preference) {
   .pp-book {
     scroll-behavior: smooth;
+  }
+
+  .pp-toast {
+    transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
+    transform: translate(-50%, 0.75rem);
+  }
+
+  .pp-toast.is-shown {
+    transform: translate(-50%, 0);
   }
 }
