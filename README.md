@@ -948,7 +948,7 @@ same robot key (`LL_ROBOT_KEY`) as the brief:
 
 - **Forecaster** (Sunday night, 7:45 pm, with back-up tries at 9:15 pm
   and 4:35 am Monday):
-  Claude Opus 5.5 on high effort, with web search, writes "Forecast for the
+  Claude Fable 5.2 on high effort, with web search, writes "Forecast for the
   week of ..." with the TLDR, view, sector board, 4 to 6 calls (each with a
   "wrong if"), scenarios, levels, schedule and plan, and puts it at the top
   of `journal.json`. Its note says it was written by the robot, and a
@@ -1132,7 +1132,8 @@ you can see how good the calls really are over time.
   (`.github/workflows/postmarket-recap.yml`), started by the Robot Timer every
   weekday at 4:45 pm Saskatoon time (back-up try at 5:45),
   after the 4:00 pm ET close in summer and winter. It runs
-  `.github/scripts/postmarket-recap.mjs`, which asks Claude (with web
+  `.github/scripts/postmarket-recap.mjs`, which asks Claude Fable 5.2 on
+  high effort (with web
   search) for MU's previous close, open, high, low and close (and the
   SOX's, in index points, when the brief has a SOX section), then grades
   each one's calls the same way:
@@ -1265,7 +1266,7 @@ back on).
   5:25 pm try picks it up if it was slow. Monday's brief uses the lessons.
 - **What it does:** reads every report card from the last 28 days, the
   briefs they graded, the running score and last week's lessons, and asks
-  Opus 5.5 for 3 to 5 lessons about *how the brief works*: gap sizes called
+  Fable 5.2 for 3 to 5 lessons about *how the brief works*: gap sizes called
   too big, supports listed too close to the price, overconfidence after a
   red day. Never market predictions. Each lesson is one instruction, its
   evidence (a count like "4 of 5 gap calls too big" and the card dates)

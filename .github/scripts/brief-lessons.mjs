@@ -26,7 +26,7 @@ import { existsSync } from "node:fs";
 import { readFile, readdir, writeFile, mkdir } from "node:fs/promises";
 import { askClaude, logCost, readJson, skDate, oneLine, noTags, asJson, hasLink, badAnswerNote, DRY_RUN } from "./claude.mjs";
 
-const MODEL = "claude-opus-5-5";
+const MODEL = "claude-fable-5-2"; // the top model, like the brief (Opus 5.5 until Nov 24, 2026); effort high is askClaude's default
 const WINDOW_DAYS = 28; // how far back to read report cards
 const MIN_CARDS = 5; // fewer graded cards than this and it waits a week
 const MAX_ACTIVE = 5; // most lessons the brief is asked to follow at once

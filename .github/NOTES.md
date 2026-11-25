@@ -1037,7 +1037,7 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   weekdays at 22:45 and 23:45 UTC = 4:45 and 5:45 pm America/Regina, after
   the close all year, or by hand with a "redo
   today's grade" box) runs `.github/scripts/postmarket-recap.mjs`: plain
-  Node `fetch`, the model in `MODEL` (`claude-opus-5-5` at `output_config.effort` "high", `max_tokens` 32000), `web_search_20260209`
+  Node `fetch`, the model in `MODEL` (`claude-fable-5-2` at `output_config.effort` "high", `max_tokens` 32000), `web_search_20260209`
   (`MAX_SEARCHES` 18) and `web_fetch_20260209` (`MAX_FETCHES` 15), the same
   caching, `pause_turn` loop and cost log line as the brief. It skips
   weekends, NYSE holidays (`marketHolidays`, computed, incl. Good Friday
@@ -1146,7 +1146,7 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   edit `TIMETABLE` in both copies (times on a 5-minute mark, in UTC).
 - Coach (brief lessons): `brief-lessons.yml` (Sundays 17:45 UTC = 11:45 am,
   beside the Devlog Writer and Scorekeeper, plus a 23:25 UTC pickup run that stops at once if today's lessons exist and
-  no batch is saved) runs `brief-lessons.mjs` (`claude-opus-5-5`, effort
+  no batch is saved) runs `brief-lessons.mjs` (`claude-fable-5-2`, effort
   high, one batched call): the last
   `WINDOW_DAYS` (28) of report cards from the month files, the briefs they
   graded minus Sources, `report-cards/index.json` totals and the previous
@@ -1183,7 +1183,7 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
 - Forecaster (weekly journal forecast): `journal-forecast.yml` (Sunday
   night: Robot Timer at 01:45 and 03:15 UTC Monday = 7:45 and 9:15 pm
   Sunday America/Regina, plus a 10:35 UTC 4:35 am Monday pickup;
-  batched) runs `journal-forecast.mjs` (`claude-opus-5-5`,
+  batched) runs `journal-forecast.mjs` (`claude-fable-5-2`,
   effort high, `askClaudeWeb` with `MAX_SEARCHES` 25 and `MAX_FETCHES`
   12): the coming week's market days from `market-days.mjs` (shared
   with the Grader; `isMarketDay`, `addDays`), the base close (last market

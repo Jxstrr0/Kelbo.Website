@@ -12,12 +12,12 @@ import { readFile, writeFile, mkdir, readdir } from "node:fs/promises";
 import { costNote, noTags, seenSources } from "./claude.mjs";
 import { marketHolidays } from "./market-days.mjs";
 
-const MODEL = "claude-opus-5-5"; // the same model as the brief (Sonnet 5.5 until Nov 2026)
+const MODEL = "claude-fable-5-2"; // the same model as the brief (Opus 5.5 until Nov 24, 2026; Sonnet 5.5 before that)
 const MAX_SEARCHES = 18; // web searches a grade may run ($10 per 1,000)
 const MAX_FETCHES = 15; // whole pages it may open and read
 // List prices in US dollars per million tokens, for the cost line in the
 // run log. Cache reads are the cheap re-reads; writes cost 1.25x.
-const PRICE = { input: 4, output: 20, cacheRead: 0.2, cacheWrite: 5, search: 0.01 };
+const PRICE = { input: 8, output: 40, cacheRead: 0.2, cacheWrite: 10, search: 0.01 }; // Fable 5.2 list price
 const MARKER = "===CARD===";
 const BRIEFS_DIR = "briefs";
 const CARDS_DIR = "report-cards";

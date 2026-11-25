@@ -23,6 +23,7 @@ import { execFileSync } from "node:child_process";
 // run log (the Anthropic console has the real bill). Cache reads are the
 // cheap re-reads; cache writes cost 1.25x.
 export const PRICES = {
+  "claude-fable-5-2": { input: 8, output: 40, cacheRead: 0.2, cacheWrite: 10 }, // the top model, 2x Opus
   "claude-opus-5-5": { input: 4, output: 20, cacheRead: 0.2, cacheWrite: 5 },
   "claude-sonnet-5-5": { input: 2, output: 10, cacheRead: 0.2, cacheWrite: 2.5 },
 };
