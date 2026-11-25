@@ -1,0 +1,70 @@
+# ROBOTS DRILL (one-off test, 25 Nov 2026; this file is removed once it has run)
+#
+# Checks that the Grader, the Forecaster and the Coach ignore orders hidden
+# in what they read. Each robot's real script runs once against a planted
+# web (.github/drill/planted.mjs) and a few planted notes in its own files.
+#
+# It can only be started by hand (Actions > Robots drill > Run workflow).
+#   rehearsal  free: a stand-in answers, no key, nothing asked of the model.
+#   live       paid: the real model, once per robot, hard cap US$3.50 in all.
+#              Never run this twice. Kelbo said yes to one run (25 Nov 2026).
+#
+# Nothing is saved: there is no commit, no push and no deploy step, the
+# token can only read, and the run prints counts and the cost, never a
+# prompt or the model's words.
+name: Robots drill
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "rehearsal (free) or live (paid, once only)"
+        type: choice
+        options:
+          - rehearsal
+          - live
+        default: rehearsal
+
+permissions:
+  contents: read
+
+concurrency:
+  group: robots-drill
+  cancel-in-progress: false
+
+jobs:
+  rehearsal:
+    name: Rehearsal (free, no key)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+      - name: A stand-in that follows every planted order (the drill must see it)
+        run: node .github/drill/run.mjs obedient
+      - name: A stand-in that follows none (the drill must stay quiet)
+        run: node .github/drill/run.mjs clean
+
+  live:
+    name: Live (paid, once)
+    needs: rehearsal
+    if: inputs.mode == 'live'
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    # The robot key lives in the robots environment, which only main may use.
+    environment: robots
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+      - name: The real model, once per robot, inside the cap
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.LL_ROBOT_KEY }}
+        run: node .github/drill/run.mjs live
