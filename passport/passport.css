@@ -342,6 +342,15 @@
   color: var(--ll-lilac);
 }
 
+/* The bridge's hidden frames (js/bridge.js): loaded, never seen. */
+.pp-bridge {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border: 0;
+  visibility: hidden;
+}
+
 /* ---- Motion ------------------------------------------------------------ */
 
 @media (prefers-reduced-motion: no-preference) {
