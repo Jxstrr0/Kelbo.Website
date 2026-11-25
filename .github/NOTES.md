@@ -932,6 +932,15 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   `passport/dev/fake-stamp.html` (noindex, not linked) builds test links.
   Tests: `node --test .github/scripts/passport.test.mjs`, run by the Site
   check.
+- Passport bridge (PR 3, 25 Nov 2026): `passport/js/bridge.js` opens a
+  sandboxed hidden frame (`.pp-bridge`) for each registry entry with a
+  `bridgeUrl` and takes only `{ type: "llp-stamp", v: 1, stamp }` from that
+  frame at that game's exact origin, 3 s each (`collect`, `originOf`,
+  `readMessage`). `passport.js` (`askBridges`) checks each stamp, refuses one
+  that names another game, and keeps the newer. The page a game hosts is
+  `passport/kit/passport-stamp.html` (its stamp key in a meta tag, so its
+  script fingerprint never changes). `check-site.mjs` lets `passport.html`
+  add exactly the bridge origins to `frame-src`, and requires each one.
 ## Trading: journal, options, scan, brief, report card
 
 - The AI Trading Journal is `journal.html` + `journal.js` + `journal.css`,

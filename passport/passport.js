@@ -17,6 +17,12 @@
    unpacked (js/codec.js), checked (js/validate.js), and kept if it's newer
    than the stamp already here. A toast says what happened.
 
+   The bridge (PR 3): for each game whose registry entry has a bridgeUrl,
+   js/bridge.js opens that game's bridge page in a hidden frame and collects
+   the stamp it posts back (3 seconds each, address checked). Each stamp is
+   checked here like a linked one, and must name the game whose frame sent
+   it. Missing or slow bridges are skipped quietly.
+
    Storage, in this browser only:
      kelbo.passport.stamps = { "games": { "<game id>": stamp, ... },
                                "updates": how many times a newer stamp
@@ -58,10 +64,12 @@
   var clearButton = document.querySelector("[data-pp-clear]");
   var Codec = window.LLPassportCodec;
   var Check = window.LLPassportValidate;
+  var Bridge = window.LLPassportBridge;
 
   var games = []; // the games on the site, in Kelbo's order
   var registryIds = []; // every game the Passport knows, hidden ones too
   var namesById = {}; // id → name, hidden games too (for the toast)
+  var bridges = []; // [{ id, url, origin }] for games with a bridge page
   var store = { games: {}, updates: 0 };
 
   // A small element maker: tag, class, and text (as plain text, never markup).
@@ -314,6 +322,35 @@
       });
   }
 
+  // ---- 6. The bridge ---------------------------------------------------------------
+
+  // Ask every game's bridge page for its stamp, keep the newer ones, and
+  // say which stamps changed. Quiet when nothing did.
+  function askBridges() {
+    if (!Bridge || !Check || !bridges.length) return;
+    var added = [];
+    var updated = [];
+    function take(id, raw) {
+      var result = Check.check(raw, registryIds);
+      if (!result.ok || result.stamp.game !== id) return; // one game can't stamp for another
+      var old = store.games[id];
+      if (!Check.isNewer(result.stamp, old)) return;
+      store.games[id] = result.stamp;
+      if (old) store.updates += 1;
+      if (!saveStore()) return;
+      (old ? updated : added).push(namesById[id] || id);
+      render();
+    }
+    Bridge.collect(bridges, { timeoutMs: 3000, onStamp: take }).then(function () {
+      var names = added.concat(updated);
+      if (!names.length) return;
+      var title = added.length && !updated.length
+        ? (names.length === 1 ? "Stamp added" : "Stamps added")
+        : (names.length === 1 ? "Stamp updated" : "Stamps updated");
+      toast(title, names.join(", ") + (names.length === 1 ? ", from the game." : ", from the games."));
+    });
+  }
+
   // A second stamp link opened while the page is already showing.
   window.addEventListener("hashchange", function () {
     var code = takeFromAddress();
@@ -329,7 +366,7 @@
     });
   }
 
-  // ---- 6. Start ------------------------------------------------------------------
+  // ---- 7. Start ------------------------------------------------------------------
 
   Promise.all([getJson("projects.json"), getJson("passport/registry.json")])
     .then(function (both) {
@@ -338,6 +375,8 @@
         if (entry && typeof entry.id === "string" && entry.id) {
           registryIds.push(entry.id);
           namesById[entry.id] = String(entry.title || entry.id);
+          var origin = entry.bridgeUrl && Bridge ? Bridge.originOf(entry.bridgeUrl) : "";
+          if (origin) bridges.push({ id: entry.id, url: String(entry.bridgeUrl), origin: origin });
         }
       });
       games = gamesFrom(both[0], registry);
@@ -346,6 +385,7 @@
       render();
       if (pendingCode) takeStamp(pendingCode);
       pendingCode = null;
+      askBridges();
     })
     .catch(function () {
       if (loading) {

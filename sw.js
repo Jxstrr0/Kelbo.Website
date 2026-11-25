@@ -49,6 +49,7 @@ const CORE = [
   "passport/passport.js",
   "passport/js/codec.js",
   "passport/js/validate.js",
+  "passport/js/bridge.js",
   "passport/registry.json",
   "assets/press/longlight-logo-dark.svg",
   "projects.json",

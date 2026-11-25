@@ -563,6 +563,30 @@ for (const f of allFiles.filter((f) => inGithub(f) && /workflows[\\/][^\\/]+\.ya
 // (otherwise the browser silently refuses to run that script).
 // ---------------------------------------------------------------------
 const SCRIPT_HOSTS = ["https://static.cloudflareinsights.com", "https://challenges.cloudflare.com"];
+// The Longlight Passport's bridge (.github/PASSPORT.md, section 3B): each game
+// with a "bridgeUrl" in passport/registry.json is opened in a hidden frame on
+// passport.html, so that page alone may also list those games' exact
+// addresses in frame-src (one by one, no wildcard), and must list every one.
+const BRIDGE_HOSTS = [];
+if (exists("passport/registry.json")) {
+  let reg = null;
+  try { reg = JSON.parse(readFileSync(join(ROOT, "passport/registry.json"), "utf8")); } catch { error("passport/registry.json", "This file isn't valid JSON."); }
+  for (const g of (reg && reg.games) || []) {
+    if (g.bridgeUrl == null) continue;
+    let url = null;
+    try { url = new URL(String(g.bridgeUrl)); } catch {}
+    if (!url || url.protocol !== "https:" || url.port || url.username || !/^[a-z0-9-]+\.longlight\.games$/.test(url.hostname)) {
+      error("passport/registry.json", `${g.id}'s bridgeUrl "${g.bridgeUrl}" must be an https:// page on that game's own longlight.games address (or null).`);
+      continue;
+    }
+    BRIDGE_HOSTS.push(url.origin);
+  }
+  if (exists("passport.html")) {
+    const tag = (readFileSync(join(ROOT, "passport.html"), "utf8").match(/<meta http-equiv="Content-Security-Policy" content="([^"]*)"/) || ["", ""])[1];
+    const frames = (tag.split(";").map((x) => x.trim()).find((x) => x.startsWith("frame-src ")) || "").split(/\s+/);
+    for (const host of BRIDGE_HOSTS) if (!frames.includes(host)) error("passport.html", `The registry has a bridge at ${host}, but this page's security tag doesn't list it in frame-src, so the browser would block it. Add exactly "${host}" there.`);
+  }
+}
 const HOME_TAG = exists("index.html") ? (readFileSync(join(ROOT, "index.html"), "utf8").match(/<meta http-equiv="Content-Security-Policy" content="([^"]*)"/) || ["", ""])[1] : "";
 for (const f of files.filter((f) => extname(f) === ".html")) {
   const html = readFileSync(f, "utf8");
@@ -581,7 +605,10 @@ for (const f of files.filter((f) => extname(f) === ".html")) {
   const parts = (t) => t.split(";").map((x) => x.trim()).filter((x) => x && !x.startsWith("script-src "));
   for (const part of parts(whole)) if (/(^|\s)(\*|https?:|http:\/\/\S+)(\s|$)/.test(part)) error(rel(f), `The security tag's "${part.split(" ")[0]}" allows any site (or plain http). Name the exact https:// hosts instead.`);
   if (HOME_TAG && dirname(f) === ROOT) {
-    const mine = parts(whole).map((x) => (rel(f) === "game.html" || isGameCopy(rel(f)) ? x.replace(" https://*.longlight.games", "") : x)).join("; ");
+    const mine = parts(whole)
+      .map((x) => (rel(f) === "game.html" || isGameCopy(rel(f)) ? x.replace(" https://*.longlight.games", "") : x))
+      .map((x) => (rel(f) === "passport.html" && x.startsWith("frame-src ") ? x.split(/\s+/).filter((w) => !BRIDGE_HOSTS.includes(w)).join(" ") : x))
+      .join("; ");
     if (mine !== parts(HOME_TAG).join("; ")) error(rel(f), "This page's security tag differs from index.html's (beyond the script fingerprints). Every page carries the same tag; copy it from index.html.");
   }
   for (const hash of inlineScriptHashes(html)) {

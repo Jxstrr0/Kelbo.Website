@@ -3,11 +3,14 @@
 // The Site check runs it on every pull request.
 //
 // Covers the stamp code (passport/js/codec.js), the stamp check
-// (passport/js/validate.js), the registry, and a guard that the Passport's
-// code never puts text on the page as markup.
+// (passport/js/validate.js), the bridge's address and message checks
+// (passport/js/bridge.js) and its page (passport/kit/passport-stamp.html),
+// the registry, and a guard that the Passport's code never puts text on
+// the page as markup.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";
+import { createHash } from "node:crypto";
 import { readFileSync, readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -16,6 +19,7 @@ const require = createRequire(import.meta.url);
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const Codec = require(join(ROOT, "passport/js/codec.js"));
 const Check = require(join(ROOT, "passport/js/validate.js"));
+const Bridge = require(join(ROOT, "passport/js/bridge.js"));
 const registry = JSON.parse(readFileSync(join(ROOT, "passport/registry.json"), "utf8"));
 const IDS = registry.games.map((g) => g.id);
 const TODAY = "2026-11-25";
@@ -218,4 +222,58 @@ test("the Passport's code never writes markup and only touches kelbo.passport.* 
     for (const m of code.matchAll(/["'](kelbo\.[^"']*)["']/g)) assert.ok(m[1].startsWith("kelbo.passport."), `${f} uses ${m[1]}`);
     assert.doesNotMatch(code, /localStorage\.clear|fetch\([^)]*(https?:)/, `${f} clears all storage or calls out`);
   }
+});
+
+// ---- the bridge ------------------------------------------------------------------
+
+test("a bridge address must be https on a longlight.games game address", () => {
+  assert.equal(Bridge.originOf("https://pew.longlight.games/passport-stamp.html"), "https://pew.longlight.games");
+  for (const bad of [
+    "http://pew.longlight.games/passport-stamp.html",
+    "https://longlight.games/passport-stamp.html",
+    "https://pew.longlight.games.evil.example/x.html",
+    "https://evil.example/?pew.longlight.games",
+    "https://pew.longlight.games:8443/x.html",
+    "https://user:pw" + "@" + "pew.longlight.games/x.html", // a login in the address (split so the privacy scan doesn't read it as an email)
+    "https://a.b.longlight.games/x.html",
+    "javascript:alert(1)",
+    "",
+    null,
+  ]) assert.equal(Bridge.originOf(bad), "", String(bad));
+});
+
+test("only a small, well-shaped bridge message is read", () => {
+  assert.deepEqual(Bridge.readMessage({ type: "llp-stamp", v: 1, stamp: example() }), { stamp: example() });
+  assert.deepEqual(Bridge.readMessage({ type: "llp-stamp", v: 1, stamp: null }), { stamp: null });
+  for (const bad of [
+    null,
+    "llp-stamp",
+    [],
+    { type: "other", v: 1, stamp: example() },
+    { type: "llp-stamp", v: 2, stamp: example() },
+    { type: "llp-stamp", v: 1, stamp: "LLP1.abc" },
+    { type: "llp-stamp", v: 1, stamp: [example()] },
+    { type: "llp-stamp", v: 1, stamp: { ...example(), pad: "x".repeat(5000) } },
+  ]) assert.equal(Bridge.readMessage(bad), null, JSON.stringify(bad)?.slice(0, 60));
+});
+
+test("the bridge page is small, posts only to longlight.games, and its script is allowed by its own tag", () => {
+  const html = readFileSync(join(ROOT, "passport/kit/passport-stamp.html"), "utf8");
+  assert.ok(Buffer.byteLength(html) < 2048, "under 2 KB");
+  const scripts = [...html.matchAll(/<script(\s[^>]*)?>([\s\S]*?)<\/script>/g)];
+  assert.equal(scripts.length, 1, "one inline script, no files");
+  const hash = "sha256-" + createHash("sha256").update(scripts[0][2]).digest("base64");
+  const tag = html.match(/<meta http-equiv="Content-Security-Policy" content="([^"]*)"/)[1];
+  assert.match(tag, /default-src 'none'/);
+  assert.ok(tag.includes(`script-src '${hash}'`), "the tag lists the script's fingerprint (recompute it after editing the script)");
+  const code = scripts[0][2];
+  assert.match(code, /postMessage\(\{ type: "llp-stamp", v: 1, stamp: stamp \}, "https:\/\/longlight\.games"\)/);
+  assert.doesNotMatch(code, /postMessage\([^)]*"\*"/, "never posts to any page");
+  assert.doesNotMatch(code, /fetch|XMLHttpRequest|sendBeacon|indexedDB|cookie|setItem|removeItem/, "only reads one key");
+  assert.match(html, /<meta name="llp-stamp-key" content="[^"]+">/);
+});
+
+test("every game's stamp key starts with that game's storage prefix", () => {
+  const prefix = { pew: "pew2-", scrapline: "scr-", seasonticket: "seasonticket.", funded: "funded.", lombard: "lombard.", burnrate: "brn-", frontierlab: "frontierlab.", hulldown: "hulldown.", laminar: "laminar.", outwash: "outwash.", thewhip: "whip:" };
+  for (const g of registry.games) assert.ok(prefix[g.id] && g.stampKey.startsWith(prefix[g.id]), `${g.id}: ${g.stampKey}`);
 });

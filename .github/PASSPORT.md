@@ -14,9 +14,10 @@ it changes whenever the Passport does. It lives in `.github/`, next to
 `NOTES.md`, because this repo keeps its notes there and has no `docs/`
 folder.
 
-Status: **PR 2 done** (stamp links: a game's link adds or updates its
-stamp, and the page shows it). Kelbo's answers are in section 7. Next:
-PR 3, the bridge.
+Status: **PR 3 done** (the bridge, ready and tested in Chromium; no game
+has a bridge page yet, so every `bridgeUrl` is still `null` and no frame
+opens). The iPhone check is done with the first game that adds its
+bridge (section 7, item 6). Kelbo's answers are in section 7. Next: PR 4, badges.
 
 ---
 
@@ -144,6 +145,35 @@ the game's own stamp key and sends it to the Passport with `postMessage`.
   `event.origin` is that game's address in the registry.
 - A missing or slow bridge is skipped quietly, never shown as an error.
 
+How it's built (PR 3):
+
+- **The bridge page** is `passport/kit/passport-stamp.html` (about 1.3 KB).
+  A game copies it to its site root and changes one line, the
+  `<meta name="llp-stamp-key">`, to its own stamp key. The script itself
+  never changes, so the fingerprint in the page's own security tag
+  (`default-src 'none'`) stays right. It does nothing unless it's inside a
+  frame, reads that one key, and posts
+  `{ type: "llp-stamp", v: 1, stamp }` to `https://longlight.games` only.
+- **The Passport side** is `passport/js/bridge.js`. The frames are
+  sandboxed (`allow-scripts allow-same-origin`: they run and read their
+  own storage, nothing else) and removed once answered or timed out. A
+  message counts only if it comes from that frame, from that game's exact
+  address, in that shape, and under 4 KB. Each stamp shows as it arrives.
+- **passport.js** checks each stamp like a linked one and refuses it unless
+  it names the game whose frame sent it, so one game can't stamp for
+  another. A newer stamp replaces the old one (and counts toward
+  `updates`); a toast says which stamps were added or updated.
+- **Turning a game's bridge on** takes two edits in this repo: its
+  `bridgeUrl` in `passport/registry.json`, and its exact address in
+  `passport.html`'s `frame-src`. The Site check fails if the address is
+  missing, if `frame-src` lists anything else, or if a `bridgeUrl` isn't an
+  https page on a `longlight.games` game address.
+- **Tested** in Chromium with every address pretended (two games with
+  bridges, one game trying to stamp for another, one bridge that never
+  answers, a newer stamp, a visit with nothing new). **Still to check:**
+  an iPhone in Safari, with the first game that adds its bridge (section
+  7, item 6), before any other game turns its bridge on.
+
 ---
 
 ## 4. The stamp (version 1)
@@ -249,3 +279,6 @@ handoff paragraph per game for its own session.
 4. **Home page chip:** yes. "Your Passport: N stamps" in the ticker strip,
    shown only once a visitor has at least one stamp (launch PR).
 5. **Service worker:** already fixed (section 1), nothing to decide.
+6. **The bridge's iPhone check** (25 November 2026): done with the first
+   real game, when it adds its bridge page in PR 5. Kelbo tests that game
+   on his iPhone in Safari before any other game turns its bridge on.
