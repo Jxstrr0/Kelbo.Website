@@ -1,6 +1,11 @@
 {
   "posts": [
     {
+      "date": "2026-12-21",
+      "title": "The Long Night: looking back at the year",
+      "body": "Tonight is the longest night of the year in Saskatoon. The sun was up for just 7 hours 43 minutes today, so the lanterns are out along the horizon on every page of the site. It felt like the right night to look back.\n\nSix games. Prairie Engine Works came out on October 16, and Season Ticket reached 1.0 three days later. Lombard and Scrapline joined in November, Burn Rate hit 1.0, and Funded opened its trading desk.\n\n148 versions. Since mid-November every game publishes each new version as a release, and together the six have shipped 148 of them. Prairie Engine Works (52) and Scrapline (49) lead the way.\n\n26 devlog posts, counting this one.\n\nThe site grew up too. In October came Play here, a page for every game and a press kit. In November the studio moved to longlight.games, with its own address for every game. Then the home page became a live sky over Saskatoon, where the sun, moon, stars and weather are the real ones, a freight train rolls past the grain elevator, and you can swipe to wind the day forward. And at the end of the month came the Longlight Passport: play a game, collect its stamp, earn badges and share your card.\n\nThanks for playing, and for reading. The sun's back tomorrow at 9:14 AM, and from here the days get longer."
+    },
+    {
       "date": "2026-11-22",
       "title": "Prairie Engine Works gets you to the garage sooner",
       "game": "Prairie Engine Works",
