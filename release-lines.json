@@ -158,5 +158,10 @@
     "line": "Prairie Engine Works now awards a Longlight Passport stamp and has a new bridge page.",
     "title": "v1.76.143.0 - Longlight Passport stamp and bridge page (#324)",
     "at": "2026-11-26T08:56:56.082Z"
+  },
+  "350Chev@v1.76.144.0": {
+    "line": "The game should now run at a smoother frame rate on desktop.",
+    "title": "v1.76.144.0 - Strip frame saver for desktop FPS (#328)",
+    "at": "2026-11-26T21:58:26.098Z"
   }
 }
