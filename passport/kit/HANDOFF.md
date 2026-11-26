@@ -11,7 +11,9 @@ follow when they go on the site.
 2026, spec section 7, item 6). Once it's live, Kelbo opens the Passport on
 his iPhone in Safari and checks the stamp updates on its own. Until that
 passes, no other game's bridge is turned on in the studio site. Every
-game's stamp link and button can ship before then.
+game's stamp link and button can ship before then. **Passed** (26 Nov
+2026, with Prairie Engine Works): a game's bridge can now be turned on as
+soon as its bridge page is live.
 
 Every paragraph ends with the same last step: once the game's PR is live,
 tell the studio site's session "turn on the Passport bridge for <Game>".
