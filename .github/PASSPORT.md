@@ -22,8 +22,10 @@ kit** (26 November 2026, its 1.76.143.0): it keeps its stamp under
 `pew2-passport`, has the Add to Longlight Passport button, and its bridge
 is on (`bridgeUrl` set, `https://pew.longlight.games` in `passport.html`'s
 `frame-src`). The other games add the kit in their own sessions
-(`passport/kit/HANDOFF.md`) and keep `bridgeUrl` at `null` until Kelbo's
-iPhone check with Prairie Engine Works passes (section 7, item 6).
+(`passport/kit/HANDOFF.md`). **The iPhone check passed** (Kelbo, 26
+November 2026, Safari on his iPhone: one dyno pull, then the Passport
+picked up the stamp by itself; section 7, item 6), so each game's bridge
+can now be turned on once its own bridge page is live.
 Kelbo's answers are in section 7.
 
 ---
@@ -75,9 +77,9 @@ What else the audit found:
 - **Same-site frames see the game's real storage.** Chrome, Firefox and
   Safari split storage only for cross-site frames. A frame from
   `pew.longlight.games` inside `longlight.games` is the same site, so it reads
-  PEW's own localStorage. **This has to be checked on an iPhone in Safari in
-  PR 3** before the bridge is relied on. The link stays the way in that
-  always works.
+  PEW's own localStorage. **Checked on an iPhone in Safari** (26 November
+  2026, with Prairie Engine Works' live bridge). The link stays the way in
+  that always works.
 - **The service worker is already fixed.** `sw.js` has deleted only
   `longlight-*` caches since 7 November (it is now `longlight-4`), so the
   plan's service worker question is settled. The Passport page goes in
@@ -189,9 +191,9 @@ How it's built (PR 3):
   https page on a `longlight.games` game address.
 - **Tested** in Chromium with every address pretended (two games with
   bridges, one game trying to stamp for another, one bridge that never
-  answers, a newer stamp, a visit with nothing new). **Still to check:**
-  an iPhone in Safari, with the first game that adds its bridge (section
-  7, item 6), before any other game turns its bridge on.
+  answers, a newer stamp, a visit with nothing new), and on Kelbo's iPhone
+  in Safari with Prairie Engine Works' live bridge (26 November 2026,
+  passed; section 7, item 6).
 
 ---
 
@@ -382,3 +384,5 @@ How the launch pieces are built (PR 6):
 6. **The bridge's iPhone check** (25 November 2026): done with the first
    real game, when it adds its bridge page in PR 5. Kelbo tests that game
    on his iPhone in Safari before any other game turns its bridge on.
+   **Passed** on 26 November 2026 with Prairie Engine Works (1.76.143.0):
+   the stamp appeared by itself after one dyno pull.
