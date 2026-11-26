@@ -15,6 +15,11 @@ Live at https://longlight.games/
   That covers pull requests Claude or the robots opened. **Never merge
   someone else's pull request on a green check alone**: the check can't
   tell what a stranger's change does. Tell Kelbo and let him decide.
+- **Dependabot** (`.github/dependabot.yml`; Kelbo, 26 Nov 2026) opens one
+  grouped pull request a month for the GitHub Actions the workflows use.
+  Before merging one, check each new commit hash against the action's own
+  release page; the studio's security scan flags a new pin until that is
+  done. Then it merges on green like Claude's own.
 - After merging, the **Deploy site** run must go green before the live site
   changes. If it fails, the live site keeps the last good version; fix it.
 - **Every change must end up on `main`**, because that's what goes live.
