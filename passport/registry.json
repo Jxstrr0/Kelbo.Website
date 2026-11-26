@@ -1,7 +1,7 @@
 {
   "_note": "Longlight Passport: the Passport-only details for each game. The name, address, status and hidden flag come from projects.json (matched by title), so a game hidden there never shows on the Passport. stampKey is the localStorage key the game writes its stamp to; bridgeUrl is its passport-stamp.html (null until the game adds one); accent is the game's own colour, used only for its stamp's ink. Spec: .github/PASSPORT.md",
   "games": [
-    { "id": "pew",          "title": "Prairie Engine Works", "stampKey": "pew2-passport",         "bridgeUrl": null, "accent": "#C2621F" },
+    { "id": "pew",          "title": "Prairie Engine Works", "stampKey": "pew2-passport",         "bridgeUrl": "https://pew.longlight.games/passport-stamp.html", "accent": "#C2621F" },
     { "id": "scrapline",    "title": "Scrapline",            "stampKey": "scr-passport",          "bridgeUrl": null, "accent": "#B5532F" },
     { "id": "seasonticket", "title": "Season Ticket",        "stampKey": "seasonticket.passport", "bridgeUrl": null, "accent": "#1F4E8C" },
     { "id": "funded",       "title": "Funded",               "stampKey": "funded.passport",       "bridgeUrl": null, "accent": "#6D4BC4" },
