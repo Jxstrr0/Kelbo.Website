@@ -3,7 +3,7 @@
    --------------------------------------------------------------------------
    Reads journal.json and options.json and shows:
      1. the record: how the calls graded out, and how the trades did
-     2. every options trade, newest first (options.json)
+     2. every MU ticket, newest first (options.json)
      3. every entry, newest first (journal.json)
 
    To add an entry, edit journal.json (see "The trading journal" in
@@ -34,17 +34,24 @@
    A call with no grade yet doesn't count in the record. The newest entry's
    graded calls also show as a one-line "Week of Oct 14" tally at the top.
 
-   options.json holds the options trades (see "Options trades" in
-   README.md):
-     updated    "2026-10-14": the last time the list was brought up to date
-     since      "2026-09-15": the first trade
-     systems    { "S1.0": "what S1.0 means", ... }: shown as filter buttons
-     ai         the AI coach's notes on the options record
-     trades     [{ opened, closed, symbol, strike, type: "call" or "put",
-                   expiry, paid, sold, system, note }]
-   "paid" and "sold" are the option's price per share. The return is
-   worked out from them: (sold - paid) / paid. Leave "sold" and "closed"
-   out while a trade is still open.
+   options.json holds the MU tickets (see "MU tickets" in README.md).
+   The file kept its old name so links and the offline copy still work:
+     updated    "2026-11-25": the last time the list was brought up to date
+     since      "2026-11-09": when the rules were adopted
+     symbol     "MU"
+     system     "V2.9": the rules' version, shown as a tag on each ticket
+     about      one line on how the rules work (follows "How V2.9 works: ")
+     skipped    small print: days the rules skipped, and why
+     earlier    small print: anything from before the rules were adopted
+     ai         the AI coach's notes on the tickets ("" for none)
+     tickets    [{ date, side: "long" or "short", boxLow, boxHigh,
+                   trigger: "9:50", triggerClose, entry, stop, risk,
+                   exit, exitHow: "at the 3:30 PM time stop", r,
+                   vix, smh: true or false }]
+   Prices are MU's share price (New York time for the clock times).
+   "r" is the result in R: the move from entry to exit divided by the
+   risk (entry to stop), so 2.1 means +2.10R and -1 means a full stop-out.
+   Leave "exit" and "r" out while a ticket is still open.
 
    Uses el() and reveal() from main.js, which loads first.
    ========================================================================== */
@@ -87,44 +94,46 @@ function gradeOf(call) {
   return GRADES[String(call.grade || "").toLowerCase()] ? String(call.grade).toLowerCase() : null;
 }
 
-/* ---------- Options trades: the maths ---------- */
+/* ---------- MU tickets: the maths ---------- */
 
-// An options trade's return in percent, or null while it's still open.
-function optionReturn(trade) {
-  const paid = Number(trade.paid);
-  const sold = Number(trade.sold);
-  if (trade.sold == null || !Number.isFinite(sold) || !(paid > 0)) return null;
-  return ((sold - paid) / paid) * 100;
+// A ticket's result in R, or null while it's still open.
+function ticketR(ticket) {
+  const r = Number(ticket.r);
+  return ticket.r == null || !Number.isFinite(r) ? null : r;
 }
 
-// Win, loss, or scratch (sold for what it cost).
+// Win, loss, or scratch (closed right where it started).
 function outcomeOf(result) {
-  if (Math.abs(result) < 0.01) return "flat";
+  if (Math.abs(result) < 0.005) return "flat";
   return result > 0 ? "win" : "loss";
 }
 
-// Wins, losses, scratches and the average return for a list of trades.
-function tally(trades) {
-  const results = trades.map(optionReturn).filter((r) => r !== null);
+// Turn a number of R into "+2.10R" / "−1.00R".
+function signedR(n) {
+  return (n > 0.004 ? "+" : n < -0.004 ? "−" : "") + Math.abs(n).toFixed(2) + "R";
+}
+
+// Wins, losses and R for a list of tickets.
+function tally(tickets) {
+  const results = tickets.map(ticketR).filter((r) => r !== null);
   const count = (kind) => results.filter((r) => outcomeOf(r) === kind).length;
   const wins = count("win");
-  const losses = count("loss");
+  const total = results.reduce((sum, r) => sum + r, 0);
   return {
     closed: results.length,
-    open: trades.length - results.length,
+    open: tickets.length - results.length,
     wins,
-    losses,
+    losses: count("loss"),
     scratches: count("flat"),
-    average: results.reduce((sum, r) => sum + r, 0) / (results.length || 1),
-    // Win rate counts a scratch as "not a win", the same as the ledger.
+    total,
+    average: total / (results.length || 1),
     winRate: results.length ? Math.round((wins / results.length) * 100) + "%" : "–",
-    winRateNoScratch: wins + losses ? Math.round((wins / (wins + losses)) * 100) + "%" : "–",
   };
 }
 
-// A result as "+42%" / "−9.6%" / "0%".
-function resultText(result) {
-  return outcomeOf(result) === "flat" ? "0%" : signedPercent(result);
+// "W–L", with scratches only when there are some.
+function recordText(t) {
+  return t.scratches ? `${t.wins}–${t.losses}–${t.scratches}` : `${t.wins}–${t.losses}`;
 }
 
 /* ---------- The record ---------- */
@@ -189,24 +198,23 @@ function renderRecord(entries, options) {
     );
   }
 
-  // Options trades, from options.json
-  const optionTrades = options ? listOf(options, "trades") : [];
-  if (optionTrades.length) {
-    const t = tally(optionTrades);
+  // MU tickets, from options.json
+  const tickets = options ? listOf(options, "tickets") : [];
+  if (tickets.length) {
+    const t = tally(tickets);
     const notes = [
-      `${t.wins} wins, ${t.losses} losses, ${t.scratches} ${t.scratches === 1 ? "scratch" : "scratches"} (sold for what it cost).`,
-      "The big win rate leaves scratches out; the smaller one under it counts them as not a win.",
-      "Returns are on the premium paid.",
+      `${t.wins} ${t.wins === 1 ? "win" : "wins"}, ${t.losses} ${t.losses === 1 ? "loss" : "losses"}.`,
+      "R is each ticket's move divided by its risk (entry to stop), so −1R is a full stop-out.",
     ];
-    if (t.open) notes.push(`${t.open} open ${t.open === 1 ? "trade" : "trades"} not counted yet.`);
+    if (t.open) notes.push(`${t.open} open ${t.open === 1 ? "ticket" : "tickets"} not counted yet.`);
     statGroup(
       box,
-      "Options trades",
+      `${options.symbol || "MU"} tickets` + (options.system ? ` (${options.system})` : ""),
       [
-        ["Closed trades", String(t.closed)],
-        ["Win rate", t.winRateNoScratch, `${t.winRate} with scratches`],
-        ["Avg return", t.closed ? signedPercent(t.average) : "–"],
-        ["W–L–S", `${t.wins}–${t.losses}–${t.scratches}`],
+        ["Closed tickets", String(t.closed)],
+        ["Win rate", t.winRate],
+        ["Total", t.closed ? signedR(t.total) : "–", t.closed ? `${signedR(t.average)} per ticket` : ""],
+        ["W–L", recordText(t)],
       ],
       notes
     );
@@ -238,54 +246,61 @@ function renderRecord(entries, options) {
   if (!box.children.length) box.append(el("p", "record__note", "Nothing to count yet."));
 }
 
-/* ---------- Options trades: the list ---------- */
+/* ---------- MU tickets: the list ---------- */
 
-// "2026-10-14" -> "Oct 14" (no year, for the trade list).
+// "2026-10-14" -> "Oct 14" (no year, for the ticket list).
 function shortDay(ymd) {
   const [y, m, d] = String(ymd).split("-").map(Number);
   if (!y || !m || !d) return String(ymd || "");
   return new Date(y, m - 1, d).toLocaleDateString(undefined, { month: "short", day: "numeric" });
 }
 
-// An option price: 0.8 -> "0.80", 0.425 -> "0.425".
-function premium(n) {
+// A share price with two decimals: 731.2 -> "731.20".
+function price(n) {
   const value = Number(n);
-  return value.toFixed(Math.round(value * 1000) % 10 ? 3 : 2);
+  return Number.isFinite(value) ? value.toFixed(2) : "–";
 }
 
-// One trade in the list.
-function renderOptionTrade(trade) {
-  const result = optionReturn(trade);
+// One ticket in the list:
+//   MU long  [V2.9]                      +2.10R
+//   Nov 11 · box 763.05–779.49 · trigger 9:50 (close 779.99)
+//   entry 779.99, stop 763.05 (risk 16.94) · exit 815.53 at the 3:30 PM time stop
+//   VIX 19.46 · SMH agrees: no
+function renderTicket(ticket, symbol, system) {
+  const result = ticketR(ticket);
   const item = el("li", "trade");
 
   const head = el("p", "trade__head");
-  const type = String(trade.type || "").toLowerCase();
-  head.append(el("span", "trade__symbol", `${trade.symbol} ${trade.strike} ${type}`.trim()));
-  if (trade.system) head.append(el("span", "trade__tag", trade.system));
+  head.append(el("span", "trade__symbol", `${symbol} ${String(ticket.side || "").toLowerCase()}`.trim()));
+  if (system) head.append(el("span", "trade__tag", system));
   head.append(
     result === null
       ? el("span", "trade__result trade__result--open", "Open")
-      : el("span", `trade__result trade__result--${outcomeOf(result)}`, resultText(result))
+      : el("span", `trade__result trade__result--${outcomeOf(result)}`, signedR(result))
   );
   item.append(head);
 
-  // When, and the prices
-  let when;
-  if (result === null) when = `Opened ${shortDay(trade.opened)}`;
-  else if (trade.opened === trade.closed) when = `${shortDay(trade.closed)}, same day`;
-  else when = `${shortDay(trade.opened)} to ${shortDay(trade.closed)}`;
-  const prices = [`paid ${premium(trade.paid)}`];
-  if (result !== null) prices.push(`sold ${premium(trade.sold)}`);
-  const expiry = trade.expiry ? `${shortDay(trade.expiry)} expiry · ` : "";
-  item.append(el("p", "trade__meta", `${expiry}${when} · ${prices.join(", ")}`));
+  const setup = [shortDay(ticket.date)];
+  if (ticket.boxLow != null) setup.push(`box ${price(ticket.boxLow)}–${price(ticket.boxHigh)}`);
+  if (ticket.trigger) setup.push(`trigger ${ticket.trigger}` + (ticket.triggerClose != null ? ` (close ${price(ticket.triggerClose)})` : ""));
+  item.append(el("p", "trade__meta", setup.join(" · ")));
 
-  if (trade.note) item.append(el("p", "trade__note", trade.note));
+  const fills = [`entry ${price(ticket.entry)}, stop ${price(ticket.stop)}` + (ticket.risk != null ? ` (risk ${price(ticket.risk)})` : "")];
+  if (result !== null && ticket.exit != null) fills.push(`exit ${price(ticket.exit)}` + (ticket.exitHow ? ` ${ticket.exitHow}` : ""));
+  item.append(el("p", "trade__meta", fills.join(" · ")));
+
+  const context = [];
+  if (ticket.vix != null) context.push(`VIX ${price(ticket.vix)}`);
+  if (typeof ticket.smh === "boolean") context.push(`SMH agrees: ${ticket.smh ? "yes" : "no"}`);
+  if (context.length) item.append(el("p", "trade__meta", context.join(" · ")));
+
+  if (ticket.note) item.append(el("p", "trade__note", ticket.note));
   return item;
 }
 
-// A bar for each trade's return, oldest on the left.
-function renderBars(trades) {
-  const closed = trades.filter((t) => optionReturn(t) !== null);
+// A bar for each ticket's R, oldest on the left.
+function renderBars(tickets, symbol) {
+  const closed = tickets.filter((t) => ticketR(t) !== null);
   const box = document.querySelector("[data-options-chart]");
   box.replaceChildren();
   if (closed.length < 2) return;
@@ -297,7 +312,7 @@ function renderBars(trades) {
     return node;
   };
 
-  const results = closed.map(optionReturn);
+  const results = closed.map(ticketR);
   const biggest = Math.max(...results.map(Math.abs), 1);
   const t = tally(closed);
   const svg = svgEl("svg", {
@@ -305,10 +320,10 @@ function renderBars(trades) {
     viewBox: `0 0 ${closed.length * 10} 100`,
     preserveAspectRatio: "none",
     role: "img",
-    "aria-label": `Return on each trade, oldest to newest: ${t.wins} gains, ${t.losses} losses, ${t.scratches} scratches.`,
+    "aria-label": `Result of each ticket in R, oldest to newest: ${t.wins} wins, ${t.losses} losses.`,
   });
   results.forEach((r, i) => {
-    // Gains go up from the middle line, losses go down. Scratches get a sliver.
+    // Wins go up from the middle line, losses go down. A scratch gets a sliver.
     const height = Math.max((Math.abs(r) / biggest) * 48, 1.5);
     const bar = svgEl("rect", {
       class: `bars__bar bars__bar--${outcomeOf(r)}`,
@@ -319,22 +334,21 @@ function renderBars(trades) {
     });
     const tip = svgEl("title", {});
     const c = closed[i];
-    tip.textContent = `${c.symbol} ${c.strike} ${c.type}: ${resultText(r)}`;
+    tip.textContent = `${shortDay(c.date)} ${symbol} ${c.side}: ${signedR(r)}`;
     bar.append(tip);
     svg.append(bar);
   });
   svg.append(svgEl("line", { class: "bars__zero", x1: 0, x2: closed.length * 10, y1: 50, y2: 50, "vector-effect": "non-scaling-stroke" }));
 
   const figure = el("figure", "bars");
-  figure.append(svg, el("figcaption", "bars__caption", "Return on each trade, oldest on the left"));
+  figure.append(svg, el("figcaption", "bars__caption", "Each ticket in R, oldest on the left"));
   box.append(figure);
 }
 
-// A line that adds up each closed trade's return in order, so the slope
-// shows the trend. It adds percentages, so it's a shape to read and not an
-// account balance. Built only from the trades in options.json.
-function renderTrend(trades) {
-  const closed = trades.filter((t) => optionReturn(t) !== null);
+// A line that adds up each closed ticket's R in order, so the slope shows
+// the trend. R does add up, so the last point is the running total.
+function renderTrend(tickets) {
+  const closed = tickets.filter((t) => ticketR(t) !== null);
   const box = document.querySelector("[data-options-chart]");
   if (closed.length < 3) return;
 
@@ -345,9 +359,9 @@ function renderTrend(trades) {
     return node;
   };
 
-  // Running total after each trade, starting from zero.
+  // Running total after each ticket, starting from zero.
   let total = 0;
-  const totals = [0, ...closed.map((t) => (total += optionReturn(t)))];
+  const totals = [0, ...closed.map((t) => (total += ticketR(t)))];
   const low = Math.min(...totals, 0);
   const high = Math.max(...totals, 0);
   const span = high - low || 1;
@@ -359,7 +373,7 @@ function renderTrend(trades) {
     viewBox: "0 0 100 100",
     preserveAspectRatio: "none",
     role: "img",
-    "aria-label": `Running total of trade returns, oldest to newest. It ends at ${signedPercent(total)} after ${closed.length} trades.`,
+    "aria-label": `Running total in R, oldest to newest. It ends at ${signedR(total)} after ${closed.length} tickets.`,
   });
   svg.append(
     svgEl("line", { class: "trend__zero", x1: 0, x2: 100, y1: y(0), y2: y(0), "vector-effect": "non-scaling-stroke" }),
@@ -373,97 +387,76 @@ function renderTrend(trades) {
   const figure = el("figure", "bars trend");
   figure.append(
     svg,
-    el(
-      "figcaption",
-      "bars__caption",
-      `Running total of every trade's return, oldest on the left. It ends at ${signedPercent(total)} after ${closed.length} trades. Percentages add up here, so read the slope and not the number.`
-    )
+    el("figcaption", "bars__caption", `Running total in R, oldest on the left. It ends at ${signedR(total)} after ${closed.length} tickets.`)
   );
   box.append(figure);
 }
 
-// How many trades show before the rest fold away.
+// How many tickets show before the rest fold away.
 const RECENT_TRADES = 6;
 
-function renderOptionList(trades, systemLabel) {
-  // Newest first: open trades on top, then by the day they closed.
-  const sorted = trades
+function renderTicketList(tickets, symbol, system) {
+  // Newest first: open tickets on top, then by date.
+  const sorted = tickets
     .map((t, i) => ({ t, i }))
     .sort((a, b) => {
-      const dayA = a.t.closed || "9999";
-      const dayB = b.t.closed || "9999";
-      return dayB.localeCompare(dayA) || b.i - a.i;
+      const openA = ticketR(a.t) === null ? 1 : 0;
+      const openB = ticketR(b.t) === null ? 1 : 0;
+      return openB - openA || String(b.t.date || "").localeCompare(String(a.t.date || "")) || b.i - a.i;
     })
     .map((x) => x.t);
 
   const box = document.querySelector("[data-options-list]");
   box.replaceChildren();
   if (!sorted.length) {
-    box.append(el("p", "project-list__note", "No trades here yet."));
+    box.append(el("p", "project-list__note", "No tickets here yet."));
     return;
   }
   const recent = el("ul", "trades");
-  sorted.slice(0, RECENT_TRADES).forEach((t) => recent.append(renderOptionTrade(t)));
+  sorted.slice(0, RECENT_TRADES).forEach((t) => recent.append(renderTicket(t, symbol, system)));
   box.append(recent);
 
   const older = sorted.slice(RECENT_TRADES);
   if (older.length) {
     const fold = el("details", "fold options__older");
-    fold.append(el("summary", "fold__title", `Show ${older.length} older ${systemLabel}trades`));
+    fold.append(el("summary", "fold__title", `Show ${older.length} older tickets`));
     const list = el("ul", "trades");
-    older.forEach((t) => list.append(renderOptionTrade(t)));
+    older.forEach((t) => list.append(renderTicket(t, symbol, system)));
     fold.append(list);
     box.append(fold);
   }
 }
 
 function renderOptions(options) {
-  const trades = listOf(options, "trades");
-  const systems = options.systems && typeof options.systems === "object" ? options.systems : {};
+  const tickets = listOf(options, "tickets");
+  const symbol = String(options.symbol || "MU");
+  const system = String(options.system || "");
 
-  // The line under the heading
+  // The heading and the line under it
+  const heading = document.getElementById("options-heading");
+  if (heading) heading.textContent = `${symbol} tickets`;
   const intro = [];
-  intro.push("Real-money calls and puts I bought" + (options.since ? `, since ${formatDay(options.since)}.` : "."));
-  intro.push("Returns are on the premium I paid, from fill to fill.");
+  intro.push(`Every ticket my ${symbol} rules${system ? " (" + system + ")" : ""} placed` + (options.since ? ` since I adopted them on ${formatDay(options.since)}.` : "."));
+  if (options.about) intro.push(`How ${system || "they"} ${system ? "works" : "work"}: ${options.about}.`);
+  intro.push("Results are in R: the move from entry to exit divided by the risk from entry to stop, scored on 5-minute bars. Prices are the share price, times are New York time.");
   if (options.updated) intro.push(`Updated ${formatDay(options.updated)}.`);
-  const systemNames = Object.keys(systems);
-  if (systemNames.length) {
-    intro.push(systemNames.map((name) => `${name} is ${systems[name]}.`).join(" "));
-  }
   document.querySelector("[data-options-intro]").textContent = intro.join(" ");
 
-  function show(choice) {
-    const shown = choice === "all" ? trades : trades.filter((t) => t.system === choice);
-    const t = tally(shown);
-    const count = [`${shown.length} ${shown.length === 1 ? "trade" : "trades"}`];
-    if (t.closed) count.push(`${t.wins}–${t.losses}–${t.scratches}`, `${signedPercent(t.average)} on average`);
-    document.querySelector("[data-options-count]").textContent = count.join(" · ");
-    renderBars(shown);
-    renderTrend(shown);
-    renderOptionList(shown, choice === "all" ? "" : choice + " ");
-  }
+  const t = tally(tickets);
+  const count = [`${tickets.length} ${tickets.length === 1 ? "ticket" : "tickets"}`];
+  if (t.closed) count.push(recordText(t), `${signedR(t.total)} in all`, `${signedR(t.average)} per ticket`);
+  document.querySelector("[data-options-count]").textContent = count.join(" · ");
+  document.querySelector("[data-options-filters]").replaceChildren();
 
-  // Filter buttons, only if there's more than one system to pick from
-  const filtersEl = document.querySelector("[data-options-filters]");
-  filtersEl.replaceChildren();
-  const used = systemNames.filter((name) => trades.some((t) => t.system === name));
-  if (used.length > 1) {
-    ["all", ...used].forEach((choice) => {
-      const button = el("button", null, choice === "all" ? "All" : choice);
-      button.type = "button";
-      button.setAttribute("aria-pressed", String(choice === "all"));
-      button.addEventListener("click", () => {
-        filtersEl.querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b === button)));
-        show(choice);
-      });
-      filtersEl.append(button);
-    });
-  }
-  show("all");
+  renderBars(tickets, symbol);
+  renderTrend(tickets);
+  renderTicketList(tickets, symbol, system);
 
-  // What the AI coach said about the options record
+  // Small print, then what the AI coach said (if anything)
   const coachBox = document.querySelector("[data-options-coach]");
   coachBox.replaceChildren();
+  if (options.skipped) coachBox.append(el("p", "record__note", String(options.skipped)));
+  if (options.earlier) coachBox.append(el("p", "record__note", String(options.earlier)));
   if (options.ai) {
     const coach = el("div", "coach options__coach");
     coach.append(el("p", "coach__label", "AI coach"));
@@ -708,13 +701,13 @@ async function initJournal() {
   const listEl = document.querySelector("[data-entries]");
   const [journal, options] = await Promise.all([loadJSON("journal.json"), loadJSON("options.json")]);
 
-  // Options trades
+  // MU tickets (options.json)
   const optionsOK = options && typeof options === "object" && !Array.isArray(options);
   if (optionsOK) {
     renderOptions(options);
   } else {
     document.querySelector("[data-options-list]").replaceChildren(
-      el("p", "project-list__note", "The trades couldn't load right now. Please try again later.")
+      el("p", "project-list__note", "The tickets couldn't load right now. Please try again later.")
     );
   }
 

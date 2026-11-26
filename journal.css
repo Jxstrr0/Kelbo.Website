@@ -105,7 +105,7 @@
   color: var(--muted);
 }
 
-/* Each group (Calls, Options trades) gets a small heading */
+/* Each group (Calls, MU tickets) gets a small heading */
 .record__label {
   margin: 1.5rem 0 0;
   font-size: 1.05rem;
@@ -248,7 +248,7 @@
   color: var(--muted);
 }
 
-/* "S1.0" / "F3.3" label */
+/* "V2.9" label (the rules version) */
 .trade__tag {
   padding: 0 0.5rem;
   border: 1px solid var(--rule);
@@ -547,7 +547,7 @@
   color: var(--muted);
 }
 
-/* ---------- Options trades ---------- */
+/* ---------- MU tickets (the classes kept their old options__ names) ---------- */
 .options__intro {
   max-width: 44rem;
   margin: 0.5rem 0 0;

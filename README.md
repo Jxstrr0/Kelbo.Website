@@ -45,8 +45,8 @@ from their releases, then publishes the files as they are (see
 | `release-lines.json` | The short, player-friendly "What's new" line for each game release. Written by the Release Writer below; you can fix any line by hand |
 | `journal.html` | The AI Trading Journal page |
 | `journal.json` | **Your journal entries.** Edit this to add an update |
-| `options.json` | **Your options trades.** Edit this to log a trade |
-| `journal.js`, `journal.css` | Show the journal entries and options trades, and work out the record |
+| `options.json` | **Your MU tickets** (the V2.9 rules). Edit this to log a ticket. It kept its old name from when it held options trades |
+| `journal.js`, `journal.css` | Show the journal entries and MU tickets, and work out the record |
 | `404.html` | The "page not found" screen GitHub shows for any address that doesn't exist |
 | `.nojekyll` | Tells GitHub Pages to serve the files as-is. Leave it alone |
 | `.github/workflows/` | The robots: `site-check.yml` (checks every pull request), `deploy.yml` (checks again, then puts the site live), `premarket-brief.yml` (the Morning Writer), `postmarket-recap.yml` (the Grader), `brief-lessons.yml` (the Coach), `devlog-draft.yml` (the Devlog Writer) and `release-lines.yml` (the Release Writer), all below |
@@ -957,7 +957,7 @@ is optional except `date`.
   -0.8%. Leave it out while a trade is still open. Fill it in later and the
   record updates itself.
 - **The record** at the top is worked out for you: the call score from
-  your graded calls, and the options numbers from `options.json` (see
+  your graded calls, and the MU ticket numbers from `options.json` (see
   below). You never type it. Above it, a one-line "Week of Oct 14: 3 hits,
   1 partial, 3 misses" tally shows the newest entry's graded calls (nothing
   shows until a call has a grade).
@@ -1006,49 +1006,55 @@ Both have a **Run workflow** button on the Actions tab with a "dry run"
 box (shows the result in the log and saves nothing) and a box to redo
 the week. You can still edit anything they wrote in `journal.json`.
 
-### Options trades
+### MU tickets
 
-Your options trades live in `options.json`, not in the entries. The page
-shows them newest first, with a bar for each trade's return, a running-total
-line under the bars (it adds each trade's return in order, so read the slope
-and not the number; it follows the S1.0/F3.3 filter too), S1.0/F3.3 filter
-buttons, and the options numbers in the record (closed trades; win rate without
-scratches, with the rate counting scratches as not a win in small print
-under it; average return; and wins–losses–scratches).
+The tickets your MU rules (V2.9) placed live in `options.json` (the file
+kept its old name from when it held options trades; the 29 options trades
+from Sep 15 to Oct 30, 2026 are still in the git history). The page shows
+them newest first under **MU tickets**: each ticket's box, trigger, entry,
+stop, exit, VIX and whether SMH agreed, a bar for each ticket's result in R,
+a running total in R under the bars, and the ticket numbers in the record
+(closed tickets, win rate, total R with R per ticket under it, and
+wins–losses).
 
-To log a trade, paste a block like this inside the `"trades": [ ... ]` list
-(oldest first, so new ones go at the bottom), and change `"updated"` at the
-top to today's date:
+To log a ticket, paste a block like this inside the `"tickets": [ ... ]`
+list (oldest first, so new ones go at the bottom), and change `"updated"`
+at the top to today's date:
 
 ```json
     {
-      "opened": "2026-10-14",
-      "closed": "2026-10-14",
-      "symbol": "MARA",
-      "strike": 8.5,
-      "type": "put",
-      "expiry": "2026-10-23",
-      "paid": 0.425,
-      "sold": 0.54,
-      "system": "F3.3",
-      "note": "Short note about the trade."
+      "date": "2026-11-24",
+      "side": "short",
+      "boxLow": 640.50,
+      "boxHigh": 672.07,
+      "trigger": "10:15",
+      "triggerClose": 634.09,
+      "entry": 634.31,
+      "stop": 672.07,
+      "risk": 37.77,
+      "exit": 623.58,
+      "exitHow": "at the 3:30 PM time stop",
+      "r": 0.28,
+      "vix": 26.62,
+      "smh": true
     },
 ```
 
-- **paid** and **sold** are the option's price per share, like your broker
-  shows. The page works out the return: `(sold − paid) ÷ paid`. A trade
-  sold for what it cost counts as a scratch.
-- **Still open?** Leave out `"closed"` and `"sold"`. It shows as Open and
-  isn't counted until you add them.
-- **type** is `"call"` or `"put"`. **system** is `"S1.0"` (Swing) or `"F3.3"` (Flip); the
-  `"systems"` list at the top explains each one, and a new system there gets
-  its own filter button.
-- **ai** at the top is the AI coach's note on the whole options record.
-  Claude refreshes it when you send new trades.
-- Number of contracts and dollar profit are left out on purpose, so the
-  public page only shows percentages. Keep those in your own ledger.
-- Easiest way: send Claude the new lines from your ledger and it'll add
-  them.
+- **side** is `"long"` or `"short"`. Prices are MU's share price; times are
+  New York time.
+- **r** is the result in R (the move from entry to exit divided by the
+  risk): `0.28` shows as +0.28R, `-1` as −1.00R. **exitHow** is the words
+  after the exit price, like `"stopped out at 10:25"`.
+- **smh** is `true` (SMH agrees: yes) or `false` (no).
+- **Still open?** Leave out `"exit"`, `"exitHow"` and `"r"`. It shows as
+  Open and isn't counted until you add them.
+- At the top: **system** is the tag on each ticket (`"V2.9"`), **about** is
+  one line on how the rules work, **skipped** and **earlier** are the small
+  print under the list, and **ai** is an optional AI coach note (`""` for
+  none).
+- Dollar profit and share or contract counts are left out on purpose, and
+  so is the broker's name, so the public page only shows prices and R.
+- Easiest way: send Claude the new tickets and it'll add them.
 
 ## The weekly scan
 
