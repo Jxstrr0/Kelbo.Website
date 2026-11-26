@@ -141,7 +141,17 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   `?at=2026-06-21T21:30`. The ray's reach scales with the season
   (`seasonOf`, from day length; `--season` on `<html>`), and
   `solsticeToday` shows the `[data-horizon-badge]` pill on the home hero on
-  the longest and shortest days. On the first page of a visit and on every
+  the longest and shortest days. The Long Night (the evening of the
+  shortest day, from sunset to midnight, `longNightAt`): `paintWeather`
+  toggles `horizon--long-night`, which shows `.horizon__lanterns` (a
+  full-bleed flex row of `LANTERN_COUNT` `.lantern`s made in `setUpLand`,
+  extras clipped off both ends; colours in `--lantern`, `--lantern-core`
+  and `--lantern-glow`, warmer in the dark theme), and the pill reads "The
+  Long Night" (`.horizon__badge--long-night` warms its dot). They fade in
+  and the candles flicker (opacity only) in the motion block; with reduce
+  motion they simply appear. A tap names them ("The Long Night", with
+  tomorrow's sunrise). It follows swipes. Preview `?at=2026-12-21T18:00`
+  (lit) and `?at=2026-12-21T12:00` (not yet). On the first page of a visit and on every
   refresh, `spinSun` plays the last 24 hours in `SPIN_MS` (4.5 s) so the
   sun does a full day before landing on now (`sessionStorage["kelbo.sunSpun"]`,
   `.horizon--spin` turns off the CSS easing; skipped with reduce motion).

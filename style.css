@@ -2802,6 +2802,101 @@ img {
 :root[data-theme="dark"] .xmas--1 { color: var(--ll-lilac); }
 :root[data-theme="dark"] .xmas--2 { color: var(--ll-ivory); }
 
+/* The Long Night (the evening of the shortest day, main.js longNightAt):
+   a row of little paper lanterns standing on the horizon line, right
+   across the screen, each with a warm candle glow. The row is full-bleed
+   like the rails; main.js makes more lanterns than the widest screen
+   needs and the extras are clipped off both ends. Hidden (not removed)
+   the rest of the year so they can fade in at sunset. */
+.horizon__lanterns {
+  --lantern-w: 6px;
+  --lantern-h: 8px;
+  --lantern-gap: 30px;
+  /* light theme: clay paper with a pale core, a soft glow */
+  --lantern: var(--ll-clay);
+  --lantern-core: color-mix(in srgb, var(--ll-clay) 45%, var(--ll-ivory));
+  --lantern-glow: rgba(217, 119, 87, 0.35);
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  /* room above for the glow and below for its light on the ground */
+  top: calc(var(--sky-height) - var(--lantern-h) * 2.5 + 0.5px);
+  height: calc(var(--lantern-h) * 3.5);
+  padding-bottom: var(--lantern-h);
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: var(--lantern-gap);
+  overflow: hidden;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.page-head .horizon__lanterns {
+  --lantern-w: 4.5px;
+  --lantern-h: 6px;
+  --lantern-gap: 24px;
+}
+
+.horizon--long-night .horizon__lanterns {
+  visibility: visible;
+  opacity: 1;
+}
+
+:root[data-theme="dark"] .horizon__lanterns {
+  /* after dark: pale paper lit from inside, a stronger glow */
+  --lantern: color-mix(in srgb, var(--ll-clay) 55%, var(--ll-ivory));
+  --lantern-core: var(--ll-ivory);
+  --lantern-glow: rgba(217, 119, 87, 0.6);
+}
+
+.lantern {
+  position: relative;
+  flex: none;
+  width: var(--lantern-w);
+  height: var(--lantern-h);
+  isolation: isolate;
+}
+
+/* the paper bag: a little wider at the foot, brightest where the candle sits */
+.lantern::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 1px 1px 0.5px 0.5px;
+  background: linear-gradient(to top, var(--lantern-core), var(--lantern) 75%);
+  clip-path: polygon(12% 0, 88% 0, 100% 100%, 0 100%);
+}
+
+/* its glow, spilling a little onto the ground */
+.lantern::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  top: 60%;
+  width: calc(var(--lantern-w) * 5);
+  height: calc(var(--lantern-h) * 3);
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(closest-side, var(--lantern-glow), transparent);
+}
+
+/* every third one a touch smaller, so the row looks hand-set */
+.lantern:nth-child(3n + 2) {
+  height: calc(var(--lantern-h) * 0.85);
+}
+
+/* the home pill's dot turns lantern-warm that evening */
+.horizon__badge--long-night::before {
+  background: color-mix(in srgb, var(--ll-clay) 55%, var(--ll-ivory));
+  box-shadow: 0 0 0.4rem rgba(217, 119, 87, 0.8);
+}
+
 /* A tumbleweed rolling along the ground in front of the rails (main.js
    bounces it across on a dry, windy day; motion only) */
 .tumble-path {
@@ -6792,6 +6887,20 @@ a.quest__top:focus-visible .quest__name {
 
   :root[data-theme="dark"] .horizon--christmas .xmas:nth-child(3n + 1) { animation-delay: -0.8s; }
   :root[data-theme="dark"] .horizon--christmas .xmas:nth-child(4n + 2) { animation-delay: -1.6s; }
+
+  /* The Long Night: the lanterns fade in at sunset, and after dark each
+     candle flickers (opacity only), out of step with its neighbours */
+  .horizon__lanterns {
+    transition: opacity 1.5s ease, visibility 1.5s;
+  }
+
+  :root[data-theme="dark"] .horizon--long-night .lantern::after {
+    animation: candle 2.3s steps(1) infinite;
+  }
+
+  :root[data-theme="dark"] .horizon--long-night .lantern:nth-child(2n)::after { animation-duration: 2.9s; animation-delay: -0.7s; }
+  :root[data-theme="dark"] .horizon--long-night .lantern:nth-child(3n)::after { animation-duration: 3.4s; animation-delay: -1.9s; }
+  :root[data-theme="dark"] .horizon--long-night .lantern:nth-child(5n + 1)::after { animation-delay: -1.2s; }
 
   @keyframes twinkle-light {
     50% { opacity: 0.35; }
