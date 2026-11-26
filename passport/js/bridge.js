@@ -67,11 +67,16 @@
   //   entries: [{ id, url, origin }]  (origin from originOf)
   //   options.onStamp(id, stamp): called as each stamp arrives, so a fast
   //   game's stamp shows without waiting for a slow one.
+  //   options.onDone(id): called once for each bridge, when it has answered
+  //   (with a stamp or without) or run out of time. passport.js holds a
+  //   stamp link for that game until then, so the game's own stamp is in
+  //   place before a link's is looked at.
   // Resolves with [{ id, stamp }] for every bridge that answered with a
   // stamp, once each has answered or run out of time. Never rejects.
   function collect(entries, options) {
     var wait = (options && options.timeoutMs) || WAIT_MS;
     var onStamp = options && typeof options.onStamp === "function" ? options.onStamp : null;
+    var onDone = options && typeof options.onDone === "function" ? options.onDone : null;
     return new Promise(function (resolve) {
       var open = [];
       var results = [];
@@ -82,6 +87,9 @@
         open.splice(at, 1);
         clearTimeout(job.timer);
         if (job.frame.parentNode) job.frame.parentNode.removeChild(job.frame);
+        if (onDone) {
+          try { onDone(job.id); } catch (e) { /* never stops the others */ }
+        }
         if (!open.length) {
           window.removeEventListener("message", onMessage);
           resolve(results);

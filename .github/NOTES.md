@@ -138,7 +138,9 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   `main.js`, no network; only the optional weather, air quality, aurora, ISS orbit, forecast and alert fetches; the Trading page's USD/CAD line is the one other outside call), switches to the dark theme at real sunset, and
   warms the sky toward clay over the last 20 minutes before it (`--warm`).
   Preview any time with `?at=noon|sunrise|sunset|dusk|night` or
-  `?at=2026-06-21T21:30`. The ray's reach scales with the season
+  `?at=2026-06-21T21:30` (years 1900 to 2200 only, `PREVIEW_FROM` and
+  `PREVIEW_TO`; anything else shows the real time, since a date at the edge
+  of what a browser can hold left the page half drawn). The ray's reach scales with the season
   (`seasonOf`, from day length; `--season` on `<html>`), and
   `solsticeToday` shows the `[data-horizon-badge]` pill on the home hero on
   the longest and shortest days. The Long Night (the evening of the
@@ -965,7 +967,13 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   `<dialog>`) and waits for Keep mine or Replace. Links are taken one at a
   time, and one that arrives while the question is open is skipped. The
   store is read again before every write, so a second tab's stamps aren't
-  lost. A kept stamp lives in
+  lost. A link for a game with a bridge waits for that bridge first
+  (`bridgeAnswered`, 3 s at most; 26 Nov 2026, after the second security
+  test: a stranger's link dated today got in ahead of the game's own stamp
+  and outranked it), so the game's own stamp is already there and the link
+  has to ask. Inside another page's frame the Passport shows one line and
+  does nothing else (`framed`, the first thing `passport.js` checks). A kept
+  stamp lives in
   `kelbo.passport.stamps` as `{ games: { id: stamp }, updates }` and is
   checked again when read back. The game page shows an inked ring (headline,
   date) with the stats under it; a toast (`.pp-toast`) says what happened;
@@ -979,7 +987,9 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   frame at that game's exact origin, 3 s each (`collect`, `originOf`,
   `readMessage`). `passport.js` (`askBridges`) checks each stamp, refuses one
   that names another game, and keeps the newer without asking (also when
-  the stored stamp is dated after today). The page a game hosts is
+  the stored stamp is dated after today). `collect` calls `onDone(id)` as
+  each bridge answers or times out, which is what lets a stamp link for
+  that game go ahead (`bridgeDone`). The page a game hosts is
   `passport/kit/passport-stamp.html` (its stamp key in a meta tag, so its
   script fingerprint never changes). `check-site.mjs` lets `passport.html`
   add exactly the bridge origins to `frame-src`, and requires each one.

@@ -67,9 +67,16 @@ studio piece, so the Longlight brand rules apply to it. On a tap:
 
 ```js
 button.addEventListener("click", function () {
-  LonglightPassport.open(currentStamp()).catch(function () { /* say it didn't work */ });
+  var stamp = currentStamp();
+  LonglightPassport.save("pew2-passport", stamp);   // the game's own stamp key
+  LonglightPassport.open(stamp).catch(function () { /* say it didn't work */ });
 });
 ```
+
+Save the stamp first (step 1), then open the link, so the game's storage
+and the link hold the same stamp: once the game's bridge is on, the
+Passport reads the game's own stamp before it looks at the link, and asks
+the player which to keep if the two differ.
 
 `open` / `openPassport` opens the Passport in a new tab with the stamp in
 the link (the browser only allows that straight from a tap, so call it in

@@ -1542,6 +1542,8 @@ function sunDay(date) {
 
 // Lets you preview a time of day: ?at=noon, ?at=sunset, ?at=night,
 // ?at=sunrise, or ?at=2026-06-21T22:30 (Saskatoon time).
+const PREVIEW_FROM = Date.UTC(1900, 0, 1); // the earliest and latest moments a preview can show
+const PREVIEW_TO = Date.UTC(2200, 0, 1);
 function previewClock() {
   const at = new URLSearchParams(location.search).get("at");
   if (!at) return () => new Date();
@@ -1556,7 +1558,12 @@ function previewClock() {
     // Saskatoon time (UTC-6), or the phone's own time in your own sky
     const zone = YXE.home ? "-06:00" : "";
     const parsed = Date.parse(/[zZ]|[+-]\d\d:\d\d$/.test(at) ? at : at + zone);
-    fixed = Number.isNaN(parsed) ? Date.now() : parsed;
+    // Only the years 1900 to 2200: a date at the very edge of what a
+    // browser can hold (the year 275760) made the sky's sums fail and left
+    // the page half drawn (security test, 26 Nov 2026). Anything else
+    // shows the real time.
+    const ok = !Number.isNaN(parsed) && parsed >= PREVIEW_FROM && parsed < PREVIEW_TO;
+    fixed = ok ? parsed : Date.now();
   }
   const offset = fixed - Date.now();
   return () => new Date(Date.now() + offset);

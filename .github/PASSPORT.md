@@ -146,6 +146,23 @@ The game's "Add to Longlight Passport" button opens:
   stamp takes back its place. The same stamp again says "Already stamped".
   A link that arrives while the question is open is skipped, and a toast
   says so after. `updates` only counts a Replace that was truly newer.
+- **A link waits for the game's own stamp** (security test, 26 Nov 2026,
+  the first day with a live bridge: a stranger's link dated today, with a
+  huge version, was taken as the game's first stamp a moment before the
+  bridge answered, and the game's own stamp then counted as older, on that
+  visit and the next ones). When the link's game has a bridge, the link is
+  held until that bridge has answered or run out of time (3 seconds at
+  most; a game with no bridge isn't held at all). If the game's own stamp
+  arrived, the link is treated like any link over a stamp you already
+  have: the same stamp says nothing more, a different one asks. So a
+  game's button should save the stamp (`save`) before it opens the link
+  (`open`), which is what the kit's README says.
+- **Never in a frame.** If another page puts the Passport inside a frame,
+  it shows "The Passport only opens as its own page" with a link, and
+  takes no stamp link, opens no bridge and draws no stamps or buttons. A
+  stranger's site already saw an empty Passport in a frame (phones keep a
+  framed page's storage apart), but a page on another longlight.games
+  address saw the real one, and could hide it and steer a tap onto Replace.
 - A stamp is dated no later than tomorrow on the phone's clock (time zones),
   so a wrong date in a game can't block every later update. `ver` is
   numbers and dots, compared number by number.
@@ -184,6 +201,8 @@ How it's built (PR 3):
   came from the game's own address (and counts toward `updates`); so does
   the game's stamp when the stored one is dated after today, which a real
   stamp never is. A toast says which stamps were added or updated.
+  `collect` tells passport.js when each game's bridge is done (`onDone`),
+  which is when a held stamp link for that game goes ahead (section 3A).
 - **Turning a game's bridge on** takes two edits in this repo: its
   `bridgeUrl` in `passport/registry.json`, and its exact address in
   `passport.html`'s `frame-src`. The Site check fails if the address is

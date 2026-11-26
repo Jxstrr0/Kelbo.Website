@@ -33,6 +33,12 @@ adds its address to `passport.html`'s `frame-src`.
 | Laminar (hidden) | `Jxstrr0/Laminar` | `laminar` | `laminar.passport` | `passportStamp.ts` |
 | Outwash (hidden) | `Jxstrr0/Outwash` | `outwash` | `outwash.passport` | `passportStamp.ts` |
 
+**The button saves, then opens** (26 Nov 2026): in every game, the "Add to
+Longlight Passport" button keeps the stamp with `save` / `saveStamp` just
+before it calls `open` / `openPassport` with that same stamp. Once the
+game's bridge is on, the Passport reads the game's own stamp first and asks
+the player which to keep if the link's stamp is a different one.
+
 Two of Kelbo's badges need a game to send something exact:
 **Thousand Horses** reads PEW's number stat `best_hp` (in hp), and **Title
 Fight** reads Scrapline's flag `open_won`. **Closing Time** reads the flag
