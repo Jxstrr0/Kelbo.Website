@@ -153,5 +153,10 @@
     "line": "Saves now keep only the information the game actually uses.",
     "title": "v0.1.68.5 - a save keeps only the fields the game has (#118)",
     "at": "2026-11-21T07:45:44.058Z"
+  },
+  "350Chev@v1.76.143.0": {
+    "line": "Prairie Engine Works now awards a Longlight Passport stamp and has a new bridge page.",
+    "title": "v1.76.143.0 - Longlight Passport stamp and bridge page (#324)",
+    "at": "2026-11-26T08:56:56.082Z"
   }
 }
