@@ -151,7 +151,12 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   and the candles flicker (opacity only) in the motion block; with reduce
   motion they simply appear. A tap names them ("The Long Night", with
   tomorrow's sunrise). It follows swipes. Preview `?at=2026-12-21T18:00`
-  (lit) and `?at=2026-12-21T12:00` (not yet). On the first page of a visit and on every
+  (lit) and `?at=2026-12-21T12:00` (not yet). All that day the home ticker also shows
+  `[data-long-night-chip]` first (`setUpLongNightChip`, checked every
+  minute), a link to that day's studio post on the devlog (dated that
+  day, no `game`), or to `devlog.html` until it's up; devlog.json is only
+  fetched for it on that day. Visiting in that evening (real time, never
+  with `?at=`) earns the "Long Night" badge (`long-night` in `BADGES`). On the first page of a visit and on every
   refresh, `spinSun` plays the last 24 hours in `SPIN_MS` (4.5 s) so the
   sun does a full day before landing on now (`sessionStorage["kelbo.sunSpun"]`,
   `.horizon--spin` turns off the CSS easing; skipped with reduce motion).
@@ -515,7 +520,7 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   Northern lights is earned when `auroraStrength` is above 0 at the real
   time. `setUpLogoSecret` (home page only): the header logo scrolls to
   the top, and `LOGO_TAPS` taps in 3 s run `stingRise` and `confetti` and
-  set `kelbo.logoSecret` (hidden Lightkeeper). 18 badges in all.
+  set `kelbo.logoSecret` (hidden Lightkeeper). 19 badges in all.
 - Party-member secrets (2026-11-09). They nod to the Girlfriend and the
   Chihuahua on `about.html`, unnamed, using only wording from that
   character sheet (see the Privacy rule in `CLAUDE.md`); never add a new

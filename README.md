@@ -19,7 +19,7 @@ from their releases, then publishes the files as they are (see
 | `projects.html` | The full projects page with status filters |
 | `whats-new.html` | The newest version and latest change for each project, built from `projects.json` (no dates, since the file has none) |
 | `devlog.html` + `devlog.json` | **Devlog**: dated studio posts, newest first. To add one, put it at the top of `"posts"` in `devlog.json` with a `date` (like `2026-10-24`), a `title`, a `body` (a blank line, written `\n\n`, starts a new paragraph) and, if it's about one game, `game` with that game's exact title. Posts about a game also show on that game's page |
-| Badges | The "Your badges" list on the home page (tap the Badges chip in the strip under the sky; it shows the "2 of 18" count): small goals like playing 3 games, visiting at sunset or catching a shooting star. Each visitor's badges are saved in their own browser only. The list is `BADGES` in `main.js` |
+| Badges | The "Your badges" list on the home page (tap the Badges chip in the strip under the sky; it shows the "2 of 19" count): small goals like playing 3 games, visiting at sunset or catching a shooting star. Each visitor's badges are saved in their own browser only. The list is `BADGES` in `main.js` |
 | `press.html` | **Press kit**: the fact sheet, logo downloads (`assets/press/`), brand colours, and every game's cover, summary and screenshots, built from `projects.json`. Linked from every footer |
 | `gallery.html` | **Art gallery**: pictures from the games in `assets/gallery/`, each captioned with how it was made. To add one, drop a 640-wide JPG and its `@2x` copy in that folder and copy a `<figure>` in the page. Linked from every footer and the Games page |
 | `games.html` | The Games section: every project with `"category": "Game"` |
@@ -770,6 +770,14 @@ from the optional weather, air quality and northern lights, below).
   shortest). On the longest and shortest days of the year a badge appears
   on the home page sky, like "Longest day of the year · 16h 46m of light".
   Preview it with `?at=2026-06-21T13:00` or `?at=2026-12-21T13:00`.
+- **The Long Night:** on the evening of the shortest day (from sunset to
+  midnight), a row of small warm lanterns lights up along the horizon of
+  every sky on the site, the home page badge reads "The Long Night", and
+  visiting then earns the Long Night badge. All that day the strip under
+  the home page sky has a "The Long Night" chip that opens that day's
+  devlog post. It all switches on by itself from the date. Preview it with
+  `?at=2026-12-21T18:00` (lanterns lit) or `?at=2026-12-21T12:00` (not
+  yet); badges are never earned in a preview.
 
 **Sky this week** opens from the **Sky** chip in the strip under the home
 page's sky (the chip shows the next thing coming up). The
