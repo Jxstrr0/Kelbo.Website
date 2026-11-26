@@ -17,10 +17,13 @@ folder.
 Status: **PR 6 done: launched** (25 November 2026). The page, stamp
 links, the bridge, badges, the kit and the share card are all live, with
 a Passport link in every footer and a Passport chip on the home page once
-a phone has a stamp. No game has sent a stamp yet: each one adds the kit
-in its own session (`passport/kit/HANDOFF.md`). No game has a bridge page
-yet, so every `bridgeUrl` is still `null` and no frame opens. The iPhone
-check is done with the first game that adds its bridge (section 7, item 6).
+a phone has a stamp. **Prairie Engine Works is the first game with the
+kit** (26 November 2026, its 1.76.143.0): it keeps its stamp under
+`pew2-passport`, has the Add to Longlight Passport button, and its bridge
+is on (`bridgeUrl` set, `https://pew.longlight.games` in `passport.html`'s
+`frame-src`). The other games add the kit in their own sessions
+(`passport/kit/HANDOFF.md`) and keep `bridgeUrl` at `null` until Kelbo's
+iPhone check with Prairie Engine Works passes (section 7, item 6).
 Kelbo's answers are in section 7.
 
 ---
