@@ -1017,12 +1017,18 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   trade or idea ("winners averaged +21.5%", "holding overnight without a
   planned exit was the mistake"), never "you" or "your". Same honesty, same
   specifics.
-- `renderTrend` (journal.js) draws a running total of the closed options trades' returns under the bars (percentages added in order, captioned as a shape and not a balance; only from `options.json`, follows the S1.0/F3.3 filter).
-- Options trades live in `options.json` (fields at the top of `journal.js`),
-  copied from Kelbo's own options ledger. The page works out each return
-  from `paid`/`sold` premiums and feeds the record's options group. Leave
-  out contract counts and dollar P&L. When he sends new trades, add them
-  oldest first, bump `updated`, and refresh the `ai` coach note honestly.
+- Since Nov 26, 2026 the journal's second section is **MU tickets**, not
+  options trades (Kelbo swapped them). The data is still `options.json` (the
+  name stayed so the offline `CORE` list, the privacy scan's
+  `TRADING_FILES` and old links keep working); its fields are at the top of
+  `journal.js`. Each ticket stores its own result in R (`r`, from Kelbo's
+  scoring); `ticketR`, `tally`, `renderTicket`, `renderBars` and
+  `renderTrend` (a running total in R, which does add up) read it, and the
+  record's group is "MU tickets (V2.9)". Copy tickets as Kelbo sends them:
+  prices, R, VIX and SMH yes/no only. Leave out the broker's name, his
+  private file names, dollar P&L and share or contract counts, and use the
+  dates he gives (his weekday labels can be off; the page shows dates only).
+  The old 29 options trades are in the git history.
 - The weekly scan on `agent-fleet.html` is `scan.json` (fields at the top
   of `scan.js`). The **Scanner**, a Claude Code routine on Kelbo's own Claude plan ("Longlight
   weekly scan", Saturdays 8:55 am America/Regina) rewrites it from web

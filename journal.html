@@ -139,20 +139,21 @@
       </div>
     </section>
 
-    <!-- Options trades: every trade in options.json, newest first -->
+    <!-- MU tickets: every ticket in options.json, newest first (the file kept
+         its old name; journal.js renames the heading from the file's "symbol") -->
     <section class="section wrap" aria-labelledby="options-heading">
-      <h2 id="options-heading">Options trades</h2>
+      <h2 id="options-heading">MU tickets</h2>
       <p class="options__intro" data-options-intro></p>
       <div class="filters options__filters" data-options-filters role="group" aria-label="Filter by system"></div>
       <!-- Screen readers announce this when the filter changes -->
       <p class="filters__count" data-options-count aria-live="polite"></p>
       <div data-options-chart></div>
       <div class="options__list" data-options-list>
-        <p class="project-list__note">Loading trades&hellip;</p>
+        <p class="project-list__note">Loading tickets&hellip;</p>
       </div>
       <div data-options-coach></div>
       <noscript>
-        <p>Turn on JavaScript to see the trades, or <a href="options.json">view the raw trade list</a>.</p>
+        <p>Turn on JavaScript to see the tickets, or <a href="options.json">view the raw ticket list</a>.</p>
       </noscript>
     </section>
 
