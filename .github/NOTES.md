@@ -880,13 +880,6 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   four new screenshots in its Isobar look (Jobs, Shape, the tunnel with
   smoke, the tunnel in dark mode with tufts and the rake) and stays hidden
   (Kelbo). The cover and clips are still the first recordings.
-  Outwash (the grand prix aerodynamics game, "a Laminar game",
-  outwash.longlight.games, repo `Jxstrr0/Outwash`) was added hidden
-  (Kelbo, 2026-11-21). Its cover is the whole Dolgo Ring from above with
-  the car on the main straight, captured from the live game with
-  Playwright; no clip or screenshots yet. Its `publish-release.yml`
-  publishes a release when `VERSION` changes, like Laminar's. Its plan
-  lists it publicly at PR 7, the first playable.
   Mainline (the train-builder career, 2010 to 2040,
   mainline.longlight.games, repo `Jxstrr0/Mainline`) was added hidden
   (Kelbo, 2026-11-25). Its cover is the high-speed nose car in the blue
@@ -894,7 +887,7 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   `?debug=art&look=nose: high-speed&livery=blue` view with Playwright
   (canvas only, cropped 4:3); no clip or screenshots yet. Its
   `publish-release.yml` publishes a release when `VERSION` changes, like
-  Outwash's. It isn't on the Now building line while it's hidden.
+  Laminar's. It isn't on the Now building line while it's hidden.
   Bump Stop (the rally-raid truck builder, bumpstop.longlight.games, repo
   `Jxstrr0/BumpStop`) was added hidden (Kelbo, 2026-11-25) at its PR 0,
   with no cover, clip or screenshots yet. Its `publish-release.yml`

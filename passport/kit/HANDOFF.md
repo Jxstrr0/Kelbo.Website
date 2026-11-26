@@ -31,7 +31,6 @@ adds its address to `passport.html`'s `frame-src`.
 | Frontier Lab (hidden) | `Jxstrr0/FrontierLab` | `frontierlab` | `frontierlab.passport` | `passportStamp.ts` |
 | Hull Down (hidden) | `Jxstrr0/hull-down` | `hulldown` | `hulldown.passport` | `passportStamp.ts` |
 | Laminar (hidden) | `Jxstrr0/Laminar` | `laminar` | `laminar.passport` | `passportStamp.ts` |
-| Outwash (hidden) | `Jxstrr0/Outwash` | `outwash` | `outwash.passport` | `passportStamp.ts` |
 
 **The button saves, then opens** (26 Nov 2026): in every game, the "Add to
 Longlight Passport" button keeps the stamp with `save` / `saveStamp` just
@@ -206,8 +205,6 @@ The same steps, with each repo's own rules:
   has its own, so nothing needs adding there.
 - **Laminar:** `passportStamp.ts`; key `laminar.passport`; the bridge page
   in `public/`; the button's words in `src/data`.
-- **Outwash:** `passportStamp.ts`; key `outwash.passport`; the bridge page
-  in `public/`; the button's words in `src/data/strings.ts`.
 
 A hidden game's stamp is kept by the Passport but not shown, and earns no
 badge, until the game goes on the site (`"hidden": false` in

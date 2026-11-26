@@ -10,7 +10,6 @@
     { "id": "frontierlab",  "title": "Frontier Lab",         "stampKey": "frontierlab.passport",  "bridgeUrl": null, "accent": "#A8842C" },
     { "id": "hulldown",     "title": "Hull Down",            "stampKey": "hulldown.passport",     "bridgeUrl": null, "accent": "#1F3558" },
     { "id": "laminar",      "title": "Laminar",              "stampKey": "laminar.passport",      "bridgeUrl": null, "accent": "#2456E8" },
-    { "id": "outwash",      "title": "Outwash",              "stampKey": "outwash.passport",      "bridgeUrl": null, "accent": "#C2410C" },
     { "id": "mainline",     "title": "Mainline",             "stampKey": "mainline.passport",     "bridgeUrl": null, "accent": "#A86100" }
   ]
 }
