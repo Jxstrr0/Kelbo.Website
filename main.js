@@ -2985,6 +2985,16 @@ function setUpSkyTaps(scene, timeNow) {
     if (scene.depot && scene.depot.getBoundingClientRect().width) {
       list.push({ ...centre(scene.depot), title: "Longlight Station", detail: scene.trainRunning ? "A freight train is rolling through" : "A freight train rolls through every few minutes" });
     }
+    // The Long Night's lanterns (listed after the buildings, so a tap on
+    // the elevator still names the elevator)
+    if (scene.lanterns && scene.classList.contains("horizon--long-night")) {
+      const day = sunDay(t);
+      const back = sunDay(new Date(day.end + 60000)).rise;
+      const detail = back ? `Lit for the longest night of the year · sun's back at ${clock(new Date(back))}` : "Lit for the longest night of the year";
+      for (const lantern of scene.lanterns.children) {
+        list.push({ ...centre(lantern), r: 6, title: "The Long Night", detail });
+      }
+    }
     const sun = scene.querySelector(".horizon__sun");
     if (sun && sunAltitude(t) > -1) {
       const au = sunDistanceAU(t);
@@ -3788,6 +3798,21 @@ function heartsTime(t) {
   return holidayAt(t) === "valentines";
 }
 
+/* The Long Night: the evening of the shortest day of the year (the
+   December solstice in Saskatoon), from sunset until midnight. A row of
+   small warm lanterns lights up along the horizon on every sky
+   (.horizon__lanterns, made in setUpLand, shown by style.css with
+   .horizon--long-night) and the home page's pill says "The Long Night".
+   It follows the date by itself, swipes included. Preview with
+   ?at=2026-12-21T18:00 (lit) or ?at=2026-12-21T12:00 (not yet). */
+const LANTERN_COUNT = 64; // enough to line the widest screen; extras are clipped
+
+function longNightAt(t) {
+  if (solsticeToday(t) !== "shortest") return false;
+  const day = sunDay(t);
+  return !!day.set && t >= day.set;
+}
+
 // Tumbleweed: a real wind of 25 km/h or more on a dry day with no snow.
 function tumbleTime(t) {
   const { wind, known } = breeze();
@@ -3996,7 +4021,12 @@ function setUpLand(scene) {
     clump.style.left = `${(i + 0.2 + Math.random() * 0.6) * (100 / 18)}%`;
     crocuses.append(clump);
   }
-  ground.after(shadow, windmill, wheel, elevator, depot, pumpkin, track, el("div", "horizon__wheat"), el("div", "horizon__stubble"), crocuses);
+  // The Long Night: a row of little paper lanterns standing along the
+  // horizon (hidden until that evening; style.css spaces and lights them)
+  const lanterns = el("div", "horizon__lanterns");
+  for (let i = 0; i < LANTERN_COUNT; i++) lanterns.append(el("i", "lantern"));
+  scene.lanterns = lanterns;
+  ground.after(shadow, lanterns, windmill, wheel, elevator, depot, pumpkin, track, el("div", "horizon__wheat"), el("div", "horizon__stubble"), crocuses);
   skyVarsAgain(scene); // the shadow is new: give it the numbers set so far
   scene.land = null; // measured on the first paint, and again whenever the sky or window changes size
   const remeasure = () => { scene.land = null; scene.sky = null; };
@@ -4163,6 +4193,7 @@ function paintWeather(scene, t) {
   scene.classList.toggle("horizon--halloween", holiday === "halloween");
   scene.classList.toggle("horizon--christmas", holiday === "christmas");
   scene.classList.toggle("horizon--valentines", holiday === "valentines");
+  scene.classList.toggle("horizon--long-night", longNightAt(t));
   // The windmill: one turn of the wheel takes 2 s in a 12 km/h breeze,
   // quicker as it blows harder; still when it's calm. Its tail trails downwind.
   const air = breeze();
@@ -6151,12 +6182,13 @@ function setUpHorizon() {
     if (badge) {
       const which = solsticeToday(t);
       if (which && day.rise && day.set) {
-        // The daylight part is a separate span so phones can hide it
-        // (see .horizon__badge-extra in style.css).
-        badge.replaceChildren(
-          `${which === "longest" ? "Longest" : "Shortest"} day of the year`,
-          el("span", "horizon__badge-extra", ` · ${hoursMins(day.set - day.rise)} of light`)
-        );
+        // From sunset on the shortest day it's The Long Night (see
+        // longNightAt). The daylight part is a separate span so phones
+        // can hide it (see .horizon__badge-extra in style.css).
+        const longNight = which === "shortest" && t >= day.set;
+        const label = longNight ? "The Long Night" : `${which === "longest" ? "Longest" : "Shortest"} day of the year`;
+        badge.replaceChildren(label, el("span", "horizon__badge-extra", ` · ${hoursMins(day.set - day.rise)} of light`));
+        badge.classList.toggle("horizon__badge--long-night", longNight);
         badge.hidden = false;
       } else {
         badge.hidden = true;
