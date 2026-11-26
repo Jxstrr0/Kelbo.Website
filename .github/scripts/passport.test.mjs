@@ -282,6 +282,83 @@ test("the bridge page is small, posts only to longlight.games, and its script is
   assert.match(html, /<meta name="llp-stamp-key" content="[^"]+">/);
 });
 
+// A pretend page for collect(): a window that keeps its "message" listeners
+// and frames that are plain objects, so the test can answer as a game would.
+function pretendPage() {
+  const listeners = new Set();
+  const frames = [];
+  const before = { window: globalThis.window, document: globalThis.document };
+  globalThis.window = {
+    addEventListener: (type, fn) => { if (type === "message") listeners.add(fn); },
+    removeEventListener: (type, fn) => { listeners.delete(fn); },
+  };
+  globalThis.document = {
+    createElement: () => {
+      const frame = { contentWindow: {}, parentNode: null, setAttribute() {} };
+      frames.push(frame);
+      return frame;
+    },
+    body: { appendChild(frame) { frame.parentNode = { removeChild() { frame.parentNode = null; } }; } },
+  };
+  return {
+    frames,
+    listening: () => listeners.size,
+    post: (frame, origin, data) => [...listeners].forEach((fn) => fn({ source: frame.contentWindow, origin, data })),
+    restore: () => { globalThis.window = before.window; globalThis.document = before.document; },
+  };
+}
+
+test("each bridge reports when it's done, answered or not, after its stamp (a link waits on this)", async () => {
+  const page = pretendPage();
+  try {
+    const events = [];
+    const entries = [
+      { id: "pew", url: "https://pew.longlight.games/passport-stamp.html", origin: "https://pew.longlight.games" },
+      { id: "scrapline", url: "https://scrapline.longlight.games/passport-stamp.html", origin: "https://scrapline.longlight.games" },
+      { id: "funded", url: "https://funded.longlight.games/passport-stamp.html", origin: "https://funded.longlight.games" },
+    ];
+    const all = Bridge.collect(entries, {
+      timeoutMs: 60,
+      onStamp: (id) => events.push("stamp " + id),
+      onDone: (id) => { events.push("done " + id); if (id === "pew") throw new Error("a thrown onDone never stops the others"); },
+    });
+    assert.equal(page.frames.length, 3);
+    // a message from the wrong address, and one that isn't a bridge message: still waiting
+    page.post(page.frames[0], "https://evil.example", { type: "llp-stamp", v: 1, stamp: example() });
+    page.post(page.frames[0], "https://pew.longlight.games", { hello: 1 });
+    assert.deepEqual(events, []);
+    // Prairie Engine Works answers with a stamp, Scrapline with none, Funded never
+    page.post(page.frames[0], "https://pew.longlight.games", { type: "llp-stamp", v: 1, stamp: example() });
+    assert.deepEqual(events, ["stamp pew", "done pew"], "the stamp is handed over before the bridge is called done");
+    page.post(page.frames[0], "https://pew.longlight.games", { type: "llp-stamp", v: 1, stamp: example() });
+    assert.deepEqual(events, ["stamp pew", "done pew"], "a second answer from the same frame is ignored");
+    page.post(page.frames[1], "https://scrapline.longlight.games", { type: "llp-stamp", v: 1, stamp: null });
+    assert.deepEqual(events, ["stamp pew", "done pew", "done scrapline"]);
+    const results = await all;
+    assert.deepEqual(events, ["stamp pew", "done pew", "done scrapline", "done funded"], "a bridge that never answers is done when its time is up");
+    assert.deepEqual(results.map((r) => r.id), ["pew"]);
+    assert.equal(page.listening(), 0, "nothing is left listening");
+  } finally {
+    page.restore();
+  }
+});
+
+test("a stamp link waits for its game's bridge, and the Passport does nothing inside a frame", () => {
+  const code = readFileSync(join(ROOT, "passport/passport.js"), "utf8");
+  // the frame check comes before anything is read, drawn or opened
+  const guard = code.indexOf("window.top !== window.self");
+  assert.ok(guard > 0, "the frame check is there");
+  for (const later of ["function loadStore", "function askBridges", "function takeStamp", 'addEventListener("hashchange"', "Promise.all(["]) {
+    assert.ok(code.indexOf(later) > guard, `${later} comes after the frame check`);
+  }
+  assert.match(code.slice(guard, guard + 900), /if \(framed\) \{[\s\S]*?pendingCode = null;[\s\S]*?return;\s*\}/, "inside a frame it drops the link and stops");
+  // a link is only looked at once its game's bridge has answered
+  const take = code.slice(code.indexOf("function takeOne"), code.indexOf("// ---- 6. The bridge"));
+  assert.ok(take.indexOf("bridgeAnswered(stamp.game).then(") > 0 && take.indexOf("bridgeAnswered(stamp.game).then(") < take.indexOf("keepStamp("), "takeOne waits for the bridge before it keeps anything");
+  assert.match(code, /Bridge\.collect\(bridges, \{[^}]*onDone: bridgeDone[^}]*\}\)/, "the bridge tells the Passport when each game is done");
+  assert.ok(code.indexOf("askBridges(); // first") < code.indexOf("if (pendingCode) takeStamp(pendingCode)"), "bridges start before the link is read");
+});
+
 test("every game's stamp key starts with that game's storage prefix", () => {
   const prefix = { pew: "pew2-", scrapline: "scr-", seasonticket: "seasonticket.", funded: "funded.", lombard: "lombard.", burnrate: "brn-", frontierlab: "frontierlab.", hulldown: "hulldown.", laminar: "laminar.", outwash: "outwash.", mainline: "mainline." };
   for (const g of registry.games) assert.ok(prefix[g.id] && g.stampKey.startsWith(prefix[g.id]), `${g.id}: ${g.stampKey}`);

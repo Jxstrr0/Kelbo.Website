@@ -17,7 +17,15 @@
    unpacked (js/codec.js) and checked (js/validate.js). A game's first stamp
    is kept and a toast says so. A link for a game that already has a stamp
    never replaces it by itself: the page shows both and asks, "Keep mine" or
-   "Replace", because a stamp link can come from anyone.
+   "Replace", because a stamp link can come from anyone. A link for a game
+   with a bridge waits for that game's bridge to answer first (3 seconds at
+   most), so the game's own stamp is the one already there (security test,
+   26 Nov 2026: a stranger's link dated today got in ahead of the game's
+   own stamp, and then outranked it).
+
+   Never inside a frame: if another page has put the Passport in a frame,
+   it shows one line and does nothing else, so a page can't hide it and
+   steer a tap onto "Replace" or "Remove all stamps".
 
    The bridge (PR 3): for each game whose registry entry has a bridgeUrl,
    js/bridge.js opens that game's bridge page in a hidden frame and collects
@@ -53,6 +61,7 @@
 (function () {
   "use strict";
 
+  var BRIDGE_WAIT_MS = 3000; // how long each game's bridge gets to answer
   var STORE_KEY = "kelbo.passport.stamps";
   var STORE_PREFIX = "kelbo.passport.";
   var SEEN_KEY = "kelbo.passport.seen";
@@ -77,6 +86,27 @@
   if (!book) return;
   var countLine = document.querySelector("[data-pp-count]");
   var loading = book.querySelector("[data-pp-loading]");
+
+  // ---- 1b. Never inside another page's frame --------------------------------
+  // The Passport is only ever opened as its own page. Inside a frame it
+  // takes no stamp link, opens no bridge and shows no stamps or buttons, so
+  // a page that hides it in a frame has nothing to steer a tap onto.
+  var framed = true;
+  try { framed = window.top !== window.self; } catch (e) { framed = true; }
+  if (framed) {
+    pendingCode = null;
+    if (loading) {
+      loading.classList.remove("is-loading");
+      loading.textContent = "The Passport only opens as its own page. ";
+      var own = document.createElement("a");
+      own.href = "passport.html";
+      own.target = "_blank";
+      own.rel = "noopener";
+      own.textContent = "Open the Passport";
+      loading.appendChild(own);
+    }
+    return;
+  }
   var clearButton = document.querySelector("[data-pp-clear]");
   var Codec = window.LLPassportCodec;
   var Check = window.LLPassportValidate;
@@ -94,6 +124,8 @@
   var registryIds = []; // every game the Passport knows, hidden ones too
   var namesById = {}; // id → name, hidden games too (for the toast)
   var bridges = []; // [{ id, url, origin }] for games with a bridge page
+  var bridgeWaits = Object.create(null); // id → { promise, done } while that game's bridge hasn't answered
+  var bridgeFresh = Object.create(null); // id → true once a bridge's stamp was kept on this visit
   var store = { games: {}, updates: 0 };
   var badgeList = []; // the badges from passport/badges.json, tidied
 
@@ -586,25 +618,30 @@
         var stamp = result.stamp;
         var name = namesById[stamp.game] || "this game";
         var onSite = games.some(function (g) { return g.id === stamp.game; });
-        // Read the stamps again first: another tab may have added some since this page drew.
-        store = loadStore();
-        var old = store.games[stamp.game];
-        if (!old) {
-          keepStamp(stamp, null, name, onSite);
-          return;
-        }
-        if (onSite) showGame(stamp.game);
-        if (sameStamp(stamp, old)) {
-          toast("Already stamped", "You already have this " + name + " stamp.");
-          return;
-        }
-        return askReplace(name, old, stamp).then(function (replace) {
-          if (!replace) {
-            toast("Stamp kept", "Your " + name + " stamp is as it was.");
+        // If this game has a bridge, let it answer first: the game's own
+        // stamp is then the one already here, and the link has to ask.
+        return bridgeAnswered(stamp.game).then(function () {
+          // Read the stamps again first: another tab may have added some since this page drew.
+          store = loadStore();
+          var old = store.games[stamp.game];
+          if (!old) {
+            keepStamp(stamp, null, name, onSite);
             return;
           }
-          store = loadStore();
-          keepStamp(stamp, store.games[stamp.game] || null, name, onSite);
+          if (onSite) showGame(stamp.game);
+          if (sameStamp(stamp, old)) {
+            // The bridge brought this very stamp a moment ago: its own toast says so.
+            if (!bridgeFresh[stamp.game]) toast("Already stamped", "You already have this " + name + " stamp.");
+            return;
+          }
+          return askReplace(name, old, stamp).then(function (replace) {
+            if (!replace) {
+              toast("Stamp kept", "Your " + name + " stamp is as it was.");
+              return;
+            }
+            store = loadStore();
+            keepStamp(stamp, store.games[stamp.game] || null, name, onSite);
+          });
         });
       })
       .catch(function (err) {
@@ -614,12 +651,36 @@
 
   // ---- 6. The bridge ---------------------------------------------------------------
 
+  // A stamp link for a game with a bridge waits here until that bridge has
+  // answered or run out of time. Resolves at once for a game with no
+  // bridge, or once its bridge is done. Never rejects.
+  function bridgeAnswered(id) {
+    var wait = Object.prototype.hasOwnProperty.call(bridgeWaits, id) ? bridgeWaits[id] : null;
+    return wait ? wait.promise : Promise.resolve();
+  }
+
+  function bridgeDone(id) {
+    var wait = Object.prototype.hasOwnProperty.call(bridgeWaits, id) ? bridgeWaits[id] : null;
+    if (!wait) return;
+    delete bridgeWaits[id];
+    wait.done();
+  }
+
   // Ask every game's bridge page for its stamp, keep the newer ones, and
   // say which stamps changed. Quiet when nothing did.
   function askBridges() {
     if (!Bridge || !Check || !bridges.length) return;
     var added = [];
     var updated = [];
+    var ids = bridges.map(function (b) { return b.id; });
+    ids.forEach(function (id) {
+      var wait = {};
+      wait.promise = new Promise(function (resolve) { wait.done = resolve; });
+      bridgeWaits[id] = wait;
+    });
+    var everyoneDone = function () { ids.forEach(bridgeDone); };
+    // A backstop, should a bridge never report back: no link waits past this.
+    setTimeout(everyoneDone, BRIDGE_WAIT_MS + 1000);
     function take(id, raw) {
       var result = Check.check(raw, registryIds);
       if (!result.ok || result.stamp.game !== id) return; // one game can't stamp for another
@@ -639,9 +700,11 @@
         return;
       }
       (old ? updated : added).push(namesById[id] || id);
+      bridgeFresh[id] = true;
       render();
     }
-    Bridge.collect(bridges, { timeoutMs: 3000, onStamp: take }).then(function () {
+    Bridge.collect(bridges, { timeoutMs: BRIDGE_WAIT_MS, onStamp: take, onDone: bridgeDone }).then(function () {
+      everyoneDone();
       var names = added.concat(updated);
       if (!names.length) return;
       var title = added.length && !updated.length
@@ -690,10 +753,10 @@
       if (Check) store = loadStore();
       if (loading) loading.remove();
       render();
+      askBridges(); // first, so a stamp link below waits for its game's bridge
       if (pendingCode) takeStamp(pendingCode); // announces its badges once it's dealt with
       else announceBadges();
       pendingCode = null;
-      askBridges();
     })
     .catch(function () {
       if (loading) {
