@@ -1,19 +1,19 @@
 # Longlight Interactive: studio catalogue
 
-> **Snapshot: 7 November 2026**, tables refreshed 16 November (Hull Down, Funded, Burn Rate and Laminar added; Escapement retired); Outwash added 21 November; Mainline added 25 November; The Whip retired 25 November; Bump Stop added 25 November; Crumple added 26 November (its world moved to Varenia the same day). One reference file for every Longlight game.
+> **Snapshot: 7 November 2026**, tables refreshed 16 November (Hull Down, Funded, Burn Rate and Laminar added; Escapement retired); Mainline added 25 November; The Whip retired 25 November; Bump Stop added 25 November; Crumple added 26 November (its world moved to Varenia the same day); Outwash retired 26 November. One reference file for every Longlight game.
 > The same file is dropped into each game repo. Versions and details drift;
 > when something matters, check the live repo. A game's own `CLAUDE.md` always
 > wins over this file inside that game's repo.
 >
-> **Public edition.** It covers the thirteen games in the studio site's
+> **Public edition.** It covers the twelve games in the studio site's
 > `projects.json` and leaves out Kelbo's private and parked repos. Ask Kelbo
 > about those.
 >
 > **Six games are listed on the site** (16 November 2026): Prairie Engine
-> Works, Scrapline, Season Ticket, Funded, Lombard and Burn Rate. Seven more
+> Works, Scrapline, Season Ticket, Funded, Lombard and Burn Rate. Six more
 > carry `"hidden": true` in `projects.json`: Frontier Lab (hidden on
 > 15 November, when Burn Rate took its place) and
-> the newest games Hull Down, Laminar, Outwash, Mainline, Bump Stop and Crumple, hidden until Kelbo says
+> the newest games Hull Down, Laminar, Mainline, Bump Stop and Crumple, hidden until Kelbo says
 > to show them. A hidden game has no card, no game page and no devlog or
 > release lines; its repo and live game stay up, and everything in this file
 > still applies to it.
@@ -23,6 +23,9 @@
 > Haldis world it shared.
 >
 > **The Whip is retired.** Kelbo deleted its repo on 25 November 2026 and
+> it was taken off the site entirely. Its names and storage prefix are free.
+>
+> **Outwash is retired.** Kelbo deleted the game on 26 November 2026 and
 > it was taken off the site entirely. Its names and storage prefix are free.
 
 ---
@@ -78,7 +81,6 @@ on its own subdomain of **longlight.games** (November 2026; the old
 | Frontier Lab | [Jxstrr0/FrontierLab](https://github.com/Jxstrr0/FrontierLab) | https://frontierlab.longlight.games/ | Hidden |
 | Hull Down | [Jxstrr0/hull-down](https://github.com/Jxstrr0/hull-down) | https://hulldown.longlight.games/ | Hidden |
 | Laminar | [Jxstrr0/Laminar](https://github.com/Jxstrr0/Laminar) | https://laminar.longlight.games/ | Hidden |
-| Outwash | [Jxstrr0/Outwash](https://github.com/Jxstrr0/Outwash) | https://outwash.longlight.games/ | Hidden |
 | Mainline | [Jxstrr0/Mainline](https://github.com/Jxstrr0/Mainline) | https://mainline.longlight.games/ | Hidden |
 | Bump Stop | [Jxstrr0/BumpStop](https://github.com/Jxstrr0/BumpStop) | https://bumpstop.longlight.games/ | Hidden |
 | Crumple | [Jxstrr0/Crumple](https://github.com/Jxstrr0/Crumple) | https://crumple.longlight.games/ | Hidden |
@@ -184,7 +186,6 @@ cost nothing, keep old copies apart, and let a game move again safely.
 | Funded | `funded.*` (`funded.run.v1`, `funded.meta.v1`, `funded.audio.v1`) | none (no service worker) | none |
 | Burn Rate | `brn-settings`, `brn-save`, `brn-slot1..3` | `brn-` | `BRN1:` |
 | Laminar | `laminar.*` + IndexedDB `laminar` (slots) | none yet (use `laminar-` when one is added) | `LAM1:` (designs `LAMD1:`) |
-| Outwash | `outwash.*` + IndexedDB `outwash` | `outwash-` | `OUT1:` (designs `OUTD1:`) |
 | Mainline | `mainline.*` + IndexedDB `mainline` | `mainline-` | `ML1:` (backup file `mainline-backup-YYYY-MM-DD.txt`) |
 | Bump Stop | `bumpstop.*` + IndexedDB `bumpstop` (from plan PR 8) | `bumpstop-` | `BMP1:` (truck builds `BMPT1:`; backup file `bump-stop-backup-YYYY-MM-DD.txt`) |
 | Crumple | `crumple.*` + IndexedDB `crumple` (from plan PR 10) | `crumple-` | `CRM1:` (designs `CRMD1:`; backup file `crumple-backup-YYYY-MM-DD.txt`) |
@@ -214,7 +215,6 @@ site (`"hidden": true`); they are still live at their own addresses.
 | Frontier Lab | Polishing, **hidden** | 0.1.64.2 | AI-lab tycoon (fork of Vault Street) | Real cities on procedural maps | Portrait | TypeScript, Preact, 2D canvas/SVG |
 | Hull Down | Prototype, **hidden** | 1.8.5.2 | Tank design bureau: design to a weight limit, trial, after-action report | Tarnovia, 1980s to today | Portrait first | TypeScript, Vite; 2D office, three (npm) for trials |
 | Laminar | In development, **hidden** | 0.9.15.0 | Aero consultancy: shape in 3D, scale model, wind tunnel, real event | Tarnovia, Stavren (2010–2040; rubles) | Portrait first | TypeScript, Vite, three 0.187 (npm) |
-| Outwash | In development, **hidden** | 0.9.0.0 | A Laminar game: head of aero at a grand prix team; CFD, tunnel, dirty air, twelve rounds a season | Laminar's Tarnovia and a fictional world series (2026–2050; rubles) | Portrait first | TypeScript, Vite, three 0.187 (npm) |
 | Mainline | In development, **hidden** | 0.13.2.0 | Train builder: win tenders, design a train part by part, prove it on the test ring, live with its record in service | Ardesia, a fresh Atlantic republic (2010–2040; coroas, Cr) | Portrait first | TypeScript, Vite, three 0.187 (npm) |
 | Bump Stop | In development, **hidden** | 0.1.0.0 | Rally-raid truck builder: build, break it on the test track, read the trace, tune, then multi-day raids with damage that carries over | A made-up English-flavoured northern country of forest, lakes and tundra (1985–2025; names proposed) | Portrait first | TypeScript, Vite, three 0.187 (npm) |
 | Crumple | In development, **hidden** | 0.1.0.0 | Crash-lab game: design the parts that fold, crash it on the sled in full 3D, read the dummy, tune, then the official test's star rating | Varenia, a made-up eastern-bloc car country (1970–2010; money as plain numbers) | Portrait first | TypeScript, Vite, three 0.187 (npm) |
@@ -541,16 +541,6 @@ are as of this snapshot.
 - **Rules worth knowing:** the sim (`src/sim/`, `src/data/`) is pure and deterministic, with its own `det.ts` maths and named RNG streams; one truth, three views (hidden full-scale truth, the tunnel reading, the field result); the renderer only draws what the sim says. Names live in `docs/NAMES.md`.
 - **Saves:** three slots in IndexedDB `laminar` (falling back to `laminar.slot.<n>`), other keys `laminar.*`, save code `LAM1:`, design codes `LAMD1:`. No service worker yet (plan PR 14); its caches will start `laminar-`.
 
-### Outwash
-
-- **Status:** the site's label is "In development", hidden on the studio site (added 21 November 2026). 0.9.0.0 on 21 November (`VERSION` file): PR 0 and PR 1 of `docs/OUTWASH-PLAN.md` section 16 are built (the repo, the car's eight components and setup, yaw, flex and flutter, the circuits with bumps and curbs, wind, the ten teams and twenty drivers, qualifying). The plan lists it publicly on the studio site at PR 7, the first playable. `docs/STATUS.md` says where it stands.
-- **Pitch:** a Laminar game. You're head of aerodynamics at a grand prix team: shape parts, prove them in CFD and the wind tunnel, build them, and find out on Sunday whether a car that's fast on its own can race in a crowd. Dirty air is the lead twist; testing is rationed by championship position, under a cost cap.
-- **Setting and tone:** Laminar's Tarnovia (the Dolgo Ring, Stavren Park, the Tarnovian Motor Racing Federation, rubles) plus a fictional Grand Prix World Series of twelve rounds, 2026 to 2050. **Laminar owns the canon**: Outwash never contradicts it, and Laminar's teams appear only in news lines and a feeder series. Drivers are never hurt. Grey areas are rule interpretation only, no cheating storyline.
-- **Look:** "Pit wall": warm grey and off-white, light first with a graphite dark mode, one accent that becomes the player's team livery (fallback `#C2410C`), Saira and Red Hat Mono.
-- **Stack:** TypeScript (strict), Vite, three.js 0.187 from npm, plain DOM UI, Vitest. Pages from Actions, `base: './'`. Release per `VERSION`, titled from the `PR <n>: summary — v<version>` merge. A standalone repo, not a fork of Laminar: code is copied and marked `// Adapted from Laminar <path> (<date>)`.
-- **Rules worth knowing:** the sim (`src/sim/`, `src/data/`) is pure and deterministic, with its own `det.ts` maths and named RNG streams; truth, instruments, track, race (the player only sees readings with error bars); every number on the car has one address (`rear-wing.chord`). Names live in `docs/NAMES.md`.
-- **Saves:** keys `outwash.*`, IndexedDB `outwash`, caches `outwash-`, save code `OUT1:`, design codes `OUTD1:` (saves arrive with plan PR 7).
-
 ### Mainline
 
 - **Status:** the site's label is "In development", hidden on the studio site (added 25 November 2026). 0.13.2.0 on 25 November (`VERSION` file): the whole of `docs/MAINLINE-PLAN.md` (PRs 0 to 11) is built and live, plus the Your jobs tracker, the workshop's job checklist and works liveries.
@@ -598,8 +588,7 @@ noted, so a repeated name reads as a mistake.
 | Mostograd, a fictional 2010s Russian river city; rubles | Lombard |
 | The prairie, Saskatoon | Prairie Engine Works, the studio site's sky |
 | Valmere (Valmeran dollar), Kestrel Football League | Season Ticket |
-| Tarnovia (rubles), the town of Stavren; Mostograd borrowed from Lombard | Laminar (its own take on Tarnovia, separate from Hull Down's); Outwash borrows it |
-| The Grand Prix World Series (twelve fictional countries and circuits), 2026–2050 | Outwash |
+| Tarnovia (rubles), the town of Stavren; Mostograd borrowed from Lombard | Laminar (its own take on Tarnovia, separate from Hull Down's) |
 | Tarnovia, a state tank design bureau, 1980s to today | Hull Down |
 | Aqsor Range (Site 41), a decommissioned test range on a steppe salt flat, 2030s | Burn Rate |
 | A prop-trading firm's floor; fictional tickers | Funded |
@@ -643,9 +632,7 @@ date or institution.
 - **Mostograd in Laminar:** Laminar puts Mostograd in its Tarnovia; any
   Mostograd place or institution there follows Lombard's file above.
 - **Laminar's Tarnovia** (Laminar owns it): Laminar `docs/NAMES.md` and
-  `docs/LAMINAR-PLAN.md` section 12. Outwash borrows the Dolgo Ring,
-  Stavren Park, the Tarnovian Motor Racing Federation, Gornova and Zelenia;
-  its own names are in Outwash `docs/NAMES.md`.
+  `docs/LAMINAR-PLAN.md` section 12.
 
 ---
 
@@ -656,7 +643,7 @@ date or institution.
 | Family | Games |
 | --- | --- |
 | Craft career: build or make something part by part, test it, compete or sell, in a workshop that grows | Prairie Engine Works (engines), Scrapline (combat robots), Mainline (trains, on a monthly clock) |
-| Engineering to a brief: design against a spec, test, read the report | Burn Rate (rocket motors), Hull Down (tanks), Laminar (aerodynamics), Outwash (a grand prix car's aero), Bump Stop (rally-raid suspension, tested to failure, then raced), Crumple (a car's crash structure, crashed on the sled, then rated) |
+| Engineering to a brief: design against a spec, test, read the report | Burn Rate (rocket motors), Hull Down (tanks), Laminar (aerodynamics), Bump Stop (rally-raid suspension, tested to failure, then raced), Crumple (a car's crash structure, crashed on the sled, then rated) |
 | Roguelike runs | Funded (prop-firm trading) |
 | Tycoon and management | Season Ticket (football club), Frontier Lab (AI lab), Lombard (pawn shop) |
 
@@ -686,7 +673,6 @@ date or institution.
 | Rendered trading desk with green, red, ivory and lilac monitors, Space Grotesk | Funded |
 | "Faded state-range": concrete, state green, stencil red, Saira / Martian Mono | Burn Rate |
 | "Cobalt lab": bright wind-tunnel lab, Instrument Sans / Spline Sans Mono | Laminar |
-| "Pit wall": warm grey and off-white, one livery accent, Saira / Red Hat Mono | Outwash |
 | "Daylight test ring": light first, signal colours, a yellow warning-nose accent, Atkinson Hyperlegible Next / Mono | Mainline |
 | "Roadbook": birch-white paper, graphite ink, a fluorescent magenta highlighter, Big Shoulders / Overpass Mono | Bump Stop |
 | "High-speed film": white test hall, target stickers, film frames, a high-vis lime accent, Sora / Azeret Mono | Crumple |
