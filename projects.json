@@ -401,6 +401,20 @@
     "featured": false
   },
   {
+    "title": "Crumple",
+    "tagline": "Design the parts that fold, crash it, and keep the cabin whole.",
+    "hidden": true,
+    "status": "In development",
+    "category": "Game",
+    "summary": "A crash-lab game. Design the parts of a car that fold in a crash, fire it down the sled, watch it crumple in slow motion, read what the dummy felt, tune the structure and crash it again. Then the carmaker builds it and the official test decides its star rating. A small crash-structure firm in a made-up country's car industry, 1970 to 2010. Dummies only.",
+    "version": "0.1.0.0",
+    "latest": "The Crumple repo, the plan and the high-speed film look",
+    "link": "https://crumple.longlight.games/",
+    "code": "https://github.com/Jxstrr0/Crumple",
+    "image": "",
+    "featured": false
+  },
+  {
     "title": "Pre-market brief",
     "status": "Live",
     "category": "Trading",

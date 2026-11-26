@@ -883,6 +883,10 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   with no cover, clip or screenshots yet. Its `publish-release.yml`
   publishes a release when `VERSION` changes, like Mainline's. Its plan
   lists it publicly at PR 8, the first playable, if Kelbo wants.
+  Crumple (the crash-lab game, crumple.longlight.games, repo
+  `Jxstrr0/Crumple`) was added hidden (Kelbo, 2026-11-26) at its PR 0,
+  with no cover, clip or screenshots yet. Its `publish-release.yml`
+  publishes a release when `VERSION` changes, like Mainline's.
   Each game keeps its own look (fonts, colours, art). The Longlight logo,
   the five colours and Space Grotesk belong to studio pieces only (logo or
   splash, credit line, studio block, links back here); every game repo's
