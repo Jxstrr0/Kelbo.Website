@@ -151,7 +151,11 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   and the candles flicker (opacity only) in the motion block; with reduce
   motion they simply appear. A tap names them ("The Long Night", with
   tomorrow's sunrise). It follows swipes. Preview `?at=2026-12-21T18:00`
-  (lit) and `?at=2026-12-21T12:00` (not yet). On the first page of a visit and on every
+  (lit) and `?at=2026-12-21T12:00` (not yet). All that day the home ticker also shows
+  `[data-long-night-chip]` first (`setUpLongNightChip`, checked every
+  minute), a link to that day's studio post on the devlog (dated that
+  day, no `game`), or to `devlog.html` until it's up; devlog.json is only
+  fetched for it on that day. On the first page of a visit and on every
   refresh, `spinSun` plays the last 24 hours in `SPIN_MS` (4.5 s) so the
   sun does a full day before landing on now (`sessionStorage["kelbo.sunSpun"]`,
   `.horizon--spin` turns off the CSS easing; skipped with reduce motion).

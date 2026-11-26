@@ -163,6 +163,9 @@
            it's one row you can scroll sideways. -->
       <div class="ticker" data-ticker>
         <div class="wrap ticker__row">
+          <!-- The Long Night: shown by main.js (setUpLongNightChip) on the
+               shortest day of the year only, first so phones see it. -->
+          <a class="ticker__chip ticker__chip--long-night" href="devlog.html" data-long-night-chip hidden>The Long Night</a>
           <div class="ticker__now" data-now hidden>
             <h2 class="now__label ticker__label" id="now-heading">Now building</h2>
             <ul class="ticker__list" data-now-list aria-labelledby="now-heading"></ul>

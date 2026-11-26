@@ -7043,6 +7043,29 @@ function showBadges() {
   box.hidden = false;
 }
 
+// The "The Long Night" chip in the home page's ticker: shown all day on
+// the shortest day of the year (solsticeToday, so ?at= previews it too),
+// linking to that day's studio post on the devlog (a post dated that day
+// with no "game"), or to the devlog page until the post is up. Nothing is
+// fetched on any other day. It checks again every minute, so it comes
+// and goes at midnight on a page left open.
+async function setUpLongNightChip() {
+  const chip = document.querySelector("[data-long-night-chip]");
+  if (!chip) return;
+  const update = async () => {
+    const t = now();
+    const on = solsticeToday(t) === "shortest";
+    chip.hidden = !on;
+    if (!on) return;
+    const p = localParts(t);
+    const date = `${p.y}-${String(p.m).padStart(2, "0")}-${String(p.d).padStart(2, "0")}`;
+    const post = (await loadDevlog()).find((x) => x && x.date === date && !x.game);
+    chip.href = post ? "devlog.html#" + devlogId(post) : "devlog.html";
+  };
+  update();
+  setInterval(update, 60000);
+}
+
 // The "Passport" chip in the home page's ticker: how many games on the site
 // this phone has a Passport stamp from (kelbo.passport.stamps, kept by
 // passport/passport.js). Hidden until there's at least one, and nothing is
@@ -7580,6 +7603,7 @@ async function init() {
   setUpBriefAlert();
   setUpContactForm();
   setUpNow();
+  setUpLongNightChip();
   setUpDialogs();
   setUpDevlog();
   setUpBadges();

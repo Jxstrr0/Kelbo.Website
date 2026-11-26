@@ -3470,6 +3470,17 @@ a.ticker__chip {
   outline-offset: 2px;
 }
 
+/* The Long Night chip (shortest day only): a little lantern glow in
+   front of its words */
+.ticker__chip--long-night::before {
+  content: "";
+  width: 0.5rem;
+  height: 0.65rem;
+  border-radius: 1px 1px 0.5px 0.5px;
+  background: linear-gradient(to top, var(--ll-ivory), color-mix(in srgb, var(--ll-clay) 55%, var(--ll-ivory)) 75%);
+  box-shadow: 0 0 0.45rem rgba(217, 119, 87, 0.85);
+}
+
 /* "Sky:" and "Badges": the small caps key in front of each chip */
 .ticker__key {
   font-size: 0.68rem;
