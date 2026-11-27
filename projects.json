@@ -359,20 +359,6 @@
     ]
   },
   {
-    "title": "Mainline",
-    "tagline": "Build trains part by part, then live with their record in service.",
-    "hidden": true,
-    "status": "In development",
-    "category": "Game",
-    "summary": "A train-builder career from 2010 to 2040. Start as a small rebuild-and-repower works, win railway tenders against rival builders, design each train part by part, prove it at the test centre, then live with its record in service. Cargo and passenger, from shunters to high-speed, in every modern power type: diesel, electric, hybrid, battery, hydrogen and bi-mode.",
-    "version": "0.13.2.0",
-    "latest": "Works liveries",
-    "link": "https://mainline.longlight.games/",
-    "code": "https://github.com/Jxstrr0/Mainline",
-    "image": "assets/covers/mainline.jpg",
-    "featured": false
-  },
-  {
     "title": "Bump Stop",
     "tagline": "Build a rally truck, find the speed where it breaks, then go racing.",
     "hidden": true,
