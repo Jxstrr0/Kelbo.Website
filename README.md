@@ -224,7 +224,7 @@ progress order.
 - **hidden**: `true` takes a project off the site (cards, lists, the All
   page, its game page, the robots) but keeps its entry here. Delete the
   line to bring it back. Frontier Lab is hidden for now,
-  and so are Hull Down, Laminar, Bump Stop and Crumple (new, still being built).
+  and so are Hull Down, Laminar and Crumple (new, still being built).
 - **featured**: the first game marked `true` (top to bottom in this file)
   is the spotlight game: its Featured card sits under the home page's sky
   and the big "Play" button opens it. To change the spotlight, move another
