@@ -16,8 +16,9 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
 - `projects.json` is the single source of truth for projects. `main.js`
   renders it. Its order is the display order everywhere (Games, Projects,
   What's new, the home grid, "More games"): Kelbo's own ranking, games
-  first. Shown games (Kelbo, 2026-11-15): Prairie Engine Works, Scrapline,
-  Season Ticket, Funded, Lombard, Burn Rate; the hidden games
+  first. Shown games (Kelbo, 2026-11-15; Bump Stop added 2026-11-27):
+  Prairie Engine Works, Scrapline, Season Ticket, Funded, Lombard, Burn
+  Rate, Bump Stop; the hidden games
   follow. Nothing sorts by progress except the
   Projects page's filter buttons (`sortByProgress`). Adding a project should never need an HTML edit. Each project
   can carry a `version` ("1.4.0.0", no "v") and `latest` (what changed),
@@ -923,9 +924,15 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   (Kelbo). The cover and clips are still the first recordings.
   Bump Stop (the rally-raid truck builder, bumpstop.longlight.games, repo
   `Jxstrr0/BumpStop`) was added hidden (Kelbo, 2026-11-25) at its PR 0,
-  with no cover, clip or screenshots yet. Its `publish-release.yml`
-  publishes a release when `VERSION` changes, like Laminar's. Its plan
-  lists it publicly at PR 8, the first playable, if Kelbo wants.
+  and went on the site on 2026-11-27 at 1.20 (Kelbo), after Burn Rate,
+  with status Released (1.0 shipped on 2026-11-26), a How to play card
+  and no card clip yet. Its cover is the light 4x4 on the torture loop in
+  photo mode (Turn about 0.12, Zoom about 0.82), captured from the live
+  game with Playwright at 1280×960 with the visit counter blocked; its five
+  screenshots (Build, a washboard ladder run, the damper fade, the report,
+  picking a raid) are 390×844 phone captures. Its `publish-release.yml`
+  publishes a release when `VERSION` changes, like Laminar's; it is on the
+  Release Writer's `SKIP_REPOS`, so its card shows the release title.
   Crumple (the crash-lab game, crumple.longlight.games, repo
   `Jxstrr0/Crumple`) was added hidden (Kelbo, 2026-11-26) at its PR 0,
   with no cover, clip or screenshots yet. Its `publish-release.yml`
@@ -1356,7 +1363,7 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   entries never overwritten (Kelbo may hand-edit them; broken JSON stops
   the script). Commits as release-writer, then runs deploy.yml.
   `SKIP_REPOS` (Season Ticket, Lombard, Frontier Lab; Kelbo,
-  2026-11-11) are never sent: their cards show the release title as is.
+  2026-11-11; Bump Stop since it was listed, 2026-11-27) are never sent: their cards show the release title as is.
   `sync-releases.mjs` uses that `line` for the exact repo@tag as `latest`,
   else the cleaned release title (missing/broken file = old behaviour).
   `check-site.mjs` validates `lessons/latest.json` and

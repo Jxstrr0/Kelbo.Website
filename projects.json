@@ -275,6 +275,54 @@
     }
   },
   {
+    "title": "Bump Stop",
+    "tagline": "Build a rally truck, find the speed where it breaks, then go racing.",
+    "status": "Released",
+    "category": "Game",
+    "summary": "A rally-raid truck builder. Build the truck part by part, run it on the test track until the suspension gives up, read why it broke, tune it, then send it into a multi-day raid where damage stacks from stage to stage. Light 4x4s, heavy trucks and side-by-sides across Birchland, a made-up northern country, summer and winter, in a career from 1985 to 2025.",
+    "version": "1.20.0.0",
+    "latest": "Damage you can see: mud, dust, snow and dents on the trucks",
+    "link": "https://bumpstop.longlight.games/",
+    "code": "https://github.com/Jxstrr0/BumpStop",
+    "image": "assets/covers/bump-stop.jpg",
+    "featured": false,
+    "shots": [
+      {
+        "src": "assets/shots/bump-stop-1.jpg",
+        "alt": "The build screen: a white light 4x4 with magenta springs, the three classes to pick from and the year slider at 1985"
+      },
+      {
+        "src": "assets/shots/bump-stop-2.jpg",
+        "alt": "A run on the washboard ladder at 50 km/h, the truck close up in 3D with each corner's oil heat, travel and wear round the edges"
+      },
+      {
+        "src": "assets/shots/bump-stop-3.jpg",
+        "alt": "The rear left shock goes over the limit: damper fade on lap 9 at 80 km/h, with the slow-motion replay"
+      },
+      {
+        "src": "assets/shots/bump-stop-4.jpg",
+        "alt": "The report: damper fade on the rear left, what the crew chief says, and the oil temperature trace"
+      },
+      {
+        "src": "assets/shots/bump-stop-5.jpg",
+        "alt": "Picking a raid and a driver: Blackfly Classic, Washboard 800, Cold Start 300 or Frozen Knuckle, with four drivers to choose from"
+      }
+    ],
+    "guide": {
+      "start": [
+        "On the Career tab, tap Start a career in 1985. A first-job guide walks you through the whole loop and ticks each step off as you go.",
+        "Take the privateer's job, then on the Build tab open Tires and fit studded ones that fit their budget: the first raid runs on ice and snow.",
+        "On the Test tab, pick Washboard ladder and tap Run until it breaks, read the report, tap a fix and run it again, then Hand it over."
+      ],
+      "tips": [
+        "The washboard ladder goes 5 km/h faster every lap, so it finds the speed where your truck gives up. The report's fixes jump straight to the part or slider to change.",
+        "Damper heat is the big one: watch each corner's oil go from Normal to Warm to Over the limit. Fewer clicks of rebound makes less heat.",
+        "On a raid, Push is faster but cooks the shocks and wears the parts. Carry spares, and use the bivouac each night to patch the truck."
+      ],
+      "mistake": "Sending a truck out with no spares. Every roadside fix becomes a bodge that costs time, and the damage carries over to the next stage."
+    }
+  },
+  {
     "title": "Frontier Lab",
     "tagline": "Found an AI lab and grow it across the world's tech capitals.",
     "hidden": true,
@@ -353,20 +401,6 @@
         "alt": "The wind tunnel in dark mode: the smoke rake and tufts showing the flow round the rider, above the fan and yaw dials"
       }
     ]
-  },
-  {
-    "title": "Bump Stop",
-    "tagline": "Build a rally truck, find the speed where it breaks, then go racing.",
-    "hidden": true,
-    "status": "In development",
-    "category": "Game",
-    "summary": "A rally-raid truck builder. Build the truck part by part, run it on the test track until the suspension gives up, read why it broke, tune it, then send it into a multi-day raid where damage stacks from stage to stage. Light 4x4s, heavy trucks and side-by-sides across a made-up northern country, summer and winter.",
-    "version": "0.1.0.0",
-    "latest": "The Bump Stop repo, the plan and the roadbook look",
-    "link": "https://bumpstop.longlight.games/",
-    "code": "https://github.com/Jxstrr0/BumpStop",
-    "image": "",
-    "featured": false
   },
   {
     "title": "Crumple",

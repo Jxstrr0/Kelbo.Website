@@ -207,9 +207,9 @@ that part, and update it when how something works changes. The short map:
   newest GitHub Release, so don't "fix" newer live values by hand.
   `"hidden": true` takes a project off the site everywhere; Frontier Lab
   is hidden (see below), and so are
-  Hull Down, Laminar, Bump Stop (added 2026-11-25) and Crumple
-  (added 2026-11-26), the newest games,
-  until they're more built.
+  Hull Down, Laminar and Crumple (added 2026-11-26), the newest games,
+  until they're more built. Bump Stop (added hidden 2026-11-25) went on
+  the site on 2026-11-27 (Kelbo), so the site lists seven games.
   Funded went on the site on 2026-11-12. On 2026-11-15 Burn Rate took
   Frontier Lab's place and Frontier Lab was hidden (Kelbo), so the site
   still lists six games. Their repos and live games stay up. The Whip was
