@@ -50,13 +50,16 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   `sw.js` lets `.mp4` requests go straight to the network. Clips and the
   newer screenshots are recorded from the live game with Playwright at a
   phone size, then cut with ffmpeg. check-site checks the files exist.
-- A game can carry `art` (`assets/art/<slug>.jpg`, 640×480 plus `@2x`):
-  painted key art (Higgsfield, credited in `assets/art/CREDITS.md`) that
-  takes the cover's place at the top of the game page only; cards, the
-  home row, the press kit and the link preview keep `image`. And a `film`
-  (`assets/films/<slug>.mp4`, silent H.264 1280×720, about 10 s, under
-  1.2 MB, with a same-named `.jpg` still): a "Cinematic" section under
-  "See it move", `preload="none"`, labelled as not gameplay.
+- A game can carry `art` (640×480 JPG plus `@2x`), a picture that takes
+  the cover's place at the top of the game page only (cards, the home row,
+  the press kit and the link preview keep `image`), and a `film` (silent
+  H.264 1280×720, about 10 s, under 1.2 MB, with a same-named `.jpg`
+  still): a "Cinematic" section under "See it move", `preload="none"`.
+  No game uses either now: on 2026-11-27 Kelbo had the AI-made Higgsfield
+  key art (Prairie Engine Works, Lombard) and films (Prairie Engine Works,
+  Scrapline) taken off the site, so every game page leads with its
+  in-game cover and the gallery shows only pictures from the games.
+  Prefer an in-game capture if either comes back.
 - A game can also carry a `cardClip` (`assets/clips/<slug>-card.mp4`,
   silent H.264, 640×480 like the cover, 30 frames a second, 6 to 8
   seconds, under 400 KB). `watchClip`/`playClip` fade it in over the card's
@@ -850,11 +853,12 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   game page and Play links, each screenshot as a link to the file).
   Linked from every footer ("Press kit"), in `sitemap.xml` and `sw.js` `CORE`.
 - `gallery.html` is the art gallery: plain HTML, no script. Pictures sit
-  in `assets/gallery/` (640 wide, 480 for tall ones, plus `@2x`), grouped
+  in `assets/gallery/` (640 wide, 480 for tall ones, plus `@2x`; three
+  reuse their game's cover from `assets/covers/`), grouped
   under each listed game (`.gallery`, CSS columns so tall and wide mix
   uncropped); each links to its big copy. Every caption says how the
-  picture was made (captured from the live game, a Blender render, or
-  AI key art, which reuses `assets/art/` and `assets/films/` and says so).
+  picture was made (captured from the live game, or a render from the
+  game's own Blender scripts). No AI art (taken off on 2026-11-27).
   Linked from every footer ("Gallery") and the bottom of `games.html`
   (`.games-more`), in `sitemap.xml` and `sw.js` `CORE`. Hidden games stay out.
 - `whats-new.html` is a `data-projects="news"` list: `setUpNews` in

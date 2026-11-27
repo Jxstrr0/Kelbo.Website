@@ -558,8 +558,9 @@ function setUpGame(box, projects) {
   // Cover (a coloured tile with initials if there's no picture)
   const cover = el("div", "project__cover game__cover");
   cover.dataset.cat = String(project.category || "").trim().toLowerCase();
-  // "art" (assets/art/, 640x480 + @2x) is painted key art: it leads the
-  // game page, while the cards keep the live-game cover and its clip.
+  // "art" (640x480 + @2x) can lead the game page in place of the cover,
+  // while the cards keep the live-game cover and its clip. No game uses it
+  // now (the AI key art came off on 2026-11-27); the cover leads.
   const coverSrc = project.art || project.image;
   if (coverSrc) {
     const img = el("img");
