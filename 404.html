@@ -107,9 +107,9 @@
   <main id="main">
     <!-- The whole page is the sky band from the top of the home page,
          with the live horizon underneath -->
-    <section class="hero" aria-labelledby="lost-heading">
+    <section class="hero hero--crash" aria-labelledby="lost-heading">
       <div class="wrap hero__top">
-        <p class="eyebrow">Game over &middot; 404</p>
+        <p class="eyebrow">Crash test &middot; 404</p>
         <div class="lost__head">
           <!-- The Chihuahua's portrait. The same drawing is on about.html
                (Party members): change his markings in both places. -->
@@ -139,16 +139,24 @@
             <path class="dog-nose" d="M21 29.6c0-1.2 6-1.2 6 0 0 1.6-1.6 3-3 3s-3-1.4-3-3z"/>
             <path class="dog-mouth" d="M24 32.6v2.2M20.5 35.5c1.200 1.400 2.600 1.300 3.500-.7.900 2 2.300 2.100 3.500.7"/>
           </svg>
-          <h1 id="lost-heading" class="hero__name">Lost?</h1>
+          <h1 id="lost-heading" class="hero__name">Wrecked.</h1>
         </div>
         <p class="hero__line">
-          This page is gone. The Chihuahua probably ate it: big appetite,
-          &minus;1 snack per hour. Head back to the start and pick up from there.
+          This page hit the wall and didn't make it. Tap the wreck to knock
+          parts loose, or head back to the start.
         </p>
         <div class="hero__actions">
           <a class="button button--start" href="./">Back to the start</a>
           <a class="button button--ghost" href="games.html">See the games</a>
         </div>
+        <!-- The crash test: main.js (setUpCrashTest) shows this line and
+             parks a wreck on the horizon below. The button knocks a part
+             off from a keyboard, and rebuilds the wreck once it's empty. -->
+        <p class="crash-report" data-crash-report hidden>
+          <span class="crash-report__tag">Test 404</span>
+          <span data-crash-count aria-live="polite">0 of 13 parts loose</span>
+          <button type="button" class="crash-report__btn" data-crash-knock>Knock one loose</button>
+        </p>
       </div>
       <div class="wrap">
         <div class="horizon" data-horizon aria-hidden="true">

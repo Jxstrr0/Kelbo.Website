@@ -7598,6 +7598,620 @@ function fillGameCount(projects) {
   if (button) button.textContent = count === 1 ? "See the game" : "Browse all " + count + " games";
 }
 
+/* ---------- Blueprint mode (home page) ----------
+   A small "Blueprint" button in the bottom corner (or the B key) redraws
+   the home page as an engineering drawing: blueprint paper with a grid,
+   white lines instead of colours, covers as line art, outlined headlines,
+   the sun as a circle with centre marks over hatched ground, measurement
+   lines, numbered tags on the game cards, and a parts list, notes and
+   title block above the footer. Every link still works. All the looks are
+   in the "Blueprint mode" section of style.css; this only switches
+   html.bp on and off and draws the measurement lines.
+
+   The paper colour: BLUEPRINT_PAPER below, "blue" or "purple" (Longlight
+   purple). Change the word to switch it for everyone. To compare on a
+   phone without changing anything, add ?paper=purple (or ?paper=blue) to
+   the home page's address. */
+const BLUEPRINT_PAPER = "blue";
+const BLUEPRINT_KEY = "kelbo.blueprint"; // "on" while it's switched on
+const SVG_NS = "http://www.w3.org/2000/svg";
+
+function setUpBlueprint() {
+  if (!document.querySelector(".hero--home")) return;
+  const root = document.documentElement;
+
+  const asked = new URLSearchParams(location.search).get("paper");
+  const paper = asked === "blue" || asked === "purple" ? asked : BLUEPRINT_PAPER;
+  root.classList.toggle("bp--purple", paper === "purple");
+
+  // The edge-finding filter that turns covers and photos into white lines.
+  const filter = document.createElementNS(SVG_NS, "svg");
+  filter.setAttribute("class", "bp-defs");
+  filter.setAttribute("aria-hidden", "true");
+  filter.innerHTML =
+    '<filter id="bp-edges" color-interpolation-filters="sRGB">' +
+    '<feColorMatrix type="saturate" values="0"/>' +
+    '<feConvolveMatrix order="3" kernelMatrix="-1 -1 -1 -1 8 -1 -1 -1 -1" preserveAlpha="true"/>' +
+    '<feColorMatrix type="matrix" values="0 0 0 0 0.92  0 0 0 0 0.95  0 0 0 0 1  2.4 2.4 2.4 0 -0.12"/>' +
+    "</filter>";
+  document.body.append(filter);
+
+  // The switch, in the bottom corner.
+  const button = el("button", "bp-toggle");
+  button.type = "button";
+  button.setAttribute("aria-pressed", "false");
+  button.title = "Blueprint mode (B)";
+  button.innerHTML =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">' +
+    '<path d="M3 21h18M3 21V3h4v14h14v4"/><path d="M7 7h3M7 11h3M11 17v-3M15 17v-3"/></svg>' +
+    "<span>Blueprint</span>";
+  document.body.append(button);
+
+  let sheet = null;
+  let layer = null;
+  let still = false; // true after the first drawing: redraws don't replay the pen
+
+  function apply(on) {
+    root.classList.toggle("bp", on);
+    button.setAttribute("aria-pressed", String(on));
+    try {
+      if (on) localStorage.setItem(BLUEPRINT_KEY, "on");
+      else localStorage.removeItem(BLUEPRINT_KEY);
+    } catch (e) {}
+    if (on) {
+      still = false;
+      makeSheet();
+      redraw();
+    } else {
+      if (sheet) sheet.remove();
+      if (layer) layer.remove();
+      const hz = document.querySelector(".bp-hz");
+      if (hz) hz.remove();
+      sheet = layer = null;
+    }
+  }
+
+  function toggle() {
+    const on = !root.classList.contains("bp");
+    // The redraw sweeps across like a plotter pen, where the browser can.
+    if (document.startViewTransition && !REDUCE_MOTION) document.startViewTransition(() => apply(on));
+    else apply(on);
+  }
+
+  // A drawing sheet's paperwork: parts list (the games, as the grid shows
+  // them now), notes and the title block.
+  function makeSheet() {
+    if (sheet) sheet.remove();
+    sheet = el("section", "wrap bp-sheet");
+    sheet.setAttribute("aria-label", "Drawing sheet");
+
+    const parts = el("table");
+    const head = parts.insertRow();
+    ["Item", "Part", "Stage", "Rev", "Qty"].forEach((t) => head.append(el("th", "", t)));
+    document.querySelectorAll(".project-list--grid .project").forEach((card, i) => {
+      const text = (sel) => {
+        const n = card.querySelector(sel);
+        return n ? n.textContent.trim() : "";
+      };
+      const row = parts.insertRow();
+      [String(i + 1), text(".project__title"), text(".project__status"), text(".project__version strong"), "1"].forEach((t, j) => {
+        row.append(el("td", j === 0 || j === 4 ? "num" : "", t));
+      });
+    });
+
+    const notes = el("ol");
+    [
+      "All parts run in the browser. No install, no account.",
+      "Sun position is live. Do not scale from the sky.",
+      "Every part is built to be broken. Tune and retest.",
+      "Dimensions in CSS pixels at the width you are reading.",
+    ].forEach((t) => notes.append(el("li", "", t)));
+
+    const title = el("table", "bp-title");
+    const cell = (row, text, span) => {
+      const td = el("td", "", text);
+      if (span) td.colSpan = span;
+      row.append(td);
+      return td;
+    };
+    const r1 = title.insertRow();
+    const name = cell(r1, "Home page, general arrangement", 2);
+    name.prepend(el("strong", "", "Longlight Interactive"));
+    const r2 = title.insertRow();
+    cell(r2, "Drawn: Kelbo");
+    cell(r2, "Dwg no. LL-0001");
+    const r3 = title.insertRow();
+    cell(r3, "Date: " + new Date().toISOString().slice(0, 10));
+    cell(r3, "Scale: 1:1");
+    const r4 = title.insertRow();
+    cell(r4, "Place: Saskatoon, SK · 52.13° N");
+    const last = cell(r4, "");
+    last.innerHTML =
+      '<span class="bp-proj">Sheet 1 of 1 <svg width="34" height="16" viewBox="0 0 34 16" role="img" aria-label="Third-angle projection symbol">' +
+      '<path d="M1 4h10M1 12h10M1 4v8M11 4v8"/><circle cx="24" cy="8" r="6"/><circle cx="24" cy="8" r="2.5"/></svg></span>';
+
+    sheet.append(el("p", "bp-cap", "Parts list"), parts, el("p", "bp-cap", "Notes"), notes, el("p", "bp-cap", "Title block"), title);
+    document.getElementById("main").append(sheet);
+  }
+
+  // --- The pencil: small helpers that draw into an <svg> ---
+  let target = null; // the svg being drawn into
+  let delay = 0; // when the next line starts, for the pen effect
+  function add(name, attrs, parent) {
+    const n = document.createElementNS(SVG_NS, name);
+    for (const k in attrs) n.setAttribute(k, attrs[k]);
+    (parent || target).append(n);
+    return n;
+  }
+  function line(x1, y1, x2, y2, cls) {
+    const len = Math.ceil(Math.hypot(x2 - x1, y2 - y1));
+    return add("line", { x1, y1, x2, y2, class: "draw " + (cls || ""), style: `--len:${len};--d:${delay}s` });
+  }
+  function arrow(x, y, deg) {
+    add("path", { d: "M0 0L-7 -2.6L-7 2.6Z", class: "arrow", transform: `translate(${x} ${y}) rotate(${deg})` });
+  }
+  function text(x, y, s, anchor, rot) {
+    const t = add("text", { x, y, "text-anchor": anchor || "middle", style: `--d:${delay}s` });
+    if (rot) t.setAttribute("transform", `rotate(${rot} ${x} ${y})`);
+    t.textContent = s;
+  }
+  function box(node) {
+    const r = node.getBoundingClientRect();
+    return { x: r.left + scrollX, y: r.top + scrollY, w: r.width, h: r.height };
+  }
+  // A height measurement beside a box: extension lines, arrows, the number.
+  function dimV(b, gap) {
+    const x = b.x + b.w + gap;
+    line(b.x + b.w + 3, b.y, x + 5, b.y);
+    line(b.x + b.w + 3, b.y + b.h, x + 5, b.y + b.h);
+    line(x, b.y, x, b.y + b.h);
+    arrow(x, b.y, -90);
+    arrow(x, b.y + b.h, 90);
+    text(x - 4, b.y + b.h / 2, String(Math.round(b.h)), "middle", -90);
+    delay += 0.12;
+  }
+  // A numbered tag (a "balloon") with a line to the thing it names.
+  function balloon(x, y, n, toX, toY) {
+    line(x, y, toX, toY);
+    add("circle", { cx: toX, cy: toY, r: 1.8, class: "arrow" });
+    const g = add("g", { class: "balloon", style: `--d:${delay}s` });
+    add("circle", { cx: x, cy: y, r: 10 }, g);
+    const t = add("text", { x, y: y + 4, "text-anchor": "middle" }, g);
+    t.textContent = n;
+    delay += 0.08;
+  }
+  // A note with a leader line pointing at something.
+  function leader(fromX, fromY, toX, toY, label, anchor) {
+    const dir = anchor === "end" ? -1 : 1;
+    line(fromX, fromY, toX, toY);
+    add("circle", { cx: fromX, cy: fromY, r: 1.8, class: "arrow" });
+    line(toX, toY, toX + 8 * dir, toY);
+    text(toX + 11 * dir, toY + 3.5, label, anchor || "start");
+    delay += 0.12;
+  }
+
+  // The sky, redrawn: horizon line, hatched ground (the drawing sign for a
+  // cut solid), and the sun as a circle with centre marks, in its real spot.
+  function drawHorizon() {
+    const hz = document.querySelector(".hero--home .horizon");
+    const old = document.querySelector(".bp-hz");
+    if (old) old.remove();
+    const lineEl = hz && hz.querySelector(".horizon__line");
+    const sunEl = hz && hz.querySelector(".horizon__sun");
+    if (!lineEl || !sunEl) return;
+    const hb = hz.getBoundingClientRect();
+    const lb = lineEl.getBoundingClientRect();
+    const sb = sunEl.getBoundingClientRect();
+    const W = hb.width;
+    const H = hb.height;
+    const ly = lb.top - hb.top;
+    target = document.createElementNS(SVG_NS, "svg");
+    target.setAttribute("class", "bp-hz bp-marks" + (still ? " bp-marks--still" : ""));
+    target.setAttribute("aria-hidden", "true");
+    hz.append(target);
+    delay = 0.1;
+    const pat = add("pattern", { id: "bp-hatch", width: 7, height: 7, patternUnits: "userSpaceOnUse", patternTransform: "rotate(45)" }, add("defs", {}));
+    add("line", { x1: 3.5, y1: 0, x2: 3.5, y2: 7, class: "hatch" }, pat);
+    add("rect", { x: 0, y: ly + 2, width: W, height: Math.max(0, H - ly - 2), class: "ground" });
+    line(0, ly, W, ly, "ink");
+    line(0, ly + 2.5, W, ly + 2.5, "ink");
+    const r = sb.width / 2;
+    const cx = sb.left - hb.left + r;
+    const cy = sb.top - hb.top + sb.height / 2;
+    // Only while the sun is up
+    if (r > 2 && cy - r < ly) {
+      // The ground hides the part of the sun below the line, as it does outside
+      const clip = add("clipPath", { id: "bp-sky" }, add("defs", {}));
+      add("rect", { x: -50, y: -200, width: W + 100, height: ly + 200 }, clip);
+      const sky = add("g", { "clip-path": "url(#bp-sky)" });
+      const outer = target;
+      target = sky;
+      add("circle", { cx, cy, r, class: "ink draw", style: `--len:${Math.ceil(2 * Math.PI * r)};--d:0.2s` });
+      add("circle", { cx, cy, r: r * 1.3, class: "dashed" });
+      line(cx - r - 8, cy, cx + r + 8, cy, "centre");
+      line(cx, cy - r - 8, cx, cy + r + 8, "centre");
+      target = outer;
+      // Its label sits beside it, on whichever side has room, so it never
+      // runs into the buttons above the sky
+      const right = cx + r * 1.3 + 150 < W;
+      const lx = right ? cx + r * 1.3 + 8 : cx - r * 1.3 - 8;
+      const ty = Math.min(cy, ly - 18);
+      text(lx, ty - 2, "Ø " + Math.round(r * 2) + " SUN", right ? "start" : "end");
+      text(lx, ty + 10, "REAL POSITION, YXE", right ? "start" : "end");
+    }
+  }
+
+  // Measurement lines, notes and numbered tags over the page.
+  function drawMarks() {
+    if (layer) layer.remove();
+    const W = document.documentElement.clientWidth;
+    const H = document.documentElement.scrollHeight;
+    layer = target = document.createElementNS(SVG_NS, "svg");
+    layer.setAttribute("class", "bp-layer bp-marks" + (still ? " bp-marks--still" : ""));
+    layer.setAttribute("aria-hidden", "true");
+    layer.setAttribute("width", W);
+    layer.setAttribute("height", H);
+    layer.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    document.body.append(layer);
+    delay = 0.15;
+
+    const h1 = document.querySelector(".hero__name");
+    if (h1) {
+      // Measure the letters themselves, not the full-width block
+      const range = document.createRange();
+      range.selectNodeContents(h1);
+      const r = range.getBoundingClientRect();
+      dimV({ x: r.left + scrollX, y: r.top + scrollY, w: r.width, h: r.height }, 14);
+    }
+    const play = document.querySelector(".hero--home .button--start");
+    if (play && play.offsetParent) {
+      const b = box(play);
+      leader(b.x + 12, b.y + b.h, b.x + 4, b.y + b.h + 24, "START HERE");
+    }
+    const spot = document.querySelector(".spotlight");
+    if (spot && spot.offsetParent) {
+      const b = box(spot);
+      dimV(b, 8);
+      const chip = spot.querySelector(".spotlight__chip");
+      if (chip && chip.offsetParent) {
+        const c = box(chip);
+        leader(c.x + c.w, c.y + c.h / 2, b.x + b.w - 20, b.y - 12, "THE SPOTLIGHT GAME", "end");
+      }
+    }
+    document.querySelectorAll(".project-list--grid .project").forEach((card, i) => {
+      const b = box(card);
+      if (b.w) balloon(b.x + b.w - 14, b.y + 14, i + 1, b.x + b.w - 30, b.y + 30);
+    });
+  }
+
+  function redraw() {
+    if (!root.classList.contains("bp")) return;
+    drawHorizon();
+    drawMarks();
+    still = true;
+  }
+
+  // The real sun keeps moving (it glides into place as the page opens,
+  // follows a swipe through the day, and creeps along all day): twice a
+  // second, if it has moved, the drawn sun moves with it.
+  let sunAt = "";
+  setInterval(() => {
+    if (!root.classList.contains("bp") || document.hidden) return;
+    const sun = document.querySelector(".hero--home .horizon__sun");
+    if (!sun) return;
+    const b = sun.getBoundingClientRect();
+    const at = Math.round(b.left) + "," + Math.round(b.top) + "," + Math.round(b.width);
+    if (at !== sunAt) {
+      sunAt = at;
+      if (still) drawHorizon();
+    }
+  }, 500);
+
+  button.addEventListener("click", toggle);
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "b" && e.key !== "B") return;
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.target.closest && e.target.closest("input, textarea, select, [contenteditable], dialog[open]")) return;
+    toggle();
+  });
+
+  // The page changes shape (a new width, the game cards arriving, a
+  // section fading in): measure again. The parts list is remade when the
+  // grid of games changes.
+  let wait = 0;
+  const later = () => {
+    clearTimeout(wait);
+    wait = setTimeout(redraw, 200);
+  };
+  addEventListener("resize", later);
+  if ("ResizeObserver" in window) new ResizeObserver(later).observe(document.getElementById("main"));
+  const grid = document.querySelector(".project-list--grid");
+  if (grid && "MutationObserver" in window) {
+    new MutationObserver(() => {
+      if (root.classList.contains("bp")) makeSheet();
+      later();
+    }).observe(grid, { childList: true });
+  }
+
+  let start = false;
+  try {
+    start = localStorage.getItem(BLUEPRINT_KEY) === "on";
+  } catch (e) {}
+  if (start) apply(true);
+}
+
+/* ---------- The crash-test 404 ----------
+   On 404.html a wreck sits on the horizon line: a broken "404", a bumper,
+   a torn nav bar, a cracked Scrapline card, a target sticker, nuts, a
+   spring, a shard of glass, a Play button and the sun as a hubcap. Tap a
+   part to knock it off (parts resting on it fall too); drag a loose part
+   to throw it, and the round ones roll. When nothing is left, a "Total
+   loss" stamp lands and the button rebuilds it. "Knock one loose" does
+   the same from a keyboard. With "reduce motion" the parts drop straight
+   down instead of flying. Each part is a plain element moved with
+   transform; the little physics loop only runs while something moves. */
+function setUpCrashTest() {
+  const hero = document.querySelector(".hero--crash");
+  const lineEl = hero && hero.querySelector(".horizon__line");
+  const report = document.querySelector("[data-crash-report]");
+  if (!lineEl || !report) return;
+  const countEl = report.querySelector("[data-crash-count]");
+  const knockBtn = report.querySelector("[data-crash-knock]");
+  report.hidden = false;
+
+  const stage = el("div", "wreck");
+  stage.setAttribute("aria-hidden", "true");
+  hero.append(stage);
+
+  const crack = (d) => `<svg viewBox="0 0 60 84" preserveAspectRatio="none"><path class="crack" d="${d}"/></svg>`;
+  const nut = '<svg class="line" viewBox="0 0 20 20"><path d="M10 1.5 17.4 5.8V14.2L10 18.5 2.6 14.2V5.8Z"/><circle cx="10" cy="10" r="3.4"/></svg>';
+  const cover = '<img src="assets/covers/scrapline.jpg" alt="" width="640" height="480" draggable="false">';
+
+  // Each part: its size, where it sits in the wreck (dx from the middle,
+  // dy up from the line, a tilt in degrees), what it rests on, and its look.
+  const PARTS = [
+    { id: "bumper", w: 196, h: 18, dx: 0, dy: 9, a: -2, cls: "part--bumper", rests: [] },
+    { id: "four1", w: 58, h: 80, dx: -62, dy: 56, a: -14, cls: "part--digit", html: "4" + crack("M30 8 26 30 34 40 28 62"), rests: ["bumper"] },
+    { id: "zero", w: 58, h: 80, dx: -4, dy: 60, a: 7, cls: "part--digit part--dent", html: "<span>0</span>" + crack("M14 50 24 46 22 38 34 34"), rests: ["bumper"] },
+    { id: "four2", w: 58, h: 80, dx: 54, dy: 52, a: 19, cls: "part--digit", html: "4", rests: ["bumper"] },
+    { id: "nav", w: 128, h: 24, dx: -14, dy: 108, a: -9, cls: "part--nav", html: "<span>Games</span><span>Trading</span><span>All</span>", rests: ["four1", "zero"] },
+    { id: "card", w: 78, h: 64, dx: 78, dy: 104, a: 24, cls: "part--card", html: cover, rests: ["four2"] },
+    { id: "target", w: 32, h: 32, dx: -76, dy: 104, a: 0, cls: "part--target", round: true, rests: ["four1"] },
+    { id: "hubcap", w: 40, h: 40, dx: -128, dy: 20, a: 0, cls: "part--hubcap", round: true, rests: [] },
+    { id: "nut1", w: 18, h: 18, dx: 112, dy: 9, a: 12, cls: "", html: nut, round: true, rests: [] },
+    { id: "nut2", w: 16, h: 16, dx: -104, dy: 8, a: -20, cls: "", html: nut, round: true, rests: [] },
+    { id: "spring", w: 16, h: 40, dx: 22, dy: 132, a: 32, cls: "", html: '<svg class="line" viewBox="0 0 16 40"><path d="M8 0V4L2 8 14 13 2 18 14 23 2 28 14 33 8 36V40"/></svg>', rests: ["nav"] },
+    { id: "glass", w: 34, h: 28, dx: -54, dy: 132, a: -22, cls: "part--glass", html: '<svg class="line" viewBox="0 0 34 28"><path d="M2 26 14 2 32 18 20 16Z"/><path d="M14 2 18 14"/></svg>', rests: ["nav"] },
+    { id: "play", w: 68, h: 26, dx: 118, dy: 44, a: -34, cls: "part--play", html: "<span>&#9654;</span><span>Play</span>", rests: ["bumper"] },
+  ];
+  const TOTAL = PARTS.length;
+
+  let parts = [];
+  let floorY = 0;
+  let width = 0;
+  let loose = 0;
+  let running = false;
+  let stamp = null;
+
+  function measure() {
+    const hb = hero.getBoundingClientRect();
+    floorY = lineEl.getBoundingClientRect().top - hb.top;
+    width = hb.width;
+  }
+  // The wreck sits in the middle on phones, right of centre on wide screens
+  function middle() {
+    return width < 560 ? width / 2 : Math.min(width * 0.62, width - 220);
+  }
+
+  function build() {
+    stage.replaceChildren();
+    parts = [];
+    loose = 0;
+    stamp = null;
+    measure();
+    const cx = middle();
+    PARTS.forEach((d, i) => {
+      const node = el("div", "part " + d.cls);
+      node.style.width = d.w + "px";
+      node.style.height = d.h + "px";
+      node.style.zIndex = String(i + 1);
+      node.innerHTML = d.html || "";
+      stage.append(node);
+      const p = { d, el: node, x: cx + d.dx, y: floorY - d.dy, a: d.a, vx: 0, vy: 0, va: 0, loose: false, asleep: true, held: false };
+      parts.push(p);
+      place(p);
+      node.addEventListener("pointerdown", (ev) => grab(p, ev));
+    });
+    update();
+  }
+  function place(p) {
+    p.el.style.transform = `translate(${p.x - p.d.w / 2}px,${p.y - p.d.h / 2}px) rotate(${p.a}deg)`;
+  }
+  function update() {
+    countEl.textContent = loose + " of " + TOTAL + " parts loose";
+    knockBtn.textContent = loose === TOTAL ? "Rebuild the wreck" : "Knock one loose";
+  }
+
+  // How far a part reaches down and sideways at its current tilt
+  function halfHeight(p) {
+    if (p.d.round) return p.d.h / 2;
+    const r = (p.a * Math.PI) / 180;
+    return Math.abs((p.d.w / 2) * Math.sin(r)) + Math.abs((p.d.h / 2) * Math.cos(r));
+  }
+  function halfWidth(p) {
+    if (p.d.round) return p.d.w / 2;
+    const r = (p.a * Math.PI) / 180;
+    return Math.abs((p.d.w / 2) * Math.cos(r)) + Math.abs((p.d.h / 2) * Math.sin(r));
+  }
+  // Reduce motion: drop straight to the line, lying flat
+  function settle(p) {
+    p.a = Math.round(p.a / 90) * 90;
+    p.vx = p.vy = p.va = 0;
+    p.y = floorY - halfHeight(p);
+    p.asleep = true;
+    place(p);
+  }
+
+  // Knock a part loose, and anything that was resting on it.
+  function loosen(p, kick) {
+    if (p.loose) return;
+    p.loose = true;
+    p.asleep = false;
+    loose++;
+    p.el.classList.add("is-loose");
+    const away = (p.x - middle()) / 40;
+    p.vx = kick ? away + (Math.random() - 0.5) * 6 : away * 0.3 + (Math.random() - 0.5);
+    p.vy = kick ? -(6 + Math.random() * 5) : -1;
+    p.va = kick ? (Math.random() - 0.5) * 24 : (Math.random() - 0.5) * 6;
+    if (REDUCE_MOTION) settle(p);
+    parts.forEach((q) => {
+      if (!q.loose && q.d.rests.includes(p.d.id)) {
+        setTimeout(() => {
+          loosen(q, false);
+          update();
+          done();
+        }, REDUCE_MOTION ? 0 : 90);
+      }
+    });
+    stage.classList.remove("is-hit");
+    void stage.offsetWidth; // restart the shake
+    if (kick) stage.classList.add("is-hit");
+    start();
+  }
+
+  // One frame of the physics: gravity, a bounce on the line, friction.
+  function step() {
+    let moving = false;
+    parts.forEach((p) => {
+      if (!p.loose || p.asleep || p.held) return;
+      p.vy += 0.55;
+      p.x += p.vx;
+      p.y += p.vy;
+      p.a += p.va;
+      const hh = halfHeight(p);
+      const hw = halfWidth(p);
+      if (p.y + hh >= floorY) {
+        p.y = floorY - hh;
+        p.vy = p.vy > 2 ? -p.vy * 0.38 : 0;
+        if (p.d.round) {
+          // round parts roll along the line
+          p.vx *= 0.985;
+          p.va = (p.vx / (p.d.w / 2)) * 57.3;
+        } else {
+          // flat parts tip over onto a side
+          p.vx *= 0.8;
+          const flat = Math.round(p.a / 90) * 90;
+          p.va = p.va * 0.5 + (flat - p.a) * 0.18;
+        }
+      }
+      if (p.x - hw < 0) {
+        p.x = hw;
+        p.vx = Math.abs(p.vx) * 0.5;
+      }
+      if (p.x + hw > width) {
+        p.x = width - hw;
+        p.vx = -Math.abs(p.vx) * 0.5;
+      }
+      if (p.y + hh >= floorY - 0.5 && Math.abs(p.vx) < 0.06 && Math.abs(p.vy) < 0.1 && Math.abs(p.va) < 0.15) p.asleep = true;
+      else moving = true;
+      place(p);
+    });
+    if (moving) requestAnimationFrame(step);
+    else running = false;
+  }
+  function start() {
+    if (!running && !REDUCE_MOTION) {
+      running = true;
+      requestAnimationFrame(step);
+    }
+  }
+
+  // Tap a part still on the wreck to knock it off; grab a loose one to throw it.
+  function grab(p, ev) {
+    ev.preventDefault();
+    if (!p.loose) {
+      loosen(p, true);
+      update();
+      done();
+      return;
+    }
+    const hb = hero.getBoundingClientRect();
+    p.held = true;
+    p.asleep = false;
+    p.el.classList.add("is-held");
+    try {
+      p.el.setPointerCapture(ev.pointerId);
+    } catch (e) {}
+    let last = { x: ev.clientX, y: ev.clientY, t: performance.now() };
+    let vx = 0;
+    let vy = 0;
+    const move = (e) => {
+      const now = performance.now();
+      const dt = Math.max(8, now - last.t);
+      vx = ((e.clientX - last.x) / dt) * 16;
+      vy = ((e.clientY - last.y) / dt) * 16;
+      p.x = Math.max(0, Math.min(width, e.clientX - hb.left));
+      p.y = Math.min(e.clientY - hb.top, floorY - halfHeight(p));
+      last = { x: e.clientX, y: e.clientY, t: now };
+      place(p);
+    };
+    const up = () => {
+      p.held = false;
+      p.el.classList.remove("is-held");
+      p.vx = Math.max(-30, Math.min(30, vx));
+      p.vy = Math.max(-30, Math.min(30, vy));
+      p.va = vx * 1.5;
+      if (REDUCE_MOTION) settle(p);
+      p.el.removeEventListener("pointermove", move);
+      p.el.removeEventListener("pointerup", up);
+      p.el.removeEventListener("pointercancel", up);
+      start();
+    };
+    p.el.addEventListener("pointermove", move);
+    p.el.addEventListener("pointerup", up);
+    p.el.addEventListener("pointercancel", up);
+  }
+
+  // Nothing left on the wreck: the "Total loss" stamp.
+  function done() {
+    if (loose < TOTAL || stamp) return;
+    stamp = el("div", "crash-stamp", "Total loss");
+    stamp.style.left = middle() + "px";
+    stamp.style.top = floorY - 90 + "px";
+    stage.append(stamp);
+    countEl.textContent = "Total loss. Nothing left to save here.";
+  }
+
+  // The keyboard way in: knocks off a part from the top of the pile first.
+  knockBtn.addEventListener("click", () => {
+    if (loose === TOTAL) {
+      build();
+      return;
+    }
+    const free = parts.filter((p) => !p.loose);
+    const top = free.filter((p) => !free.some((q) => q.d.rests.includes(p.d.id)));
+    const pick = top.length ? top : free;
+    loosen(pick[Math.floor(Math.random() * pick.length)], true);
+    update();
+    done();
+  });
+
+  // A new screen width puts the wreck back together where it fits.
+  let wait = 0;
+  let lastWidth = hero.getBoundingClientRect().width;
+  addEventListener("resize", () => {
+    clearTimeout(wait);
+    wait = setTimeout(() => {
+      const w = hero.getBoundingClientRect().width;
+      if (w !== lastWidth) {
+        lastWidth = w;
+        build();
+      }
+    }, 200);
+  });
+  build();
+}
+
 async function init() {
   setUpLens();
   setUpHorizon();
@@ -7624,6 +8238,8 @@ async function init() {
   setUpLogoSecret();
   setUpMooseAttack();
   setUpSound();
+  setUpBlueprint();
+  setUpCrashTest();
 
   // The offline helper (sw.js): keeps a copy of the site on this phone so
   // it still opens with no signal.

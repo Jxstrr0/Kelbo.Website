@@ -550,7 +550,8 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   - The third dog: `thirdDogLine` follows `sunDogLine` in the daytime
     readout, on the same `sunDogStrength` days.
   - `404.html`: `.lost__head` puts a second copy of the portrait SVG
-    (`.party__dog.lost__dog`) beside "Lost?". It is plain HTML so it shows
+    (`.party__dog.lost__dog`) beside "Wrecked." (it said "Lost?" until the
+    crash test, Nov 2026). It is plain HTML so it shows
     with no script; a change to his markings goes in both files.
 - Glass (2026-10-30): the "Glass" section of `style.css` (just before
   Motion) turns the header, cards (`.continue__card`, `.project`,
@@ -701,6 +702,42 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   `.github` so it isn't published; it never describes Kelbo's private repos.
   Update it here first, then recopy.
 ## Pages, sections, logo and header
+
+- Blueprint mode (home page only, Nov 2026, Kelbo's idea #2):
+  `setUpBlueprint` in `main.js` and the "Blueprint mode" section of
+  `style.css` (just before Glass). The `.bp-toggle` button in the bottom
+  corner, or the B key (not while typing or with a dialog open), puts
+  `bp` on `<html>`; the choice is saved as `kelbo.blueprint` ("on").
+  The look is all CSS: one rule strips fills, shadows and filters from
+  everything but the drawing layers, covers go through the `#bp-edges`
+  SVG filter (`feConvolveMatrix` edge finder) and card clips (`video`) are
+  hidden so the still cover is drawn instead. The pencil work is SVG drawn
+  by script: `.bp-hz` in the horizon (hatched ground, the sun as a circle
+  with centre marks where the real sun is, clipped at the horizon, with
+  its label on the side that has room; a 500 ms check redraws it when the
+  sun moves), and `.bp-layer`, the size of the page (dimension lines on
+  the headline and the spotlight, "START HERE" and "THE SPOTLIGHT GAME"
+  leaders, numbered tags on the game cards). `.bp-sheet` under the page is
+  the parts list (from the cards), the notes and the title block. They
+  redraw on resize, and the sheet when the card grid changes. The paper
+  colour is `BLUEPRINT_PAPER` at the top of the section ("blue" or
+  "purple"; `?paper=purple` or `?paper=blue` previews one without
+  changing it); the colours are the `--bp-*` tokens, purple under
+  `html.bp--purple`. Turning it on or off wipes left to right with a View
+  Transition unless reduced motion is on. The sticky header, dialogs and
+  the badge toast keep solid paper.
+- The crash-test 404 (Nov 2026, Kelbo's idea #6): `.hero--crash` on
+  `404.html` and `setUpCrashTest` in `main.js` (the "Crash test" section of
+  `style.css`). With script on, it unhides `[data-crash-report]` and parks
+  a `.wreck` on the horizon: the 13 `PARTS` (a "404" in three pieces, a
+  bumper, a torn nav bar, a cracked Scrapline card, a sticker, nuts, a
+  spring and the sun hubcap), each resting on the ground or on others.
+  Tapping a part knocks it off and anything resting on it follows; a
+  drag throws a loose part (the hubcap rolls). When all are off, the
+  "Total loss" stamp shows and the button reads "Rebuild the wreck". The
+  "Knock one loose" button does the same from a keyboard. With reduced
+  motion parts drop straight to the ground with no flight. Without
+  script the page is the plain 404.
 
 - The home hero (Horizon plan, `.github/HOME-HORIZON-PLAN.md`, PR 1):
   `.hero--home` scopes its styles; the `h1` is `.hero__name--promise`
