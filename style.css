@@ -5796,6 +5796,622 @@ a.quest__top:focus-visible .quest__name {
 
 }
 
+/* ---------- Blueprint mode (home page) ----------
+   main.js (setUpBlueprint) puts "bp" on <html> when the Blueprint button
+   in the corner (or the B key) is pressed: the page is redrawn as a
+   white-line engineering drawing on blueprint paper. Nothing here applies
+   without html.bp, so the normal site is untouched.
+   Two papers: classic blueprint blue (below), or Longlight purple
+   (html.bp--purple, set from BLUEPRINT_PAPER in main.js). */
+:root {
+  --bp-paper: #17457E;             /* classic blueprint blue */
+  --bp-paper-deep: #113866;
+  --bp-ink: #EAF2FF;               /* the white line */
+  --bp-faint: rgba(234, 242, 255, 0.55);
+  --bp-grid: rgba(234, 242, 255, 0.07);
+  --bp-grid-major: rgba(234, 242, 255, 0.14);
+  --bp-mark: #FFD9C9;              /* red-pencil notes: a pale clay */
+  --bp-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+html.bp--purple {                  /* the Longlight purple paper */
+  --bp-paper: #3C1F66;
+  --bp-paper-deep: #2E1750;
+  --bp-ink: #F3ECFF;
+  --bp-faint: rgba(243, 236, 255, 0.55);
+  --bp-grid: rgba(243, 236, 255, 0.07);
+  --bp-grid-major: rgba(243, 236, 255, 0.14);
+}
+
+/* The switch in the bottom corner (kept clear of the scroll sun on the
+   right edge) */
+.bp-toggle {
+  position: fixed;
+  z-index: 60;
+  right: max(1.75rem, calc(env(safe-area-inset-right) + 1.75rem));
+  bottom: max(1rem, calc(env(safe-area-inset-bottom) + 0.5rem));
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 44px;
+  padding: 0.55rem 0.9rem;
+  border: 2px solid var(--ll-slate);
+  border-radius: 999px;
+  background: var(--ll-ivory);
+  color: var(--ll-slate);
+  font: 600 0.8rem/1 var(--font-body);
+  cursor: pointer;
+  box-shadow: 0 6px 22px rgba(20, 20, 19, 0.25);
+}
+.bp-toggle svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+.bp-toggle:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+html.bp .bp-toggle {
+  background: var(--bp-paper-deep);
+  color: var(--bp-ink);
+  border-color: var(--bp-ink);
+  box-shadow: none;
+}
+.has-player .bp-toggle {
+  display: none; /* out of the way while a game is open */
+}
+.bp-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+/* Paper: the ground colour with a fine 8px grid and a 40px major grid */
+html.bp,
+html.bp body {
+  background-color: var(--bp-paper) !important;
+  background-image:
+    linear-gradient(var(--bp-grid-major) 1px, transparent 1px),
+    linear-gradient(90deg, var(--bp-grid-major) 1px, transparent 1px),
+    linear-gradient(var(--bp-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--bp-grid) 1px, transparent 1px) !important;
+  background-size: 40px 40px, 40px 40px, 8px 8px, 8px 8px !important;
+  color-scheme: dark;
+  overflow-x: clip;
+}
+html.bp body::before {
+  display: none; /* the glass colour blobs */
+}
+
+/* Strip every fill, shadow and colour: only lines remain */
+html.bp body *:not(.bp-marks, .bp-marks *, .bp-toggle, .bp-toggle *) {
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  color: var(--bp-ink) !important;
+  border-color: var(--bp-faint) !important;
+  text-decoration-color: var(--bp-faint) !important;
+  filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  animation: none !important;
+}
+/* Things that sit over the page (the sticky header, dialogs, the badge
+   toast) keep solid paper, so the page under them doesn't show through */
+html.bp body :is(.site-header, dialog, .badge-toast):not(.bp-marks) {
+  background-color: var(--bp-paper) !important;
+}
+html.bp body *::before,
+html.bp body *::after {
+  background-image: none !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Line art: every drawing (logo, farm, moon, icons) becomes outlines */
+html.bp body svg:not(.bp-marks, .bp-toggle svg),
+html.bp body svg:not(.bp-marks, .bp-toggle svg) *:not(.bp-marks *) {
+  fill: none !important;
+  stroke: var(--bp-ink) !important;
+  stroke-width: 1px !important;
+  vector-effect: non-scaling-stroke;
+}
+html.bp .logo__glow {
+  display: none;
+}
+
+/* Covers and photos become white line drawings (the edge-finding filter
+   main.js adds to the page) */
+html.bp body img:not(.bp-toggle *) {
+  filter: url(#bp-edges) !important;
+}
+/* Moving clips are hidden, so the still cover under them is drawn instead
+   (running the filter on every video frame would be slow on a phone) */
+html.bp body video:not(.bp-toggle *) {
+  display: none !important;
+}
+
+/* Things get a drawn outline instead of a fill */
+html.bp .site-header {
+  border-bottom: 1px solid var(--bp-faint) !important;
+}
+html.bp .spotlight,
+html.bp .project,
+html.bp .studio-card,
+html.bp .ticker__chip,
+html.bp .ticker__now,
+html.bp .continue__card,
+html.bp .button,
+html.bp .game-filters button {
+  border: 1px solid var(--bp-ink) !important;
+  border-radius: 3px !important;
+}
+html.bp .button--start,
+html.bp .spotlight__play,
+html.bp .button--play {
+  border-width: 2px !important;
+}
+html.bp .project__cover,
+html.bp .spotlight__cover,
+html.bp .studio-card__cover {
+  outline: 1px dashed var(--bp-faint);
+  outline-offset: -1px;
+}
+html.bp .game-filters button[aria-pressed="true"] {
+  border-style: double !important;
+  border-width: 3px !important;
+}
+html.bp .project__status,
+html.bp .spotlight__chip {
+  border: 1px solid var(--bp-faint) !important;
+}
+html.bp a:focus-visible,
+html.bp button:focus-visible {
+  outline: 2px dashed var(--bp-ink) !important;
+  outline-offset: 3px;
+}
+
+/* Headlines are drawn as outlined letters, like stencil lettering */
+html.bp body h1.hero__name,
+html.bp body section.section h2 {
+  color: transparent !important;
+  -webkit-text-stroke: 1px var(--bp-ink);
+  letter-spacing: 0.01em;
+}
+/* Browsers that can't outline letters keep them solid */
+@supports not (-webkit-text-stroke: 1px black) {
+  html.bp body h1.hero__name,
+  html.bp body section.section h2 {
+    color: var(--bp-ink) !important;
+  }
+}
+html.bp .eyebrow,
+html.bp .studio-card__kicker,
+html.bp .horizon__readout,
+html.bp .ticker__label {
+  font-family: var(--bp-mono) !important;
+}
+
+/* The live sky: the real sun position stays, but it's drawn (.bp-hz) */
+html.bp .horizon > :not(svg, .horizon__readout),
+html.bp .horizon > .horizon__shadow,
+html.bp .horizon > .horizon__lines {
+  opacity: 0 !important;
+}
+html.bp .horizon {
+  overflow: visible !important;
+}
+.bp-hz {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+html.bp .horizon > .bp-hz {
+  opacity: 1 !important;
+}
+
+/* Measurement lines, numbered tags and notes */
+.bp-layer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 5;
+  overflow: visible;
+  pointer-events: none;
+}
+.bp-marks line,
+.bp-marks path,
+.bp-marks circle {
+  fill: none;
+  stroke: var(--bp-mark);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+.bp-marks .ink {
+  stroke: var(--bp-ink);
+}
+.bp-marks .dashed {
+  stroke-dasharray: 3 4;
+}
+.bp-marks .hatch {
+  stroke: var(--bp-faint);
+  vector-effect: none;
+}
+.bp-marks .ground {
+  fill: url(#bp-hatch);
+  stroke: none;
+}
+.bp-marks .arrow {
+  fill: var(--bp-mark);
+  stroke: none;
+}
+.bp-marks text {
+  fill: var(--bp-mark);
+  stroke: none;
+  font: 600 10px/1 var(--bp-mono);
+  letter-spacing: 0.06em;
+}
+.bp-marks .balloon circle {
+  fill: var(--bp-paper);
+  stroke: var(--bp-ink);
+}
+.bp-marks .balloon text {
+  fill: var(--bp-ink);
+  font-size: 11px;
+}
+/* The pen: lines draw themselves, then the labels fade in */
+.bp-marks .draw {
+  stroke-dasharray: var(--len, 400);
+  stroke-dashoffset: var(--len, 400);
+  animation: bp-draw 0.9s var(--ease) forwards;
+  animation-delay: var(--d, 0s);
+}
+.bp-marks text,
+.bp-marks .balloon {
+  opacity: 0;
+  animation: bp-fade 0.4s ease forwards;
+  animation-delay: calc(var(--d, 0s) + 0.5s);
+}
+.bp-marks .draw.centre {
+  stroke-dasharray: 10 3 2 3; /* the drawing sign for a centre line */
+  stroke-dashoffset: 0;
+  animation: none;
+}
+.bp-marks--still .draw,
+.bp-marks--still text,
+.bp-marks--still .balloon {
+  animation: none;
+  stroke-dashoffset: 0;
+  opacity: 1;
+}
+@keyframes bp-draw {
+  to { stroke-dashoffset: 0; }
+}
+@keyframes bp-fade {
+  to { opacity: 1; }
+}
+
+/* The drawing sheet above the footer: parts list, notes, title block */
+.bp-sheet {
+  margin-block: 2rem 1rem;
+  font-family: var(--bp-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.bp-sheet table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.bp-sheet th,
+.bp-sheet td {
+  border: 1px solid var(--bp-ink) !important;
+  padding: 0.4rem 0.5rem;
+  text-align: left;
+  vertical-align: top;
+  font-weight: 500;
+}
+.bp-sheet th {
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: var(--bp-faint) !important;
+}
+.bp-sheet td.num {
+  width: 2.2rem;
+  text-align: center;
+}
+.bp-sheet .bp-cap {
+  margin: 1.5rem 0 0.4rem;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+.bp-sheet ol {
+  display: grid;
+  gap: 0.25rem;
+  margin: 0;
+  padding-left: 1.4rem;
+}
+.bp-title td strong {
+  display: block;
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+}
+.bp-proj {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* The redraw sweeps from left to right, like a plotter pen */
+::view-transition-new(root) {
+  animation: bp-wipe 0.8s cubic-bezier(0.6, 0, 0.2, 1);
+}
+::view-transition-old(root) {
+  animation: none;
+}
+@keyframes bp-wipe {
+  from { clip-path: inset(0 100% 0 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-new(root) {
+    animation: none;
+  }
+  .bp-marks .draw,
+  .bp-marks text,
+  .bp-marks .balloon {
+    animation: none;
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+/* ---------- The crash-test 404 ----------
+   main.js (setUpCrashTest) parks a wreck on 404.html's horizon line. The
+   stage covers the whole hero so parts can fly over the text; only the
+   parts themselves take taps. Brand colours only. */
+.hero--crash .hero__top {
+  position: relative;
+  z-index: 3;
+}
+.hero--crash .hero__actions,
+.crash-report {
+  position: relative;
+  z-index: 6; /* the buttons stay above any part that lands on them */
+}
+.crash-report {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  margin: 1.1rem 0 0;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--sky-muted);
+}
+.crash-report[hidden] {
+  display: none;
+}
+.crash-report__tag {
+  padding: 0.3rem 0.55rem 0.3rem 1.6rem;
+  border-radius: 4px;
+  color: var(--ll-ivory);
+  /* hazard tape down the left edge: clay and ivory stripes */
+  background:
+    repeating-linear-gradient(-45deg, var(--ll-clay) 0 5px, var(--ll-ivory) 5px 10px) left / 1rem 100% no-repeat,
+    var(--ll-slate);
+}
+.crash-report__btn {
+  min-height: 44px;
+  padding: 0.35rem 0.9rem;
+  border: 1.5px solid currentColor;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--sky-ink);
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+}
+.crash-report__btn:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.wreck {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  overflow: hidden;
+  pointer-events: none;
+}
+.wreck.is-hit {
+  animation: wreck-shake 0.22s linear;
+}
+@keyframes wreck-shake {
+  25% { transform: translate(2px, -1px); }
+  50% { transform: translate(-2px, 1px); }
+  75% { transform: translate(1px, 0); }
+}
+.part {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: auto;
+  cursor: pointer;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  will-change: transform;
+}
+.part.is-loose {
+  cursor: grab;
+}
+.part.is-held {
+  z-index: 30 !important;
+  cursor: grabbing;
+}
+
+/* The digits: ivory slabs with a slate edge and a crack */
+.part--digit {
+  font: 700 88px/1 var(--font-display);
+  letter-spacing: -0.04em;
+  color: var(--ll-ivory);
+  -webkit-text-stroke: 2px var(--ll-slate);
+  paint-order: stroke fill;
+}
+.part--digit svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.part--digit .crack {
+  fill: none;
+  stroke: var(--ll-slate);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.part--dent span {
+  display: inline-block;
+  transform: skewX(-8deg) scaleY(0.88);
+}
+.part--nav {
+  grid-auto-flow: column;
+  gap: 10px;
+  padding: 0 10px;
+  border-bottom: 3px solid var(--ll-purple);
+  border-radius: 6px;
+  background: var(--ll-slate);
+  color: var(--ll-ivory);
+  font: 600 11px/1 var(--font-body);
+  clip-path: polygon(0 0, 100% 8%, 94% 100%, 72% 76%, 58% 100%, 0 100%);
+}
+.part--card {
+  padding: 4px;
+  overflow: hidden;
+  border-radius: 8px;
+  background: var(--ll-ivory);
+  box-shadow: inset 0 -10px 0 var(--ll-clay);
+  clip-path: polygon(0 0, 100% 0, 100% 62%, 86% 70%, 92% 100%, 0 100%, 0 40%, 8% 34%);
+}
+.part--card img {
+  align-self: start;
+  width: 100%;
+  height: 72%;
+  object-fit: cover;
+  border-radius: 5px;
+  pointer-events: none;
+}
+.part--target {
+  border-radius: 50%;
+  background: conic-gradient(var(--ll-clay) 0 25%, var(--ll-slate) 0 50%, var(--ll-clay) 0 75%, var(--ll-slate) 0);
+  box-shadow: 0 0 0 3px var(--ll-ivory);
+}
+.part--hubcap {
+  border-radius: 50%;
+  background: var(--ll-clay);
+  box-shadow: 0 0 0 4px var(--ll-ivory), 0 0 0 7px var(--ll-clay);
+}
+.part--hubcap::after {
+  content: "";
+  width: 30%;
+  height: 30%;
+  border-radius: 50%;
+  background: var(--ll-ivory);
+}
+.part--hubcap::before {
+  content: "";
+  position: absolute;
+  width: 70%;
+  height: 3px;
+  background: var(--ll-ivory);
+  opacity: 0.7;
+}
+.part svg.line {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.part svg.line * {
+  fill: none;
+  stroke: var(--ll-ivory);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.part--glass svg * {
+  fill: var(--ll-lilac);
+  fill-opacity: 0.55;
+  stroke: var(--ll-ivory);
+  stroke-width: 1.5;
+}
+.part--play {
+  grid-auto-flow: column;
+  gap: 6px;
+  border-radius: 999px;
+  background: var(--ll-clay);
+  color: var(--ll-slate);
+  font: 700 13px/1 var(--font-body);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 22% 100%, 26% 70%, 12% 100%, 0 100%);
+}
+.part--bumper {
+  border-radius: 6px 6px 3px 3px;
+  background: var(--ll-slate);
+  box-shadow: inset 0 3px 0 rgba(250, 249, 245, 0.35);
+}
+.part--bumper::after {
+  content: "";
+  position: absolute;
+  right: 8px;
+  top: 3px;
+  width: 18px;
+  height: 6px;
+  border-radius: 2px;
+  background: var(--ll-clay);
+}
+
+/* "Total loss": a stamp that lands when the last part comes off */
+.crash-stamp {
+  position: absolute;
+  z-index: 40;
+  padding: 0.4rem 0.9rem;
+  border: 4px solid var(--ll-clay);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--ll-ivory) 88%, transparent);
+  color: var(--ll-clay);
+  font: 700 1.6rem/1 var(--font-display);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
+  transform: translate(-50%, -50%) rotate(-9deg);
+  animation: crash-stamp 0.35s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+@keyframes crash-stamp {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(-9deg) scale(2.2);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wreck.is-hit,
+  .crash-stamp {
+    animation: none;
+  }
+}
+
 /* ---------- Glass ----------
    A frosted-glass look, like the newer iPhone screens: the header, cards,
    buttons and pop-ups are see-through panes that blur whatever is behind
