@@ -10,7 +10,7 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-3rlhtGUdbq9NHBK+ibJeoY6zEA6VbYbancKaS4hDWiY=' 'sha256-EKFSpSFGlJ//fbclSr8dW+Er+7ao/Us1DJDdDMfvbv0=' 'sha256-U/TJwtLE6lTCV9bYCA9j64l71BIa6nyDk8kLnJTT1To=' 'sha256-yfI1vJawzSMngPDeZj1QX3aa793BanIkz4n/cme5O0g=' https://static.cloudflareinsights.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self' https://contact.longlight.games https://cloudflareinsights.com https://api.open-meteo.com https://air-quality-api.open-meteo.com https://services.swpc.noaa.gov https://api.weather.gc.ca https://celestrak.org https://www.bankofcanada.ca; frame-src https://challenges.cloudflare.com; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self' https://contact.longlight.games; upgrade-insecure-requests">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>Art gallery · Longlight Interactive</title>
-  <meta name="description" content="Art from Longlight Interactive's games: 3D scenes, Blender renders and key art, each labelled with how it was made.">
+  <meta name="description" content="Art from Longlight Interactive's games: 3D scenes and Blender renders, each labelled with how it was made.">
   <!-- Link preview: the card that shows up when this page is shared in a
        text, Discord, X, etc. These links have to be full web addresses
        (not relative), because the apps that read them aren't on this site.
@@ -18,7 +18,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Longlight Interactive">
   <meta property="og:title" content="Art gallery · Longlight Interactive">
-  <meta property="og:description" content="Art from Longlight Interactive's games: 3D scenes, Blender renders and key art, each labelled with how it was made.">
+  <meta property="og:description" content="Art from Longlight Interactive's games: 3D scenes and Blender renders, each labelled with how it was made.">
   <meta property="og:url" content="https://longlight.games/gallery.html">
   <meta property="og:image" content="https://longlight.games/assets/social-preview.jpg?v=22">
   <meta property="og:image:width" content="1200">
@@ -109,7 +109,8 @@
         <h1>Art gallery</h1>
         <p class="page-head__line">
           Pictures from the games, each with a note on how it was made: a
-          scene captured from the live game, a Blender render, or key art.
+          scene captured from the live game or a render from the game's own
+          Blender scripts.
           Tap a picture to see it bigger.
         </p>
         <!-- The live horizon: main.js puts the sun where the real sun is
@@ -134,7 +135,8 @@
       <h2 id="gallery-heading" class="visually-hidden">Pictures</h2>
       <!-- To add a picture: put a 640-wide JPG (480 if it stands tall) and
            a twice-as-big "@2x" copy in assets/gallery/, then copy a <figure>
-           below. Say how it was made in the caption, and credit AI art. -->
+           below. Say how it was made in the caption. Every picture comes from the
+           games themselves (Kelbo swapped out the AI art on 27 Nov 2026). -->
       <h3 class="gallery__game"><a href="game.html?g=prairie-engine-works">Prairie Engine Works</a></h3>
       <div class="gallery">
         <figure class="gallery__item">
@@ -146,8 +148,8 @@
           <figcaption><strong>On the line.</strong> In-game 3D, a drag pass at Section Line Dragway, captured from the live game.</figcaption>
         </figure>
         <figure class="gallery__item">
-          <a href="assets/art/prairie-engine-works@2x.jpg"><img src="assets/art/prairie-engine-works.jpg" srcset="assets/art/prairie-engine-works.jpg 1x, assets/art/prairie-engine-works@2x.jpg 2x" width="640" height="480" alt="A crate engine on a dyno at dusk, painted in warm light." loading="lazy" decoding="async"></a>
-          <figcaption><strong>Dusk on the dyno.</strong> Key art, AI-generated with Higgsfield. Mood, not gameplay.</figcaption>
+          <a href="assets/covers/prairie-engine-works@2x.jpg"><img src="assets/covers/prairie-engine-works.jpg" srcset="assets/covers/prairie-engine-works.jpg 1x, assets/covers/prairie-engine-works@2x.jpg 2x" width="640" height="480" alt="An orange-topped V8 engine on the dyno stand in the workshop, gas bottles against the brick wall behind it." loading="lazy" decoding="async"></a>
+          <figcaption><strong>The Three-fifty.</strong> In-game 3D, the small-block on its stand in photo mode, captured from the live game.</figcaption>
         </figure>
       </div>
       <h3 class="gallery__game"><a href="game.html?g=scrapline">Scrapline</a></h3>
@@ -161,8 +163,8 @@
           <figcaption><strong>A spar in the club box.</strong> In-game 3D, both robots on AI, captured from the live game.</figcaption>
         </figure>
         <figure class="gallery__item">
-          <a href="assets/films/scrapline.jpg"><img src="assets/films/scrapline.jpg" width="1280" height="720" alt="Two combat robots meeting in a dark arena lit purple." loading="lazy" decoding="async"></a>
-          <figcaption><strong>Arena night.</strong> Still from a short film, AI-generated with Higgsfield. Mood, not gameplay.</figcaption>
+          <a href="assets/covers/scrapline@2x.jpg"><img src="assets/covers/scrapline.jpg" srcset="assets/covers/scrapline.jpg 1x, assets/covers/scrapline@2x.jpg 2x" width="640" height="480" alt="Two combat robots locked together in the corner of the arena, by the SCRAPLINE boards." loading="lazy" decoding="async"></a>
+          <figcaption><strong>Locked in the corner.</strong> In-game 3D, a live fight, captured from the live game.</figcaption>
         </figure>
       </div>
       <h3 class="gallery__game"><a href="game.html?g=season-ticket">Season Ticket</a></h3>
@@ -202,8 +204,8 @@
           <figcaption><strong>The canal outside.</strong> Rendered in Blender, the street behind the shop window.</figcaption>
         </figure>
         <figure class="gallery__item">
-          <a href="assets/art/lombard@2x.jpg"><img src="assets/art/lombard.jpg" srcset="assets/art/lombard.jpg 1x, assets/art/lombard@2x.jpg 2x" width="640" height="480" alt="A pawn shop counter painted over a city canal." loading="lazy" decoding="async"></a>
-          <figcaption><strong>Mostograd.</strong> Key art, AI-generated with Higgsfield. Mood, not gameplay.</figcaption>
+          <a href="assets/covers/lombard@2x.jpg"><img src="assets/covers/lombard.jpg" srcset="assets/covers/lombard.jpg 1x, assets/covers/lombard@2x.jpg 2x" width="640" height="480" alt="The pawn shop from behind the counter: a glass case, a plastic chair and a big window onto the canal and a stone bridge." loading="lazy" decoding="async"></a>
+          <figcaption><strong>Behind the counter.</strong> In-game 3D, the shop and the canal outside, captured from the live game.</figcaption>
         </figure>
       </div>
       <h3 class="gallery__game"><a href="game.html?g=burn-rate">Burn Rate</a></h3>

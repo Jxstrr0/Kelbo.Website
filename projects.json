@@ -2,8 +2,6 @@
   {
     "title": "Prairie Engine Works",
     "tagline": "Build an engine part by part, put it on the dyno, then go racing.",
-    "art": "assets/art/prairie-engine-works.jpg",
-    "film": "assets/films/prairie-engine-works.mp4",
     "status": "Released",
     "category": "Game",
     "summary": "Longlight's biggest game so far. Put an engine together on the test stand, fire it up and hear it run, then take it to the drag strip or a truck and tractor pull to earn cash and reputation.",
@@ -50,7 +48,6 @@
   {
     "title": "Scrapline",
     "tagline": "Build a combat robot under the weight limit and fight it in the arena.",
-    "film": "assets/films/scrapline.mp4",
     "status": "Polishing",
     "category": "Game",
     "summary": "A combat robot builder. Design a fighting robot under a weight limit, test it on the bench, drive it in the arena, patch it in the pit and read the post-mortem, from a plywood box in a rented corner of a machine shop to the televised Scrapline Open.",
@@ -188,7 +185,6 @@
   {
     "title": "Lombard",
     "tagline": "Run a canal-side pawn shop: inspect, spot the fakes, haggle.",
-    "art": "assets/art/lombard.jpg",
     "status": "Polishing",
     "category": "Game",
     "summary": "A first-person pawn shop sim on a canal in Mostograd, a made-up Russian river city in the 2010s. Inspect what people bring in, spot the fakes, haggle, and decide how much trouble a good deal is worth.",
