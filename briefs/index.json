@@ -1,14 +1,14 @@
 {
   "latest": {
-    "date": "2026-11-26",
-    "time": "2026-11-26T12:35:13.589Z",
-    "headline": "US markets closed today; MU rebounded from $548 to $601 Wednesday",
-    "tldr": "US stocks are shut for Thanksgiving and reopen Friday at 9:30 ET (8:30 SK) for a half day; MU opened Wednesday at $574.92 (−8.71%), fell to $548.13, closed at $601.25 (−4.53%) and last printed $615.26 after hours at 7:59 PM ET."
+    "date": "2026-11-27",
+    "time": "2026-11-27T12:35:44.570Z",
+    "headline": "MU up about 6% pre-market as Seoul memory names surge",
+    "tldr": "MU last printed $637.00 (+5.95%) at 6:36 ET after SK Hynix closed +5.41% and Nasdaq 100 futures rose about 2.2%, so I expect a gap up of roughly 3.5% to 8.5% into a half session that ends at 1:00 PM ET (12:00 PM SK)."
   },
   "months": [
     {
       "month": "2026-11",
-      "count": 20
+      "count": 21
     }
   ]
 }
