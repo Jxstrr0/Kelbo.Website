@@ -1,4 +1,72 @@
 {
+  "2026-11-27": {
+    "date": "2026-11-27",
+    "time": "2026-11-27T22:47:13.879Z",
+    "summary": "The gap-up call was right (opened +4.8%, inside the 3.5–8.5% range but below the +6% centre), and MU dipped through the pivot to 607.27 before closing at 646.95 without reaching any support or resistance level.",
+    "gap": {
+      "call": "Up about 3.5% to 8.5%, centred near +6%",
+      "result": "Opened at 630.13, up 4.8% from 601.25, in the lower half of the called range.",
+      "grade": "hit"
+    },
+    "mu": {
+      "prev_close": 601.25,
+      "open": 630.13,
+      "high": 654.44,
+      "low": 607.27,
+      "close": 646.95,
+      "open_pct": 4.8,
+      "close_pct": 7.6
+    },
+    "levels": [
+      {
+        "level": "Pivot $622.22–$629.79 (Tuesday's low and close)",
+        "result": "Opened just above it, fell through to 607.27 (about 2.4% under the zone), then closed back above at 646.95.",
+        "grade": "held"
+      },
+      {
+        "level": "First support $574.92–$585.25 (Wednesday's open and the Nov 20 low)",
+        "result": "The day's low of 607.27 stayed about 3.8% above it.",
+        "grade": "untested"
+      },
+      {
+        "level": "Next support $548.13–$557.76 (Wednesday's low and the May 4 low)",
+        "result": "The price never came near it.",
+        "grade": "untested"
+      },
+      {
+        "level": "First resistance $669.39–$672.07 (Tuesday's open and high)",
+        "result": "The day's high of 654.44 stopped about 2.2% short of it.",
+        "grade": "untested"
+      },
+      {
+        "level": "Next resistance near $707.69 (Monday's close)",
+        "result": "The price never came near it.",
+        "grade": "untested"
+      }
+    ],
+    "sources": [
+      {
+        "title": "Micron Technology (MU) Stock Price, News, Quote & History | Shelby Daily Globe",
+        "url": "https://sdgnewsgroup.marketminute.com/quote/NQ:MU"
+      },
+      {
+        "title": "Historical Stock Prices for Micron Technology (Nasdaq:MU)",
+        "url": "https://sdgnewsgroup.marketminute.com/quote/NQ:MU/historical"
+      },
+      {
+        "title": "Micron Technology, Inc. (MU) Stock Price, News, Quote & History - Yahoo Finance",
+        "url": "https://finance.yahoo.com/quote/MU/"
+      },
+      {
+        "title": "Micron Technology (MU) Stock Price, Quote, News & History",
+        "url": "https://www.benzinga.com/quote/MU"
+      },
+      {
+        "title": "Micron Technology (NASDAQ:MU) Stock Jumps 7.3% - Here's Why",
+        "url": "https://www.marketbeat.com/instant-alerts/price-micron-technology-nasdaq-mu-stock-jumps-73-heres-why-2026-11-27/"
+      }
+    ]
+  },
   "2026-11-25": {
     "date": "2026-11-25",
     "time": "2026-11-25T22:47:28.955Z",
