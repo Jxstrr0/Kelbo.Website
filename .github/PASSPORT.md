@@ -56,7 +56,6 @@ stamp link and the bridge, section 3).
 | Frontier Lab | `https://frontierlab.longlight.games` | Hidden | Yes | Link + bridge |
 | Hull Down | `https://hulldown.longlight.games` | Hidden | Yes | Link + bridge |
 | Laminar | `https://laminar.longlight.games` | Hidden | Yes | Link + bridge |
-| Mainline | `https://mainline.longlight.games` | Hidden | Yes | Link + bridge |
 
 What else the audit found:
 
@@ -265,7 +264,6 @@ there):
 | Frontier Lab | `frontierlab.passport` |
 | Hull Down | `hulldown.passport` |
 | Laminar | `laminar.passport` |
-| Mainline | `mainline.passport` |
 
 A new key is a new localStorage key in that game. Scrapline and Burn Rate's
 rules say to ask Kelbo before adding one, so their sessions ask first.

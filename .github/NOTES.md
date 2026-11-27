@@ -917,23 +917,15 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   four new screenshots in its Isobar look (Jobs, Shape, the tunnel with
   smoke, the tunnel in dark mode with tufts and the rake) and stays hidden
   (Kelbo). The cover and clips are still the first recordings.
-  Mainline (the train-builder career, 2010 to 2040,
-  mainline.longlight.games, repo `Jxstrr0/Mainline`) was added hidden
-  (Kelbo, 2026-11-25). Its cover is the high-speed nose car in the blue
-  works livery in the works hall, captured from the live game's
-  `?debug=art&look=nose: high-speed&livery=blue` view with Playwright
-  (canvas only, cropped 4:3); no clip or screenshots yet. Its
-  `publish-release.yml` publishes a release when `VERSION` changes, like
-  Laminar's. It isn't on the Now building line while it's hidden.
   Bump Stop (the rally-raid truck builder, bumpstop.longlight.games, repo
   `Jxstrr0/BumpStop`) was added hidden (Kelbo, 2026-11-25) at its PR 0,
   with no cover, clip or screenshots yet. Its `publish-release.yml`
-  publishes a release when `VERSION` changes, like Mainline's. Its plan
+  publishes a release when `VERSION` changes, like Laminar's. Its plan
   lists it publicly at PR 8, the first playable, if Kelbo wants.
   Crumple (the crash-lab game, crumple.longlight.games, repo
   `Jxstrr0/Crumple`) was added hidden (Kelbo, 2026-11-26) at its PR 0,
   with no cover, clip or screenshots yet. Its `publish-release.yml`
-  publishes a release when `VERSION` changes, like Mainline's.
+  publishes a release when `VERSION` changes, like Laminar's.
   Each game keeps its own look (fonts, colours, art). The Longlight logo,
   the five colours and Space Grotesk belong to studio pieces only (logo or
   splash, credit line, studio block, links back here); every game repo's
