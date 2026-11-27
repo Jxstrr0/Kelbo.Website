@@ -720,8 +720,8 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   leaders, numbered tags on the game cards). `.bp-sheet` under the page is
   the parts list (from the cards), the notes and the title block. They
   redraw on resize, and the sheet when the card grid changes. The paper
-  colour is `BLUEPRINT_PAPER` at the top of the section ("blue" or
-  "purple"; `?paper=purple` or `?paper=blue` previews one without
+  colour is `BLUEPRINT_PAPER` at the top of the section ("purple",
+  Kelbo's pick on 27 Nov 2026, or "blue"; `?paper=purple` or `?paper=blue` previews one without
   changing it); the colours are the `--bp-*` tokens, purple under
   `html.bp--purple`. Turning it on or off wipes left to right with a View
   Transition unless reduced motion is on. The sticky header, dialogs and

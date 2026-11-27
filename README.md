@@ -437,7 +437,7 @@ Display & Text Size) get plain solid cards instead.
 ### Blueprint mode
 
 The "Blueprint" button in the bottom corner of the home page (or the B
-key) redraws the page as a line drawing. To change the paper colour, open
+key) redraws the page as a line drawing on Longlight purple paper. To change the paper colour, open
 `main.js`, find `BLUEPRINT_PAPER` (search for it) and set it to `"blue"`
 or `"purple"`. To try one without changing anything, add `?paper=purple`
 or `?paper=blue` to the home page address.

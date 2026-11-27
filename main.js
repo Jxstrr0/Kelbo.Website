@@ -7612,7 +7612,7 @@ function fillGameCount(projects) {
    purple). Change the word to switch it for everyone. To compare on a
    phone without changing anything, add ?paper=purple (or ?paper=blue) to
    the home page's address. */
-const BLUEPRINT_PAPER = "blue";
+const BLUEPRINT_PAPER = "purple"; // Kelbo picked purple, 27 Nov 2026
 const BLUEPRINT_KEY = "kelbo.blueprint"; // "on" while it's switched on
 const SVG_NS = "http://www.w3.org/2000/svg";
 
