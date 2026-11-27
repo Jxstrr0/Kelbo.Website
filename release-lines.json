@@ -163,5 +163,10 @@
     "line": "The game should now run at a smoother frame rate on desktop.",
     "title": "v1.76.144.0 - Strip frame saver for desktop FPS (#328)",
     "at": "2026-11-26T21:58:26.098Z"
+  },
+  "BumpStop@v1.27.0.0": {
+    "line": "Every 3D view now lets you choose Truck, X-ray or Both.",
+    "title": "v1.27.0.0 - Truck, X-ray or Both on every 3D view",
+    "at": "2026-11-27T21:40:32.017Z"
   }
 }
