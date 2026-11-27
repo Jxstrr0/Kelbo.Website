@@ -51,9 +51,9 @@ if (process.env.GITHUB_TOKEN) headers.Authorization = `Bearer ${process.env.GITH
 // Hidden projects ("hidden": true) are off the site, so they're skipped.
 // SKIP_REPOS are games whose card keeps its plain release title: no paid
 // call for them (Kelbo, 2026-11-11, to keep the robot's bill where it was).
-// Bump Stop joined the list when it went on the site (2026-11-27): it ships
-// several releases a day, so the robot would be called on most runs.
-const SKIP_REPOS = new Set(["SeasonTicket", "Lombard", "FrontierLab", "BumpStop"]);
+// Bump Stop is not on it: Kelbo chose robot-written lines for it when it
+// went on the site (2026-11-27), about US$0.05 a call.
+const SKIP_REPOS = new Set(["SeasonTicket", "Lombard", "FrontierLab"]);
 const projects = JSON.parse(await readFile("projects.json", "utf8")).filter((p) => !p.hidden);
 const fresh = []; // { key, game, title, notes }
 for (const p of projects) {

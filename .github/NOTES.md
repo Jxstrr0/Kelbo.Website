@@ -931,8 +931,10 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   game with Playwright at 1280×960 with the visit counter blocked; its five
   screenshots (Build, a washboard ladder run, the damper fade, the report,
   picking a raid) are 390×844 phone captures. Its `publish-release.yml`
-  publishes a release when `VERSION` changes, like Laminar's; it is on the
-  Release Writer's `SKIP_REPOS`, so its card shows the release title.
+  publishes a release when `VERSION` changes, like Laminar's. Kelbo chose
+  (2026-11-27) to have the Release Writer write its card lines (about
+  US$0.05 a call, up to 4 a day while it ships daily: about US$2 to US$6 a
+  month), so it is not on `SKIP_REPOS`.
   Crumple (the crash-lab game, crumple.longlight.games, repo
   `Jxstrr0/Crumple`) was added hidden (Kelbo, 2026-11-26) at its PR 0,
   with no cover, clip or screenshots yet. Its `publish-release.yml`
@@ -1363,7 +1365,7 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   entries never overwritten (Kelbo may hand-edit them; broken JSON stops
   the script). Commits as release-writer, then runs deploy.yml.
   `SKIP_REPOS` (Season Ticket, Lombard, Frontier Lab; Kelbo,
-  2026-11-11; Bump Stop since it was listed, 2026-11-27) are never sent: their cards show the release title as is.
+  2026-11-11) are never sent: their cards show the release title as is.
   `sync-releases.mjs` uses that `line` for the exact repo@tag as `latest`,
   else the cleaned release title (missing/broken file = old behaviour).
   `check-site.mjs` validates `lessons/latest.json` and
