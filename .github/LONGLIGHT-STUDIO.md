@@ -1,20 +1,20 @@
 # Longlight Interactive: studio catalogue
 
-> **Snapshot: 7 November 2026**, tables refreshed 16 November (Hull Down, Funded, Burn Rate and Laminar added; Escapement retired); Mainline added 25 November; The Whip retired 25 November; Bump Stop added 25 November; Crumple added 26 November (its world moved to Varenia the same day); Outwash retired 26 November; Mainline retired 27 November; Bump Stop listed on the site 27 November; Crumple retired 28 November. One reference file for every Longlight game.
+> **Snapshot: 7 November 2026**, tables refreshed 16 November (Hull Down, Funded, Burn Rate and Laminar added; Escapement retired); Mainline added 25 November; The Whip retired 25 November; Bump Stop added 25 November; Crumple added 26 November (its world moved to Varenia the same day); Outwash retired 26 November; Mainline retired 27 November; Bump Stop listed on the site 27 November; Crumple retired 28 November; Prairie Proof Works added hidden 28 November. One reference file for every Longlight game.
 > The same file is dropped into each game repo. Versions and details drift;
 > when something matters, check the live repo. A game's own `CLAUDE.md` always
 > wins over this file inside that game's repo.
 >
-> **Public edition.** It covers the ten games in the studio site's
+> **Public edition.** It covers the eleven games in the studio site's
 > `projects.json` and leaves out Kelbo's private and parked repos. Ask Kelbo
 > about those.
 >
 > **Seven games are listed on the site** (27 November 2026): Prairie Engine
 > Works, Scrapline, Season Ticket, Funded, Lombard, Burn Rate and Bump Stop.
-> Three more carry `"hidden": true` in `projects.json`: Frontier Lab (hidden on
+> Four more carry `"hidden": true` in `projects.json`: Frontier Lab (hidden on
 > 15 November, when Burn Rate took its place) and
-> the newest games Hull Down and Laminar, hidden until Kelbo says
-> to show them. A hidden game has no card, no game page and no devlog or
+> the newest games Hull Down, Laminar and Prairie Proof Works (added
+> 28 November), hidden until Kelbo says to show them. A hidden game has no card, no game page and no devlog or
 > release lines; its repo and live game stay up, and everything in this file
 > still applies to it.
 >
@@ -191,6 +191,7 @@ cost nothing, keep old copies apart, and let a game move again safely.
 | Burn Rate | `brn-settings`, `brn-save`, `brn-slot1..3` | `brn-` | `BRN1:` |
 | Bump Stop | `bumpstop.*` + IndexedDB `bumpstop` | `bumpstop-` | `BMP1:` (truck builds `BMPT1:`; backup file `bump-stop-backup-YYYY-MM-DD.txt`; ghosts `BMPG1:`) |
 | Laminar | `laminar.*` + IndexedDB `laminar` (slots) | none yet (use `laminar-` when one is added) | `LAM1:` (designs `LAMD1:`) |
+| Prairie Proof Works | `ppw.*` + IndexedDB `ppw` (stores `slots`, `meta`) | `ppw-<version>` | `PPW1:` (rifle builds `PPWB1:`; backup file `prairie-proof-works-backup-YYYY-MM-DD.txt`) |
 
 > **Fixed on 7 November 2026:** the studio site's `sw.js` used to delete every
 > cache that wasn't its own when it updated, which wiped the games' offline
@@ -218,6 +219,7 @@ site (`"hidden": true`); they are still live at their own addresses.
 | Frontier Lab | Polishing, **hidden** | 0.1.64.2 | AI-lab tycoon (fork of Vault Street) | Real cities on procedural maps | Portrait | TypeScript, Preact, 2D canvas/SVG |
 | Hull Down | Prototype, **hidden** | 1.8.5.2 | Tank design bureau: design to a weight limit, trial, after-action report | Tarnovia, 1980s to today | Portrait first | TypeScript, Vite; 2D office, three (npm) for trials |
 | Laminar | In development, **hidden** | 0.9.15.0 | Aero consultancy: shape in 3D, scale model, wind tunnel, real event | Tarnovia, Stavren (2010–2040; rubles) | Portrait first | TypeScript, Vite, three 0.187 (npm) |
+| Prairie Proof Works | Released, **hidden** | 1.0.0.0 | Sport rifle builder: build, break it on the range, tune, then a season of matches and a points race | The prairie "out past the grid roads", no real places ($) | Portrait first | TypeScript, Vite, three 0.187 (npm) |
 
 Studio site trading projects (not games): Pre-market brief, AI Trading Journal,
 Agent Fleet.
@@ -551,6 +553,18 @@ are as of this snapshot.
 - **Rules worth knowing:** the sim (`src/sim/`, `src/data/`) is pure and deterministic (its own `det.ts` maths, named RNG streams, SI units, a 500 Hz ride model of the body and four wheels); fade comes from damper heat, never a dice roll; long stages run sample sections in full and scale heat and wear between them. Names live in `docs/NAMES.md`.
 - **Saves:** keys `bumpstop.*`, IndexedDB `bumpstop`, caches `bumpstop-`, save code `BMP1:`, truck build codes `BMPT1:`, backup file `bump-stop-backup-YYYY-MM-DD.txt` (three slots, backup reminder, ghost codes `BMPG1:`).
 
+### Prairie Proof Works (repo `Prairie-Proof-Works`)
+
+- **Status:** "Released", **hidden** (added to `projects.json` on 28 November 2026). 1.0.0.0 shipped on 28 November with the whole of `docs/PLAN.md` built in 17 small PRs (`VERSION` file). Live at `https://jxstrr0.github.io/Prairie-Proof-Works/` until Kelbo picks its own address (`proofworks.longlight.games` or `ppw.longlight.games`).
+- **Pitch:** a sport rifle builder. Pick an action layout and a bore class (Small bore, Mid bore, Long range), fill nine part slots under a weight limit and a budget, then break the rifle on the range: a grouping test on paper (with cold and windy lanes later), a heat string until the zero walks or it jams, and the proof bench (a "proof load ×1.3" slider, fired remotely from behind the wall) for the house proof stamp. Hire a shooter for the Grid Road Series (ten dated matches from April to October plus a winter biathlon; six match types), make the calls on match day, and race four rival shops for Builder of the Year. The workshop grows from a garage bay to a machine shop; sponsors pay per match.
+- **Ground rules (Kelbo):** sport and engineering only. Paper and steel targets only (plates are plain shapes), no hunting, animals, people or combat; made-up everything (no real makers, models, cartridge names or matches); no real gunsmithing or ammo detail; range-safety tone; nobody gets hurt.
+- **Setting and tone:** no real places at all: "the shop", "the range", "out past the grid roads"; money in $. Warm, small-town match-day humour. Names (Kelbo, 28 November 2026): range officer Marg Halvorsen, announcer Gord Lindqvist; shooters Jo Kowalchuk, Dev Sandhu, Annika Brekke, Ray Lafleur, Hank Petrenko, Priya Bains; rival shops Gustafson Rifleworks, Fencepost Rifle Co., Hailstone Match Rifles, Quarterline Custom (builders Ingrid Gustafson, Lyle Trask, Corinne Lalonde, Bo Nakamura; shooters Colby Wiens, Danica Moreau, Max Okonkwo, Tilly Ferris); ranges Sightline Gun Club, Windrow Range, Old Brickyard Range, Rail Spur Rifle Club, Snowfence Nordic Centre; sponsors Long Furrow Seed Co., Bulldog Bin & Auger, Early Bird Coffee, Gumbo Boot Co., Chinook Diner, Hayloft Hardware, Plainsong Radio, Square Deal Insurance. The full list is its `docs/NAMES.md`.
+- **Look:** "Match book": a manila target card, black ring lines, pencil notes, glued-on pasters and one target-yellow highlighter (`#FFC629`) for the player's own marks and buttons; light first, with a dark "indoor range" mode. Bricolage Grotesque and Red Hat Mono. Sounds are all made in code (Web Audio).
+- **Stack:** TypeScript (strict), Vite 8, three.js 0.187 from npm (lazy-loaded, with a Lite mode of flat drawings), plain DOM UI, Vitest. Pages from Actions, `base: './'`. A build-made service worker (`src/pwa/`). `release.yml` publishes a GitHub Release `v<VERSION>` on every `VERSION` change on `main`, titled from the merge.
+- **Rules worth knowing:** the sim (`src/sim/`) is pure: no DOM, three.js, `Math.random()` or clock, seeded named streams only, and a test enforces it; failures come from the model (heat, stiffness, proof margin), never a dice roll. Every tuning number is in `src/data/`. A text test bans real cartridge names, ammo words and animals from the game's text.
+- **Saves:** keys `ppw.*`, IndexedDB `ppw` (three slots), caches `ppw-<version>`, save code `PPW1:`, rifle build codes `PPWB1:`, backup file `prairie-proof-works-backup-YYYY-MM-DD.txt`, `persist()` and a 14-day backup reminder.
+- **Gaps and ideas:** its own address and a DNS line; a cover, screenshots and a guide before it goes on the site; a second shooter later in a career (in the plan, not built); recorded sounds (ElevenLabs, waiting on Kelbo's OK).
+
 ---
 
 ## 8. Names already taken
@@ -573,6 +587,7 @@ noted, so a repeated name reads as a mistake.
 | A prop-trading firm's floor; fictional tickers | Funded |
 | Real world cities on procedural maps | Frontier Lab |
 | Birchland (cr.), capital Larchport; Sawbuck, Gritstone, Ptarmigan Point; an English-flavoured northern country, 1985–2025; raids Cold Start 300, Frozen Knuckle, Washboard 800, Dust Supper, Polar Night Raid, the Whole Damn Country | Bump Stop |
+| The prairie "out past the grid roads", no real places ($); the Grid Road Series | Prairie Proof Works |
 
 **Names used in more than one game** (already clashing; avoid adding more):
 
@@ -585,7 +600,7 @@ noted, so a repeated name reads as a mistake.
 | **Tidewater** | Prairie Engine Works (Tidewater Diesel & Marine), Frontier Lab (Tidewater AI) |
 | **Northwind** | Prairie Engine Works (Northwind Tyre), Frontier Lab (Northwind & Pike) |
 | **V-countries** | Velmark and Valmere: two invented places that sound alike. Pick another starting letter for any new country. |
-| **"Prairie"** | Prairie Engine Works, Prairie Open Models and Prairie State (Frontier Lab), Prairie Junction (Season Ticket) |
+| **"Prairie"** | Prairie Engine Works, Prairie Open Models and Prairie State (Frontier Lab), Prairie Junction (Season Ticket), Prairie Proof Works |
 | **Nimbus** | Lombard (Nimbus game consoles), Frontier Lab (Nimbus Labs, Nimbus Health) |
 
 Each game's full name lists are in its profile under **Names**.
@@ -619,7 +634,7 @@ date or institution.
 
 | Family | Games |
 | --- | --- |
-| Craft career: build or make something part by part, test it, compete or sell, in a workshop that grows | Prairie Engine Works (engines), Scrapline (combat robots) |
+| Craft career: build or make something part by part, test it, compete or sell, in a workshop that grows | Prairie Engine Works (engines), Scrapline (combat robots), Prairie Proof Works (sport rifles, a dated match calendar instead of a weekly clock) |
 | Engineering to a brief: design against a spec, test, read the report | Burn Rate (rocket motors), Hull Down (tanks), Laminar (aerodynamics), Bump Stop (rally-raid suspension, tested to failure, then raced) |
 | Roguelike runs | Funded (prop-firm trading) |
 | Tycoon and management | Season Ticket (football club), Frontier Lab (AI lab), Lombard (pawn shop) |
@@ -629,7 +644,7 @@ date or institution.
 - Almost every game is a **career on a weekly clock** ("act, then Close week").
 - Almost every game is **dark-themed** (slate, navy, felt, console green). Only
   the light themes of PEW and Scrapline, and the light-first Hull Down,
-  Burn Rate and Bump Stop, break that.
+  Burn Rate, Bump Stop and Prairie Proof Works, break that.
 - Most are **single-player management**; only Scrapline's
   fights are real-time action.
 - Three games share a near-identical classic-JS stack (PEW, Scrapline and
@@ -651,6 +666,7 @@ date or institution.
 | "Faded state-range": concrete, state green, stencil red, Saira / Martian Mono | Burn Rate |
 | "Cobalt lab": bright wind-tunnel lab, Instrument Sans / Spline Sans Mono | Laminar |
 | "Roadbook": birch-white paper, graphite ink, a fluorescent magenta highlighter, Big Shoulders / Overpass Mono | Bump Stop |
+| "Match book": manila target card, black rings, pencil and pasters, a target-yellow highlighter, Bricolage Grotesque / Red Hat Mono | Prairie Proof Works |
 
 **Open space** (observations, not decisions; Kelbo picks):
 
