@@ -935,10 +935,6 @@ the short map in `CLAUDE.md` in step if a file or rule moves.
   (2026-11-27) to have the Release Writer write its card lines (about
   US$0.05 a call, up to 4 a day while it ships daily: about US$2 to US$6 a
   month), so it is not on `SKIP_REPOS`.
-  Crumple (the crash-lab game, crumple.longlight.games, repo
-  `Jxstrr0/Crumple`) was added hidden (Kelbo, 2026-11-26) at its PR 0,
-  with no cover, clip or screenshots yet. Its `publish-release.yml`
-  publishes a release when `VERSION` changes, like Laminar's.
   Each game keeps its own look (fonts, colours, art). The Longlight logo,
   the five colours and Space Grotesk belong to studio pieces only (logo or
   splash, credit line, studio block, links back here); every game repo's
