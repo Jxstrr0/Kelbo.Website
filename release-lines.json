@@ -168,5 +168,10 @@
     "line": "Every 3D view now lets you choose Truck, X-ray or Both.",
     "title": "v1.27.0.0 - Truck, X-ray or Both on every 3D view",
     "at": "2026-11-27T21:40:32.017Z"
+  },
+  "BumpStop@v1.36.1.0": {
+    "line": "Big fields now pay out deeper into the standings.",
+    "title": "v1.36.1.0 - Big fields pay deeper",
+    "at": "2026-11-28T08:30:13.786Z"
   }
 }
